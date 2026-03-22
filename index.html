@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chang Mou — Product Designer</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="#" class="logo">Chang Mou</a>
+    <div class="nav-links">
+      <a href="#work">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume</a>
+      <a href="mailto:changmou627627@gmail.com" class="nav-cta">Get in touch</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+    <div class="hero-content">
+      <p class="hero-label">
+        <span class="label-line"></span>
+        Award-Winning Product Designer
+      </p>
+      <h1>
+        <span class="line" style="--d:0"><span class="line-inner">Human-centered</span></span>
+        <span class="line" style="--d:1"><span class="line-inner">design that drives</span></span>
+        <span class="line" style="--d:2"><span class="line-inner">real impact.</span></span>
+      </h1>
+      <p class="hero-sub">Building intuitive products across SaaS, emerging technology, and social impact. iF & Red Dot Award winner with 3+ years turning research into measurable growth.</p>
+      <div class="hero-scroll">
+        <div class="scroll-dot"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Text scramble effect on headline
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    document.querySelectorAll('.line-inner').forEach((el, i) => {
+      const original = el.textContent;
+      let iteration = 0;
+      setTimeout(() => {
+        const interval = setInterval(() => {
+          el.textContent = original
+            .split('')
+            .map((char, index) => {
+              if (index < iteration) return original[index];
+              if (char === ' ') return ' ';
+              return chars[Math.floor(Math.random() * chars.length)];
+            })
+            .join('');
+          iteration += 1 / 2;
+          if (iteration >= original.length) {
+            clearInterval(interval);
+            el.textContent = original;
+          }
+        }, 30);
+      }, 600 + i * 200);
+    });
+
+    // Magnetic cursor on hero
+    const hero = document.querySelector('.hero');
+    const orbs = document.querySelectorAll('.orb');
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = (e.clientX - rect.left) / rect.width - 0.5;
+      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      orbs.forEach((orb, i) => {
+        const speed = (i + 1) * 30;
+        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+      });
+    });
+  </script>
+
+  <!-- Work -->
+  <section id="work" class="work">
+    <h2 class="section-title">Selected Work</h2>
+    <div class="project-grid">
+
+      <a href="#" class="project-card">
+        <div class="project-img" style="background-color: #1a1a2e;"></div>
+        <div class="project-info">
+          <h3>Project One</h3>
+          <p>Mobile App · UX/UI Design</p>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-img" style="background-color: #16213e;"></div>
+        <div class="project-info">
+          <h3>Project Two</h3>
+          <p>Web Platform · Design System</p>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-img" style="background-color: #0f3460;"></div>
+        <div class="project-info">
+          <h3>Project Three</h3>
+          <p>SaaS · End-to-End Product Design</p>
+        </div>
+      </a>
+
+      <a href="#" class="project-card">
+        <div class="project-img" style="background-color: #533483;"></div>
+        <div class="project-info">
+          <h3>Project Four</h3>
+          <p>Dashboard · Data Visualization</p>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>Let's work together →  <a href="mailto:changmou627627@gmail.com">changmou627627@gmail.com</a></p>
+    <p class="footer-copy">© 2026 Chang Mou</p>
+  </footer>
+
+</body>
+</html>
