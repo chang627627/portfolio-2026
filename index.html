@@ -23,6 +23,7 @@
 
   <!-- Hero -->
   <section class="hero">
+    <div class="cursor-glow"></div>
     <div class="hero-orbs">
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
@@ -71,18 +72,41 @@
       }, 600 + i * 200);
     });
 
-    // Magnetic cursor on hero
     const hero = document.querySelector('.hero');
     const orbs = document.querySelectorAll('.orb');
+    const glow = document.querySelector('.cursor-glow');
+    const heroContent = document.querySelector('.hero-content');
+
+    // Cursor glow + orb parallax + magnetic tilt
     hero.addEventListener('mousemove', (e) => {
       const rect = hero.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const nx = x / rect.width - 0.5;
+      const ny = y / rect.height - 0.5;
+
+      // Glow follows cursor
+      glow.style.left = x + 'px';
+      glow.style.top = y + 'px';
+      glow.style.opacity = '1';
+
+      // Orb parallax
       orbs.forEach((orb, i) => {
         const speed = (i + 1) * 30;
-        orb.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+        orb.style.transform = `translate(${nx * speed}px, ${ny * speed}px)`;
       });
+
+      // Magnetic tilt on content
+      const tiltX = ny * -6;
+      const tiltY = nx * 6;
+      heroContent.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
     });
+
+    hero.addEventListener('mouseleave', () => {
+      glow.style.opacity = '0';
+      heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+    });
+
   </script>
 
   <!-- Work -->
