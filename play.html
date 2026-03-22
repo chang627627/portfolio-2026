@@ -12,6 +12,10 @@
   <!-- Nav -->
   <nav>
     <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
     <div class="nav-links">
       <a href="index.html#work">Work</a>
       <a href="play.html" class="nav-active">Play</a>
@@ -23,14 +27,9 @@
 
   <!-- Play Hero -->
   <section class="page-hero">
-    <p class="hero-label">
-      <span class="label-line"></span>
-      Play
-    </p>
     <h1 class="page-title">
-      <span class="line" style="--d:0"><span class="line-inner">Side projects,</span></span>
-      <span class="line" style="--d:1"><span class="line-inner">experiments &</span></span>
-      <span class="line" style="--d:2"><span class="line-inner">things for fun.</span></span>
+      <span class="line" style="--d:0"><span class="line-inner">Side projects, experiments</span></span>
+      <span class="line" style="--d:1"><span class="line-inner">& things for fun.</span></span>
     </h1>
   </section>
 
@@ -38,62 +37,32 @@
   <section class="play-section">
     <div class="play-grid">
 
-      <div class="play-card play-card--wide">
+      <div class="play-card">
+        <div class="play-info">
+          <h3>I Believe in a Thing Called Love</h3>
+          <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
+        </div>
         <div class="play-video">
           <iframe src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         </div>
+      </div>
+
+      <div class="play-card">
         <div class="play-info">
-          <h3>Motion Reel</h3>
-          <p>Video · Motion Design</p>
+          <h3>UN/FOLD</h3>
+          <p>A team-developed 3D adventure game built in Unity, featuring puzzles, platforming, and a fantasy world. As the game designer, I focused on the setting, level design, and mechanics, allowing players to shapeshift into humans, wolves, and seagulls to solve challenges creatively.</p>
+        </div>
+        <div class="play-video">
+          <iframe src="https://player.vimeo.com/video/486270690?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
 
       <div class="play-card">
-        <div class="play-img" style="background-color: #1a1a2e;"></div>
         <div class="play-info">
-          <h3>Experiment One</h3>
-          <p>3D · Motion</p>
+          <h3>Market Street Booklet Kit</h3>
+          <p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p>
         </div>
-      </div>
-
-      <div class="play-card play-card--tall">
-        <div class="play-img" style="background-color: #16213e;"></div>
-        <div class="play-info">
-          <h3>Experiment Two</h3>
-          <p>Typography · Poster</p>
-        </div>
-      </div>
-
-      <div class="play-card play-card--wide">
-        <div class="play-img" style="background-color: #0f3460;"></div>
-        <div class="play-info">
-          <h3>Experiment Three</h3>
-          <p>Generative Art</p>
-        </div>
-      </div>
-
-      <div class="play-card">
-        <div class="play-img" style="background-color: #533483;"></div>
-        <div class="play-info">
-          <h3>Experiment Four</h3>
-          <p>Illustration</p>
-        </div>
-      </div>
-
-      <div class="play-card">
-        <div class="play-img" style="background-color: #2a1a4e;"></div>
-        <div class="play-info">
-          <h3>Experiment Five</h3>
-          <p>Photography</p>
-        </div>
-      </div>
-
-      <div class="play-card play-card--tall">
-        <div class="play-img" style="background-color: #1a2e3e;"></div>
-        <div class="play-info">
-          <h3>Experiment Six</h3>
-          <p>UI Concept</p>
-        </div>
+        <img src="images/market-street.png" alt="Market Street Booklet Kit" class="play-img-photo">
       </div>
 
     </div>
@@ -101,9 +70,31 @@
 
   <!-- Footer -->
   <footer>
-    <p>Let's work together →  <a href="mailto:changmou627627@gmail.com">changmou627627@gmail.com</a></p>
-    <p class="footer-copy">© 2026 Chang Mou</p>
+    <div class="footer-big">
+      <p class="footer-big-text">Chang Mou</p>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Chang Mou</p>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+        <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+        <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume <span class="arrow">↗</span></a>
+      </div>
+    </div>
   </footer>
 
+<script>
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+  });
+
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) footerText.classList.add('visible');
+    }, { threshold: 0.1 }).observe(footerText);
+  }
+</script>
 </body>
 </html>

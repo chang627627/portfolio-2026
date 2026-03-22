@@ -5,13 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About — Chang Mou</title>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
 
   <!-- Nav -->
   <nav>
     <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
     <div class="nav-links">
       <a href="index.html#work">Work</a>
       <a href="play.html">Play</a>
@@ -23,84 +27,100 @@
 
   <!-- About Hero -->
   <section class="page-hero">
-    <p class="hero-label">
-      <span class="label-line"></span>
-      About
-    </p>
     <h1 class="page-title">
-      <span class="line" style="--d:0"><span class="line-inner">I'm Chang Mou —</span></span>
-      <span class="line" style="--d:1"><span class="line-inner">a product designer who</span></span>
-      <span class="line" style="--d:2"><span class="line-inner">makes complex things simple.</span></span>
+      <span class="line" style="--d:0"><span class="line-inner">I'm Chang Mou, a product designer</span></span>
+      <span class="line" style="--d:1"><span class="line-inner">who makes complex things simple.</span></span>
     </h1>
   </section>
 
+  <!-- Photo Collage -->
+  <section class="about-photos">
+    <div class="photo-grid">
+      <img src="images/profile.png" alt="Chang Mou">
+      <img src="images/jenga.jpeg" alt="Playing Jenga">
+      <img src="images/pier.jpeg" alt="SF Pier at dusk">
+      <img src="images/building.jpeg" alt="Cafe Zoetrope">
+      <img src="images/talk1.jpeg" alt="Giving a talk">
+      <img src="images/talk2.jpeg" alt="Friends in SF">
+      <img src="images/food.jpeg" alt="Home cooking">
+      <img src="images/extra.jpeg" alt="Life in SF">
+    </div>
+  </section>
+
   <!-- About Content -->
-  <section class="about-page">
-    <div class="about-grid">
-      <div class="about-col">
-        <div class="about-photo" style="background-color: #1a1a2e;"></div>
-      </div>
-      <div class="about-col">
-        <div class="about-block">
-          <h3>Background</h3>
-          <p>I'm an award-winning product designer based in San Francisco, focused on building intuitive, human-centered products across SaaS, emerging technology, and social impact.</p>
-          <p>With 3+ years of experience, I deliver measurable gains in user adoption, retention, and business growth through research-led decision making, rapid iteration, and strategic prototyping. I collaborate closely with product and engineering teams to move ideas from concept to production.</p>
-        </div>
-        <div class="about-block">
-          <h3>Experience</h3>
-          <ul class="experience-list">
-            <li><span class="exp-role">Product Designer</span><span class="exp-company">UNICEF</span><span class="exp-date">2025</span></li>
-            <li><span class="exp-role">Product Designer</span><span class="exp-company">Litespace</span><span class="exp-date">2023 – 2024</span></li>
-            <li><span class="exp-role">Product Designer</span><span class="exp-company">NFTY Jigs</span><span class="exp-date">2021 – 2022</span></li>
-            <li><span class="exp-role">Product Designer</span><span class="exp-company">BC & Alberta Guide Dogs</span><span class="exp-date">2020</span></li>
-          </ul>
-        </div>
-        <div class="about-block">
-          <h3>Education</h3>
-          <ul class="experience-list">
-            <li><span class="exp-role">MDes, Interaction Design</span><span class="exp-company">California College of the Arts</span><span class="exp-date">2025</span></li>
-            <li><span class="exp-role">BSc, Interactive Arts & Technology</span><span class="exp-company">Simon Fraser University</span><span class="exp-date">2021</span></li>
-          </ul>
-        </div>
-        <div class="about-block">
-          <h3>Recognition</h3>
-          <ul class="recognition-list">
-            <li>iF Design Award, Winner <span class="exp-date">2026</span></li>
-            <li>Red Dot Design Award, Winner <span class="exp-date">2025</span></li>
-            <li>NY Product Design Awards, Silver Winner <span class="exp-date">2025</span></li>
-            <li>European Product Design Award, Winner <span class="exp-date">2025</span></li>
-          </ul>
-        </div>
-        <div class="about-block">
-          <h3>What I do</h3>
-          <ul class="skill-list">
-            <li>Product Design</li>
-            <li>Interaction Design</li>
-            <li>Design Systems</li>
-            <li>UX Research</li>
-            <li>Prototyping</li>
-            <li>Visual Design</li>
-            <li>Service Design</li>
-            <li>AI Prototyping</li>
-          </ul>
-        </div>
-        <div class="about-block">
-          <h3>Connect</h3>
-          <div class="about-links">
-            <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn ↗</a>
-            <a href="mailto:changmou627627@gmail.com">Email ↗</a>
-            <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume ↗</a>
-          </div>
-        </div>
-      </div>
+  <section class="about-vertical">
+    <div class="about-block">
+      <h3>Background</h3>
+      <p>I'm an award-winning product designer based in San Francisco, focused on building intuitive, human-centered products across SaaS, emerging technology, and social impact.</p>
+      <p>With 3+ years of experience, I deliver measurable gains in user adoption, retention, and business growth through research-led decision making, rapid iteration, and strategic prototyping. I collaborate closely with product and engineering teams to move ideas from concept to production.</p>
+    </div>
+    <div class="about-block">
+      <h3>Experience</h3>
+      <ul class="experience-list">
+        <li><span class="exp-role">Product Designer</span><span class="exp-company">UNICEF</span><span class="exp-date">2025</span></li>
+        <li><span class="exp-role">Product Designer</span><span class="exp-company">Litespace</span><span class="exp-date">2023 – 2024</span></li>
+        <li><span class="exp-role">Product Designer</span><span class="exp-company">NFTY Jigs</span><span class="exp-date">2021 – 2022</span></li>
+        <li><span class="exp-role">Product Designer</span><span class="exp-company">BC & Alberta Guide Dogs</span><span class="exp-date">2020</span></li>
+      </ul>
+    </div>
+    <div class="about-block">
+      <h3>Education</h3>
+      <ul class="experience-list">
+        <li><span class="exp-role">MDes, Interaction Design</span><span class="exp-company">California College of the Arts</span><span class="exp-date">2025</span></li>
+        <li><span class="exp-role">BSc, Interactive Arts & Technology</span><span class="exp-company">Simon Fraser University</span><span class="exp-date">2021</span></li>
+      </ul>
+    </div>
+    <div class="about-block">
+      <h3>Recognition</h3>
+      <ul class="recognition-list">
+        <li>iF Design Award, Winner <span class="exp-date">2026</span></li>
+        <li>Red Dot Design Award, Winner <span class="exp-date">2025</span></li>
+        <li>NY Product Design Awards, Silver Winner <span class="exp-date">2025</span></li>
+        <li>European Product Design Award, Winner <span class="exp-date">2025</span></li>
+      </ul>
+    </div>
+    <div class="about-block">
+      <h3>What I do</h3>
+      <ul class="skill-list">
+        <li>Product Design</li>
+        <li>Interaction Design</li>
+        <li>Design Systems</li>
+        <li>UX Research</li>
+        <li>Prototyping</li>
+        <li>Visual Design</li>
+        <li>Service Design</li>
+        <li>AI Prototyping</li>
+      </ul>
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
-    <p>Let's work together →  <a href="mailto:changmou627627@gmail.com">changmou627627@gmail.com</a></p>
-    <p class="footer-copy">© 2026 Chang Mou</p>
+    <div class="footer-big">
+      <p class="footer-big-text">Chang Mou</p>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Chang Mou</p>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+        <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+        <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume <span class="arrow">↗</span></a>
+      </div>
+    </div>
   </footer>
 
+<script>
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+  });
+
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) footerText.classList.add('visible');
+    }, { threshold: 0.1 }).observe(footerText);
+  }
+</script>
 </body>
 </html>
