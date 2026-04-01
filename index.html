@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chang Mou — Product Designer</title>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
-
   <!-- Nav -->
   <nav>
     <a href="#" class="logo">Chang Mou</a>
@@ -17,7 +16,7 @@
       <span></span>
     </button>
     <div class="nav-links">
-      <a href="#work">Work</a>
+      <a href="index.html" class="nav-active">Work</a>
       <a href="play.html">Play</a>
       <a href="about.html">About</a>
       <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume</a>
@@ -35,39 +34,15 @@
     </div>
     <div class="hero-content">
       <h1>
-        <span class="line" style="--d:0"><span class="line-inner">Human-centered design</span></span>
-        <span class="line" style="--d:1"><span class="line-inner">that drives real impact.</span></span>
+        <span class="line" style="--d:0"><span class="line-inner">AI-first product designer.</span></span>
+        <span class="line" style="--d:1"><span class="line-inner">Building what's next.</span></span>
       </h1>
-      <p class="hero-sub">Product designer building intuitive products across SaaS, emerging technology, and social impact. iF & Red Dot Award winner with 3+ years turning research into measurable growth.</p>
+      <p class="hero-sub">Building intuitive products across SaaS, emerging tech, and social impact. iF & Red Dot Award winner with 3+ years turning research into real outcomes.</p>
       <div class="status-tag"><span class="status-dot"></span>Available for work</div>
     </div>
   </section>
 
   <script>
-    // Text scramble effect on headline
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    document.querySelectorAll('.line-inner').forEach((el, i) => {
-      const original = el.textContent;
-      let iteration = 0;
-      setTimeout(() => {
-        const interval = setInterval(() => {
-          el.textContent = original
-            .split('')
-            .map((char, index) => {
-              if (index < iteration) return original[index];
-              if (char === ' ') return ' ';
-              return chars[Math.floor(Math.random() * chars.length)];
-            })
-            .join('');
-          iteration += 1 / 2;
-          if (iteration >= original.length) {
-            clearInterval(interval);
-            el.textContent = original;
-          }
-        }, 30);
-      }, 600 + i * 200);
-    });
-
     const hero = document.querySelector('.hero');
     const orbs = document.querySelectorAll('.orb');
     const glow = document.querySelector('.cursor-glow');
@@ -110,64 +85,53 @@
     <h2 class="section-title">Selected Work</h2>
     <div class="project-grid">
 
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #1a1a2e;"></div>
+      <a href="project-one.html" class="project-card">
+        <div class="project-img" style="background-color: #D0D1FD; display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" alt="Coffee Chat" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
-          <h3>Project One</h3>
-          <p>Mobile App · UX/UI Design</p>
+          <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
+          <p>Enterprise · AI-Powered Feature Design</p>
         </div>
       </a>
 
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #16213e;"></div>
+      <a href="project-two.html" class="project-card">
+        <div class="project-img" style="background-color: #EDF6FF; display: flex; align-items: center; justify-content: center; position: relative;">
+          <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"></div>
+          <img src="images/pollennav-card.png" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
+        </div>
         <div class="project-info">
-          <h3>Project Two</h3>
-          <p>Web Platform · Design System</p>
+          <div class="project-info-top"><h3>PollenNav</h3><span class="project-year">2025</span></div>
+          <p>Personal · Pollen Navigation App</p>
         </div>
       </a>
 
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #0f3460;"></div>
+      <a href="project-five.html" class="project-card">
+        <div class="project-img" style="background-color: #E6E7EB; display: flex; align-items: center; justify-content: center;"><img src="images/tickerpulse-card.jpg" alt="TickerPulse" style="width: 65%; object-fit: contain; display: block; border-radius: 6px;"></div>
         <div class="project-info">
-          <h3>Project Three</h3>
-          <p>SaaS · End-to-End Product Design</p>
-        </div>
-      </a>
-
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #533483;"></div>
-        <div class="project-info">
-          <h3>Project Four</h3>
-          <p>Dashboard · Data Visualization</p>
-        </div>
-      </a>
-
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #2d1b4e;"></div>
-        <div class="project-info">
-          <h3>Project Five</h3>
+          <div class="project-info-top"><h3>TickerPulse</h3><span class="project-year">2025</span></div>
           <p>Emerging Tech · AI Experience</p>
         </div>
       </a>
 
-      <a href="#" class="project-card">
-        <div class="project-img" style="background-color: #1a3a2e;"></div>
+      <div class="project-card" style="cursor: default; pointer-events: none;">
+        <div class="project-img" style="background-color: #F4F4F6; display: flex; align-items: center; justify-content: center;"><img src="images/black_smart_glasses_transparent_simple 3 (2).png" alt="Project Three cover" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
-          <h3>Project Six</h3>
-          <p>Social Impact · Service Design</p>
+          <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">Coming Soon</span></div>
+          <p>SaaS · End-to-End Product Design</p>
         </div>
-      </a>
+      </div>
+
 
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
+    <div class="footer-glow"></div>
     <div class="footer-big">
-      <p class="footer-big-text">Chang Mou</p>
+      <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">© 2026 Chang Mou</p>
+      <p class="footer-copy">© 2026 Chang Mou · Coded by Claude Code</p>
       <div class="footer-links">
         <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
         <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
@@ -177,17 +141,266 @@
   </footer>
 
 <script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
   document.querySelector('.hamburger').addEventListener('click', function() {
     this.classList.toggle('active');
     document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
   });
 
-  // Footer scroll reveal
+  // Card cursor glow
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--x', x + '%');
+      card.style.setProperty('--y', y + '%');
+    });
+  });
+
+  // Footer scroll reveal — shows on scroll down, hides on scroll up
   const footerText = document.querySelector('.footer-big-text');
   if (footerText) {
-    new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) footerText.classList.add('visible');
-    }, { threshold: 0.1 }).observe(footerText);
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        // Scrolling up and not at bottom — smoothly hide
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        // Scrolling down — check if footer is in view
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Letter spotlight effect
+  const footerEl = document.querySelector('footer');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length) {
+    footerEl.addEventListener('mousemove', (e) => {
+      letters.forEach(letter => {
+        const rect = letter.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const dist = Math.abs(e.clientX - cx);
+        const maxDist = 150;
+        const brightness = Math.max(0, 1 - dist / maxDist);
+        letter.style.opacity = 0.12 + brightness * 0.88;
+      });
+    });
+    footerEl.addEventListener('mouseleave', () => {
+      letters.forEach(letter => {
+        letter.style.opacity = '';
+      });
+    });
+  }
+</script>
+
+<script>
+  // Footer glow scroll effect
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('footer');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      const maxHeight = rect.height * 1.2;
+      footerGlow.style.height = (progress * maxHeight) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">✕</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    // Show user message
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    // Show typing indicator
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
   }
 </script>
 </body>

@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Litespace Coffee Chat — Chang Mou</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-active">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume</a>
+      <a href="mailto:changmou627627@gmail.com" class="nav-cta">Get in touch</a>
+    </div>
+  </nav>
+
+  <!-- Project Hero -->
+  <section class="project-hero">
+    <h1>Litespace Coffee Chat</h1>
+    <p class="project-hero-sub">AI powered coffee chat for intentional, pressure-free pairings across hybrid teams. 63% opt-in, 200+ chats in month one.</p>
+  </section>
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <a href="#overview" class="side-nav-link">Overview</a>
+    <a href="#impact" class="side-nav-link">Impact</a>
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#research" class="side-nav-link">Research</a>
+    <a href="#design-goals" class="side-nav-link">Design Goals</a>
+    <a href="#constraints" class="side-nav-link">Constraints</a>
+    <a href="#exploration-1" class="side-nav-link">Exploration 1</a>
+    <a href="#exploration-2" class="side-nav-link">Exploration 2</a>
+    <a href="#iteration-1" class="side-nav-link">Iteration 1</a>
+    <a href="#iteration-2" class="side-nav-link">Iteration 2</a>
+    <a href="#final-deliverables" class="side-nav-link">Final Deliverables</a>
+    <a href="#design-system" class="side-nav-link">Design System</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+  </nav>
+
+  <!-- Project Content -->
+  <section class="project-content">
+    <div class="project-cover" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <div class="project-details">
+      <div class="project-detail-item">
+        <h3>Project Type</h3>
+        <p>Professional</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Timeline</h3>
+        <p>Sep 2023</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Team</h3>
+        <p>Design Lead<br>1 Engineer<br>Product Designer (Me)</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Tools</h3>
+        <p>Figma<br>ChatGPT API<br>Slack</p>
+      </div>
+    </div>
+
+    <!-- What I Did -->
+    <div class="project-section">
+      <h2>What I did</h2>
+      <ul class="project-list">
+        <li>Led end-to-end design of an AI-powered coffee chat feature.</li>
+        <li>Identified social friction through qualitative research and internal testing.</li>
+        <li>Designed transparent pairing logic that explains why users are matched.</li>
+        <li>Simplified scheduling to reduce coordination effort and cognitive load.</li>
+        <li>Partnered closely with engineering to iterate on the MVP.</li>
+      </ul>
+    </div>
+
+    <!-- Overview -->
+    <div id="overview" class="project-section">
+      <p class="section-label">Overview</p>
+      <h2>Bridging the gap between structured meetings and casual interactions</h2>
+      <p>Litespace is an AI-powered enterprise platform that helps organizations improve engagement and satisfaction in hybrid and remote workplaces. Coffee Chat is an enterprise 0-to-1 solution designed to spark spontaneous, meaningful conversations across distributed teams. It turns routine meetings into casual yet purposeful interactions that strengthen culture.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Impact -->
+    <div id="impact" class="project-section">
+      <p class="section-label">Impact</p>
+      <h2>Driving engagement and adoption across hybrid teams</h2>
+    </div>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <span class="impact-number">63%</span>
+        <p>Users opted into Coffee Chat within the first month, signaling strong early adoption</p>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">200+</span>
+        <p>Chats generated in the first month through auto-matched pairings</p>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">$4.5M</span>
+        <p>Company valuation reached alongside the Coffee Chat launch and other key feature rollouts</p>
+      </div>
+    </div>
+
+    <!-- Problem -->
+    <div id="problem" class="project-section">
+      <p class="section-label">Problem</p>
+      <h2>Remote teams lack casual social interactions</h2>
+      <p>To improve team connection in hybrid and remote environments, I identified key challenges through observations, customer feedback, and teammate interviews.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>Lack of Spontaneous Interactions</h3>
+        <p>In hybrid and remote environments, opportunities for spontaneous, meaningful conversations are limited, leading to reduced team cohesion.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Sense of Disconnection</h3>
+        <p>Traditional work models often create a disconnect among team members, particularly in settings where remote and in-office work are mixed.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Ineffective Communication Channels</h3>
+        <p>Existing meeting structures tend to be formal and rigid, making it difficult to foster casual, purposeful interactions.</p>
+      </div>
+    </div>
+
+    <!-- Research -->
+    <div id="research" class="project-section">
+      <p class="section-label">Research</p>
+      <h2>Why existing tools fall short</h2>
+      <p>I conducted a competitive analysis of Slack bots, virtual spatial platforms, and co-working tools. Existing tools approach casual interaction from different angles, but few clearly communicate the reason behind a specific pairing or reduce the social pressure of starting the conversation.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #16213e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Design Goals -->
+    <div id="design-goals" class="project-section">
+      <p class="section-label">Design Goals</p>
+      <h2>Designing intentional connections with minimal social pressure</h2>
+    </div>
+
+    <div class="goals-grid">
+      <div class="goal-card">
+        <h3>Automated Pairing with Purpose</h3>
+        <p>Match employees and clearly communicate the reason behind each pairing, helping users feel confident about joining.</p>
+      </div>
+      <div class="goal-card">
+        <h3>Conversation Starters</h3>
+        <p>Suggest engaging topics or icebreakers to help participants initiate conversations comfortably.</p>
+      </div>
+      <div class="goal-card">
+        <h3>Smart Scheduling</h3>
+        <p>Allow users to select preferred times and automatically schedule chats within available time slots.</p>
+      </div>
+      <div class="goal-card">
+        <h3>Cross-Department Matching</h3>
+        <p>Enable connections between employees from different teams to break down silos and foster networking.</p>
+      </div>
+    </div>
+
+    <!-- Constraints -->
+    <div id="constraints" class="project-section">
+      <p class="section-label">Constraints</p>
+      <h2>Launching a new feature ahead of the rebranding</h2>
+      <p>The product was transitioning from a green-dominant identity to a modern blue-focused visual system, but the rebrand was still in progress. We had just two weeks to design and release the coffee chat feature. This pushed us to focus the MVP on enabling one meaningful chat per week.</p>
+    </div>
+
+    <!-- Exploration 1 -->
+    <div id="exploration-1" class="project-section">
+      <p class="section-label">Exploration · Challenge 1</p>
+      <h2>Creating meaningful pairings</h2>
+      <p>Early feedback showed users were more likely to accept a coffee chat when they understood why they were paired. I used ChatGPT-3's contextual comprehension to infer meaningful connections from lightweight signals such as onboarding inputs, profiles, post-chat feedback, and shared Slack channel participation.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Exploration 2 -->
+    <div id="exploration-2" class="project-section">
+      <p class="section-label">Exploration · Challenge 2</p>
+      <h2>Mapping the user flow</h2>
+      <p>A key challenge was mapping different user scenarios, as participants could see different screens based on their actions. I compared a common coffee chat tool's message-based coordination with the Coffee Chat experience. Existing tools rely on direct message coordination and back-and-forths, while Coffee Chat removes messaging and reduces user pressure through default states and automated scheduling.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Iteration 1 -->
+    <div id="iteration-1" class="project-section">
+      <p class="section-label">Iteration · Challenge 1</p>
+      <h2>Simplifying coffee chat's interface</h2>
+      <p>Faced with a complex UI, I initially designed a multi-functional widget. User testing revealed its high cognitive load, leading me to divide it into two simpler widgets for availability and reasons, which received more positive feedback during internal A/B testing.</p>
+    </div>
+
+    <div class="before-after">
+      <div class="before-after-item">
+        <span class="before-after-label">Before</span>
+        <div class="project-img-full" style="background-color: #2d1b4e; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+      </div>
+      <div class="before-after-item">
+        <span class="before-after-label">After</span>
+        <div class="project-img-full" style="background-color: #1a3a2e; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+      </div>
+    </div>
+
+    <!-- Iteration 2 -->
+    <div id="iteration-2" class="project-section">
+      <p class="section-label">Iteration · Challenge 2</p>
+      <h2>Optimizing meeting format selection</h2>
+      <p>I explored letting users choose between virtual and in-person meetings, but A/B testing showed it caused delays and confusion. In-person meetings were rarely chosen in our remote and hybrid setting. We removed the selection to simplify scheduling and reduce cognitive load.</p>
+    </div>
+
+    <div class="before-after">
+      <div class="before-after-item">
+        <span class="before-after-label">Before</span>
+        <div class="project-img-full" style="background-color: #533483; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+      </div>
+      <div class="before-after-item">
+        <span class="before-after-label">After</span>
+        <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+      </div>
+    </div>
+
+    <!-- Final Deliverables -->
+    <div id="final-deliverables" class="project-section">
+      <p class="section-label">Final Deliverables</p>
+      <h2>Seamless scheduling with contextual matchmaking</h2>
+      <p>The Coffee Chat feature automatically pairs users each week based on their availability, integrating with Google Calendar. Matches include context on shared interests and suggested topics. The chat is set to "Going" by default, ensuring a seamless scheduling experience.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #16213e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <div class="project-section">
+      <h2>Handling chat declines without friction</h2>
+      <p>If either participant declines, both users see a notification. The system does not require a reason for declining — users are simply notified that their next coffee chat will be scheduled in the following cycle.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <div class="project-section">
+      <h2>Flexible scheduling for better availability</h2>
+      <p>Users can choose from alternative time slots automatically recommended based on both users' availability. If none of the suggested times work, users can propose their own availability for the other person to review.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Design System -->
+    <div id="design-system" class="project-section">
+      <p class="section-label">Design System</p>
+      <h2>New identity design system</h2>
+      <p>I collaborated with another designer to build the atomic foundations of the new identity design system, defining color tokens and typography. I also created molecule-level components that balanced consistency with flexibility for different product needs.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #1a3a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+
+    <!-- Reflection -->
+    <div id="reflection" class="project-section">
+      <p class="section-label">Reflection</p>
+      <h2>What I learned</h2>
+      <p>Designing Coffee Chat during the shift from a green-dominant identity to a modern blue-focused system taught me how to stay flexible while keeping the experience clear and lightweight. With only two weeks, I focused the MVP on one meaningful weekly pairing and removed anything that added friction. Working with early AI pairing logic gave me a deeper understanding of how contextual signals shape user trust.</p>
+    </div>
+
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-glow"></div>
+    <div class="footer-big">
+      <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Chang Mou · Coded by Claude Code</p>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+        <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+        <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  // Footer scroll reveal
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Side nav scroll tracking
+  const sideNav = document.querySelector('.side-nav');
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  // Show/hide side nav based on scroll position
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  // Active section tracking via scroll position
+  let locked = false;
+  let userScrolled = false;
+
+  // Detect user-initiated scroll (wheel/touch), not programmatic
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      // Stay locked until user manually scrolls
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  // Smooth scroll on click with offset for fixed nav
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Letter spotlight effect
+  const footerEl = document.querySelector('footer');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length) {
+    footerEl.addEventListener('mousemove', (e) => {
+      letters.forEach(letter => {
+        const rect = letter.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const dist = Math.abs(e.clientX - cx);
+        const maxDist = 150;
+        const brightness = Math.max(0.3, 1 - dist / maxDist);
+        letter.style.opacity = brightness;
+      });
+    });
+    footerEl.addEventListener('mouseleave', () => {
+      letters.forEach(letter => { letter.style.opacity = ''; });
+    });
+  }
+
+  // Back to top button
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>
+
+<script>
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('footer');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>

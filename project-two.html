@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PollenNav — Chang Mou</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=6">
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-active">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume</a>
+      <a href="mailto:changmou627627@gmail.com" class="nav-cta">Get in touch</a>
+    </div>
+  </nav>
+
+  <img src="images/pollen-cover.jpg" alt="PollenNav cover" style="width: 100%; display: block;">
+
+  <!-- Project Hero -->
+  <section class="project-hero">
+    <h1>PollenNav</h1>
+    <p class="project-hero-sub">Award winning pollen navigation app providing street-level guidance for safer city travel.</p>
+  </section>
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <a href="#overview" class="side-nav-link">Overview</a>
+    <a href="#impact" class="side-nav-link">Impact</a>
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#research" class="side-nav-link">Research</a>
+    <a href="#design-goals" class="side-nav-link">Design Goals</a>
+    <a href="#constraints" class="side-nav-link">Constraints</a>
+    <a href="#exploration-1" class="side-nav-link">Exploration 1</a>
+    <a href="#exploration-2" class="side-nav-link">Exploration 2</a>
+    <a href="#exploration-3" class="side-nav-link">Exploration 3</a>
+    <a href="#usability-testing" class="side-nav-link">Usability Testing</a>
+    <a href="#final-deliverables" class="side-nav-link">Final Deliverables</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+  </nav>
+
+  <!-- Project Content -->
+  <section class="project-content">
+
+    <div class="project-details">
+      <div class="project-detail-item">
+        <h3>Project Type</h3>
+        <p>Personal</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Timeline</h3>
+        <p>Apr – Jun 2025</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Team</h3>
+        <p>3 Designers<br>Product Designer (Me)</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Tools</h3>
+        <p>Figma<br>Protopie<br>Miro</p>
+      </div>
+    </div>
+
+    <!-- What I Did -->
+    <div class="project-section">
+      <h2>What I did</h2>
+      <ul class="project-list">
+        <li>Conducted research on pollen exposure, mobility behavior, and urban navigation patterns.</li>
+        <li>Designed route guidance and visual cues to help users reduce pollen exposure while traveling.</li>
+        <li>Prototyped and tested core navigation flows to ensure clarity, trust, and usability.</li>
+        <li>Iterated with a small design team to refine interactions and storytelling for award submission.</li>
+      </ul>
+    </div>
+
+    <!-- Overview -->
+    <div id="overview" class="project-section">
+      <p class="section-label">Overview</p>
+      <h2>Navigating the city with pollen-aware guidance</h2>
+      <p>PollenNav is a pollen navigation app that provides street-level guidance for safer city travel. Unlike existing apps that only show city-wide averages, PollenNav delivers allergen-specific, location-aware insights so users can plan routes that reduce their pollen exposure in real time.</p>
+    </div>
+
+    <!-- Impact -->
+    <div id="impact" class="project-section">
+      <p class="section-label">Impact</p>
+      <h2>Award-winning design recognized globally</h2>
+    </div>
+
+    <div class="impact-grid grid-2x2">
+      <div class="impact-card">
+        <span class="impact-number">iF</span>
+        <p>Winner, Digital Media, 2026</p>
+        <a href="https://ifdesign.com/en/winner-ranking/project/pollennav/750958" target="_blank" class="impact-link">View ↗</a>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">Red Dot</span>
+        <p>Winner, Branding & Communication Design, 2025</p>
+        <a href="https://www.red-dot.org/project/pollennav-85143" target="_blank" class="impact-link">View ↗</a>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">NYPDA</span>
+        <p>Silver, Product UX, 2025</p>
+        <a href="https://nydesignawards.com/winner-info.php?id=3347" target="_blank" class="impact-link">View ↗</a>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">EPDA</span>
+        <p>Winner, Digital & Electronic, 2025</p>
+        <a href="https://www.productdesignaward.eu/winners/epda/2025/12238/" target="_blank" class="impact-link">View ↗</a>
+      </div>
+    </div>
+
+    <!-- Problem -->
+    <div id="problem" class="project-section">
+      <p class="section-label">Problem</p>
+      <h2>Meet Maya. Spring is stunning, until her immune system sounds the alarm.</h2>
+      <p>Pollen allergies are seasonal reactions to airborne allergens, causing itchy eyes, congestion, sneezing, and coughing that can disrupt sleep, worsen asthma, and hinder daily activities. A billion people fight pollen every year.</p>
+    </div>
+
+    <img src="images/pollen-problem-1.jpg" alt="Meet Maya — pollen allergy persona" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Allergy triggers vary by person, region, and time</h2>
+      <p>Different pollens peak in different states, and local climate shifts when allergy seasons begin. Grass, flower, tree, and ragweed pollens each follow distinct seasonal and geographic patterns across the country.</p>
+    </div>
+
+    <img src="images/pollen-triggers.png?v=3" alt="Allergy triggers vary by region and season" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Research -->
+    <div id="research" class="project-section">
+      <p class="section-label">Research</p>
+      <h2>Existing apps miss street-level triggers</h2>
+      <p>Most pollen apps rely on city averages, missing street-level triggers and actionable guidance. I analyzed existing tools to understand where they fall short and why users still feel blindsided by their symptoms.</p>
+    </div>
+
+    <img src="images/pollen-research-1.png" alt="Competitive analysis of existing pollen apps" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>From 20 global interviews came one clear plea</h2>
+      <p>"Give me allergen-specific guidance for my own street." Users across the US and China shared the same frustration: general warnings don't match their lived experience. They wanted granular, personal data they could actually act on.</p>
+    </div>
+
+    <img src="images/pollen-interviews.png" alt="Research interview insights" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Design Goals -->
+    <div id="design-goals" class="project-section">
+      <p class="section-label">Design Goals</p>
+      <h2>How might we equip people like Maya with trustworthy, street-level pollen insights they can act on?</h2>
+      <p>We weren't building another symptom tracker. We designed street-level navigation that helps people plan safer routes and confidently step outside.</p>
+    </div>
+
+    <div class="project-section">
+      <h2>Our starting playbook</h2>
+      <p>We combined National Weather Service data for accuracy with Waze-style community reports for freshness, creating a hybrid data model that captures both official forecasts and real-time, on-the-ground conditions.</p>
+    </div>
+
+    <img src="images/pollen-playbook.png" alt="Our starting playbook" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Constraints -->
+    <div id="constraints" class="project-section">
+      <p class="section-label">Constraints</p>
+      <h2>Turns out, it's not that easy</h2>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>Data Clash</h3>
+        <p>National Weather Service data and community reports use different scales and formats, making it difficult to merge them into a cohesive picture.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Cognitive Overload</h3>
+        <p>Pollen data is inherently complex. Showing type, severity, timing, and location without overwhelming users required careful information hierarchy.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Brand Empathy Gap</h3>
+        <p>Health apps often feel clinical. We needed a visual identity that felt warm and supportive while maintaining trust and clarity.</p>
+      </div>
+    </div>
+
+    <!-- Exploration 1: Map Visualization -->
+    <div id="exploration-1" class="project-section">
+      <p class="section-label">Exploration 1</p>
+      <h2>How can we present pollen data on a map clearly and cohesively?</h2>
+      <p>Visualizing invisible allergens on a map without overwhelming users was the core challenge. I explored multiple approaches to balance information density with visual clarity.</p>
+    </div>
+
+    <div class="project-section">
+      <h2>Version 1: Single color with varying transparency</h2>
+      <p>We used a single color with varying transparency for pollen density and sneeze counts for city reports. But differences in density were hard to see.</p>
+    </div>
+
+    <img src="images/pollen-map-v1.png" alt="Map Version 1: Single color with varying transparency" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Version 2: 3D white map with color-coded trees</h2>
+      <p>We used a 3D white map, marked high-pollen areas with color-coded trees, and showed community report counts. But building it required high engineering effort.</p>
+    </div>
+
+    <img src="images/pollen-map-v2.png" alt="Map Version 2: 3D white map with color-coded trees" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Final: 2D white map with colored fog</h2>
+      <p>We used a 2D white map with red, yellow, and green fog for weather data, bubbles for community inputs, and layered roads for clarity at any zoom level.</p>
+    </div>
+
+    <img src="images/pollen-map-final.png" alt="Final map: 2D white map with colored fog" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Exploration 2: Information Density -->
+    <div id="exploration-2" class="project-section">
+      <p class="section-label">Exploration 2</p>
+      <h2>How to balance comprehensive pollen information with simplicity?</h2>
+      <p>Users need to stay informed without cognitive overload. I iterated on how to structure and present pollen type, severity, and timing clearly.</p>
+    </div>
+
+    <div class="project-section">
+      <h2>Version 1: Informative but hard to scan</h2>
+      <p>We began with a text-heavy card layout showing pollen levels, suggestions, and types. Users liked the detail but wanted a quicker way to assess risks.</p>
+    </div>
+
+    <img src="images/pollen-info-v1.png?v=2" alt="Info Version 1: Informative but hard to scan" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Version 2: Structured and color-coded</h2>
+      <p>We added color indicators, a density bar, and grouped pollen types for clarity. But users still compared multiple numbers and missed emotional cues for urgency.</p>
+    </div>
+
+    <img src="images/pollen-info-v2.png?v=2" alt="Info Version 2: Structured and color-coded" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Final: Intuitive and map-aligned</h2>
+      <p>In the final version, we matched the color scheme to the map and added expressive icons, letting users sense pollen risk instantly without reading numbers.</p>
+    </div>
+
+    <img src="images/pollen-info-v3.png?v=2" alt="Info Final: Intuitive and map-aligned" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Exploration 3: Branding Characters -->
+    <div id="exploration-3" class="project-section">
+      <p class="section-label">Exploration 3</p>
+      <h2>How to balance consistent branding with emotional expression?</h2>
+      <p>We wanted PollenNav to feel approachable, not clinical. I explored different character styles to ensure users feel supported while maintaining a clear, simple design language.</p>
+    </div>
+
+    <div class="project-section">
+      <h2>Version 1: Emojis</h2>
+      <p>We used emoji icons for reactions and report counts, which were quick to read. But they lacked personality and emotional impact.</p>
+    </div>
+
+    <img src="images/pollen-char-v1.png" alt="Characters Version 1: Emojis" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Version 2: Cloud characters</h2>
+      <p>We transitioned to simple cloud shapes with personified expressions to show moods. But unclear faces reduced emotional impact.</p>
+    </div>
+
+    <img src="images/pollen-char-v2.png" alt="Characters Version 2: Cloud characters" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Version 3: Flower characters</h2>
+      <p>We introduced flower characters with richer expressions to match our brand motif. But the colors lacked strong brand recognition, making the design less distinctive.</p>
+    </div>
+
+    <img src="images/pollen-char-v3.png" alt="Characters Version 3: Flower characters" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Final: Refined flower characters</h2>
+      <p>We simplified and made the flowers cuter for better recognition and warmth, ensuring a consistent design language across all touchpoints.</p>
+    </div>
+
+    <img src="images/pollen-char-final.png" alt="Characters Final: Refined flower characters" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Usability Testing -->
+    <div id="usability-testing" class="project-section">
+      <p class="section-label">Usability Testing</p>
+      <h2>Validating the experience with real users</h2>
+    </div>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <span class="impact-number">3</span>
+        <p>Rounds of usability tests</p>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">12</span>
+        <p>Users interviewed</p>
+      </div>
+      <div class="impact-card">
+        <span class="impact-number">34%</span>
+        <p>Increase in completion rate</p>
+      </div>
+    </div>
+
+    <div class="project-section">
+      <p>After the initial design, we conducted 3 rounds of usability testing and interviewed 12 users, resulting in a 34% increase in the completion rate.</p>
+    </div>
+
+    <!-- Final Deliverables -->
+    <div id="final-deliverables" class="project-section">
+      <p class="section-label">Final Deliverables</p>
+      <h2>Onboarding that builds trust from day one</h2>
+      <p>The onboarding flow introduces users to accurate pollen tracking, community reports, and personalized allergen settings so they feel confident before they even open the map.</p>
+    </div>
+
+    <img src="images/pollen-final-1.jpg" alt="Onboarding flow" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>She scans the city, then zooms into her block</h2>
+      <p>The map shows pollen density across cities with fog overlays, community report bubbles, and location-specific detail cards. Users can scan broadly or zoom in for street-level data.</p>
+    </div>
+
+    <img src="images/pollen-final-2.jpg" alt="Map scanning and zoom" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>She tracks her allergens and schedules outings when levels dip</h2>
+      <p>Users can view pollen forecasts by hour or week, get personalized suggestions, and read community insights to plan their day around low-pollen windows.</p>
+    </div>
+
+    <img src="images/pollen-final-3.jpg" alt="Allergen tracking and forecasts" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>A quick glance at the mood meter tells her to head out or stay in</h2>
+      <p>Expressive characters and a color-coded density bar let users sense pollen risk at a glance, with actionable advice tailored to the current level.</p>
+    </div>
+
+    <img src="images/pollen-final-4.jpg" alt="Mood meter and pollen density" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>She picks a low-pollen route and detours around hotspots</h2>
+      <p>PollenNav suggests low-pollen routes alongside standard shortest routes, showing pollen area counts for each option. During navigation, it alerts users to high-pollen zones ahead.</p>
+    </div>
+
+    <img src="images/pollen-final-5.jpg" alt="Low-pollen route navigation" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>Her watch shows live counts, reroutes instantly, and logs sneezes with one tap</h2>
+      <p>The Apple Watch companion displays real-time pollen levels, turn-by-turn navigation with pollen alerts, and lets users log symptoms with a single tap.</p>
+    </div>
+
+    <img src="images/pollen-final-6.jpg" alt="Apple Watch companion" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="project-section">
+      <h2>When she flags a pollen zone, the map gets better and she earns relief points</h2>
+      <p>Users can report pollen conditions with mood reactions and allergen tags. Reports improve the map for everyone and earn points redeemable for allergy relief products.</p>
+    </div>
+
+    <img src="images/pollen-final-7.jpg" alt="Community reporting and rewards" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Closing: Maya's resolution -->
+    <div class="project-section">
+      <h2>Now Maya walks freely, guided by verified street-level data</h2>
+      <p>With PollenNav, Maya no longer dreads spring. She checks her block before stepping out, picks low-pollen routes to work, and schedules outdoor time around her allergens. The app turned guesswork into confidence.</p>
+    </div>
+
+    <img src="images/pollen-closing-1.jpg" alt="Now Maya walks freely" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Reflection -->
+    <div id="reflection" class="project-section">
+      <p class="section-label">Reflection</p>
+      <h2>What I learned</h2>
+      <p>Designing PollenNav taught me how to translate complex environmental data into something people can actually use on a daily basis. Balancing scientific accuracy with visual simplicity pushed me to iterate relentlessly on map visualizations, information hierarchy, and brand identity. Working with a small team on a tight timeline sharpened my ability to make quick design decisions while keeping the user at the center.</p>
+    </div>
+
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-glow"></div>
+    <div class="footer-big">
+      <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Chang Mou · Coded by Claude Code</p>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+        <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+        <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Side nav scroll tracking (matches Coffee Chat)
+  const sideNav = document.querySelector('.side-nav');
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  // Show/hide side nav based on hero scroll position
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  // Active section tracking
+  let locked = false;
+  let userScrolled = false;
+
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  // Smooth scroll on click with offset
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+
+  const footerEl = document.querySelector('footer');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length) {
+    footerEl.addEventListener('mousemove', (e) => {
+      letters.forEach(letter => {
+        const rect = letter.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const dist = Math.abs(e.clientX - cx);
+        const maxDist = 150;
+        const brightness = Math.max(0.3, 1 - dist / maxDist);
+        letter.style.opacity = brightness;
+      });
+    });
+    footerEl.addEventListener('mouseleave', () => {
+      letters.forEach(letter => { letter.style.opacity = ''; });
+    });
+  }
+
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>
+
+<script>
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('footer');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+    chatInput.value = '';
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+    chatMic.addEventListener('click', () => {
+      if (isListening) { recognition.stop(); } else { recognition.start(); }
+    });
+    recognition.addEventListener('start', () => { isListening = true; chatMic.classList.add('listening'); });
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) { recognition.stop(); sendMessage(); }
+    });
+    recognition.addEventListener('end', () => { isListening = false; chatMic.classList.remove('listening'); });
+    recognition.addEventListener('error', () => { isListening = false; chatMic.classList.remove('listening'); });
+  } else if (chatMic) { chatMic.style.display = 'none'; }
+</script>
+
+</body>
+</html>

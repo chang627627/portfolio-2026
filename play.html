@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Play — Chang Mou</title>
-  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=1">
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
 
@@ -17,7 +17,7 @@
       <span></span>
     </button>
     <div class="nav-links">
-      <a href="index.html#work">Work</a>
+      <a href="index.html">Work</a>
       <a href="play.html" class="nav-active">Play</a>
       <a href="about.html">About</a>
       <a href="https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view" target="_blank">Resume</a>
@@ -26,16 +26,101 @@
   </nav>
 
   <!-- Play Hero -->
-  <section class="page-hero">
+  <section class="page-hero" style="padding-bottom: 128px;">
     <h1 class="page-title">
-      <span class="line" style="--d:0"><span class="line-inner">Side projects, experiments</span></span>
-      <span class="line" style="--d:1"><span class="line-inner">& things for fun.</span></span>
+      <span class="line" style="--d:0"><span class="line-inner">Where I explore new tools, experiment,</span></span>
+      <span class="line" style="--d:1"><span class="line-inner">and build things for fun.</span></span>
     </h1>
   </section>
 
   <!-- Play Grid -->
   <section class="play-section">
     <div class="play-grid">
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Midjourney</h3>
+          <p>Exploring different visual styles, moods, and worlds through prompt-driven image generation in Midjourney.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+          <img src="images/mj1-whale.jpg" alt="Surreal whales in colorful clouds" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+          <img src="images/mj2-sunset.jpg" alt="Whales swimming through purple skies" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+          <img src="images/mj3-stairs.jpg" alt="Impossible architecture with floating stairs" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+          <img src="images/mj4-desert.jpg" alt="Moebius-inspired sci-fi landscape" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+          <img src="images/mj5-architecture.jpg" alt="Minimal surreal architecture" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+          <img src="images/mj6-city.jpg" alt="Futuristic neon city" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;">
+        </div>
+      </div>
+
+      <div class="play-card play-card--desktop-only">
+        <div class="play-info">
+          <h3>Whisper XR</h3>
+          <p>A collaborative project developed by a team of two, built for Apple Vision Pro. It's an AI-powered extended reality service that currently focuses on simulating social scenarios to help people with social anxiety prepare for real-life interactions. Emphasizing privacy, subtlety, and personalization, it aims to build users' confidence in a supportive, low-pressure environment.</p>
+        </div>
+        <div class="carousel" data-carousel>
+          <div class="carousel-row">
+            <button class="carousel-arrow carousel-prev" aria-label="Previous">‹</button>
+            <div class="carousel-track">
+              <div class="carousel-slide active"><img src="images/Example-01.jpg" alt="Whisper XR slide 1" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/App Store.jpg" alt="Whisper XR slide 2" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Intro1.jpg" alt="Whisper XR slide 3" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Intro.jpg" alt="Whisper XR slide 4" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Voice Setup-2.jpg" alt="Whisper XR slide 5" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Setting Intention.jpg" alt="Whisper XR slide 6" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Feedback Style.jpg" alt="Whisper XR slide 7" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Tab Bar - Collapsed (2).jpg" alt="Whisper XR slide 8" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Tab Bar - Collapsed1.jpg" alt="Whisper XR slide 9" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Tab Bar - Collapsed3.jpg" alt="Whisper XR slide 11" style="width:100%;display:block;border-radius:8px;"></div>
+              <div class="carousel-slide"><img src="images/Tab Bar - Collapsed4.jpg" alt="Whisper XR slide 12" style="width:100%;display:block;border-radius:8px;"></div>
+            </div>
+            <button class="carousel-arrow carousel-next" aria-label="Next">›</button>
+          </div>
+          <div class="carousel-dots"></div>
+        </div>
+      </div>
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Redbrick Coffee</h3>
+          <p>Solo project redesigning a specialty coffee e-commerce experience. The interface emphasizes strong visual hierarchy, editorial typography, and rich product imagery, balancing bold brand color with calm layouts to support clear product browsing, discovery, and subscription flows.</p>
+        </div>
+        <img src="images/redbrick.jpg" alt="Redbrick Coffee" class="play-img-photo">
+      </div>
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Mirror</h3>
+          <p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user-friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p>
+        </div>
+        <img src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
+      </div>
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Futuristic Starship Cockpit</h3>
+          <p>Solo project built with Figma Make exploring what immersive flight can feel like inside a browser. Users can steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space.</p>
+          <a href="https://mince-lemon-30902005.figma.site/" target="_blank" class="play-link">Play it here <span class="arrow">↗</span></a>
+        </div>
+        <div class="play-video">
+          <iframe src="https://www.youtube.com/embed/bVPVKyckvwk?start=8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Market Street Booklet Kit</h3>
+          <p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p>
+        </div>
+        <img src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
+      </div>
+
+      <div class="play-card">
+        <div class="play-info">
+          <h3>Missing Pavilion</h3>
+          <p>Solo project designing an 8x12m parametric pavilion in Rhino+Grasshopper, featuring a wave-like structure of metal and semi-transparent glass. Positioned at a pathway intersection, it enhances the park experience with light, water play, and a serene space for relaxation and socializing.</p>
+        </div>
+        <img src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
+      </div>
 
       <div class="play-card">
         <div class="play-info">
@@ -57,24 +142,17 @@
         </div>
       </div>
 
-      <div class="play-card">
-        <div class="play-info">
-          <h3>Market Street Booklet Kit</h3>
-          <p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p>
-        </div>
-        <img src="images/market-street.png" alt="Market Street Booklet Kit" class="play-img-photo">
-      </div>
-
     </div>
   </section>
 
   <!-- Footer -->
   <footer>
+    <div class="footer-glow"></div>
     <div class="footer-big">
-      <p class="footer-big-text">Chang Mou</p>
+      <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
     </div>
     <div class="footer-bottom">
-      <p class="footer-copy">© 2026 Chang Mou</p>
+      <p class="footer-copy">© 2026 Chang Mou · Coded by Claude Code</p>
       <div class="footer-links">
         <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
         <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
@@ -84,16 +162,273 @@
   </footer>
 
 <script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
   document.querySelector('.hamburger').addEventListener('click', function() {
     this.classList.toggle('active');
     document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
   });
 
   const footerText = document.querySelector('.footer-big-text');
   if (footerText) {
-    new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) footerText.classList.add('visible');
-    }, { threshold: 0.1 }).observe(footerText);
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  const footerEl = document.querySelector('footer');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length) {
+    footerEl.addEventListener('mousemove', (e) => {
+      letters.forEach(letter => {
+        const rect = letter.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const dist = Math.abs(e.clientX - cx);
+        const brightness = Math.max(0, 1 - dist / 150);
+        letter.style.opacity = 0.12 + brightness * 0.88;
+      });
+    });
+    footerEl.addEventListener('mouseleave', () => {
+      letters.forEach(letter => { letter.style.opacity = ''; });
+    });
+  }
+</script>
+
+<script>
+  // Carousel logic
+  document.querySelectorAll('[data-carousel]').forEach(carousel => {
+    const slides = carousel.querySelectorAll('.carousel-slide');
+    const dotsContainer = carousel.querySelector('.carousel-dots');
+    const prevBtn = carousel.querySelector('.carousel-prev');
+    const nextBtn = carousel.querySelector('.carousel-next');
+    let current = 0;
+
+    // Create dots
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.setAttribute('aria-label', `Slide ${i + 1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    });
+
+    function goTo(index) {
+      slides[current].classList.remove('active');
+      dotsContainer.children[current].classList.remove('active');
+      current = (index + slides.length) % slides.length;
+      slides[current].classList.add('active');
+      dotsContainer.children[current].classList.add('active');
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+  });
+
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('footer');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
   }
 </script>
 </body>
