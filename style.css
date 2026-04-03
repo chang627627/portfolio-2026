@@ -993,6 +993,11 @@ footer {
   pointer-events: none;
   z-index: 0;
   filter: blur(60px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .footer-big {
