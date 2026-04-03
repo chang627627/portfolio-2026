@@ -190,10 +190,10 @@ nav {
 
 .hero-orbs {
   position: absolute;
-  top: -20%;
-  left: -10%;
-  right: -10%;
-  bottom: 10%;
+  top: -15%;
+  left: -5%;
+  right: -5%;
+  bottom: 20%;
   pointer-events: none;
   z-index: 0;
   background:
