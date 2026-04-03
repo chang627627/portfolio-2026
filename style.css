@@ -998,13 +998,12 @@ footer {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse at 30% 85%, rgba(75, 139, 255, 0.25), transparent 50%),
-    radial-gradient(ellipse at 70% 90%, rgba(123, 97, 255, 0.15), transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(0, 212, 255, 0.15), transparent 45%),
-    radial-gradient(ellipse at 60% 95%, rgba(75, 139, 255, 0.1), transparent 55%);
+    radial-gradient(ellipse 80% 60% at 30% 90%, rgba(75, 139, 255, 0.2), transparent),
+    radial-gradient(ellipse 70% 50% at 70% 95%, rgba(123, 97, 255, 0.12), transparent),
+    radial-gradient(ellipse 60% 50% at 50% 85%, rgba(0, 212, 255, 0.12), transparent),
+    radial-gradient(ellipse 90% 40% at 55% 100%, rgba(75, 139, 255, 0.08), transparent);
   pointer-events: none;
   z-index: 0;
-  filter: blur(50px);
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
 }
