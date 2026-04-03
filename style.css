@@ -1022,9 +1022,9 @@ footer {
   line-height: 1;
   letter-spacing: -0.04em;
   cursor: pointer;
-  transform: translateY(60%);
+  transform: translateY(20px);
   opacity: 0;
-  transition: opacity 1.2s ease, transform 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: opacity 1.2s ease, transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   z-index: 4;
   pointer-events: none;
@@ -1032,7 +1032,7 @@ footer {
 
 .footer-big-text.visible {
   opacity: 1;
-  transform: translateY(25%);
+  transform: translateY(0);
 }
 
 .footer-big-text.visible .letter {
