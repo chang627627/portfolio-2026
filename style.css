@@ -1999,8 +1999,32 @@ footer {
     display: none;
   }
 
+  .work {
+    padding-bottom: 40px;
+  }
+
+  .card-awards {
+    top: 8px;
+    left: 8px;
+    gap: 4px;
+  }
+
+  .card-awards img {
+    height: 20px;
+  }
+
+  footer {
+    padding-top: 0;
+  }
+
   .footer-bottom {
-    padding: 32px 24px;
+    padding: 24px 24px;
     justify-content: center;
+    margin-top: 0;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .footer-links {
+    gap: 24px;
   }
 }
