@@ -975,7 +975,7 @@ nav {
 /* Footer */
 footer {
   position: relative;
-  overflow: visible;
+  overflow: hidden;
 }
 
 /* CTA Section */
