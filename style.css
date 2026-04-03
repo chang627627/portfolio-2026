@@ -996,15 +996,17 @@ footer {
 
 .footer-glow {
   position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 140%;
-  height: 0;
-  background: radial-gradient(ellipse at 50% 100%, rgba(75, 139, 255, 0.3) 0%, rgba(123, 97, 255, 0.15) 30%, rgba(0, 212, 255, 0.08) 50%, transparent 75%);
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 85%, rgba(75, 139, 255, 0.25), transparent 50%),
+    radial-gradient(ellipse at 70% 90%, rgba(123, 97, 255, 0.15), transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(0, 212, 255, 0.15), transparent 45%),
+    radial-gradient(ellipse at 60% 95%, rgba(75, 139, 255, 0.1), transparent 55%);
   pointer-events: none;
   z-index: 0;
-  filter: blur(40px);
+  filter: blur(50px);
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .footer-big {
