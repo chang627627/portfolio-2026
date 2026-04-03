@@ -762,7 +762,7 @@ nav {
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  margin-bottom: 2px;
+  margin-bottom: 8px;
 }
 
 .project-info h3 {
@@ -771,13 +771,14 @@ nav {
 }
 
 .project-year {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
 }
 
 .project-info p {
-  font-size: 13px;
+  font-size: 16px;
   color: var(--text-muted);
+  line-height: 1.4;
 }
 
 .project-arrow {
