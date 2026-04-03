@@ -179,15 +179,6 @@ nav {
 }
 
 /* Mesh Gradient */
-@property --mesh-x1 { syntax: '<percentage>'; initial-value: 20%; inherits: false; }
-@property --mesh-y1 { syntax: '<percentage>'; initial-value: 30%; inherits: false; }
-@property --mesh-x2 { syntax: '<percentage>'; initial-value: 80%; inherits: false; }
-@property --mesh-y2 { syntax: '<percentage>'; initial-value: 70%; inherits: false; }
-@property --mesh-x3 { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
-@property --mesh-y3 { syntax: '<percentage>'; initial-value: 20%; inherits: false; }
-@property --mesh-x4 { syntax: '<percentage>'; initial-value: 70%; inherits: false; }
-@property --mesh-y4 { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
-
 .hero-orbs {
   position: absolute;
   top: -20%;
@@ -196,42 +187,64 @@ nav {
   bottom: 10%;
   pointer-events: none;
   z-index: 0;
-  background:
-    radial-gradient(ellipse at var(--mesh-x1) var(--mesh-y1), rgba(75, 139, 255, 0.3), transparent 50%),
-    radial-gradient(ellipse at var(--mesh-x2) var(--mesh-y2), rgba(123, 97, 255, 0.2), transparent 50%),
-    radial-gradient(ellipse at var(--mesh-x3) var(--mesh-y3), rgba(0, 212, 255, 0.2), transparent 45%),
-    radial-gradient(ellipse at var(--mesh-x4) var(--mesh-y4), rgba(75, 139, 255, 0.15), transparent 55%);
-  filter: blur(60px);
-  animation: meshFlow 12s ease-in-out infinite;
+  overflow: hidden;
 }
 
-.orb { display: none; }
+.orb {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.35;
+  border-radius: 50%;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  will-change: transform;
+}
 
-@keyframes meshFlow {
-  0%, 100% {
-    --mesh-x1: 30%; --mesh-y1: 25%;
-    --mesh-x2: 70%; --mesh-y2: 60%;
-    --mesh-x3: 55%; --mesh-y3: 30%;
-    --mesh-x4: 40%; --mesh-y4: 55%;
-  }
-  25% {
-    --mesh-x1: 55%; --mesh-y1: 45%;
-    --mesh-x2: 35%; --mesh-y2: 30%;
-    --mesh-x3: 70%; --mesh-y3: 55%;
-    --mesh-x4: 50%; --mesh-y4: 35%;
-  }
-  50% {
-    --mesh-x1: 65%; --mesh-y1: 30%;
-    --mesh-x2: 40%; --mesh-y2: 50%;
-    --mesh-x3: 45%; --mesh-y3: 65%;
-    --mesh-x4: 60%; --mesh-y4: 40%;
-  }
-  75% {
-    --mesh-x1: 40%; --mesh-y1: 50%;
-    --mesh-x2: 60%; --mesh-y2: 35%;
-    --mesh-x3: 35%; --mesh-y3: 45%;
-    --mesh-x4: 65%; --mesh-y4: 55%;
-  }
+.orb-1 {
+  width: 600px;
+  height: 500px;
+  background: rgba(75, 139, 255, 0.8);
+  top: -5%;
+  left: 15%;
+  border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
+  animation: mesh1 14s ease-in-out infinite;
+}
+
+.orb-2 {
+  width: 500px;
+  height: 450px;
+  background: rgba(123, 97, 255, 0.6);
+  top: 10%;
+  right: 10%;
+  border-radius: 55% 45% 40% 60% / 45% 55% 45% 55%;
+  animation: mesh2 16s ease-in-out infinite;
+}
+
+.orb-3 {
+  width: 450px;
+  height: 400px;
+  background: rgba(0, 212, 255, 0.5);
+  bottom: 15%;
+  left: 35%;
+  border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
+  animation: mesh3 18s ease-in-out infinite;
+}
+
+@keyframes mesh1 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(80px, 40px) scale(1.1) rotate(5deg); }
+  66% { transform: translate(-40px, -30px) scale(0.95) rotate(-3deg); }
+}
+
+@keyframes mesh2 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  33% { transform: translate(-60px, 50px) scale(1.08) rotate(-4deg); }
+  66% { transform: translate(50px, -40px) scale(0.92) rotate(6deg); }
+}
+
+@keyframes mesh3 {
+  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+  50% { transform: translate(-50px, -50px) scale(1.12) rotate(4deg); }
 }
 
 /* Hero Content */
