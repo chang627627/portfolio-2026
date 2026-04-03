@@ -175,76 +175,78 @@ nav {
 
 /* Cursor Glow */
 .cursor-glow {
-  display: none;
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  border-radius: var(--radius);
+  background: radial-gradient(circle, rgba(75, 139, 255, 0.12), transparent 70%);
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  will-change: left, top;
 }
 
-/* Mesh Gradient */
+/* Aurora Orbs */
 .hero-orbs {
   position: absolute;
-  top: -20%;
-  left: -10%;
-  right: -10%;
-  bottom: 10%;
+  inset: 0;
   pointer-events: none;
   z-index: 0;
-  overflow: hidden;
 }
 
 .orb {
   position: absolute;
+  border-radius: var(--radius);
   filter: blur(80px);
-  opacity: 0.35;
-  border-radius: 50%;
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
+  opacity: 0.4;
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform;
 }
 
 .orb-1 {
-  width: 600px;
+  width: 500px;
   height: 500px;
-  background: rgba(75, 139, 255, 0.8);
-  top: -5%;
-  left: 15%;
-  border-radius: 40% 60% 55% 45% / 55% 40% 60% 45%;
-  animation: mesh1 14s ease-in-out infinite;
+  background: radial-gradient(circle, #4B8BFF, transparent 70%);
+  top: -10%;
+  right: -5%;
+  animation: float1 8s ease-in-out infinite;
 }
 
 .orb-2 {
-  width: 500px;
-  height: 450px;
-  background: rgba(123, 97, 255, 0.6);
-  top: 10%;
-  right: 10%;
-  border-radius: 55% 45% 40% 60% / 45% 55% 45% 55%;
-  animation: mesh2 16s ease-in-out infinite;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #7B61FF, transparent 70%);
+  bottom: 10%;
+  left: -5%;
+  animation: float2 10s ease-in-out infinite;
 }
 
 .orb-3 {
-  width: 450px;
-  height: 400px;
-  background: rgba(0, 212, 255, 0.5);
-  bottom: 15%;
-  left: 35%;
-  border-radius: 45% 55% 60% 40% / 50% 45% 55% 50%;
-  animation: mesh3 18s ease-in-out infinite;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, #00D4FF, transparent 70%);
+  top: 40%;
+  right: 20%;
+  animation: float3 12s ease-in-out infinite;
 }
 
-@keyframes mesh1 {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(80px, 40px) scale(1.1) rotate(5deg); }
-  66% { transform: translate(-40px, -30px) scale(0.95) rotate(-3deg); }
+@keyframes float1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(-40px, 30px) scale(1.05); }
+  66% { transform: translate(20px, -20px) scale(0.95); }
 }
 
-@keyframes mesh2 {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  33% { transform: translate(-60px, 50px) scale(1.08) rotate(-4deg); }
-  66% { transform: translate(50px, -40px) scale(0.92) rotate(6deg); }
+@keyframes float2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(30px, -40px) scale(1.08); }
+  66% { transform: translate(-20px, 20px) scale(0.92); }
 }
 
-@keyframes mesh3 {
-  0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
-  50% { transform: translate(-50px, -50px) scale(1.12) rotate(4deg); }
+@keyframes float3 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-30px, -30px) scale(1.1); }
 }
 
 /* Hero Content */
@@ -995,22 +997,14 @@ footer {
 .footer-glow {
   position: absolute;
   bottom: 0;
-  left: -10%;
-  right: -10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
   height: 0;
-  background:
-    radial-gradient(ellipse at 30% 85%, rgba(75, 139, 255, 0.3), transparent 50%),
-    radial-gradient(ellipse at 70% 90%, rgba(123, 97, 255, 0.2), transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(0, 212, 255, 0.2), transparent 45%),
-    radial-gradient(ellipse at 60% 95%, rgba(75, 139, 255, 0.15), transparent 55%);
+  background: radial-gradient(ellipse at 50% 100%, rgba(75, 139, 255, 0.3) 0%, rgba(123, 97, 255, 0.15) 30%, rgba(0, 212, 255, 0.08) 50%, transparent 75%);
   pointer-events: none;
   z-index: 0;
-  filter: blur(60px);
-  -webkit-transform: translateZ(0);
-  transform: translateZ(0);
-  will-change: transform;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
+  filter: blur(40px);
 }
 
 .footer-big {
