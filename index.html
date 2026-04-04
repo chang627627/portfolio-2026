@@ -6,7 +6,7 @@
   <title>Chang Mou — Product Designer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=18">
+  <link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
   <!-- Nav -->
@@ -161,22 +161,35 @@
   // Scroll CTA — scroll-position driven word reveal
   const scrollWords = document.querySelectorAll('.scroll-word');
   const scrollCta = document.querySelector('.scroll-cta');
+  const footerBigText = document.querySelector('.footer-big-text');
   if (scrollWords.length && scrollCta) {
-    window.addEventListener('scroll', () => {
-      const rect = scrollCta.getBoundingClientRect();
-      const triggerStart = window.innerHeight * 0.8;
-      const triggerEnd = window.innerHeight * 0.2;
-      const progress = Math.max(0, Math.min(1, (triggerStart - rect.top) / (triggerStart - triggerEnd)));
+    function updateScrollWords() {
+      const scrollY = window.scrollY;
+      const maxScroll = document.body.scrollHeight - window.innerHeight;
+      // progress: 0 at 75% of max scroll, 1 at bottom
+      const progress = Math.max(0, Math.min(1, (scrollY / maxScroll - 0.75) / 0.25));
       const totalWords = scrollWords.length;
+      let allVisible = true;
       scrollWords.forEach((word, i) => {
-        const wordThreshold = i / totalWords;
-        if (progress >= wordThreshold) {
+        const threshold = 0.15 + (i * 0.12);
+        if (progress >= threshold) {
           word.classList.add('visible');
         } else {
           word.classList.remove('visible');
+          allVisible = false;
         }
       });
-    }, { passive: true });
+      // Show "Say hello" after a gap — at 85% progress
+      if (footerBigText) {
+        if (allVisible && progress >= 0.85) {
+          footerBigText.classList.add('visible');
+        } else {
+          footerBigText.classList.remove('visible');
+        }
+      }
+    }
+    window.addEventListener('scroll', updateScrollWords, { passive: true });
+    updateScrollWords();
   }
 
   // Logo letter stagger
@@ -205,36 +218,8 @@
     });
   });
 
-  // Footer scroll reveal — shows on scroll down, hides on scroll up
-  const footerText = document.querySelector('.footer-big-text');
-  if (footerText) {
-    let lastScroll = window.scrollY;
-    let isVisible = false;
-    const observer = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !isVisible) {
-        footerText.classList.add('visible');
-        isVisible = true;
-      }
-    }, { threshold: 0.1 });
-    observer.observe(footerText);
-
-    window.addEventListener('scroll', () => {
-      const currentScroll = window.scrollY;
-      const rect = footerText.getBoundingClientRect();
-      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
-      if (isVisible && currentScroll < lastScroll && !atBottom) {
-        // Scrolling up and not at bottom — smoothly hide
-        footerText.classList.remove('visible');
-        isVisible = false;
-      } else if (!isVisible && currentScroll > lastScroll) {
-        // Scrolling down — check if footer is in view
-        if (rect.top < window.innerHeight) {
-          footerText.classList.add('visible');
-          isVisible = true;
-        }
-      }
-      lastScroll = currentScroll;
-    }, { passive: true });
+  // Footer scroll reveal — now controlled by scroll CTA handler above
+  if (false) {
   }
 
   // Letter spotlight effect
