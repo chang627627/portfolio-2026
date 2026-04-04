@@ -197,10 +197,10 @@ nav {
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(ellipse at var(--mesh-x1) var(--mesh-y1), rgba(75, 139, 255, 0.3), transparent 50%),
-    radial-gradient(ellipse at var(--mesh-x2) var(--mesh-y2), rgba(123, 97, 255, 0.2), transparent 50%),
+    radial-gradient(ellipse at var(--mesh-x1) var(--mesh-y1), rgba(75, 139, 255, 0.4), transparent 50%),
+    radial-gradient(ellipse at var(--mesh-x2) var(--mesh-y2), rgba(123, 97, 255, 0.25), transparent 50%),
     radial-gradient(ellipse at var(--mesh-x3) var(--mesh-y3), rgba(0, 212, 255, 0.2), transparent 45%),
-    radial-gradient(ellipse at var(--mesh-x4) var(--mesh-y4), rgba(75, 139, 255, 0.15), transparent 55%);
+    radial-gradient(ellipse at var(--mesh-x4) var(--mesh-y4), rgba(75, 139, 255, 0.2), transparent 55%);
   filter: blur(60px);
   animation: meshFlow 12s ease-in-out infinite;
 }
