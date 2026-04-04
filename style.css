@@ -691,7 +691,7 @@ nav {
   background: var(--surface);
   border: 1px solid rgba(255,255,255,0.08);
   position: relative;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
 }
 
 .project-card::before {
@@ -718,7 +718,7 @@ nav {
 }
 
 .project-img img {
-  transition: transform 0.4s ease;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card-awards {
