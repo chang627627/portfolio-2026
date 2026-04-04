@@ -22,6 +22,7 @@ body.menu-open {
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 body {
@@ -2024,6 +2025,10 @@ footer {
     display: none;
   }
 
+  .hero h1 {
+    font-size: 32px;
+  }
+
   .scroll-cta {
     display: none;
   }
@@ -2037,7 +2042,7 @@ footer {
   }
 
   .work {
-    padding-bottom: 40px;
+    padding-bottom: 80px;
   }
 
   .card-awards {
