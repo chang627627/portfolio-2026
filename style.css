@@ -316,7 +316,7 @@ nav {
   margin: 32px auto 0;
   line-height: 1.75;
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 1s;
+  animation: fadeUp 0.8s ease forwards 2.2s;
 }
 
 @keyframes fadeUp {
@@ -358,7 +358,7 @@ nav {
   padding: 8px 16px;
   border-radius: var(--radius);
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 1.2s;
+  animation: fadeUp 0.8s ease forwards 2.6s;
 }
 
 .status-dot {
@@ -373,7 +373,7 @@ nav {
 .hero-scroll {
   margin-top: 64px;
   opacity: 0;
-  animation: fadeIn 0.6s ease forwards 1.4s;
+  animation: fadeIn 0.6s ease forwards 3s;
   text-align: center;
 }
 
