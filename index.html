@@ -6,7 +6,7 @@
   <title>Chang Mou — Product Designer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=21">
+  <link rel="stylesheet" href="style.css?v=22">
 </head>
 <body>
   <!-- Nav -->
@@ -35,8 +35,8 @@
     </div>
     <div class="hero-content">
       <h1>
-        <span class="line" style="--d:0"><span class="line-inner">AI-first product designer.</span></span>
-        <span class="line" style="--d:1"><span class="line-inner">Building what's next.</span></span>
+        <span class="line"><span class="line-inner scramble-text" data-text="AI-first product designer."></span></span>
+        <span class="line"><span class="line-inner scramble-text" data-text="Building what's next."></span></span>
       </h1>
       <p class="hero-sub">Building intuitive products across SaaS, emerging tech, and social impact. iF & Red Dot Award winner with 3+ years turning research into real outcomes.</p>
       <div class="status-tag"><span class="status-dot"></span>Available for work</div>
@@ -158,6 +158,35 @@
   </footer>
 
 <script>
+  // Scramble text reveal
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  document.querySelectorAll('.scramble-text').forEach((el, lineIndex) => {
+    const target = el.getAttribute('data-text');
+    const delay = lineIndex * 400;
+    // Build character spans
+    el.innerHTML = target.split('').map(c =>
+      c === ' ' ? ' ' : `<span class="char" data-target="${c}"></span>`
+    ).join('');
+    const charEls = el.querySelectorAll('.char');
+    charEls.forEach((span, i) => {
+      const targetChar = span.getAttribute('data-target');
+      span.textContent = '\u00A0';
+      setTimeout(() => {
+        let iterations = 0;
+        const maxIterations = 3 + Math.floor(Math.random() * 3);
+        const interval = setInterval(() => {
+          if (iterations < maxIterations) {
+            span.textContent = chars[Math.floor(Math.random() * chars.length)];
+            iterations++;
+          } else {
+            span.textContent = targetChar;
+            clearInterval(interval);
+          }
+        }, 40);
+      }, 500 + delay + i * 30);
+    });
+  });
+
   // Scroll CTA — scroll-position driven word reveal
   const scrollWords = document.querySelectorAll('.scroll-word');
   const scrollCta = document.querySelector('.scroll-cta');

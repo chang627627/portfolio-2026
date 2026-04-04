@@ -294,17 +294,12 @@ nav {
 
 .hero h1 .line-inner {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(100%);
-  animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  animation-delay: calc(0.5s + var(--d) * 0.12s);
+  opacity: 1;
 }
 
-@keyframes revealLine {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.hero h1 .line-inner .char {
+  display: inline-block;
+  min-width: 0.1em;
 }
 
 .hero-sub {
