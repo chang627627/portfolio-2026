@@ -6,7 +6,7 @@
   <title>Chang Mou — Product Designer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
   <!-- Nav -->
@@ -133,6 +133,14 @@
     </div>
   </section>
 
+  <!-- Scroll CTA -->
+  <section class="scroll-cta">
+    <span class="scroll-word">Like</span>
+    <span class="scroll-word">what</span>
+    <span class="scroll-word">you</span>
+    <span class="scroll-word">see?</span>
+  </section>
+
   <!-- Footer -->
   <footer>
     <div class="footer-glow"></div>
@@ -150,6 +158,27 @@
   </footer>
 
 <script>
+  // Scroll CTA — scroll-position driven word reveal
+  const scrollWords = document.querySelectorAll('.scroll-word');
+  const scrollCta = document.querySelector('.scroll-cta');
+  if (scrollWords.length && scrollCta) {
+    window.addEventListener('scroll', () => {
+      const rect = scrollCta.getBoundingClientRect();
+      const triggerStart = window.innerHeight * 0.8;
+      const triggerEnd = window.innerHeight * 0.2;
+      const progress = Math.max(0, Math.min(1, (triggerStart - rect.top) / (triggerStart - triggerEnd)));
+      const totalWords = scrollWords.length;
+      scrollWords.forEach((word, i) => {
+        const wordThreshold = i / totalWords;
+        if (progress >= wordThreshold) {
+          word.classList.add('visible');
+        } else {
+          word.classList.remove('visible');
+        }
+      });
+    }, { passive: true });
+  }
+
   // Logo letter stagger
   const logo = document.querySelector('.logo');
   if (logo) {

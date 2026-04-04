@@ -986,6 +986,31 @@ footer {
   user-select: none;
 }
 
+/* Scroll CTA */
+.scroll-cta {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px 48px 80px;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.scroll-word {
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-word.visible {
+  opacity: 0.15;
+  transform: translateY(0);
+}
+
 .footer-glow {
   position: absolute;
   inset: 0;
@@ -1994,6 +2019,10 @@ footer {
   }
 
   .play-link {
+    display: none;
+  }
+
+  .scroll-cta {
     display: none;
   }
 
