@@ -1357,7 +1357,10 @@ footer {
 .project-content .impact-grid,
 .project-content .problem-grid,
 .project-content .goals-grid,
-.project-content .before-after {
+.project-content .before-after,
+.project-content .compare-table,
+.project-content .flow-chart,
+.project-content .scheduling-step {
   margin-top: 32px;
 }
 
@@ -1366,8 +1369,145 @@ footer {
 .project-content .impact-grid + .project-section,
 .project-content .problem-grid + .project-section,
 .project-content .goals-grid + .project-section,
-.project-content .before-after + .project-section {
+.project-content .before-after + .project-section,
+.project-content .compare-table + .project-section,
+.project-content .flow-chart + .project-section,
+.project-content .scheduling-step + .project-section {
   margin-top: 96px;
+}
+
+/* Scheduling step layout */
+.scheduling-step {
+  max-width: var(--max-width);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.scheduling-step + .scheduling-step {
+  margin-top: 48px;
+}
+
+.scheduling-step-text {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.75;
+  margin: 0 0 24px 0;
+}
+
+/* Table caption — tight spacing to the table above */
+.project-content .compare-table + .table-caption {
+  margin-top: 24px;
+}
+
+/* Highlighted phrase */
+.highlight {
+  color: var(--text);
+}
+
+/* Flow Chart */
+.flow-chart {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 32px;
+  box-sizing: border-box;
+}
+
+.flow-chart + .flow-chart {
+  margin-top: 24px;
+}
+
+.flow-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.flow-chart-title {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0;
+}
+
+.flow-chart-tags {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.flow-chart-tags li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flow-tag-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  font-size: 13px;
+}
+
+.flow-tag-icon.flow-tag-negative {
+  color: #ff7a7a;
+}
+
+.flow-tag-icon.flow-tag-positive {
+  color: #7ae0a0;
+}
+
+.flow-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.flow-svg .flow-box rect {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: rgba(255, 255, 255, 0.15);
+  stroke-width: 1;
+}
+
+.flow-svg .flow-box text {
+  fill: var(--text);
+  font-family: 'Neue Montreal', -apple-system, sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+@media (max-width: 768px) {
+  .flow-chart {
+    padding: 20px;
+  }
+
+  .flow-chart-header {
+    margin-bottom: 20px;
+  }
+
+  .flow-chart-title {
+    font-size: 16px;
+  }
+
+  .flow-chart-tags {
+    font-size: 12px;
+  }
+
+  .flow-svg .flow-box text {
+    font-size: 11px;
+  }
 }
 
 /* Details row spacing */
@@ -1417,6 +1557,128 @@ footer {
 
 .project-img-full {
   width: 100%;
+}
+
+/* Comparison Table */
+.compare-table {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+  font-size: 15px;
+}
+
+.compare-table th,
+.compare-table td {
+  padding: 20px 24px;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  line-height: 1.6;
+}
+
+.compare-table th:last-child,
+.compare-table td:last-child {
+  border-right: none;
+}
+
+.compare-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.compare-table th {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.compare-table td {
+  color: var(--text);
+}
+
+.compare-table .col-pros,
+.compare-table .col-cons {
+  color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+  .compare-table {
+    display: block;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+
+  .compare-table thead {
+    display: none;
+  }
+
+  .compare-table tbody,
+  .compare-table tr,
+  .compare-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .compare-table tr {
+    background: var(--surface);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .compare-table tr::before {
+    content: attr(data-category);
+    display: block;
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .compare-table .col-category {
+    display: none;
+  }
+
+  .compare-table td {
+    padding: 10px 0;
+    border: none;
+    font-size: 14px;
+  }
+
+  .compare-table td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 4px;
+  }
+
+  .compare-table td[data-label="Tool"] {
+    font-size: 16px;
+    padding-top: 0;
+  }
+
+  .compare-table td[data-label="Tool"]::before {
+    display: none;
+  }
 }
 
 .project-nav {

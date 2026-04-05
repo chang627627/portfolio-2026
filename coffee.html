@@ -6,7 +6,7 @@
   <title>Litespace Coffee Chat — Chang Mou</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=25">
+  <link rel="stylesheet" href="style.css?v=26">
 </head>
 <body>
 
@@ -92,8 +92,6 @@
       <p>Litespace is an AI-powered enterprise platform that helps organizations improve engagement and satisfaction in hybrid and remote workplaces. Coffee Chat is an enterprise 0-to-1 solution designed to spark spontaneous, meaningful conversations across distributed teams. It turns routine meetings into casual yet purposeful interactions that strengthen culture.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
-
     <!-- Impact -->
     <div id="impact" class="project-section">
       <p class="section-label">Impact</p>
@@ -141,10 +139,73 @@
     <div id="research" class="project-section">
       <p class="section-label">Research</p>
       <h2>Why existing tools fall short</h2>
-      <p>I conducted a competitive analysis of Slack bots, virtual spatial platforms, and co-working tools. Existing tools approach casual interaction from different angles, but few clearly communicate the reason behind a specific pairing or reduce the social pressure of starting the conversation.</p>
+      <p>To understand how others addressed casual interactions, I conducted a competitive analysis of Slack bots, virtual spatial platforms, and co-working tools.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #16213e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Tool</th>
+          <th>Pros</th>
+          <th>Cons</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-category="Slack-Integrated Matching Bots">
+          <td class="col-category" rowspan="2">Slack-Integrated Matching Bots</td>
+          <td data-label="Tool">Donut (Slack bot)</td>
+          <td class="col-pros" data-label="Pros">
+            Seamless Slack integration<br>
+            Fully automated matching<br>
+            Scales for teams
+          </td>
+          <td class="col-cons" data-label="Cons">
+            Feels robotic<br>
+            Repetitive if not personalized
+          </td>
+        </tr>
+        <tr data-category="Slack-Integrated Matching Bots">
+          <td data-label="Tool">Watercooler Trivia</td>
+          <td class="col-pros" data-label="Pros">
+            Fun and engaging<br>
+            Low effort to run
+          </td>
+          <td class="col-cons" data-label="Cons">
+            Shallow connection<br>
+            May become distracting over time
+          </td>
+        </tr>
+        <tr data-category="Virtual Spatial Platforms">
+          <td class="col-category">Virtual Spatial Platforms</td>
+          <td data-label="Tool">Gather</td>
+          <td class="col-pros" data-label="Pros">
+            Spatial, playful interaction<br>
+            High sense of presence
+          </td>
+          <td class="col-cons" data-label="Cons">
+            Requires onboarding<br>
+            Can feel game-like and distracting
+          </td>
+        </tr>
+        <tr data-category="Co-working Tools">
+          <td class="col-category">Co-working Tools</td>
+          <td data-label="Tool">Focusmate</td>
+          <td class="col-pros" data-label="Pros">
+            Promotes deep work<br>
+            Accountability-based
+          </td>
+          <td class="col-cons" data-label="Cons">
+            Lacks social/casual interaction<br>
+            Meant for individual focus
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="project-section table-caption">
+      <p>Existing tools approach casual interaction from different angles, such as automated matching, shared spaces, or structured activities, <span class="highlight">but few clearly communicate the reason behind a specific pairing or reduce the social pressure of starting the conversation.</span> This insight shaped Coffee Chat's direction: combining intentional pairing with a low pressure experience, without requiring direct message coordination.</p>
+    </div>
 
     <!-- Design Goals -->
     <div id="design-goals" class="project-section">
@@ -182,19 +243,203 @@
     <div id="exploration-1" class="project-section">
       <p class="section-label">Exploration · Challenge 1</p>
       <h2>Creating meaningful pairings</h2>
-      <p>Early feedback showed users were more likely to accept a coffee chat when they understood why they were paired. I used ChatGPT-3's contextual comprehension to infer meaningful connections from lightweight signals such as onboarding inputs, profiles, post-chat feedback, and shared Slack channel participation.</p>
+      <p>Early feedback showed users were more likely to accept a coffee chat when they understood why they were paired. I used ChatGPT-3's contextual comprehension to infer meaningful connections from lightweight signals, then generated a brief pairing explanation so users could quickly understand why the match made sense.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Rule-Based Pairing</th>
+          <th>ChatGPT-Enhanced Pairing</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-category="Logic">
+          <td class="col-category">Logic</td>
+          <td class="col-pros" data-label="Rule-Based Pairing">
+            Matches people randomly based on simple criteria (e.g., same team or time zone).
+          </td>
+          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
+            Analyzes roles, interests, and collaboration patterns to find meaningful overlaps.
+          </td>
+        </tr>
+        <tr data-category="Experience">
+          <td class="col-category">Experience</td>
+          <td class="col-pros" data-label="Rule-Based Pairing">
+            You're paired with Alex based on department and timezone.
+          </td>
+          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
+            You're paired with Alex because you both mentor new hires and enjoy UX meetups.
+          </td>
+        </tr>
+        <tr data-category="Outcome">
+          <td class="col-category">Outcome</td>
+          <td class="col-pros" data-label="Rule-Based Pairing">
+            Often feels random, leading to short or awkward chats.
+          </td>
+          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
+            Feels purposeful and relevant, leading to deeper, more engaging conversations.
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
     <!-- Exploration 2 -->
     <div id="exploration-2" class="project-section">
       <p class="section-label">Exploration · Challenge 2</p>
       <h2>Mapping the user flow</h2>
-      <p>A key challenge was mapping different user scenarios, as participants could see different screens based on their actions. I compared a common coffee chat tool's message-based coordination with the Coffee Chat experience. Existing tools rely on direct message coordination and back-and-forths, while Coffee Chat removes messaging and reduces user pressure through default states and automated scheduling.</p>
+      <p>A key challenge was mapping different user scenarios, since participants could see different screens based on their actions. I compared the message-based coordination flow common in existing tools with the one I designed for Coffee Chat. While existing tools rely on back-and-forth direct messages, Coffee Chat removes messaging entirely, provides clear fallback paths, and reduces user pressure through default states and automated scheduling.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <div class="flow-chart">
+      <div class="flow-chart-header">
+        <h3 class="flow-chart-title">Existing Coffee Chat Tool User Flow</h3>
+        <ul class="flow-chart-tags">
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> Manual scheduling</li>
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> Message overload</li>
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> High drop-off</li>
+        </ul>
+      </div>
+      <svg class="flow-svg" viewBox="0 0 960 260" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.4)"/>
+          </marker>
+        </defs>
+
+        <!-- Row 1: boxes -->
+        <g class="flow-box">
+          <rect x="20" y="40" width="200" height="60" rx="6"/>
+          <text x="120" y="75" text-anchor="middle">User A receive chat pairing</text>
+        </g>
+        <g class="flow-box">
+          <rect x="260" y="40" width="200" height="60" rx="6"/>
+          <text x="360" y="75" text-anchor="middle">DM notification sent</text>
+        </g>
+        <g class="flow-box">
+          <rect x="500" y="40" width="220" height="60" rx="6"/>
+          <text x="610" y="75" text-anchor="middle">Send DM or email to schedule</text>
+        </g>
+        <g class="flow-box">
+          <rect x="760" y="40" width="180" height="60" rx="6"/>
+          <text x="850" y="75" text-anchor="middle">Multiple back-and-forths</text>
+        </g>
+
+        <!-- Row 2: boxes -->
+        <g class="flow-box">
+          <rect x="500" y="170" width="220" height="60" rx="6"/>
+          <text x="610" y="205" text-anchor="middle">Meeting confirmed</text>
+        </g>
+        <g class="flow-box">
+          <rect x="760" y="170" width="180" height="60" rx="6"/>
+          <text x="850" y="205" text-anchor="middle">Calendar link created</text>
+        </g>
+
+        <!-- Arrows row 1 -->
+        <line x1="220" y1="70" x2="258" y2="70" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow1)"/>
+        <line x1="460" y1="70" x2="498" y2="70" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow1)"/>
+        <line x1="720" y1="70" x2="758" y2="70" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow1)"/>
+        <!-- Arrow down from back-and-forths to calendar -->
+        <line x1="850" y1="100" x2="850" y2="168" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow1)"/>
+        <!-- Arrow left from calendar to meeting confirmed -->
+        <line x1="760" y1="200" x2="722" y2="200" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow1)"/>
+      </svg>
+    </div>
+
+    <div class="flow-chart">
+      <div class="flow-chart-header">
+        <h3 class="flow-chart-title">Our Coffee Chat Flow</h3>
+        <ul class="flow-chart-tags">
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> Automated pairing</li>
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> Clear fallback path (reschedule or skip)</li>
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> No direct message coordination needed</li>
+        </ul>
+      </div>
+      <svg class="flow-svg" viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrow2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.4)"/>
+          </marker>
+        </defs>
+
+        <!-- User A receive chat pairing -->
+        <g class="flow-box">
+          <rect x="20" y="190" width="180" height="60" rx="6"/>
+          <text x="110" y="225" text-anchor="middle">User A receive chat pairing</text>
+        </g>
+
+        <!-- Accept chat (default) top -->
+        <g class="flow-box">
+          <rect x="260" y="40" width="220" height="60" rx="6"/>
+          <text x="370" y="75" text-anchor="middle">Accept chat (default)</text>
+        </g>
+
+        <!-- Reschedule chat middle -->
+        <g class="flow-box">
+          <rect x="260" y="190" width="220" height="60" rx="6"/>
+          <text x="370" y="225" text-anchor="middle">Reschedule chat</text>
+        </g>
+
+        <!-- Select proposed time -->
+        <g class="flow-box">
+          <rect x="520" y="190" width="220" height="60" rx="6"/>
+          <text x="630" y="225" text-anchor="middle">Select user B's proposed time</text>
+        </g>
+
+        <!-- Suggest new times -->
+        <g class="flow-box">
+          <rect x="260" y="290" width="220" height="60" rx="6"/>
+          <text x="370" y="325" text-anchor="middle">Suggest new times to user B</text>
+        </g>
+
+        <!-- Waits for confirmation -->
+        <g class="flow-box">
+          <rect x="520" y="290" width="220" height="60" rx="6"/>
+          <text x="630" y="325" text-anchor="middle">Waits for user B's confirmation</text>
+        </g>
+
+        <!-- Decline / No response -->
+        <g class="flow-box">
+          <rect x="260" y="380" width="220" height="60" rx="6"/>
+          <text x="370" y="415" text-anchor="middle">Decline / No response</text>
+        </g>
+
+        <!-- Next pairing in cycle -->
+        <g class="flow-box">
+          <rect x="520" y="380" width="220" height="60" rx="6"/>
+          <text x="630" y="415" text-anchor="middle">Next pairing in cycle</text>
+        </g>
+
+        <!-- Meeting scheduled (right side) -->
+        <g class="flow-box">
+          <rect x="780" y="190" width="180" height="60" rx="6"/>
+          <text x="870" y="225" text-anchor="middle">Meeting scheduled</text>
+        </g>
+
+        <!-- Arrows from User A (branch out to Accept, Reschedule, Decline) -->
+        <path d="M200,210 L230,210 L230,70 L258,70" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <line x1="200" y1="220" x2="258" y2="220" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <path d="M200,230 L230,230 L230,410 L258,410" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+        <!-- Accept chat → Meeting scheduled (across top, down) -->
+        <path d="M480,70 L870,70 L870,188" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+        <!-- Reschedule → Select proposed time -->
+        <line x1="480" y1="220" x2="518" y2="220" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <!-- Select proposed time → Meeting scheduled -->
+        <line x1="740" y1="220" x2="778" y2="220" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <!-- Reschedule → Suggest new times (down) -->
+        <line x1="370" y1="250" x2="370" y2="288" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <!-- Suggest → Waits -->
+        <line x1="480" y1="320" x2="518" y2="320" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+        <!-- Waits → Meeting scheduled (right then up) -->
+        <path d="M740,320 L820,320 L820,252" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+
+        <!-- Decline → Next pairing -->
+        <line x1="480" y1="410" x2="518" y2="410" stroke="rgba(255,255,255,0.4)" stroke-width="1.5" marker-end="url(#arrow2)"/>
+      </svg>
+    </div>
 
     <!-- Iteration 1 -->
     <div id="iteration-1" class="project-section">
@@ -206,11 +451,15 @@
     <div class="before-after">
       <div class="before-after-item">
         <span class="before-after-label">Before</span>
-        <div class="project-img-full" style="background-color: #2d1b4e; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+        <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 1/1; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 24px;">
+          <img src="images/onewidget.png" alt="Original multi-functional widget" style="width: 85%; height: 85%; object-fit: contain; display: block;">
+        </div>
       </div>
       <div class="before-after-item">
         <span class="before-after-label">After</span>
-        <div class="project-img-full" style="background-color: #1a3a2e; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+        <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 1/1; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 24px;">
+          <img src="images/twowidgets.png" alt="Split into two simpler widgets" style="width: 85%; height: 85%; object-fit: contain; display: block;">
+        </div>
       </div>
     </div>
 
@@ -224,11 +473,15 @@
     <div class="before-after">
       <div class="before-after-item">
         <span class="before-after-label">Before</span>
-        <div class="project-img-full" style="background-color: #533483; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+        <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 1/1; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 24px;">
+          <img src="images/iteration2-before.png" alt="Before: meeting format selection" style="width: 85%; height: 85%; object-fit: contain; display: block;">
+        </div>
       </div>
       <div class="before-after-item">
         <span class="before-after-label">After</span>
-        <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 4/3; border-radius: var(--radius);"></div>
+        <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 1/1; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 24px;">
+          <img src="images/iteration2-after.png" alt="After: simplified scheduling without format selection" style="width: 85%; height: 85%; object-fit: contain; display: block;">
+        </div>
       </div>
     </div>
 
@@ -236,24 +489,46 @@
     <div id="final-deliverables" class="project-section">
       <p class="section-label">Final Deliverables</p>
       <h2>Seamless scheduling with contextual matchmaking</h2>
-      <p>The Coffee Chat feature automatically pairs users each week based on their availability, integrating with Google Calendar. Matches include context on shared interests and suggested topics. The chat is set to "Going" by default, ensuring a seamless scheduling experience.</p>
+      <p>The Coffee Chat feature automatically pairs users each week based on their availability, integrating with Google Calendar. Matches include context on shared interests and suggested topics to facilitate conversation. The chat is set to "Going" by default, ensuring a seamless scheduling experience. Users can reschedule or decline if needed. Upon both users' confirmation, the system generates a Google Meet link and adds it to their calendar, making it easy to connect and engage in meaningful conversations.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #16213e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/coffeefinal1.png" alt="Seamless scheduling with contextual matchmaking" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+    </div>
 
     <div class="project-section">
       <h2>Handling chat declines without friction</h2>
       <p>If either participant declines, both users see a notification. The system does not require a reason for declining — users are simply notified that their next coffee chat will be scheduled in the following cycle.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #1a1a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/handling-declines.png" alt="Handling chat declines without friction" style="max-width: 55%; max-height: 80%; object-fit: contain; display: block;">
+    </div>
 
     <div class="project-section">
       <h2>Flexible scheduling for better availability</h2>
-      <p>Users can choose from alternative time slots automatically recommended based on both users' availability. If none of the suggested times work, users can propose their own availability for the other person to review.</p>
+      <p>If user wants to reschedule, he can choose from alternative time slots automatically recommended based on both users' availability. This simplifies the process by providing quick, pre-selected options, allowing for a smoother scheduling experience. Once both users agree on a new time, the chat is confirmed.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #0f3460; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/Flexible1.png" alt="Reschedule with recommended time slots" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+    </div>
+
+    <div class="project-section">
+      <p>If the other user proposes new times, user can review and select a slot that works for both. This ensures flexibility while maintaining a structured approach, reducing the need for back-and-forth coordination and making it easier to finalize meetings.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/Flexible2.png" alt="Review and select proposed times" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+    </div>
+
+    <div class="project-section">
+      <p>If none of the other user's suggested times work, users can propose their own availability for the other person to review. This flexible approach simplifies scheduling and increases the likelihood of finding a mutually agreeable time.</p>
+    </div>
+
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/Flexible3.png" alt="Propose own availability" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+    </div>
 
     <!-- Design System -->
     <div id="design-system" class="project-section">
@@ -262,7 +537,9 @@
       <p>I collaborated with another designer to build the atomic foundations of the new identity design system, defining color tokens and typography. I also created molecule-level components that balanced consistency with flexibility for different product needs.</p>
     </div>
 
-    <div class="project-img-full" style="background-color: #1a3a2e; aspect-ratio: 16/9; border-radius: var(--radius);"></div>
+    <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
+      <img src="images/coffeedesignsystem.png" alt="New identity design system" style="max-width: 100%; max-height: 100%; object-fit: contain; display: block;">
+    </div>
 
     <!-- Reflection -->
     <div id="reflection" class="project-section">
