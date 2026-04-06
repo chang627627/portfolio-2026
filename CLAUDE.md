@@ -7,6 +7,9 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - `index.html` — Home (hero + work grid, 4 projects)
 - `about.html` — About (vertical layout: hero → photo collage → background → experience → education → awards → skills)
 - `play.html` — Play (video embeds + image projects, single column)
+- `coffee.html` — Coffee Chat case study
+- `pollen.html` — PollenNav case study
+- `ticker.html` — TickerPulse case study
 - `style.css` — Shared styles across all pages
 
 ## Design Decisions
@@ -15,8 +18,8 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Radius:** 8px globally via `--radius` CSS variable
 - **Max-width:** 960px for all content sections (standard width)
 - **Nav:** Floating pill, 760px wide, glassmorphism blur (rgba(20,20,20,0.85)), centered. Links: Work | Play | About | Resume | Get in touch
-- **Hero:** Animated mesh gradient (@property CSS) with blue (#4B8BFF), violet (#7B61FF), cyan (#00D4FF). Text scramble reveal + magnetic tilt. No cursor glow. "Available for work" green dot tag.
-- **Footer:** Big "Say hello" watermark (scroll reveal). Mesh gradient glow (static, no animation). overflow: hidden. © 2026 left, LinkedIn/Email/Resume right.
+- **Hero:** Animated mesh gradient (@property CSS) with blue (#4B8BFF), violet (#7B61FF), cyan (#00D4FF). Text scramble reveal + magnetic tilt. No cursor glow. "Built with Claude Code" tag.
+- **Footer:** Big "Say hello" watermark (scroll reveal). Mesh gradient glow (static, no animation). overflow: hidden. "Designed in fog" left, LinkedIn/Email/Resume right.
 - **Project cards:** #1a1a1a background, 1px solid rgba(255,255,255,0.08) border, border glow on hover (box-shadow), image zoom on hover. Title 18px, year 16px right-aligned, description 16px muted with 8px gap.
 - **Chatbot:** Dark background, white icon, white rotating conic-gradient border (0.5 opacity).
 - **Layout:** Vertical single-column on about, single-column on play, 2-col project grid on home
