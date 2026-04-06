@@ -1859,10 +1859,15 @@ footer {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .project-content {
+    padding-bottom: 96px;
+  }
+
   .impact-grid,
+  .impact-grid.grid-2x2,
   .problem-grid,
   .goals-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr !important;
   }
 
   .before-after {
@@ -2232,11 +2237,23 @@ footer {
   }
 
   .hero {
-    padding: 120px 24px 60px;
+    padding: 120px 24px 40px;
+  }
+
+  .hero-sub {
+    margin-top: 20px;
+  }
+
+  .status-tag {
+    margin-top: 24px;
+  }
+
+  .section-title {
+    margin-bottom: 24px;
   }
 
   .work, .about, .about-page, .play-section {
-    padding: 60px 24px 120px;
+    padding: 40px 24px 120px;
   }
 
   .page-hero {
