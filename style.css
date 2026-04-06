@@ -1641,6 +1641,10 @@ footer {
   }
 
   .compare-table tr::before {
+    content: none;
+  }
+
+  .compare-table tr[data-category]::before {
     content: attr(data-category);
     display: block;
     font-size: 13px;
@@ -1663,6 +1667,10 @@ footer {
   }
 
   .compare-table td::before {
+    content: none;
+  }
+
+  .compare-table td[data-label]::before {
     content: attr(data-label);
     display: block;
     font-size: 12px;
