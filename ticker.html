@@ -111,6 +111,81 @@
       </tbody>
     </table>
 
+    <!-- Voice of Customer -->
+    <div class="project-section">
+      <h2>What traders told us</h2>
+      <p>From those interviews, we uncovered recurring frustrations that shaped our design direction.</p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width: 160px;">Theme</th>
+          <th>What We Heard</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Relevance</td>
+          <td style="color: var(--text-muted);">Uncertainty about which news is truly relevant</td>
+        </tr>
+        <tr>
+          <td>Noise</td>
+          <td style="color: var(--text-muted);">Overwhelmed by noise and contradictory information</td>
+        </tr>
+        <tr>
+          <td>Trust</td>
+          <td style="color: var(--text-muted);">Tools feel like opaque black boxes with no transparency</td>
+        </tr>
+        <tr>
+          <td>Timeliness</td>
+          <td style="color: var(--text-muted);">Alerts are often spammy or delayed</td>
+        </tr>
+        <tr>
+          <td>Personalization</td>
+          <td style="color: var(--text-muted);">Difficulty tracking own tickers across multiple sources</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Competitive Audit -->
+    <div class="project-section">
+      <h2>What existing tools are missing</h2>
+      <p>I audited existing tools and found that while some surface sentiment scores or link to raw sources, none clearly explain the reasoning behind a sentiment shift in plain language or connect it to the user's specific portfolio context. This gap became the design principle for TickerPulse: every alert must answer "why now."</p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width: 160px;">Tool</th>
+          <th>Source Linking</th>
+          <th>Explains "Why"</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Tool">Bloomberg Terminal</td>
+          <td data-label="Source Linking" style="color: var(--text-muted);">Yes, links to articles</td>
+          <td data-label="Explains Why" style="color: var(--text-muted);">No</td>
+        </tr>
+        <tr>
+          <td data-label="Tool">TradingView</td>
+          <td data-label="Source Linking" style="color: var(--text-muted);">No</td>
+          <td data-label="Explains Why" style="color: var(--text-muted);">Partial, technical only</td>
+        </tr>
+        <tr>
+          <td data-label="Tool">StockTwits</td>
+          <td data-label="Source Linking" style="color: var(--text-muted);">No</td>
+          <td data-label="Explains Why" style="color: var(--text-muted);">No</td>
+        </tr>
+        <tr>
+          <td data-label="Tool">TickerPulse</td>
+          <td data-label="Source Linking" style="color: var(--text-muted);">Yes, with evidence</td>
+          <td data-label="Explains Why" style="color: var(--text-muted);">Yes, plain language</td>
+        </tr>
+      </tbody>
+    </table>
+
     <!-- Solution -->
     <div class="project-section">
       <p class="section-label">Solution</p>
@@ -153,7 +228,7 @@
     <div class="project-section">
       <p class="section-label">Reflection</p>
       <h2>What I learned</h2>
-      <p>I built the initial layout in Figma, then used Claude 4.5 Sonnet in Figma Make to refine details — iterating through prompts grounded in project context and design judgment to reach the final design. The prompt quickly reached its limit, and there are still many features worth exploring. For the MVP, the core functions worked well after testing with stakeholders. Moving forward, the prototype flow will be co-created with AI, making it essential to describe intent precisely. In this process, the designer acts as a taste gatekeeper who guides the AI toward the right vibe and experience. While developer support is still needed for API integration, the line between designer and developer is becoming increasingly blurred, showing how anyone can rapidly prototype and validate ideas with AI.</p>
+      <p>I built the initial layout in Figma, then used Figma Make to refine details, iterating through prompts grounded in project context and design judgment to reach the final design. The MVP core functions worked well after testing with stakeholders, though many features are still worth exploring. This project reinforced that AI driven prototyping requires precise intent. The designer's role shifts from pixel pushing to taste gating, guiding the AI toward the right vibe and experience. While developer support is still needed for API integration, anyone can now rapidly prototype and validate ideas with AI, blurring the line between designer and developer.</p>
     </div>
 
   </section>
