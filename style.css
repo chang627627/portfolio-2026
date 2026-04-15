@@ -431,6 +431,12 @@ nav {
   transform: translateY(0);
 }
 
+@media (max-width: 768px) {
+  .chat-teaser {
+    display: none;
+  }
+}
+
 .chat-toggle {
   position: fixed;
   bottom: 220px;
