@@ -1513,12 +1513,16 @@ footer {
   max-width: var(--max-width);
   margin: 32px auto 0;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
 }
 
 .iteration-strip-4 {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.iteration-strip .iteration-final {
+  grid-column: 1 / -1;
 }
 
 .iteration-step {
