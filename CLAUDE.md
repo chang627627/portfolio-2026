@@ -58,3 +58,4 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Framer reference site: https://aware-acknowledge-592065.framer.app/
 - Preview server: `npx serve` from `/tmp/portfolio/` — sync files there after edits
 - Do not push to git unless user explicitly asks
+- **Portfolio audit checker:** When the user asks for portfolio suggestions or feedback, reference the rubric from `~/.claude/skills/portfolio-audit/SKILL.md` (from https://github.com/hey-stefan/portfolio-audit). Cite which principle each suggestion comes from. When suggestions are personal interpretation rather than direct rubric items, say so explicitly.
