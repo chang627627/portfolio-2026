@@ -6,7 +6,7 @@
   <title>Litespace Coffee Chat — Chang Mou</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
 
@@ -154,7 +154,7 @@
       <tbody>
         <tr data-category="Slack-Integrated Matching Bots">
           <td class="col-category" rowspan="2">Slack-Integrated Matching Bots</td>
-          <td data-label="Tool">Donut (Slack bot)</td>
+          <td data-label="Tool"><div class="tool-cell"><span>Donut (Slack bot)</span><img src="images/tool-donut.jpg" alt="Donut" class="tool-img"></div></td>
           <td class="col-pros" data-label="Pros">
             Seamless Slack integration<br>
             Fully automated matching<br>
@@ -166,7 +166,7 @@
           </td>
         </tr>
         <tr data-category="Slack-Integrated Matching Bots">
-          <td data-label="Tool">Watercooler Trivia</td>
+          <td data-label="Tool"><div class="tool-cell"><span>Watercooler Trivia</span><img src="images/tool-watercooler.jpg" alt="Watercooler Trivia" class="tool-img"></div></td>
           <td class="col-pros" data-label="Pros">
             Fun and engaging<br>
             Low effort to run
@@ -178,7 +178,7 @@
         </tr>
         <tr data-category="Virtual Spatial Platforms">
           <td class="col-category">Virtual Spatial Platforms</td>
-          <td data-label="Tool">Gather</td>
+          <td data-label="Tool"><div class="tool-cell"><span>Gather</span><img src="images/tool-gather.jpg" alt="Gather" class="tool-img"></div></td>
           <td class="col-pros" data-label="Pros">
             Spatial, playful interaction<br>
             High sense of presence
@@ -190,7 +190,7 @@
         </tr>
         <tr data-category="Co-working Tools">
           <td class="col-category">Co-working Tools</td>
-          <td data-label="Tool">Focusmate</td>
+          <td data-label="Tool"><div class="tool-cell"><span>Focusmate</span><img src="images/tool-focusmate.jpg" alt="Focusmate" class="tool-img"></div></td>
           <td class="col-pros" data-label="Pros">
             Promotes deep work<br>
             Accountability-based
@@ -243,53 +243,30 @@
     <div id="exploration-1" class="project-section">
       <p class="section-label">Exploration · Challenge 1</p>
       <h2>Creating meaningful pairings</h2>
-      <p>Early feedback showed users were more likely to accept a coffee chat when they understood why they were paired. Through research, I identified the GPT-3 API's potential to infer meaningful connections from lightweight signals such as onboarding inputs, profiles, post chat feedback, and shared Slack channel participation, without accessing private messages, and persuaded the team to pursue this direction. The system then generates a brief pairing explanation so users can quickly understand why the match makes sense.</p>
+      <p>Users were more likely to accept a pairing when they understood why they were matched. I championed using the GPT-3 API to infer connections from lightweight signals (profiles, onboarding inputs, shared Slack channels) and generate a plain-language explanation for each match.</p>
     </div>
 
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Rule-Based Pairing</th>
-          <th>ChatGPT-Enhanced Pairing</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr data-category="Logic">
-          <td class="col-category">Logic</td>
-          <td class="col-pros" data-label="Rule-Based Pairing">
-            Matches people randomly based on simple criteria (e.g., same team or time zone).
-          </td>
-          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
-            Analyzes roles, interests, and collaboration patterns to find meaningful overlaps.
-          </td>
-        </tr>
-        <tr data-category="Experience">
-          <td class="col-category">Experience</td>
-          <td class="col-pros" data-label="Rule-Based Pairing">
-            You're paired with Alex based on department and timezone.
-          </td>
-          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
-            You're paired with Alex because you both mentor new hires and enjoy UX meetups.
-          </td>
-        </tr>
-        <tr data-category="Outcome">
-          <td class="col-category">Outcome</td>
-          <td class="col-pros" data-label="Rule-Based Pairing">
-            Often feels random, leading to short or awkward chats.
-          </td>
-          <td class="col-pros" data-label="ChatGPT-Enhanced Pairing">
-            Feels purposeful and relevant, leading to deeper, more engaging conversations.
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="pairing-annotated">
+      <div class="pairing-image">
+        <img src="images/coffee-pairing-card.jpg" alt="AI-generated pairing card showing match reasoning">
+      </div>
+      <div class="pairing-notes">
+        <div class="pairing-note">
+          <h4>AI-generated intro</h4>
+          <p>A warm profile summary grounded in each person's background, so users quickly understand who they're meeting beyond a static bio.</p>
+        </div>
+        <div class="pairing-note">
+          <h4>Explainable match</h4>
+          <p>Transparent reasons for why the pairing was made, giving users confidence to accept instead of dismissing random matches.</p>
+        </div>
+      </div>
+    </div>
 
     <!-- Exploration 2 -->
     <div id="exploration-2" class="project-section">
       <p class="section-label">Exploration · Challenge 2</p>
       <h2>Mapping the user flow</h2>
-      <p>A key challenge was mapping different user scenarios, since participants could see different screens based on their actions. I compared the message-based coordination flow common in existing tools with the one I designed for Coffee Chat. While existing tools rely on back-and-forth direct messages, Coffee Chat removes messaging entirely, provides clear fallback paths, and reduces user pressure through default states and automated scheduling.</p>
+      <p>Existing tools rely on back-and-forth DMs that create friction and drop-offs. Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
     </div>
 
     <div class="flow-chart">
