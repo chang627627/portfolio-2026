@@ -1417,6 +1417,10 @@ footer {
   margin-top: 96px;
 }
 
+.project-content .voc-quotes + .project-section {
+  margin-top: 96px;
+}
+
 /* Scheduling step layout */
 .scheduling-step {
   max-width: var(--max-width);
@@ -1477,7 +1481,55 @@ footer {
   flex-wrap: wrap;
 }
 
-/* Deliverable caption: smaller heading for Final Design walkthrough */
+/* Voice of customer quote grid */
+.voc-quotes {
+  max-width: var(--max-width);
+  margin: 32px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.voc-quotes blockquote {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.voc-quotes blockquote p {
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--text);
+  margin: 0;
+}
+
+.voc-quotes blockquote cite {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-style: normal;
+}
+
+@media (max-width: 768px) {
+  .voc-quotes {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .voc-quotes blockquote {
+    padding: 24px 20px;
+  }
+  .voc-quotes blockquote p {
+    font-size: 16px;
+  }
+}
+
+/* Deliverable caption: matches Coffee Chat Final Deliverables h2 style */
 .deliverable {
   max-width: var(--max-width);
   width: 100%;
@@ -1486,7 +1538,7 @@ footer {
 }
 
 .deliverable h4 {
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 400;
   color: var(--text);
   margin: 0 0 8px 0;
@@ -1494,8 +1546,8 @@ footer {
 }
 
 .deliverable p {
-  font-size: 15px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.75;
   color: var(--text-muted);
   margin: 0;
 }

@@ -26,6 +26,13 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Mobile:** Hamburger menu → full-screen overlay. No footer watermark on mobile.
 - **About photos:** 4x2 collage grid, square aspect ratio
 - **Play projects:** 960px wide, 96px gap between projects, title+description above media
+- **Case study patterns (shared):**
+  - `.deliverable` — h2 caption + tight description above a full-width product image (Final Design walkthroughs on pollen.html and ticker.html, matches Coffee Chat Final Deliverables h2 style)
+  - `.iteration-strip` — paired V1+V2 grid with full-width Final below (PollenNav Explorations)
+  - `.voc-quotes` — 3-col grid of user quote cards with theme tag (TickerPulse Research)
+  - `.pairing-annotated` — image left + annotation notes right with dashed arrows (Coffee Chat)
+  - `.tool-cell` — name + small thumbnail in compare-table cells (Coffee Chat competitive analysis)
+- **Chat teaser:** Bottom-right tooltip bubble that fires 4s after page load (after hero status tag animation), shows "Hey, I'm Chang's AI. Ask me anything." Hides after 6s. Once-per-browser via localStorage.
 
 ## Links
 - LinkedIn: https://www.linkedin.com/in/chang-mou/
@@ -46,7 +53,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Node.js v24.14.0 installed via nodejs.org
 - Preview server serves from `/tmp/portfolio/` — sync files there after edits
 - Git initialized — commit before major changes
-- Cache-busting: `style.css?v=14` — bump version after CSS changes
+- Cache-busting: `style.css?v=47` — bump version after CSS changes
 - GitHub CLI: `/tmp/gh/gh_2.89.0_macOS_arm64/bin/gh` (not in PATH, use full path)
 - Framer reference site: https://aware-acknowledge-592065.framer.app/
 - Preview server: `npx serve` from `/tmp/portfolio/` — sync files there after edits

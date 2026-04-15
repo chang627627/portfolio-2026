@@ -6,7 +6,7 @@
   <title>TickerPulse — Chang Mou</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=30">
+  <link rel="stylesheet" href="style.css?v=47">
 </head>
 <body>
 
@@ -60,10 +60,9 @@
     <div class="project-section">
       <h2>What I did</h2>
       <ul class="project-list">
-        <li>Aligned closely with the PM to define scope, priorities, and MVP direction.</li>
-        <li>Translated product intent into clear UI structure and interaction flows.</li>
-        <li>Rapidly prototyped using Figma Make to support fast feedback and iteration.</li>
-        <li>Prepared clear design artifacts to support discussions and handoff with engineers.</li>
+        <li>Defined MVP scope and product direction in close partnership with the PM.</li>
+        <li>Generated the entire UI through Figma Make, prompting and iterating in hours instead of days.</li>
+        <li>Handed off final designs via Figma Dev Mode for backend integration.</li>
       </ul>
     </div>
 
@@ -71,14 +70,14 @@
     <div class="project-section">
       <p class="section-label">Background</p>
       <h2>Exploring vibe coding with AI-generated UI design</h2>
-      <p>This project explores vibe coding using Figma Make, marking the first time AI-generated UI design achieves human-level quality. Built purely from prompts without any manual design work, it reduces prototyping time from days to hours. By enabling teams to quickly prototype ideas and gather feedback through usability testing, vibe coding accelerates validation and iteration while allowing designers to focus on creativity and strategy instead of production.</p>
+      <p>An experiment in vibe coding: building production-quality UI entirely from prompts in Figma Make. Prototyping time dropped from days to hours, with design judgment shaping what AI generated.</p>
     </div>
 
     <!-- Problem -->
     <div class="project-section">
       <p class="section-label">Problem</p>
       <h2>Information overload slows trading decisions</h2>
-      <p>Traders face an overwhelming volume of financial news, social media, and market chatter that creates cognitive overload and impedes timely decision making. Existing tools feel like opaque black boxes, alerts are often spammy or delayed, and there is no easy way to understand the "why" behind sentiment shifts. The time value of information is critical, and delays in processing reduce trading effectiveness in fast moving markets.</p>
+      <p>Traders are drowning in financial news, social media, and market chatter. Existing tools surface alerts but rarely explain the why behind a shift, leaving traders to guess in markets where every minute counts.</p>
     </div>
 
     <!-- Customer Personas -->
@@ -117,36 +116,20 @@
       <p>From those interviews, we uncovered recurring frustrations that shaped our design direction.</p>
     </div>
 
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th style="width: 160px;">Theme</th>
-          <th>What We Heard</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Relevance</td>
-          <td style="color: var(--text-muted);">Uncertainty about which news is truly relevant</td>
-        </tr>
-        <tr>
-          <td>Noise</td>
-          <td style="color: var(--text-muted);">Overwhelmed by noise and contradictory information</td>
-        </tr>
-        <tr>
-          <td>Trust</td>
-          <td style="color: var(--text-muted);">Tools feel like opaque black boxes with no transparency</td>
-        </tr>
-        <tr>
-          <td>Timeliness</td>
-          <td style="color: var(--text-muted);">Alerts are often spammy or delayed</td>
-        </tr>
-        <tr>
-          <td>Personalization</td>
-          <td style="color: var(--text-muted);">Difficulty tracking own tickers across multiple sources</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="voc-quotes">
+      <blockquote>
+        <p>"Every tool gives me a number with no story behind it."</p>
+        <cite>Trust</cite>
+      </blockquote>
+      <blockquote>
+        <p>"I keep getting alerts about stocks I don't even own."</p>
+        <cite>Personalization</cite>
+      </blockquote>
+      <blockquote>
+        <p>"By the time the alert comes in, the move is over."</p>
+        <cite>Timeliness</cite>
+      </blockquote>
+    </div>
 
     <!-- Competitive Audit -->
     <div class="project-section">
@@ -190,7 +173,7 @@
     <div class="project-section">
       <p class="section-label">Solution</p>
       <h2>Proactive AI that explains why, not just what</h2>
-      <p>TickerPulse proactively monitors news and social media sentiment for a user's portfolio, delivering explainable alerts with linked sources and noise filtering so traders can act faster with confidence.</p>
+      <p>TickerPulse monitors news and social sentiment for the user's portfolio. Every alert explains "why now" with linked sources and filters out the noise so traders can act faster with confidence.</p>
     </div>
 
     <table class="compare-table">
@@ -216,19 +199,43 @@
       </tbody>
     </table>
 
-    <div style="height: 96px;"></div>
+    <div class="project-section">
+      <p class="section-label">Final Design</p>
+      <h2>Sign in with institutional tone</h2>
+      <p>A credible, high-trust onboarding that positions TickerPulse as a professional terminal from the first click.</p>
+    </div>
 
-    <img src="images/Wireframe - 18.jpg" alt="TickerPulse wireframe" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
-    <img src="images/Wireframe - 19.jpg" alt="TickerPulse wireframe" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
-    <img src="images/Wireframe - 20.jpg" alt="TickerPulse wireframe" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
-    <img src="images/Wireframe - 21.jpg" alt="TickerPulse wireframe" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
-    <img src="images/Wireframe - 22.jpg" alt="TickerPulse wireframe" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
+    <img src="images/Wireframe - 18.jpg" alt="TickerPulse sign in" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Dashboard at a glance</h4>
+      <p>Real-time sentiment, portfolio status, and a live alert feed in one unified view, with the watchlist always visible.</p>
+    </div>
+    <img src="images/Wireframe - 19.jpg" alt="TickerPulse dashboard" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Build a personalized watchlist</h4>
+      <p>Focus the system on the tickers that matter most, so alerts stay relevant and noise stays out.</p>
+    </div>
+    <img src="images/Wireframe - 20.jpg" alt="TickerPulse watchlist" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Every alert explains why now</h4>
+      <p>AI analysis backed by linked evidence from news, analyst coverage, and social sentiment so traders can verify before acting.</p>
+    </div>
+    <img src="images/Wireframe - 21.jpg" alt="TickerPulse alert detail" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>From insight to trade in one flow</h4>
+      <p>When the signal is clear, users can review and execute the order without leaving the context of the alert.</p>
+    </div>
+    <img src="images/Wireframe - 22.jpg" alt="TickerPulse trade flow" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
 
     <!-- Reflection -->
     <div class="project-section">
       <p class="section-label">Reflection</p>
       <h2>What I learned</h2>
-      <p>The entire UI was generated through Figma Make using prompts, with no manual design work. Once finalized, I transferred the designs to Figma Dev Mode for engineer handoff, since the backend and API layer required developer implementation. The MVP core functions worked well after testing with stakeholders, though many features are still worth exploring. This project reinforced that AI driven prototyping requires precise intent. The designer's role shifts from pixel pushing to taste gating, guiding the AI toward the right vibe and experience, then bridging to development through structured handoff.</p>
+      <p>When AI can generate pixel-perfect UI from prompts, the designer's role shifts from pixel pushing to taste gating. My job was to shape the intent, evaluate what the AI produced, and guide it toward the right vibe and experience. The line between designer and developer has never felt more blurred.</p>
     </div>
 
   </section>
