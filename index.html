@@ -6,7 +6,7 @@
   <title>Chang Mou — Product Designer</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=40">
 </head>
 <body>
   <!-- Nav -->
@@ -290,6 +290,7 @@
 </script>
 
 <!-- Chat Widget -->
+<div class="chat-teaser" id="chatTeaser">Hey, I'm Chang's AI. Ask me anything.</div>
 <button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
 </button>
@@ -332,7 +333,19 @@
   chatToggle.addEventListener('click', () => {
     chatPanel.classList.toggle('open');
     chatToggle.classList.toggle('hidden');
+    const teaser = document.getElementById('chatTeaser');
+    if (teaser) teaser.classList.remove('visible');
   });
+
+  // First-visit teaser
+  const teaser = document.getElementById('chatTeaser');
+  if (teaser && !localStorage.getItem('chat_teaser_seen')) {
+    setTimeout(() => {
+      teaser.classList.add('visible');
+      localStorage.setItem('chat_teaser_seen', '1');
+      setTimeout(() => teaser.classList.remove('visible'), 6000);
+    }, 2000);
+  }
   chatClose.addEventListener('click', () => {
     chatPanel.classList.remove('open');
     chatToggle.classList.remove('hidden');
