@@ -1440,6 +1440,13 @@ footer {
   margin-top: 24px;
 }
 
+/* Grid caption — tight spacing after an impact/problem grid */
+.project-content .impact-grid + .grid-caption,
+.project-content .problem-grid + .grid-caption,
+.project-content .goals-grid + .grid-caption {
+  margin-top: 24px;
+}
+
 /* Highlighted phrase */
 .highlight {
   color: var(--text);
@@ -1468,6 +1475,93 @@ footer {
   gap: 24px;
   margin-bottom: 32px;
   flex-wrap: wrap;
+}
+
+/* Deliverable caption: smaller heading for Final Design walkthrough */
+.deliverable {
+  max-width: var(--max-width);
+  width: 100%;
+  margin: 32px auto 0;
+  text-align: left;
+}
+
+.deliverable h4 {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.deliverable p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.project-content .deliverable + .project-img-full {
+  margin-top: 24px;
+}
+
+.project-content .project-img-full + .deliverable {
+  margin-top: 96px;
+}
+
+/* Iteration strip: compressed before/after layout */
+.iteration-strip {
+  max-width: var(--max-width);
+  margin: 32px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.iteration-strip-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.iteration-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.iteration-step img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius);
+  display: block;
+}
+
+.iteration-caption h4 {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 6px 0;
+}
+
+.iteration-caption p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.iteration-final .iteration-caption h4 {
+  color: var(--text);
+}
+
+.project-content .iteration-strip + .project-section {
+  margin-top: 96px;
+}
+
+@media (max-width: 768px) {
+  .iteration-strip,
+  .iteration-strip-4 {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
 }
 
 .tool-cell {

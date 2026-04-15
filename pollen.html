@@ -6,7 +6,7 @@
   <title>PollenNav — Chang Mou</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=29">
+  <link rel="stylesheet" href="style.css?v=44">
 </head>
 <body>
 
@@ -41,7 +41,7 @@
     <a href="#problem" class="side-nav-link">Problem</a>
     <a href="#research" class="side-nav-link">Research</a>
     <a href="#design-goals" class="side-nav-link">Design Goals</a>
-    <a href="#constraints" class="side-nav-link">Constraints</a>
+    <a href="#constraints" class="side-nav-link">Challenges</a>
     <a href="#exploration-1" class="side-nav-link">Exploration 1</a>
     <a href="#exploration-2" class="side-nav-link">Exploration 2</a>
     <a href="#exploration-3" class="side-nav-link">Exploration 3</a>
@@ -76,10 +76,9 @@
     <div class="project-section">
       <h2>What I did</h2>
       <ul class="project-list">
-        <li>Conducted research on pollen exposure, mobility behavior, and urban navigation patterns.</li>
-        <li>Designed route guidance and visual cues to help users reduce pollen exposure while traveling.</li>
-        <li>Prototyped and tested core navigation flows to ensure clarity, trust, and usability.</li>
-        <li>Iterated with a small design team to refine interactions and storytelling for award submission.</li>
+        <li>Led research across pollen exposure, mobility, and urban navigation patterns.</li>
+        <li>Designed route guidance and map visualizations that make invisible allergens readable.</li>
+        <li>Prototyped and tested core flows across 3 rounds of usability studies.</li>
       </ul>
     </div>
 
@@ -87,7 +86,7 @@
     <div id="overview" class="project-section">
       <p class="section-label">Overview</p>
       <h2>Navigating the city with pollen-aware guidance</h2>
-      <p>PollenNav is a pollen navigation app that provides street-level guidance for safer city travel. Unlike existing apps that only show city-wide averages, PollenNav delivers allergen-specific, location-aware insights so users can plan routes that reduce their pollen exposure in real time.</p>
+      <p>Built for the one billion people who face pollen allergies every year. PollenNav turns vague city-wide forecasts into street-level, allergen-specific guidance so users can plan routes that reduce their exposure in real time.</p>
     </div>
 
     <!-- Impact -->
@@ -167,10 +166,10 @@
 
     <img src="images/nws.png" alt="Our starting playbook" class="project-img-full" style="border-radius: var(--radius);">
 
-    <!-- Constraints -->
+    <!-- Challenges -->
     <div id="constraints" class="project-section">
-      <p class="section-label">Constraints</p>
-      <h2>Turns out, it's not that easy</h2>
+      <p class="section-label">Challenges</p>
+      <h2>Three challenges shaped the design direction</h2>
     </div>
 
     <div class="problem-grid">
@@ -195,26 +194,29 @@
       <p>Visualizing invisible allergens on a map without overwhelming users was the core challenge. I explored multiple approaches to balance information density with visual clarity.</p>
     </div>
 
-    <div class="project-section">
-      <h2>Version 1: Single color with varying transparency</h2>
-      <p>We used a single color with varying transparency for pollen density and sneeze counts for city reports. But differences in density were hard to see.</p>
+    <div class="iteration-strip">
+      <div class="iteration-step">
+        <img src="images/pollen-map-v1.png" alt="Map Version 1">
+        <div class="iteration-caption">
+          <h4>Version 1</h4>
+          <p>Single color with varying transparency. Density differences were hard to see.</p>
+        </div>
+      </div>
+      <div class="iteration-step">
+        <img src="images/pollen-map-v2.png" alt="Map Version 2">
+        <div class="iteration-caption">
+          <h4>Version 2</h4>
+          <p>3D white map with color-coded trees. Too much engineering effort to build.</p>
+        </div>
+      </div>
+      <div class="iteration-step iteration-final">
+        <img src="images/pollen-map-final.png" alt="Map Final">
+        <div class="iteration-caption">
+          <h4>Final</h4>
+          <p>2D white map with colored fog. Clear at any zoom, easy to build.</p>
+        </div>
+      </div>
     </div>
-
-    <img src="images/pollen-map-v1.png" alt="Map Version 1: Single color with varying transparency" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Version 2: 3D white map with color-coded trees</h2>
-      <p>We used a 3D white map, marked high-pollen areas with color-coded trees, and showed community report counts. But building it required high engineering effort.</p>
-    </div>
-
-    <img src="images/pollen-map-v2.png" alt="Map Version 2: 3D white map with color-coded trees" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Final: 2D white map with colored fog</h2>
-      <p>We used a 2D white map with red, yellow, and green fog for weather data, bubbles for community inputs, and layered roads for clarity at any zoom level.</p>
-    </div>
-
-    <img src="images/pollen-map-final.png" alt="Final map: 2D white map with colored fog" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Exploration 2: Information Density -->
     <div id="exploration-2" class="project-section">
@@ -223,26 +225,29 @@
       <p>Users need to stay informed without cognitive overload. I iterated on how to structure and present pollen type, severity, and timing clearly.</p>
     </div>
 
-    <div class="project-section">
-      <h2>Version 1: Informative but hard to scan</h2>
-      <p>We began with a text-heavy card layout showing pollen levels, suggestions, and types. Users liked the detail but wanted a quicker way to assess risks.</p>
+    <div class="iteration-strip">
+      <div class="iteration-step">
+        <img src="images/pollen-info-v1.png?v=2" alt="Info Version 1">
+        <div class="iteration-caption">
+          <h4>Version 1</h4>
+          <p>Text-heavy cards. Detailed but hard to scan.</p>
+        </div>
+      </div>
+      <div class="iteration-step">
+        <img src="images/pollen-info-v2.png?v=2" alt="Info Version 2">
+        <div class="iteration-caption">
+          <h4>Version 2</h4>
+          <p>Color-coded with density bars. Still felt analytical, missed emotional cues.</p>
+        </div>
+      </div>
+      <div class="iteration-step iteration-final">
+        <img src="images/pollen-info-v3.png?v=2" alt="Info Final">
+        <div class="iteration-caption">
+          <h4>Final</h4>
+          <p>Map-aligned colors with expressive icons. Instant sense of pollen risk.</p>
+        </div>
+      </div>
     </div>
-
-    <img src="images/pollen-info-v1.png?v=2" alt="Info Version 1: Informative but hard to scan" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Version 2: Structured and color-coded</h2>
-      <p>We added color indicators, a density bar, and grouped pollen types for clarity. But users still compared multiple numbers and missed emotional cues for urgency.</p>
-    </div>
-
-    <img src="images/pollen-info-v2.png?v=2" alt="Info Version 2: Structured and color-coded" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Final: Intuitive and map-aligned</h2>
-      <p>In the final version, we matched the color scheme to the map and added expressive icons, letting users sense pollen risk instantly without reading numbers.</p>
-    </div>
-
-    <img src="images/pollen-info-v3.png?v=2" alt="Info Final: Intuitive and map-aligned" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Exploration 3: Branding Characters -->
     <div id="exploration-3" class="project-section">
@@ -251,33 +256,36 @@
       <p>We wanted PollenNav to feel approachable, not clinical. I explored different character styles to ensure users feel supported while maintaining a clear, simple design language.</p>
     </div>
 
-    <div class="project-section">
-      <h2>Version 1: Emojis</h2>
-      <p>We used emoji icons for reactions and report counts, which were quick to read. But they lacked personality and emotional impact.</p>
+    <div class="iteration-strip iteration-strip-4">
+      <div class="iteration-step">
+        <img src="images/pollen-char-v1.png" alt="Characters Version 1">
+        <div class="iteration-caption">
+          <h4>Version 1</h4>
+          <p>Emojis. Quick to read but lacked personality.</p>
+        </div>
+      </div>
+      <div class="iteration-step">
+        <img src="images/pollen-char-v2.png" alt="Characters Version 2">
+        <div class="iteration-caption">
+          <h4>Version 2</h4>
+          <p>Cloud characters. Unclear faces reduced emotional impact.</p>
+        </div>
+      </div>
+      <div class="iteration-step">
+        <img src="images/pollen-char-v3.png" alt="Characters Version 3">
+        <div class="iteration-caption">
+          <h4>Version 3</h4>
+          <p>Flower characters. Colors lacked brand recognition.</p>
+        </div>
+      </div>
+      <div class="iteration-step iteration-final">
+        <img src="images/pollen-char-final.png" alt="Characters Final">
+        <div class="iteration-caption">
+          <h4>Final</h4>
+          <p>Refined flowers. Cute, warm, consistent across touchpoints.</p>
+        </div>
+      </div>
     </div>
-
-    <img src="images/pollen-char-v1.png" alt="Characters Version 1: Emojis" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Version 2: Cloud characters</h2>
-      <p>We transitioned to simple cloud shapes with personified expressions to show moods. But unclear faces reduced emotional impact.</p>
-    </div>
-
-    <img src="images/pollen-char-v2.png" alt="Characters Version 2: Cloud characters" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Version 3: Flower characters</h2>
-      <p>We introduced flower characters with richer expressions to match our brand motif. But the colors lacked strong brand recognition, making the design less distinctive.</p>
-    </div>
-
-    <img src="images/pollen-char-v3.png" alt="Characters Version 3: Flower characters" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="project-section">
-      <h2>Final: Refined flower characters</h2>
-      <p>We simplified and made the flowers cuter for better recognition and warmth, ensuring a consistent design language across all touchpoints.</p>
-    </div>
-
-    <img src="images/pollen-char-final.png" alt="Characters Final: Refined flower characters" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Usability Testing -->
     <div id="usability-testing" class="project-section">
@@ -300,74 +308,69 @@
       </div>
     </div>
 
-    <div class="project-section">
+    <div class="project-section grid-caption">
       <p>After the initial design, we conducted 3 rounds of usability testing and interviewed 12 users, resulting in a 34% increase in the completion rate.</p>
     </div>
 
     <!-- Final Deliverables -->
     <div id="final-deliverables" class="project-section">
-      <p class="section-label">Final Deliverables</p>
-      <h2>Onboarding that builds trust from day one</h2>
-      <p>The onboarding flow introduces users to accurate pollen tracking, community reports, and personalized allergen settings so they feel confident before they even open the map.</p>
+      <p class="section-label">Final Design</p>
+      <h2>Maya's day with PollenNav</h2>
     </div>
 
+    <div class="deliverable">
+      <h4>Onboarding that builds trust from day one</h4>
+      <p>Introduces pollen tracking, community reports, and personalized allergens before users open the map.</p>
+    </div>
     <img src="images/pollenonboarding1.jpg" alt="Onboarding flow" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>She scans the city, then zooms into her block</h2>
-      <p>The map shows pollen density across cities with fog overlays, community report bubbles, and location-specific detail cards. Users can scan broadly or zoom in for street-level data.</p>
+    <div class="deliverable">
+      <h4>She scans the city, then zooms into her block</h4>
+      <p>Fog overlays and report bubbles at city scale, with street-level detail on zoom.</p>
     </div>
-
     <img src="images/pollenscan1.jpg" alt="Map scanning and zoom" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>She tracks her allergens and schedules outings when levels dip</h2>
-      <p>Users can view pollen forecasts by hour or week, get personalized suggestions, and read community insights to plan their day around low-pollen windows.</p>
+    <div class="deliverable">
+      <h4>She tracks her allergens and schedules outings when levels dip</h4>
+      <p>Hourly and weekly forecasts with personalized suggestions for low-pollen windows.</p>
     </div>
-
     <img src="images/pollen-final-3.jpg" alt="Allergen tracking and forecasts" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>A quick glance at the mood meter tells her to head out or stay in</h2>
-      <p>Expressive characters and a color-coded density bar let users sense pollen risk at a glance, with actionable advice tailored to the current level.</p>
+    <div class="deliverable">
+      <h4>A quick glance at the mood meter tells her to head out or stay in</h4>
+      <p>Expressive characters and a color-coded bar let users sense pollen risk at a glance.</p>
     </div>
-
     <img src="images/pollen-final-4.jpg" alt="Mood meter and pollen density" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>She picks a low-pollen route and detours around hotspots</h2>
-      <p>PollenNav suggests low-pollen routes alongside standard shortest routes, showing pollen area counts for each option. During navigation, it alerts users to high-pollen zones ahead.</p>
+    <div class="deliverable">
+      <h4>She picks a low-pollen route and detours around hotspots</h4>
+      <p>Low-pollen route alternatives with real-time alerts for hotspots ahead.</p>
     </div>
-
     <img src="images/pollen-final-5.jpg" alt="Low-pollen route navigation" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>Her watch shows live counts, reroutes instantly, and logs sneezes with one tap</h2>
-      <p>The Apple Watch companion displays real-time pollen levels, turn-by-turn navigation with pollen alerts, and lets users log symptoms with a single tap.</p>
+    <div class="deliverable">
+      <h4>Her watch shows live counts, reroutes instantly, and logs sneezes with one tap</h4>
+      <p>Apple Watch companion for live pollen counts, rerouting, and one-tap symptom logging.</p>
     </div>
-
     <img src="images/pollen-final-6.jpg" alt="Apple Watch companion" class="project-img-full" style="border-radius: var(--radius);">
 
-    <div class="project-section">
-      <h2>When she flags a pollen zone, the map gets better and she earns relief points</h2>
-      <p>Users can report pollen conditions with mood reactions and allergen tags. Reports improve the map for everyone and earn points redeemable for allergy relief products.</p>
+    <div class="deliverable">
+      <h4>When she flags a pollen zone, the map gets better and she earns relief points</h4>
+      <p>Mood-based reports improve the map for everyone and earn points for allergy relief products.</p>
     </div>
-
     <img src="images/pollen-final-7.jpg" alt="Community reporting and rewards" class="project-img-full" style="border-radius: var(--radius);">
 
-    <!-- Closing: Maya's resolution -->
-    <div class="project-section">
-      <h2>Now Maya walks freely, guided by verified street-level data</h2>
-      <p>With PollenNav, Maya no longer dreads spring. She checks her block before stepping out, picks low-pollen routes to work, and schedules outdoor time around her allergens. The app turned guesswork into confidence.</p>
+    <div class="deliverable">
+      <h4>Now Maya walks freely, guided by verified street-level data</h4>
+      <p>The app turned guesswork into confidence. She checks her block before stepping out, picks low-pollen routes to work, and schedules outdoor time around her allergens.</p>
     </div>
-
     <img src="images/pollen-closing-1.jpg" alt="Now Maya walks freely" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Reflection -->
     <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
       <h2>What I learned</h2>
-      <p>Designing PollenNav taught me how to translate complex environmental data into something people can actually use on a daily basis. Balancing scientific accuracy with visual simplicity pushed me to iterate relentlessly on map visualizations, information hierarchy, and brand identity. Working with a small team on a tight timeline sharpened my ability to make quick design decisions while keeping the user at the center.</p>
+      <p>PollenNav taught me that the hardest part of environmental data design isn't accuracy. It's making invisible information feel tangible and emotional. Fog overlays, flower characters, and color-matched density bars turned what could've been a clinical dashboard into something people actually reach for.</p>
     </div>
 
   </section>
