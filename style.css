@@ -2263,6 +2263,12 @@ footer {
 
 .play-card img {
   cursor: zoom-in;
+  border-radius: 4px !important;
+}
+
+.play-card .carousel-track,
+.play-card .play-video {
+  border-radius: 4px;
 }
 
 /* Play Page */
