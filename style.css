@@ -1200,6 +1200,16 @@ footer {
   text-align: center;
 }
 
+.page-hero--tight {
+  padding-bottom: 128px;
+}
+
+@media (max-width: 768px) {
+  .page-hero--tight {
+    padding-bottom: 48px;
+  }
+}
+
 .page-hero h1 {
   font-size: clamp(36px, 5vw, 56px);
   line-height: 1.15;
@@ -2175,7 +2185,7 @@ footer {
 
 @media (max-width: 768px) {
   .play-card--desktop-only {
-    display: none;
+    display: none !important;
   }
   .project-details {
     grid-template-columns: repeat(2, 1fr);
@@ -2204,10 +2214,56 @@ footer {
 
 .play-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 96px;
-  max-width: var(--max-width);
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  max-width: 1280px;
   margin: 0 auto;
+  align-items: start;
+}
+
+.play-column {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.play-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 20px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.play-card > :not(.play-info) {
+  order: 1;
+}
+
+.play-card .play-info {
+  order: 2;
+  margin-top: 20px;
+}
+
+.play-card:hover {
+  border-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 0 24px rgba(255, 255, 255, 0.04);
+}
+
+.play-card .play-info {
+  padding: 4px 4px 0;
+}
+
+@media (max-width: 768px) {
+  .play-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .play-column {
+    display: contents;
+  }
 }
 
 .play-card {
@@ -2264,7 +2320,7 @@ footer {
 
 .play-info {
   padding: 0;
-  margin-bottom: 32px;
+  margin-bottom: 0;
 }
 
 .play-info h3 {
@@ -2325,20 +2381,20 @@ footer {
   width: 100%;
 }
 
+.carousel {
+  width: 100%;
+  position: relative;
+}
+
 .carousel-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-left: -52px;
-  margin-right: -52px;
+  display: block;
 }
 
 .carousel-track {
   position: relative;
-  width: 100%;
   overflow: hidden;
   border-radius: var(--radius);
-  flex: 1;
+  flex: 1 1 100%;
   min-width: 0;
 }
 
@@ -2375,8 +2431,27 @@ footer {
 .carousel-dots {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 8px;
-  padding: 16px 0;
+  padding: 24px 56px;
+  min-height: 84px;
+}
+
+.carousel-arrow {
+  position: absolute;
+  bottom: 24px;
+}
+
+.carousel-prev {
+  left: 0;
+}
+
+.carousel-next {
+  right: 0;
+}
+
+.play-card:has(.carousel) .play-info {
+  margin-top: 0;
 }
 
 .carousel-dot {
