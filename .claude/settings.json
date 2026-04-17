@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git push*)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"A git push just completed. Review the commits you just pushed (run `git log -5 --oneline` or `git log origin/main -5`) and update CLAUDE.md in the project root if there are new design decisions, user preferences, or structural changes from this session worth capturing. If nothing material to add, say so briefly instead of forcing changes.\"}}'"
+          }
+        ]
+      }
+    ]
+  }
+}
