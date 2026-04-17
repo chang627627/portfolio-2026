@@ -50,6 +50,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Manual deploy:** `npx vercel --prod --yes` (from project folder)
 - **Vercel project:** chang-mou-portfolio
 - **Domain registrar:** Squarespace Domains (domains.squarespace.com)
+- **Analytics:** Google Analytics 4 (Measurement ID `G-RRQ4XH93F3`) injected in `<head>` of all six HTML pages. Any new page needs the gtag snippet added.
 
 ## Dev Notes
 - Node.js v24.14.0 installed via nodejs.org
