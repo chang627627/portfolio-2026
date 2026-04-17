@@ -1349,11 +1349,29 @@ footer {
   margin-left: auto;
 }
 
+.experience-list li {
+  display: block;
+}
+
+.exp-row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.exp-blurb {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 6px;
+  line-height: 1.5;
+  max-width: 680px;
+}
+
 .skill-list {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
 }
 
 .skill-list li {
