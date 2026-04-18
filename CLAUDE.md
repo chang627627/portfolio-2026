@@ -51,6 +51,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Vercel project:** chang-mou-portfolio
 - **Domain registrar:** Squarespace Domains (domains.squarespace.com)
 - **Analytics:** Google Analytics 4 (Measurement ID `G-RRQ4XH93F3`) injected in `<head>` of all six HTML pages. Any new page needs the gtag snippet added.
+- **Social share card:** `images/og-image.jpg` (1200x630, hero mesh gradient + tagline). Referenced via og: and twitter: meta tags on all six pages. New pages need the same meta block. If the tagline changes, regenerate the card — the original generator was a temp html2canvas render at 1200x630.
 
 ## Dev Notes
 - Node.js v24.14.0 installed via nodejs.org
