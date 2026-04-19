@@ -39,6 +39,17 @@ a {
   text-decoration: none;
 }
 
+.about-block p a {
+  text-decoration: underline;
+  text-decoration-color: rgba(240, 240, 240, 0.35);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.2s ease;
+}
+
+.about-block p a:hover {
+  text-decoration-color: rgba(240, 240, 240, 1);
+}
+
 /* Nav */
 nav {
   display: flex;

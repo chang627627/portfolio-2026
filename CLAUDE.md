@@ -121,3 +121,4 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Check sync to `/tmp/portfolio/` before screenshots (some resets happen)
 - No category tags on play cards (denied this approach earlier)
 - No accordion on play cards (tighten text instead of hiding it)
+- Copy targets a YC/startup hiring audience — keep resonant buzzwords like "first-principles thinking." Don't suggest cutting them as "designer-cliché." Judge phrases by the intended reader, not by general good-writing principles.
