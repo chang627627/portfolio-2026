@@ -40,14 +40,30 @@ a {
 }
 
 .about-block p a {
-  text-decoration: underline;
-  text-decoration-color: rgba(240, 240, 240, 0.35);
-  text-underline-offset: 3px;
-  transition: text-decoration-color 0.2s ease;
+  position: relative;
+  color: inherit;
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--text-muted);
+  transition: color 0.2s;
+}
+
+.about-block p a::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--text);
+  transition: width 0.3s ease;
 }
 
 .about-block p a:hover {
-  text-decoration-color: rgba(240, 240, 240, 1);
+  color: var(--text);
+}
+
+.about-block p a:hover::after {
+  width: 100%;
 }
 
 /* Nav */
