@@ -55,6 +55,16 @@
     <p class="project-hero-sub">AI powered platform that monitors real time news sentiment to deliver explainable, actionable alerts for traders</p>
   </section>
 
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <a href="#background" class="side-nav-link">Background</a>
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#research" class="side-nav-link">Research</a>
+    <a href="#solution" class="side-nav-link">Solution</a>
+    <a href="#final-design" class="side-nav-link">Final Design</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+  </nav>
+
   <!-- Project Content -->
   <section class="project-content">
     <div class="project-details">
@@ -87,21 +97,21 @@
     </div>
 
     <!-- Background -->
-    <div class="project-section">
+    <div id="background" class="project-section">
       <p class="section-label">Background</p>
       <h2>Exploring vibe coding with AI-generated UI design</h2>
       <p>An experiment in vibe coding: building production-quality UI entirely from prompts in Figma Make. Prototyping time dropped from days to hours, with design judgment shaping what AI generated.</p>
     </div>
 
     <!-- Problem -->
-    <div class="project-section">
+    <div id="problem" class="project-section">
       <p class="section-label">Problem</p>
       <h2>Information overload slows trading decisions</h2>
       <p>Traders are drowning in financial news, social media, and market chatter. Existing tools surface alerts but rarely explain the why behind a shift, leaving traders to guess in markets where every minute counts.</p>
     </div>
 
     <!-- Customer Personas -->
-    <div class="project-section">
+    <div id="research" class="project-section">
       <p class="section-label">Research</p>
       <h2>Who are we designing for</h2>
       <p>Through user interviews, I identified three distinct trader personas with different needs and urgency levels.</p>
@@ -190,7 +200,7 @@
     </table>
 
     <!-- Solution -->
-    <div class="project-section">
+    <div id="solution" class="project-section">
       <p class="section-label">Solution</p>
       <h2>Proactive AI that explains why, not just what</h2>
       <p>TickerPulse monitors news and social sentiment for the user's portfolio. Every alert explains "why now" with linked sources and filters out the noise so traders can act faster with confidence.</p>
@@ -219,7 +229,7 @@
       </tbody>
     </table>
 
-    <div class="project-section">
+    <div id="final-design" class="project-section">
       <p class="section-label">Final Design</p>
       <h2>Sign in with institutional tone</h2>
       <p>A credible, high-trust onboarding that positions TickerPulse as a professional terminal from the first click.</p>
@@ -252,7 +262,7 @@
     <img src="images/Wireframe - 22.jpg" alt="TickerPulse trade flow" class="project-img-full" style="width: 100%; border-radius: var(--radius);">
 
     <!-- Reflection -->
-    <div class="project-section">
+    <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
       <h2>What I learned</h2>
       <p>When AI can generate pixel-perfect UI from prompts, the designer's role shifts from pixel pushing to taste gating. My job was to shape the intent, evaluate what the AI produced, and guide it toward the right vibe and experience. The line between designer and developer has never felt more blurred.</p>
@@ -345,6 +355,79 @@
       letters.forEach(letter => { letter.style.opacity = ''; });
     });
   }
+
+  // Side nav scroll tracking
+  const sideNav = document.querySelector('.side-nav');
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  let locked = false;
+  let userScrolled = false;
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
 
   // Back to top button
   const backToTop = document.querySelector('.back-to-top');
