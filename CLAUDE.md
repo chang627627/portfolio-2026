@@ -82,6 +82,10 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - First deliverable heading establishes "Maya" (so subsequent "She..." captions have referent)
 - Merged closing beat into walkthrough as final caption
 
+**Case study section order (April 2026):**
+- Coffee Chat and PollenNav both follow: Problem → Research → Final Design → Design Goals → Challenges/Constraints → Exploration → Reflection. Final Design moved up from its traditional "near the end" slot so the visual payoff lands before process. Research stays before Final Design so the user truth sets up the design decisions.
+- TickerPulse intentionally keeps its original order (Background → Problem → Research → Solution → Final Design → Reflection). Its Solution block is a narrative bridge to the finals; moving Final Design up would orphan it.
+
 **TickerPulse:**
 - Added `.deliverable` captions for all 5 wireframes (Sign in, Dashboard, Watchlist, Alert, Trade)
 - Replaced Pain Points table with 3 voice-of-customer quotes (`.voc-quotes` component) — Trust, Personalization, Timeliness themes
