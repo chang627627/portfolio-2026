@@ -4,7 +4,7 @@
 Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, minimal, trendy 2026 aesthetic.
 
 ## Structure
-- `index.html` — Home (hero + work grid, 5 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker) or external live projects (StoryBloom → storybloom-psi.vercel.app, target="_blank").
+- `index.html` — Home (hero + work grid, 5 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker) or external live projects (StoryBloom → storybloomstorybloom.vercel.app, target="_blank").
 - `about.html` — About (vertical layout: hero → photo collage → background → experience → education → awards → skills)
 - `play.html` — Play (2-column masonry with card wrappers, lightbox on click, 11 projects)
 - `coffee.html` — Coffee Chat case study
