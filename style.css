@@ -266,10 +266,49 @@ nav {
 .hero-content {
   position: relative;
   z-index: 2;
-  max-width: var(--max-width);
+  max-width: 1280px;
   margin: 0 auto;
   text-align: center;
   transition: transform 0.15s ease-out;
+}
+
+.line-mark {
+  overflow: visible !important;
+  margin-top: 8px;
+  padding-bottom: 0;
+}
+
+/* Decorative background wordmark — sits behind hero content */
+.hero-bgmark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0 48px 32px;
+  box-sizing: border-box;
+  font-size: clamp(180px, 24vw, 360px);
+  letter-spacing: -0.05em;
+  color: rgba(240, 240, 240, 0.05);
+  pointer-events: none;
+  user-select: none;
+  z-index: 1;
+  line-height: 0.85;
+  white-space: nowrap;
+  font-weight: 400;
+}
+
+.hero-mark {
+  display: inline-block;
+  font-size: clamp(100px, 12vw, 170px);
+  line-height: 1;
+  letter-spacing: -0.045em;
+  color: rgba(240, 240, 240, 0.12);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeIn 0.8s ease forwards 1.9s;
 }
 
 .hero-label {
@@ -311,6 +350,8 @@ nav {
   line-height: 1.08;
   letter-spacing: -0.03em;
   margin-bottom: 48px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero h1 .line {
@@ -344,6 +385,8 @@ nav {
   line-height: 1.75;
   opacity: 0;
   animation: fadeUp 0.8s ease forwards 2.2s;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes fadeUp {
@@ -752,6 +795,29 @@ nav {
   margin-bottom: 48px;
 }
 
+/* Editorial section meta — "01  SELECTED WORK ―――――" */
+.section-meta {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 48px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.section-num {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.section-rule {
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -808,6 +874,25 @@ nav {
   height: 26px;
   width: auto;
   transform: none !important;
+}
+
+/* Card index number — top-right of card */
+.card-num {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.55);
+  background: rgba(10, 10, 10, 0.5);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  pointer-events: none;
 }
 
 @media (hover: hover) {
