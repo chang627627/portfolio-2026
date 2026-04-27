@@ -943,6 +943,26 @@ nav {
   font-size: 16px;
   color: var(--text-muted);
   line-height: 1.4;
+  min-height: calc(1.4em * 2);
+}
+
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.card-tag {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  font-weight: 400;
+  line-height: 1;
 }
 
 .project-arrow {
@@ -2907,6 +2927,14 @@ footer {
 
   .project-grid {
     grid-template-columns: 1fr;
+  }
+
+  .card-meta {
+    display: none;
+  }
+
+  .project-info p {
+    min-height: 0;
   }
 
   .play-link {

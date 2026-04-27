@@ -60,7 +60,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Cache-busting: current `style.css?v=68` on play.html, v=48 on index.html — bump version after CSS changes. Keep version consistent per page.
 - GitHub CLI: `/tmp/gh/gh_2.89.0_macOS_arm64/bin/gh` (not in PATH, use full path)
 - Framer reference site: https://aware-acknowledge-592065.framer.app/
-- Preview server: `npx serve` from `/tmp/portfolio/` — sync files there after edits
+- Preview server: launched via `.claude/launch.json` (calls `python3 /tmp/portfolio/serve.py` on port 8888). The script `chdir`s to `/tmp/portfolio` before starting `http.server` to avoid getcwd permission errors. Sync files there after edits.
 - Do not push to git unless user explicitly asks
 - **Portfolio audit checker:** When the user asks for portfolio suggestions or feedback, reference the rubric from `~/.claude/skills/portfolio-audit/SKILL.md` (from https://github.com/hey-stefan/portfolio-audit). Cite which principle each suggestion comes from. When suggestions are personal interpretation rather than direct rubric items, say so explicitly.
 
@@ -122,3 +122,4 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - No category tags on play cards (denied this approach earlier)
 - No accordion on play cards (tighten text instead of hiding it)
 - Copy targets a YC/startup hiring audience — keep resonant buzzwords like "first-principles thinking." Don't suggest cutting them as "designer-cliché." Judge phrases by the intended reader, not by general good-writing principles.
+- Avoid decorative numbering (`01 — SELECTED WORK`, `01/02/03/04` card chips) on sections that don't have a real numbered series — implies an ordering that doesn't exist. Section labels can use the editorial hairline-rule treatment (`.section-meta` with `.section-label-text` + `.section-rule`) without the number.
