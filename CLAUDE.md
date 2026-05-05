@@ -4,7 +4,7 @@
 Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, minimal, trendy 2026 aesthetic.
 
 ## Structure
-- `index.html` — Home (hero + work grid, 5 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker) or external live projects (StoryBloom → storybloomstorybloom.vercel.app, target="_blank").
+- `index.html` — Home (hero + work grid, 5 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker) or external live projects (StoryBloom → storybloom.tech/app, target="_blank").
 - `about.html` — About (vertical layout: hero → photo collage → background → experience → education → awards → skills)
 - `play.html` — Play (2-column masonry with card wrappers, lightbox on click, 11 projects)
 - `coffee.html` — Coffee Chat case study
@@ -20,7 +20,8 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Nav:** Floating pill, 760px wide, glassmorphism blur (rgba(20,20,20,0.85)), centered. Links: Work | Play | About | Resume | Get in touch
 - **Hero:** Animated mesh gradient (@property CSS) with blue (#4B8BFF), violet (#7B61FF), cyan (#00D4FF). Text scramble reveal + magnetic tilt. No cursor glow. "Built with Claude Code" tag.
 - **Footer:** Big "Say hello" watermark (scroll reveal). Mesh gradient glow (static, no animation). overflow: hidden. "Designed in fog" left, LinkedIn/Email/Resume right.
-- **Project cards:** #1a1a1a background, 1px solid rgba(255,255,255,0.08) border, border glow on hover (box-shadow), image zoom on hover. Title 18px, year 16px right-aligned, description 16px muted with 8px gap.
+- **Project cards:** #1a1a1a background, 1px solid rgba(255,255,255,0.08) border, border glow on hover (box-shadow), image zoom on hover. Title 18px, year 16px right-aligned, description 16px muted with 8px gap. Description reserves 2-line min-height so the tag row below aligns horizontally across cards even when one description fits in a single line.
+- **Card meta chips:** `.card-meta` container holds 2–3 `.card-tag` chips below each project description. Tags are 11px uppercase, 1px stroke border (rgba 0.12), 4px radius, mute color (rgba 0.55). Pattern: `[Domain] · [Form factor] · [Status]` (e.g. `B2B SaaS · Dashboard · Shipped`, `Health · Mobile App · Award Winner`). Hidden on mobile (≤768px) since stacked cards already show full descriptions.
 - **Chatbot:** Dark background, white icon, white rotating conic-gradient border (0.5 opacity).
 - **Layout:** Vertical single-column on about, single-column on play, 2-col project grid on home
 - **Mobile:** Hamburger menu → full-screen overlay. No footer watermark on mobile.
