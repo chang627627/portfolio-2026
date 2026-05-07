@@ -2493,6 +2493,9 @@ footer {
   .play-column {
     display: contents;
   }
+  /* Promote the two GPT Image 2 features to top of mobile stack */
+  .play-card { order: 1; }
+  .play-card--m-feature { order: 0; }
 }
 
 .play-card {
