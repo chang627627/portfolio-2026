@@ -83,9 +83,11 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - First deliverable heading establishes "Maya" (so subsequent "She..." captions have referent)
 - Merged closing beat into walkthrough as final caption
 
-**Case study section order (April 2026):**
-- Coffee Chat and PollenNav both follow: Problem → Research → Final Design → Design Goals → Challenges/Constraints → Exploration → Reflection. Final Design moved up from its traditional "near the end" slot so the visual payoff lands before process. Research stays before Final Design so the user truth sets up the design decisions.
-- TickerPulse intentionally keeps its original order (Background → Problem → Research → Solution → Final Design → Reflection). Its Solution block is a narrative bridge to the finals; moving Final Design up would orphan it.
+**Case study section order (May 2026):**
+- Coffee Chat: Problem → Research → Design Goals → Constraints → Exploration 1/2 → Iteration 1/2 → Final Deliverables → Design System → Reflection. Final Deliverables sits after Iteration 2 so the payoff lands as the narrative climax once the process work is done.
+- PollenNav: Problem → Research → Design Goals → Challenges → Exploration 1/2/3 → Usability Testing → Final Design → Reflection. Same logic — Final Design lands after Usability Testing so the validated design feels earned.
+- TickerPulse keeps its original order (Background → Problem → Research → Solution → Final Design → Reflection). Its Solution block is a narrative bridge to the finals; moving Final Design would orphan it.
+- Earlier (April 2026) we tried promoting Final Design to right after Research as a "show the win first" move. Reverted in May 2026 — the classic process-then-payoff arc reads stronger for these two case studies.
 
 **TickerPulse:**
 - Added `.deliverable` captions for all 5 wireframes (Sign in, Dashboard, Watchlist, Alert, Trade)
