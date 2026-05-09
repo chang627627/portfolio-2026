@@ -2289,6 +2289,10 @@ footer {
   gap: 24px;
 }
 
+.problem-grid--2col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .problem-card,
 .goal-card {
   background: var(--surface);
