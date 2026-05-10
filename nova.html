@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=109">
+  <link rel="stylesheet" href="style.css?v=113">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -216,9 +216,89 @@
       <p>Building on these insights, we compared potential approaches such as GPS trackers, mobile apps, transit training, and community escorts. While each offered partial solutions, none fully balanced safety with independence. This led us to focus on Navigation AR Glasses. Although not yet fully feasible for production, advances in AR, language models, and hardware are reducing costs and expanding accessibility. AR glasses represent a forward-looking vision for how technology could better unite safety and independence while opening new opportunities for child mobility.</p>
     </div>
 
+    <table class="compare-table eval-matrix">
+      <thead>
+        <tr>
+          <th>Solution</th>
+          <th>Real-Time Guidance</th>
+          <th>Builds Independence</th>
+          <th>Engages Children</th>
+          <th>Reassures Parents</th>
+          <th>Futuristic Potential</th>
+          <th>Feasibility</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>GPS Tracker Watch</td>
+          <td><span class="eval-dot eval-dot--bad"></span>No</td>
+          <td><span class="eval-dot eval-dot--bad"></span>Minimal</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Low</td>
+          <td><span class="eval-dot eval-dot--good"></span>Strong</td>
+          <td><span class="eval-dot eval-dot--bad"></span>Low</td>
+          <td><span class="eval-dot eval-dot--good"></span>High</td>
+        </tr>
+        <tr>
+          <td>Companion Mobile App</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Limited</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Some</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--good"></span>High</td>
+        </tr>
+        <tr>
+          <td>Public Transit Training Program</td>
+          <td><span class="eval-dot eval-dot--bad"></span>None</td>
+          <td><span class="eval-dot eval-dot--good"></span>Strong</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--bad"></span>Low</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Limited</td>
+        </tr>
+        <tr>
+          <td>Community Escort Program</td>
+          <td><span class="eval-dot eval-dot--good"></span>Yes</td>
+          <td><span class="eval-dot eval-dot--bad"></span>None</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+          <td><span class="eval-dot eval-dot--good"></span>Strong</td>
+          <td><span class="eval-dot eval-dot--bad"></span>Low</td>
+          <td><span class="eval-dot eval-dot--bad"></span>Low</td>
+        </tr>
+        <tr class="eval-row--highlight">
+          <td>Navigation AR Glasses</td>
+          <td><span class="eval-dot eval-dot--good"></span>Yes</td>
+          <td><span class="eval-dot eval-dot--good"></span>Strong</td>
+          <td><span class="eval-dot eval-dot--good"></span>High</td>
+          <td><span class="eval-dot eval-dot--good"></span>Strong</td>
+          <td><span class="eval-dot eval-dot--good"></span>High</td>
+          <td><span class="eval-dot eval-dot--mid"></span>Moderate</td>
+        </tr>
+      </tbody>
+    </table>
+
     <div class="project-section">
       <h2>Competitive analysis across Meta, Snap, and Apple</h2>
       <p>Once we aligned on AR glasses as a promising direction, we conducted a competitive analysis of Meta, Snap, and Apple to better understand the hardware landscape, interaction methods, and long-term trends. This helped us define a focused product roadmap grounded in current feasibility and future opportunity.</p>
+    </div>
+
+    <div class="comp-grid">
+      <figure>
+        <img src="images/nova-comp-meta-orion.webp" alt="Meta Orion AR glasses with floating UI in a living room">
+        <figcaption>Meta Orion — full AR display prototype</figcaption>
+      </figure>
+      <figure>
+        <img src="images/nova-comp-snap.jpg" alt="Snap Spectacles AR glasses with a translucent UI panel">
+        <figcaption>Snap Spectacles — standalone AR with hand input</figcaption>
+      </figure>
+      <figure>
+        <img src="images/nova-comp-rayban.jpg" alt="Smart sunglasses worn outdoors, camera-style frames">
+        <figcaption>Meta Ray-Ban — camera and audio, no display yet</figcaption>
+      </figure>
+      <figure>
+        <img src="images/nova-comp-apple-roadmap.jpeg" alt="Apple Vision Series and smart glasses roadmap forecast 2025–2028">
+        <figcaption>Apple Vision roadmap — XR and smart-glasses lines projected through 2028</figcaption>
+      </figure>
     </div>
 
     <div class="problem-grid">
@@ -311,16 +391,6 @@
         <span class="impact-number">2</span>
         <p>Major iterations: simplifying AR dialogue, and rebuilding safety setup with clearer visual depth</p>
       </div>
-    </div>
-
-    <div class="project-section">
-      <h2>Iteration 1: Simplifying AR dialogue design for clarity and focus</h2>
-      <p>Early prototypes packed too many cues into the HUD at once. Kids parsed less than half. We cut total visible elements roughly in half and locked them to fixed positions so children could glance, register, and look back at the world.</p>
-    </div>
-
-    <div class="project-section">
-      <h2>Iteration 2: Enhancing safety setup with clarity and visual depth</h2>
-      <p>Parents found the original safe-zone setup confusing — flat 2D maps without context. We rebuilt the flow with visual depth, clearer labels, and a one-screen review step. Setup time dropped, trust went up.</p>
     </div>
 
     <!-- Final Deliverables -->
