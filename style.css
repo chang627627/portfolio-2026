@@ -1568,7 +1568,10 @@ footer {
 .project-content .scheduling-step,
 .project-content .pairing-annotated,
 .project-content .research-image-row,
-.project-content .comp-grid {
+.project-content .comp-grid,
+.project-content .hud-grid,
+.project-content .hud-example,
+.project-content .phone-flow {
   margin-top: 32px;
 }
 
@@ -2164,6 +2167,146 @@ footer {
 
 @media (max-width: 768px) {
   .comp-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* HUD style explorations 3x2 grid (NOVA Challenge 1) */
+.hud-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px 24px;
+}
+
+.hud-grid figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hud-grid__title {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.hud-grid img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius);
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.02);
+  border: 3px solid transparent;
+}
+
+.hud-grid figcaption {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+
+.hud-grid__item--selected img {
+  border-color: #4B8BFF;
+  box-shadow: 0 0 0 1px rgba(75, 139, 255, 0.25);
+}
+
+.hud-example {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.hud-example__legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.hud-example__legend li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.hud-example__num {
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #4B8BFF;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hud-example__copy strong {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.hud-example img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius);
+}
+
+/* Phone-screen flow grid (NOVA Challenge 2) */
+.phone-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.phone-flow__panel {
+  background: #E8E8E8;
+  border-radius: var(--radius);
+  padding: 56px 40px 40px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.phone-flow__cell {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.phone-flow__cell img {
+  width: 100%;
+  display: block;
+}
+
+.phone-flow__cell figcaption {
+  font-size: 14px;
+  color: #1a1a1a;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .phone-flow__panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .hud-grid {
     grid-template-columns: 1fr;
   }
 }

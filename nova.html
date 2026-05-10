@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=113">
+  <link rel="stylesheet" href="style.css?v=123">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -353,7 +353,50 @@
     <div id="challenge-1" class="project-section">
       <p class="section-label">Design Challenge 1</p>
       <h2>Presenting information clearly without overwhelming the user</h2>
-      <p>I explored different AR text display styles to understand how much information children can process while staying aware of their surroundings. Based on this study, I chose HUD text as the primary approach. It keeps distance, time, and alerts in fixed positions, which makes them stable, easy to read, and always visible without blocking the main view.</p>
+      <p>I explored different AR text display styles to understand how much information children can process while staying aware of their surroundings. Based on this study, I chose <span class="highlight">HUD text</span> as the primary approach. It keeps distance, time, and alerts in fixed positions, which makes them stable, easy to read, and always visible without blocking the main view.</p>
+    </div>
+
+    <div class="hud-grid">
+      <figure class="hud-grid__item hud-grid__item--selected">
+        <h3 class="hud-grid__title">HUD Text</h3>
+        <img src="images/nova-hud-fixed.png" alt="HUD text — distance, calories, BPM, and progress in fixed peripheral positions">
+        <figcaption>Shows essential information in fixed positions so the user can read it quickly without losing focus on the main task.</figcaption>
+      </figure>
+      <figure class="hud-grid__item">
+        <h3 class="hud-grid__title">Text for Long Reading</h3>
+        <img src="images/nova-hud-popup.png" alt="Text for long reading — large block of text on a contextual panel">
+        <figcaption>Presents longer content in a stable layout that supports uninterrupted reading.</figcaption>
+      </figure>
+      <figure class="hud-grid__item">
+        <h3 class="hud-grid__title">Sticky Info Text</h3>
+        <img src="images/nova-hud-label.png" alt="Sticky info text — calorie info anchored to a food box">
+        <figcaption>Attaches information to objects or points of interest so context stays clear while the user moves or looks around.</figcaption>
+      </figure>
+      <figure class="hud-grid__item">
+        <h3 class="hud-grid__title">Signage Text</h3>
+        <img src="images/nova-hud-signage.png" alt="Signage text — billboard-style storefront overlay">
+        <figcaption>Displays clear static labels or signs that stay consistent across different viewpoints.</figcaption>
+      </figure>
+      <figure class="hud-grid__item">
+        <h3 class="hud-grid__title">Responsive Text</h3>
+        <img src="images/nova-hud-arrow.png" alt="Responsive text — destination arrow at two scales">
+        <figcaption>Updates dynamically in reaction to movement or interaction to keep guidance and information timely.</figcaption>
+      </figure>
+      <figure class="hud-grid__item">
+        <h3 class="hud-grid__title">Ticker Text</h3>
+        <img src="images/nova-hud-ticker.png" alt="Ticker text — chat message scrolling across the top of the view">
+        <figcaption>Streams continuous updates in motion so ongoing information stays visible without blocking the main view.</figcaption>
+      </figure>
+    </div>
+
+    <div class="hud-example">
+      <ol class="hud-example__legend">
+        <li><span class="hud-example__num">1</span><span class="hud-example__copy"><strong>HUD Text (Left):</strong> Clear alert in a stable position.</span></li>
+        <li><span class="hud-example__num">2</span><span class="hud-example__copy"><strong>HUD Text (Right):</strong> Estimated time and distance stay fixed, always visible.</span></li>
+        <li><span class="hud-example__num">3</span><span class="hud-example__copy"><strong>Mascot (Nova):</strong> Child-friendly companion for guidance.</span></li>
+        <li><span class="hud-example__num">4</span><span class="hud-example__copy"><strong>Navigation Path:</strong> Responsive guide that adapts to movement.</span></li>
+      </ol>
+      <img src="images/nova-hud-text-example.png" alt="NOVA HUD Text in action — annotated AR view with safety alert, time and distance readout, mascot guide, and navigation path overlay">
     </div>
 
     <div class="project-section table-caption">
@@ -365,6 +408,23 @@
       <p class="section-label">Design Challenge 2</p>
       <h2>Balancing safety with independence</h2>
       <p>We first designed the child experience with simple navigation cues and hazard alerts, but testing showed parents still felt uneasy. Some asked for full real-time tracking, yet children said they would not wear the glasses if every step was visible. Real-time tracking is now an optional setting parents can turn on or off, while safe-zone alerts remain the default. We created a paired system where children get calm guidance through the glasses and parents manage safe zones with alerts only when boundaries are crossed. This protects independence and still gives parents reassurance.</p>
+    </div>
+
+    <div class="phone-flow">
+      <div class="phone-flow__panel">
+        <figure class="phone-flow__cell">
+          <img src="images/nova-c2-onboarding.png" alt="Joint onboarding — Hi parents and kids! Please team up to complete the onboarding together.">
+          <figcaption>Joint Onboarding</figcaption>
+        </figure>
+        <figure class="phone-flow__cell">
+          <img src="images/nova-c2-safety-zones.png" alt="Safe Zone Setup — define safe areas where the child can move freely without alerts">
+          <figcaption>Safe Zone Setup</figcaption>
+        </figure>
+        <figure class="phone-flow__cell">
+          <img src="images/nova-c2-safety-settings.png" alt="Safety Controls — toggles for real-time tracking, boundary alerts, emergency mode, and voice commands">
+          <figcaption>Safety Controls</figcaption>
+        </figure>
+      </div>
     </div>
 
     <div class="project-section table-caption">
