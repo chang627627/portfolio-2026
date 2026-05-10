@@ -10,6 +10,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - `coffee.html` — Coffee Chat case study
 - `pollen.html` — PollenNav case study
 - `ticker.html` — TickerPulse case study
+- `nova.html` — UNICEF NOVA case study (NOT linked from the home grid — UNICEF NOVA card stays unlinked. Page is accessed directly at `/nova.html`. Visuals are pulled from the framer reference site at `aware-acknowledge-592065.framer.app/nova` and stored as `images/nova-*.png`.)
 - `style.css` — Shared styles across all pages
 
 ## Design Decisions
@@ -49,6 +50,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **GitHub repo:** https://github.com/chang627627/portfolio-2026
 - **Auto-deploy:** Push to `main` on GitHub triggers Vercel deploy automatically
 - **Manual deploy:** `npx vercel --prod --yes` (from project folder)
+- **`vercel.json` rewrites:** Used for clean URLs on specific pages (e.g., `/nova` → `/nova.html`). Add new rewrites here when a page needs an extension-free URL. Site-wide `cleanUrls: true` was avoided because it 301-redirects every `.html` URL and would break existing shared links.
 - **Vercel project:** chang-mou-portfolio
 - **Domain registrar:** Squarespace Domains (domains.squarespace.com)
 - **Analytics:** Google Analytics 4 (Measurement ID `G-RRQ4XH93F3`) injected in `<head>` of all six HTML pages. Any new page needs the gtag snippet added.
@@ -87,6 +89,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Coffee Chat: Problem → Research → Design Goals → Constraints → Exploration 1/2 → Iteration 1/2 → Final Deliverables → Design System → Reflection. Final Deliverables sits after Iteration 2 so the payoff lands as the narrative climax once the process work is done.
 - PollenNav: Problem → Research → Design Goals → Challenges → Exploration 1/2/3 → Usability Testing → Final Design → Reflection. Same logic — Final Design lands after Usability Testing so the validated design feels earned.
 - TickerPulse keeps its original order (Background → Problem → Research → Solution → Final Design → Reflection). Its Solution block is a narrative bridge to the finals; moving Final Design would orphan it.
+- UNICEF NOVA: Overview → Impact → Problem → Solution → Research → Ideation → Design Goals → Challenge 1 → Challenge 2 → Usability Testing → Final Design → Reflection. Mirrors the framer reference: Solution sits right after Problem so the system is named early, then Research justifies it. Uses `.problem-grid--2col` modifier (CSS: `grid-template-columns: repeat(2, 1fr)`) for the two-card "For children / For parents" Solution layout.
 - Earlier (April 2026) we tried promoting Final Design to right after Research as a "show the win first" move. Reverted in May 2026 — the classic process-then-payoff arc reads stronger for these two case studies.
 
 **TickerPulse:**
