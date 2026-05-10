@@ -15,7 +15,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 
 ## Design Decisions
 - **Font:** Neue Montreal (via Fontshare CDN) — single font, weight 400 (regular) everywhere
-- **Color:** Dark mode (#0a0a0a background, #1a1a1a surface, #f0f0f0 text, #888 muted)
+- **Color:** Dark mode (#0a0a0a background, #1a1a1a surface, #f0f0f0 text, #888 muted). **Accent blue:** `#0094FF` (matches the blue in NOVA's AR UI — sampled from `images/nova-hud-text-example.png`). Used for legend circles, the HUD Text "Selected" image border, and Solution Evaluation Matrix highlighted-row accent + tint. When adding new blue accents, reuse `#0094FF` (or `rgba(0, 148, 255, ...)` for transparent variants) so the page stays unified.
 - **Radius:** 8px globally via `--radius` CSS variable
 - **Max-width:** 960px for case study content sections (coffee/pollen/ticker). Home work grid and Play grid are 1344px for a wider workshop feel.
 - **Nav:** Floating pill, 760px wide, glassmorphism blur (rgba(20,20,20,0.85)), centered. Links: Work | Play | About | Resume | Get in touch
