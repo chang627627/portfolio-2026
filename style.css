@@ -1566,7 +1566,8 @@ footer {
 .project-content .compare-table,
 .project-content .flow-chart,
 .project-content .scheduling-step,
-.project-content .pairing-annotated {
+.project-content .pairing-annotated,
+.project-content .research-image-row {
   margin-top: 32px;
 }
 
@@ -2291,6 +2292,46 @@ footer {
 
 .problem-grid--2col {
   grid-template-columns: repeat(2, 1fr);
+}
+
+.problem-grid--stack {
+  grid-template-columns: 1fr;
+}
+
+.research-image-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.research-image-row figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-basis: 0;
+  min-width: 0;
+}
+
+.research-image-row img {
+  width: 100%;
+  display: block;
+  border-radius: var(--radius);
+}
+
+.research-image-row figcaption {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .research-image-row {
+    flex-direction: column;
+  }
+  .research-image-row figure {
+    flex: none !important;
+  }
 }
 
 .problem-card,
