@@ -1571,7 +1571,8 @@ footer {
 .project-content .comp-grid,
 .project-content .hud-grid,
 .project-content .hud-example,
-.project-content .phone-flow {
+.project-content .phone-flow,
+.project-content .final-carousel {
   margin-top: 32px;
 }
 
