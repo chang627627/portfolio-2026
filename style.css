@@ -2128,13 +2128,13 @@ footer {
 .eval-dot--bad  { background: #EF4444; }
 
 .eval-row--highlight td {
-  background: rgba(75, 139, 255, 0.08);
+  background: rgba(0, 148, 255, 0.08);
   color: var(--text);
   font-weight: 500;
 }
 
 .eval-row--highlight td:first-child {
-  box-shadow: inset 2px 0 0 #4B8BFF;
+  box-shadow: inset 2px 0 0 #0094FF;
 }
 
 /* Competitive analysis 2x2 grid (NOVA) */
@@ -2211,8 +2211,8 @@ footer {
 }
 
 .hud-grid__item--selected img {
-  border-color: #4B8BFF;
-  box-shadow: 0 0 0 1px rgba(75, 139, 255, 0.25);
+  border-color: #0094FF;
+  box-shadow: 0 0 0 1px rgba(0, 148, 255, 0.25);
 }
 
 .hud-example {
@@ -2244,7 +2244,7 @@ footer {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #4B8BFF;
+  background: #0094FF;
   color: #fff;
   font-size: 13px;
   font-weight: 500;
