@@ -2140,6 +2140,40 @@ footer {
   box-shadow: inset 2px 0 0 #0094FF;
 }
 
+@media (max-width: 768px) {
+  .eval-matrix td:first-child {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text);
+    padding-bottom: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    width: auto;
+  }
+
+  .eval-matrix td[data-label] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+    gap: 12px;
+  }
+
+  .eval-matrix td[data-label]::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex: 1;
+  }
+
+  .eval-row--highlight td:first-child {
+    box-shadow: inset 3px 0 0 #0094FF;
+    padding-left: 12px;
+  }
+}
+
 /* Competitive analysis 2x2 grid (NOVA) */
 .comp-grid {
   display: grid;
