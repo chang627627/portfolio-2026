@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=135">
+  <link rel="stylesheet" href="style.css?v=138">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -66,6 +66,7 @@
     <a href="#design-goals" class="side-nav-link">Design Goals</a>
     <a href="#challenge-1" class="side-nav-link">Challenge 1</a>
     <a href="#challenge-2" class="side-nav-link">Challenge 2</a>
+    <a href="#challenge-3" class="side-nav-link">Challenge 3</a>
     <a href="#usability-testing" class="side-nav-link">Usability Testing</a>
     <a href="#final-deliverables" class="side-nav-link">Final Design</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
@@ -175,7 +176,7 @@
           <line x1="60" y1="26" x2="80" y2="26" stroke-linecap="round"/>
         </svg>
         <div class="solution-diagram__label">AR Glasses</div>
-        <div class="solution-diagram__sub">for kids</div>
+        <div class="solution-diagram__sub">for children</div>
       </div>
       <div class="solution-diagram__connector" aria-hidden="true">
         <svg viewBox="0 0 140 28" fill="none" stroke="#0094FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -210,7 +211,7 @@
     <div id="research" class="project-section">
       <p class="section-label">Research</p>
       <h2>Grounding the design in real experiences</h2>
-      <p>To design a child-centered navigation system, we immersed ourselves in expert discussions and everyday family experiences. We joined events at UC Berkeley focused on transit equity and future mobility, and we met families at the San Francisco Summer Resource Fair. Alongside these engagements, we conducted parent interviews and co-creation workshops with children and caregivers.</p>
+      <p>To design something child-centered, we mixed expert events, family fieldwork, parent interviews, and co-creation workshops.</p>
     </div>
 
     <div class="research-image-row">
@@ -245,7 +246,7 @@
 
     <div class="project-section">
       <h2>Evaluating potential solutions</h2>
-      <p>Building on these insights, we compared potential approaches such as GPS trackers, mobile apps, transit training, and community escorts. While each offered partial solutions, none fully balanced safety with independence. This led us to focus on Navigation AR Glasses. Although not yet fully feasible for production, advances in AR, language models, and hardware are reducing costs and expanding accessibility. AR glasses represent a forward-looking vision for how technology could better unite safety and independence while opening new opportunities for child mobility.</p>
+      <p>We compared GPS trackers, mobile apps, transit training, and community escorts against five criteria. AR glasses scored strongest, a forward-looking direction since advances in AR, language models, and hardware are making it more feasible.</p>
     </div>
 
     <table class="compare-table eval-matrix">
@@ -461,6 +462,36 @@
 
     <div class="project-section table-caption">
       <p><span class="highlight">"I want my child to feel trusted, but I still need to know if they go somewhere unsafe."</span> — Parent, usability test</p>
+    </div>
+
+    <!-- Challenge 3 -->
+    <div id="challenge-3" class="project-section">
+      <p class="section-label">Design Challenge 3</p>
+      <h2>Making the experience engaging without distraction</h2>
+      <p>A key challenge was keeping the AR interface simple enough for children to follow while still engaging. Minimal colors and clean visuals reduced distractions but risked feeling too plain.</p>
+      <p>To address this, we introduced Nova, a friendly mascot. Nova means "new star," symbolizing guidance and growth, while also aligning with UNICEF's mission to support children. With strong color contrast, playful clarity, and a reassuring presence, Nova makes the experience engaging without overwhelming kids or distracting from their surroundings.</p>
+    </div>
+
+    <div class="iter-example">
+      <div class="iter-example__row">
+        <figure class="iter-example__cell">
+          <img src="images/nova-mascot-before.png" alt="Before — AR view with HUD text only, no mascot">
+          <figcaption><strong class="iter-example__mark iter-example__mark--bad">Before:</strong> Minimal AR view without a mascot.</figcaption>
+        </figure>
+        <figure class="iter-example__cell">
+          <img src="images/nova-mascot-after.png" alt="After — same AR view with Nova mascot in the scene">
+          <figcaption><strong class="iter-example__mark iter-example__mark--good">After:</strong> Nova adds warmth and clarity without crowding the view.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <figure class="mascot-exploration">
+      <img src="images/nova-mascot-exploration.png" alt="Nova character exploration — multiple poses including waving, megaphone, thumbs up, hard hat with flag">
+      <figcaption>Nova character exploration</figcaption>
+    </figure>
+
+    <div class="project-section table-caption">
+      <p><span class="highlight">"My daughter actually wanted to wear the glasses because of Nova. That's a first."</span> — Parent, usability test</p>
     </div>
 
     <!-- Usability Testing -->
