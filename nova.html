@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=128">
+  <link rel="stylesheet" href="style.css?v=135">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -108,8 +108,12 @@
     <div id="overview" class="project-section">
       <p class="section-label">Overview</p>
       <h2>Exploring child-centered mobility design for a sustainable future</h2>
-      <p>This milestone project was developed in collaboration between CCA and the UNICEF Innovation Node. We worked closely with Meg McLaughlin, Innovation Specialist at the Node, receiving feedback throughout the process to guide and refine our direction.</p>
-      <p>The UNICEF Innovation Node is a specialized hub within UNICEF that focuses on early-stage ideas and prototypes, partnering with designers and technologists to explore scalable solutions. Through this partnership, we investigated how human-centered design can create safer, more inclusive mobility systems for children over the next 3 to 10 years.</p>
+      <p>A CCA capstone with the UNICEF Innovation Node, exploring how human-centered design can shape safer, more inclusive mobility systems for children over the next 3 to 10 years. We worked closely with Meg McLaughlin, the Node's Innovation Specialist, who guided the project's direction.</p>
+      <div class="partner-logos">
+        <span class="partner-logos__label">In collaboration with</span>
+        <img src="images/logo-cca.png?v=2" alt="California College of the Arts">
+        <img src="images/logo-unicef-innovation.png?v=2" alt="UNICEF Innovation">
+      </div>
     </div>
 
     <!-- Impact -->
@@ -138,21 +142,21 @@
     <div id="problem" class="project-section">
       <p class="section-label">Problem</p>
       <h2>Unsafe conditions for children moving through the city alone</h2>
-      <p>City environments can be unpredictable, and children navigating them on their own face real safety risks. Traffic, visibility challenges, and gaps in pedestrian infrastructure make independent movement unreliable and potentially dangerous. This raised the need to explore how to support safer mobility for children in urban spaces.</p>
+      <p>Children moving through cities alone face traffic, poor visibility, and gaps in pedestrian infrastructure that make independent movement unsafe.</p>
     </div>
 
     <div class="problem-grid">
       <div class="problem-card">
         <h3>Global burden</h3>
-        <p>Road traffic injuries are the leading cause of death for children ages 5 to 12, with nearly 220,000 lives lost every year, more than 600 each day. These incidents disproportionately affect children in low and middle income countries where road safety infrastructure is limited.</p>
+        <p>Road traffic injuries are the leading cause of death for children ages 5 to 12. Nearly 220,000 lives lost every year, mostly in countries where road safety infrastructure is limited.</p>
       </div>
       <div class="problem-card">
         <h3>Preventable injuries</h3>
-        <p>More than 1,600 children and adolescents die daily from preventable injuries, and traffic crashes remain the single largest contributor. Many of these incidents are linked to unsafe walking conditions, poor visibility, and limited protective infrastructure near schools and neighborhoods.</p>
+        <p>More than 1,600 children and adolescents die daily from preventable injuries. Most are tied to unsafe walking conditions and lack of protective infrastructure near schools.</p>
       </div>
       <div class="problem-card">
         <h3>Parental concerns</h3>
-        <p>In the United States, 1 in 5 parents have never allowed their teen to travel alone. Parents cite traffic danger, unfamiliar routes, and potential abductions, which highlights the tension between supporting independence and ensuring safety.</p>
+        <p>1 in 5 US parents have never allowed their teen to travel alone, citing traffic, unfamiliar routes, and abduction fears.</p>
       </div>
     </div>
 
@@ -161,6 +165,34 @@
       <p class="section-label">Solution</p>
       <h2>AR guidance for children, safety controls for parents</h2>
       <p>Nova combines AR glasses for children with a mobile companion app for parents. The system supports safe, independent mobility while keeping families connected.</p>
+    </div>
+
+    <div class="solution-diagram">
+      <div class="solution-diagram__node">
+        <svg class="solution-diagram__glyph solution-diagram__glyph--glasses" viewBox="0 0 140 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <rect x="4" y="10" width="56" height="40" rx="10"/>
+          <rect x="80" y="10" width="56" height="40" rx="10"/>
+          <line x1="60" y1="26" x2="80" y2="26" stroke-linecap="round"/>
+        </svg>
+        <div class="solution-diagram__label">AR Glasses</div>
+        <div class="solution-diagram__sub">for kids</div>
+      </div>
+      <div class="solution-diagram__connector" aria-hidden="true">
+        <svg viewBox="0 0 140 28" fill="none" stroke="#0094FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="16" y1="14" x2="124" y2="14" stroke-dasharray="3 7"/>
+          <polyline points="118 8, 124 14, 118 20"/>
+          <polyline points="22 8, 16 14, 22 20"/>
+        </svg>
+      </div>
+      <div class="solution-diagram__node">
+        <svg class="solution-diagram__glyph solution-diagram__glyph--phone" viewBox="0 0 60 100" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+          <rect x="6" y="6" width="48" height="88" rx="10"/>
+          <line x1="24" y1="86" x2="36" y2="86" stroke-linecap="round"/>
+          <circle cx="44" cy="22" r="3" fill="#0094FF" stroke="none"/>
+        </svg>
+        <div class="solution-diagram__label">Companion App</div>
+        <div class="solution-diagram__sub">for parents</div>
+      </div>
     </div>
 
     <div class="problem-grid problem-grid--2col">
@@ -199,15 +231,15 @@
     <div class="problem-grid problem-grid--stack">
       <div class="problem-card">
         <h3>The independence tension</h3>
-        <p>Parents seek reassurance while children strive for independence, creating an ongoing tension in mobility decisions.</p>
+        <p>Parents want reassurance and kids want independence. Every mobility decision sits in that tension.</p>
       </div>
       <div class="problem-card">
         <h3>System change is slow</h3>
-        <p>System-level changes such as policy or infrastructure upgrades are slow and uncertain, so families often look for practical solutions they can use right away.</p>
+        <p>Policy and infrastructure change over years, so families need something practical they can use now.</p>
       </div>
       <div class="problem-card">
         <h3>AR is becoming everyday</h3>
-        <p>Rapid advances in technology are opening possibilities for tools that balance safety, independence, and engagement in new ways.</p>
+        <p>Lightweight wearables are entering everyday life, opening a window for AR that balances safety with freedom.</p>
       </div>
     </div>
 
@@ -304,15 +336,15 @@
     <div class="problem-grid">
       <div class="problem-card">
         <h3>The next computing platform</h3>
-        <p>AR glasses are emerging as the next computing platform. Growing industry investment and early consumer interest show strong momentum for integrating advanced technologies through lightweight wearables.</p>
+        <p>AR glasses are emerging as the next computing platform, with serious investment from Meta, Snap, and Apple.</p>
       </div>
       <div class="problem-card">
         <h3>Interactions still maturing</h3>
-        <p>Voice and hand gesture input are currently the primary interaction methods. Portable AR glasses with reliable display overlays are still limited and may take two to three years to reach mainstream use.</p>
+        <p>Voice and gesture lead today; reliable display overlays are still two to three years out.</p>
       </div>
       <div class="problem-card">
         <h3>Software, not hardware</h3>
-        <p>UNICEF does not need to build AR glasses. A flexible, device-agnostic software layer keeps the solution relevant as the hardware ecosystem evolves.</p>
+        <p>UNICEF should not build AR glasses. A device-agnostic software layer stays relevant as the hardware ecosystem evolves.</p>
       </div>
     </div>
 
@@ -413,15 +445,15 @@
     <div class="phone-flow">
       <div class="phone-flow__panel">
         <figure class="phone-flow__cell">
-          <img src="images/nova-c2-onboarding.png" alt="Joint onboarding — Hi parents and kids! Please team up to complete the onboarding together.">
+          <img src="images/nova-c2-onboarding.png?v=2" alt="Joint onboarding — Hi parents and kids! Please team up to complete the onboarding together.">
           <figcaption>Joint Onboarding</figcaption>
         </figure>
         <figure class="phone-flow__cell">
-          <img src="images/nova-c2-safety-zones.png" alt="Safe Zone Setup — define safe areas where the child can move freely without alerts">
+          <img src="images/nova-c2-safety-zones.png?v=2" alt="Safe Zone Setup — define safe areas where the child can move freely without alerts">
           <figcaption>Safe Zone Setup</figcaption>
         </figure>
         <figure class="phone-flow__cell">
-          <img src="images/nova-c2-safety-settings.png" alt="Safety Controls — toggles for real-time tracking, boundary alerts, emergency mode, and voice commands">
+          <img src="images/nova-c2-safety-settings.png?v=2" alt="Safety Controls — toggles for real-time tracking, boundary alerts, emergency mode, and voice commands">
           <figcaption>Safety Controls</figcaption>
         </figure>
       </div>
@@ -450,6 +482,34 @@
       <div class="impact-card">
         <span class="impact-number">2</span>
         <p>Major iterations: simplifying AR dialogue, and rebuilding safety setup with clearer visual depth</p>
+      </div>
+    </div>
+
+    <div class="iter-example">
+      <h3 class="iter-example__title">Iteration example 1: Simplifying AR dialogue design for clarity and focus</h3>
+      <div class="iter-example__row">
+        <figure class="iter-example__cell">
+          <img src="images/nova-iter1-before.png" alt="Before — cluttered chat-style AR dialogue with full history">
+          <figcaption><strong class="iter-example__mark iter-example__mark--bad">Before:</strong> The dialogue-style interface displayed full chat history, allowing users to see previous exchanges. However, this created visual clutter and distracted from the current navigation task.</figcaption>
+        </figure>
+        <figure class="iter-example__cell">
+          <img src="images/nova-iter1-after.png" alt="After — single prompt 'Where should I take you?' with Home / School / Other options">
+          <figcaption><strong class="iter-example__mark iter-example__mark--good">After:</strong> The new design shows only the current prompt with clear options, reducing cognitive load and creating a cleaner, more focused AR experience.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="iter-example">
+      <h3 class="iter-example__title">Iteration example 2: Enhancing safety setup with clarity and visual depth</h3>
+      <div class="iter-example__row">
+        <figure class="iter-example__cell">
+          <img src="images/nova-iter2-before.png" alt="Before — light-theme setup flow with combined safety settings">
+          <figcaption><strong class="iter-example__mark iter-example__mark--bad">Before:</strong> The setup flow helped parents create a child profile and safety zone but felt generic and overly standardized. The light theme lacked emotional depth and visual engagement.</figcaption>
+        </figure>
+        <figure class="iter-example__cell">
+          <img src="images/nova-iter2-after.png" alt="After — dark-theme setup flow split into Create Child Profile / Emergency Contact / Set Up Safe Zones / Safety Settings">
+          <figcaption><strong class="iter-example__mark iter-example__mark--good">After:</strong> Separating child profile and emergency contact setup improves clarity, while visualizing the safe zone enhances control and trust. The new dark mode adds a futuristic, tech-forward tone that aligns with the AR experience.</figcaption>
+        </figure>
       </div>
     </div>
 
