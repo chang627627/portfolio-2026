@@ -55,7 +55,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 ## Links
 - LinkedIn: https://www.linkedin.com/in/chang-mou/
 - Email: changmou627627@gmail.com
-- Resume: https://drive.google.com/file/d/1P0ZSs_LHUvEtIRMHmnX3o-fHOVP9WX5P/view
+- Resume: https://drive.google.com/file/d/1UQe07qby8OenZ6XTB4qWSwnO_lgpXWFB/view?usp=sharing
 - Vimeo (play page): https://vimeo.com/441663647, https://vimeo.com/486270690
 
 ## Deployment
@@ -117,6 +117,8 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Hero tagline: "I'm Chang Mou, a product designer / shaping AI products with taste."
 - Background trimmed from 3 generic paragraphs to 2 sharper ones (no buzzwords, no award-bragging)
 - Keeps "Good design starts with a good life" as closing personality moment
+- Experience list top row updated 2026-05-11: was "Freelance · TickerPulse, HouSmart, CoPatible · 2026"; now "PM Accelerator · 2025 – Present" to match resume. Other rows (UNICEF / Litespace / NFTY Jigs / BC & Alberta Guide Dogs) are company-name only, so this row drops its project list to match that rhythm.
+- Resume URL updated 2026-05-11 (new Google Drive file `1UQe07qby8OenZ6XTB4qWSwnO_lgpXWFB`). Lives in nav + footer of all 7 HTML pages. Update via grep across `*.html` if it changes again.
 
 **Homepage + infra:**
 - Chat teaser bubble ("Hey, I'm Chang's AI...") fires 4s after page load (after status tag animates), hides after 6s, once-per-browser via localStorage, hidden on mobile
