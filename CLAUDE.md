@@ -57,6 +57,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - LinkedIn: https://www.linkedin.com/in/chang-mou/
 - Email: changmou627627@gmail.com
 - Resume: https://drive.google.com/file/d/1UQe07qby8OenZ6XTB4qWSwnO_lgpXWFB/view?usp=sharing
+- X: https://x.com/changmou627 (added to footer 2026-05-14, all 7 pages)
 - Vimeo (play page): https://vimeo.com/441663647, https://vimeo.com/486270690
 
 ## Deployment
