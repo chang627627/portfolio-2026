@@ -57,7 +57,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 ## Links
 - LinkedIn: https://www.linkedin.com/in/chang-mou/
 - Email: changmou627627@gmail.com
-- Resume: https://drive.google.com/file/d/1UQe07qby8OenZ6XTB4qWSwnO_lgpXWFB/view?usp=sharing
+- Resume: https://drive.google.com/file/d/1kYK5m5SyDJlLlp6YB_lTnLLm8t9gkbxX/view?usp=sharing
 - X: https://x.com/changmou627 (added to footer 2026-05-14, all 7 pages)
 - Vimeo (play page): https://vimeo.com/441663647, https://vimeo.com/486270690
 
@@ -121,7 +121,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - Background trimmed from 3 generic paragraphs to 2 sharper ones (no buzzwords, no award-bragging)
 - Keeps "Good design starts with a good life" as closing personality moment
 - Experience list top row updated 2026-05-11: was "Freelance · TickerPulse, HouSmart, CoPatible · 2026"; now "PM Accelerator · 2025 – Present" to match resume. Other rows (UNICEF / Litespace / Asset Layer / BC & Alberta Guide Dogs) are company-name only, so this row drops its project list to match that rhythm.
-- Resume URL updated 2026-05-11 (new Google Drive file `1UQe07qby8OenZ6XTB4qWSwnO_lgpXWFB`). Lives in nav + footer of all 7 HTML pages. Update via grep across `*.html` if it changes again.
+- Resume URL updated 2026-05-11 (new Google Drive file `1kYK5m5SyDJlLlp6YB_lTnLLm8t9gkbxX`). Lives in nav + footer of all 7 HTML pages. Update via grep across `*.html` if it changes again.
 
 **Homepage + infra:**
 - Chat teaser bubble ("Hey, I'm Chang's AI...") fires 4s after page load (after status tag animates), hides after 6s, once-per-browser via localStorage, hidden on mobile
