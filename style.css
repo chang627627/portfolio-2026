@@ -1414,6 +1414,129 @@ footer {
   transform: scale(1.08);
 }
 
+/* ───────── Photo Deck (infinite editorial carousel) ───────── */
+.deck {
+  position: relative;
+  width: 100%;
+  padding: 64px 0 96px;
+  perspective: 1000px;
+  /* bottom-fade mask — cards dissolve into the page background */
+  -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
+  overflow: hidden;
+}
+
+.deck-track {
+  display: flex;
+  gap: 28px;
+  /* room so cards bleed off both edges at all times */
+  padding: 64px 50vw 64px;
+  overflow-x: scroll;
+  scrollbar-width: none;
+  scroll-behavior: auto;
+  transform-style: preserve-3d;
+  opacity: 0;
+  transition: opacity 600ms ease;
+  /* drag affordance — grab the deck and throw it */
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* horizontal swipe drags the deck; vertical swipe still scrolls the page */
+  touch-action: pan-y;
+}
+.deck-track::-webkit-scrollbar { display: none; }
+.deck-track.is-ready { opacity: 1; }
+.deck-track.is-dragging { cursor: grabbing; }
+.deck-track.is-dragging .deck-card { transition: none; }
+
+.deck-card {
+  --focus: 0;
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
+  --gx: 50%;
+  --gy: 50%;
+  --glare-opacity: 0;
+  flex: 0 0 280px;
+  aspect-ratio: 3 / 4;
+  position: relative;
+  border-radius: 14px;
+  /* magnetic differential — scale + opacity driven by --focus.
+     Cards face the viewer flat; only cursor-driven tilt rotates them. */
+  transform:
+    rotateY(var(--tilt-ry))
+    rotateX(var(--tilt-rx))
+    scale(calc(0.82 + 0.22 * var(--focus)));
+  transform-origin: 50% 50%;
+  opacity: calc(0.62 + 0.38 * var(--focus));
+  filter: drop-shadow(0 14px calc(var(--focus) * var(--focus) * 28px) rgba(0, 0, 0, 0.45));
+  transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: transform, opacity, filter;
+}
+
+/* warm coral halo — squared focus falloff so only the protagonist glows */
+.deck-card::before {
+  content: "";
+  position: absolute;
+  inset: -22%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 150, 120, 0.42) 0%,
+    rgba(255, 150, 120, 0.18) 30%,
+    transparent 65%
+  );
+  opacity: calc(var(--focus) * var(--focus));
+  filter: blur(18px);
+  z-index: -1;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+/* cursor glare — follows pointer, mix-blend overlay */
+.deck-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 180px at var(--gx) var(--gy),
+    rgba(255, 240, 220, 0.55),
+    transparent 60%
+  );
+  opacity: var(--glare-opacity);
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  transition: opacity 240ms ease;
+}
+
+.deck-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+  pointer-events: none;
+}
+
+/* prefers-reduced-motion: lock to static centered row (no drift, no tilt, no halo pulse) */
+@media (prefers-reduced-motion: reduce) {
+  .deck-track {
+    opacity: 1;
+    overflow-x: auto;
+    padding: 32px 16px;
+    gap: 12px;
+  }
+  .deck-card {
+    transform: none;
+    opacity: 1;
+    filter: none;
+    transition: none;
+  }
+  .deck-card::before,
+  .deck-card::after {
+    display: none;
+  }
+}
+
 /* About Vertical */
 .about-vertical {
   padding: 0;
@@ -3437,14 +3560,36 @@ footer {
     padding: 120px 24px 48px;
   }
 
-  .photo-grid {
-    grid-template-columns: repeat(2, 1fr);
+  /* Photo deck collapses to the static 4×2 grid on mobile (JS drift/drag is skipped) */
+  .deck {
+    perspective: none;
+    -webkit-mask-image: none;
+            mask-image: none;
+    overflow: visible;
+    padding: 0 0 64px;
   }
-
-  .photo-grid .photo-tall {
-    grid-row: span 1;
-    aspect-ratio: 1;
+  .deck-track {
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 0;
+    overflow: visible;
+    transform-style: flat;
+    opacity: 1;
+    cursor: default;
+    touch-action: auto;
   }
+  .deck-card {
+    flex: 0 0 calc(25% - 3px);
+    aspect-ratio: 1 / 1;
+    transform: none;
+    opacity: 1;
+    filter: none;
+    border-radius: var(--radius);
+  }
+  /* show only the first real set of 8; hide the 2 duplicate sets */
+  .deck-card:nth-child(n + 9) { display: none; }
+  .deck-card::before,
+  .deck-card::after { display: none; }
 
   .about-photos,
   .about-vertical,

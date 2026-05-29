@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=82">
+  <link rel="stylesheet" href="style.css?v=88">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -54,17 +54,36 @@
     </h1>
   </section>
 
-  <!-- Photo Collage -->
-  <section class="about-photos">
-    <div class="photo-grid">
-      <div class="photo-wrap"><img src="images/profile.jpg" alt="Chang Mou"></div>
-      <div class="photo-wrap"><img src="images/jenga.jpeg" alt="Playing Jenga"></div>
-      <div class="photo-wrap"><img src="images/pier.jpeg" alt="SF Pier at dusk"></div>
-      <div class="photo-wrap"><img src="images/building.jpeg" alt="Cafe Zoetrope"></div>
-      <div class="photo-wrap"><img src="images/talk1.jpeg" alt="Giving a talk"></div>
-      <div class="photo-wrap"><img src="images/talk2.jpeg" alt="Friends in SF"></div>
-      <div class="photo-wrap"><img src="images/food.jpeg" alt="Home cooking"></div>
-      <div class="photo-wrap"><img src="images/extra.jpeg" alt="Life in SF"></div>
+  <!-- Photo Deck (infinite editorial carousel) -->
+  <section class="deck" aria-label="Personal photo deck">
+    <div class="deck-track" data-deck>
+      <!-- Set 1 -->
+      <div class="deck-card"><img src="images/profile.jpg" alt="Chang Mou" loading="eager"></div>
+      <div class="deck-card"><img src="images/jenga.jpeg" alt="Playing Jenga" loading="eager"></div>
+      <div class="deck-card"><img src="images/pier.jpeg" alt="SF Pier at dusk" loading="eager"></div>
+      <div class="deck-card"><img src="images/building.jpeg" alt="Cafe Zoetrope" loading="eager"></div>
+      <div class="deck-card"><img src="images/talk1.jpeg" alt="Giving a talk" loading="eager"></div>
+      <div class="deck-card"><img src="images/talk2.jpeg" alt="Friends in SF" loading="eager"></div>
+      <div class="deck-card"><img src="images/food.jpeg" alt="Home cooking" loading="eager"></div>
+      <div class="deck-card"><img src="images/extra.jpeg" alt="Life in SF" loading="eager"></div>
+      <!-- Set 2 (middle - seeded at start) -->
+      <div class="deck-card"><img src="images/profile.jpg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/jenga.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/pier.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/building.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/talk1.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/talk2.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/food.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/extra.jpeg" alt="" aria-hidden="true"></div>
+      <!-- Set 3 -->
+      <div class="deck-card"><img src="images/profile.jpg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/jenga.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/pier.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/building.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/talk1.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/talk2.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/food.jpeg" alt="" aria-hidden="true"></div>
+      <div class="deck-card"><img src="images/extra.jpeg" alt="" aria-hidden="true"></div>
     </div>
   </section>
 
@@ -315,6 +334,247 @@
       footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
     }, { passive: true });
   }
+</script>
+
+<!-- Photo Deck: infinite editorial carousel -->
+<script>
+(function() {
+  const track = document.querySelector('[data-deck]');
+  if (!track) return;
+
+  const cards = Array.from(track.children);
+  const SET_LENGTH = cards.length / 3;            // 8 unique photos
+  const SPEED = 48;                                // px / sec
+  const TILT_MAX = 8;                              // ± degrees
+  const LERP = 0.14;                               // tilt + glare easing
+  const FOCUS_SPAN_RATIO = 0.28;                   // tighter = sharper protagonist
+
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+  // Mobile (≤768px): render the static 4×2 grid via CSS — no drift, drag, or tilt.
+  if (window.matchMedia('(max-width: 768px)').matches) {
+    track.classList.add('is-ready');
+    return;
+  }
+
+  // per-card animation state (tilt + glare position + lerp curves)
+  const state = cards.map(() => ({
+    tRx: 0, tRy: 0, cRx: 0, cRy: 0,
+    tGlare: 0, cGlare: 0,
+    gx: 50, gy: 50,
+    lastFocus: -1
+  }));
+
+  let acc = 0;
+  let lastTime = 0;
+  let setWidth = 0;
+  // drag-to-rotate state
+  let momentum = 0;                 // px/frame glide after a flick
+  let isDragging = false;           // committed to a horizontal drag
+  let dragDecided = false;          // direction-intent resolved for this gesture
+  let pointerId = null;
+  let dragStartX = 0, dragStartY = 0, dragStartAcc = 0;
+  let lastX = 0, vSmooth = 0;
+  const DRAG_GAIN = 1.3;            // flick strength
+  const FRICTION = 0.92;           // momentum decay per frame
+
+  // measure width of one set (start of middle set minus start of first set)
+  function measure() {
+    if (cards.length < SET_LENGTH * 2) return;
+    setWidth = cards[SET_LENGTH].offsetLeft - cards[0].offsetLeft;
+  }
+
+  // seed scrollLeft so the middle set is centered at first paint
+  function seed() {
+    const middleAnchor = cards[SET_LENGTH + Math.floor(SET_LENGTH / 2)];
+    const targetScroll = middleAnchor.offsetLeft + middleAnchor.offsetWidth / 2 - track.clientWidth / 2;
+    track.scrollLeft = targetScroll;
+    acc = targetScroll;
+  }
+
+  // wrap symmetrically — keeps a full set bleeding off each edge at all times
+  function wrap() {
+    if (!setWidth) return;
+    if (track.scrollLeft >= 2 * setWidth) {
+      acc -= setWidth;
+      track.scrollLeft = acc;
+    } else if (track.scrollLeft < setWidth) {
+      acc += setWidth;
+      track.scrollLeft = acc;
+    }
+  }
+
+  // per-frame: write --focus, --tilt-*, --glare-opacity, --gx/--gy on each card
+  function paintCards() {
+    const trackRect = track.getBoundingClientRect();
+    const centerX = trackRect.left + trackRect.width / 2;
+    const halfSpan = trackRect.width * FOCUS_SPAN_RATIO;
+
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
+      const s = state[i];
+      const r = card.getBoundingClientRect();
+      // skip off-screen cards — saves ~half the per-frame writes
+      if (r.right < trackRect.left - 200 || r.left > trackRect.right + 200) continue;
+
+      const cardCenter = r.left + r.width / 2;
+      const dist = Math.abs(cardCenter - centerX);
+      const focus = Math.max(0, 1 - dist / halfSpan);
+
+      if (Math.abs(focus - s.lastFocus) > 0.005) {
+        card.style.setProperty('--focus', focus.toFixed(3));
+        s.lastFocus = focus;
+      }
+
+      // tilt + glare lerp (only matters if pointer is present)
+      if (!coarsePointer && !reducedMotion) {
+        s.cRx += (s.tRx - s.cRx) * LERP;
+        s.cRy += (s.tRy - s.cRy) * LERP;
+        s.cGlare += (s.tGlare - s.cGlare) * LERP;
+        card.style.setProperty('--tilt-rx', s.cRx.toFixed(2) + 'deg');
+        card.style.setProperty('--tilt-ry', s.cRy.toFixed(2) + 'deg');
+        card.style.setProperty('--glare-opacity', s.cGlare.toFixed(3));
+        card.style.setProperty('--gx', s.gx.toFixed(1) + '%');
+        card.style.setProperty('--gy', s.gy.toFixed(1) + '%');
+      }
+    }
+  }
+
+  function tick(now) {
+    const dt = lastTime ? (now - lastTime) / 1000 : 0;
+    lastTime = now;
+
+    if (!reducedMotion) {
+      if (isDragging) {
+        // acc is driven directly by pointermove; just commit it
+        track.scrollLeft = Math.floor(acc);
+      } else if (Math.abs(momentum) > 0.15) {
+        // flick glide — decays into the ambient drift
+        acc += momentum;
+        momentum *= FRICTION;
+        track.scrollLeft = Math.floor(acc);
+      } else {
+        // sub-pixel honesty: accumulate fractional drift, floor when writing
+        acc += SPEED * dt;
+        track.scrollLeft = Math.floor(acc);
+      }
+    }
+
+    wrap();
+    paintCards();
+    requestAnimationFrame(tick);
+  }
+
+  // wire cursor tilt + glare (fine pointers only; suppressed mid-drag)
+  if (!coarsePointer && !reducedMotion) {
+    cards.forEach((card, i) => {
+      card.addEventListener('mouseenter', () => { if (!isDragging) state[i].tGlare = 1; });
+      card.addEventListener('mouseleave', () => {
+        state[i].tRx = 0; state[i].tRy = 0; state[i].tGlare = 0;
+      });
+      card.addEventListener('mousemove', (e) => {
+        if (isDragging) return;
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width;
+        const py = (e.clientY - r.top) / r.height;
+        state[i].tRy = (px - 0.5) * 2 * TILT_MAX;
+        state[i].tRx = (0.5 - py) * 2 * TILT_MAX;
+        state[i].gx = px * 100;
+        state[i].gy = py * 100;
+      });
+    });
+  }
+
+  // drag-to-rotate: grab + throw with momentum.
+  // Resolves direction intent first — horizontal grabs the deck, vertical
+  // is released back to the page so scrolling never gets trapped.
+  function flattenTilt() {
+    for (const s of state) { s.tRx = 0; s.tRy = 0; s.tGlare = 0; }
+  }
+  if (!reducedMotion) {
+    track.addEventListener('pointerdown', (e) => {
+      if (e.button && e.button !== 0) return;   // primary button / touch only
+      pointerId = e.pointerId;
+      dragDecided = false;
+      isDragging = false;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      dragStartAcc = acc;
+      lastX = e.clientX;
+      vSmooth = 0;
+    });
+
+    track.addEventListener('pointermove', (e) => {
+      if (pointerId === null || e.pointerId !== pointerId) return;
+      const dx = e.clientX - dragStartX;
+      const dy = e.clientY - dragStartY;
+
+      if (!dragDecided) {
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;   // wait for intent
+        if (Math.abs(dx) <= Math.abs(dy)) {                  // vertical → let page scroll
+          pointerId = null;
+          return;
+        }
+        dragDecided = true;
+        isDragging = true;
+        momentum = 0;
+        flattenTilt();
+        track.classList.add('is-dragging');
+        try { track.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+
+      if (isDragging) {
+        e.preventDefault();
+        acc = dragStartAcc - dx;                             // drag right → deck moves with hand
+        track.scrollLeft = Math.floor(acc);
+        vSmooth = 0.7 * vSmooth + 0.3 * (e.clientX - lastX); // smoothed velocity for the flick
+        lastX = e.clientX;
+      }
+    });
+
+    function endDrag(e) {
+      if (pointerId === null) return;
+      if (isDragging) {
+        momentum = -vSmooth * DRAG_GAIN;                     // throw it
+        isDragging = false;
+        track.classList.remove('is-dragging');
+        try { track.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+      pointerId = null;
+    }
+    track.addEventListener('pointerup', endDrag);
+    track.addEventListener('pointercancel', endDrag);
+  }
+
+  // wait for first images to settle, then measure + seed + reveal
+  function init() {
+    measure();
+    seed();
+    paintCards();
+    track.classList.add('is-ready');
+    if (reducedMotion) return; // static layout via CSS @media
+    requestAnimationFrame(tick);
+  }
+
+  // images need to be sized before measure() — wait one frame after load
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(init);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(init), { once: true });
+  }
+
+  // re-measure + re-seed on resize (debounced)
+  let resizeId;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeId);
+    resizeId = setTimeout(() => {
+      measure();
+      // keep drift continuous: only re-seed if we'd be wildly off
+      if (Math.abs(track.scrollLeft - acc) > 10) seed();
+    }, 120);
+  });
+})();
 </script>
 
 <!-- Chat Widget -->
