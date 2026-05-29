@@ -1440,6 +1440,10 @@ footer {
   overflow-y: hidden;
   scrollbar-width: none;
   scroll-behavior: auto;
+  /* perspective on the cards' DIRECT parent — overflow forces transform-style:
+     flat, so a preserve-3d chain can't reach the cards; direct-parent
+     perspective gives each card real 3D depth for the hover tilt */
+  perspective: 900px;
   opacity: 0;
   transition: opacity 600ms ease;
   /* drag affordance — grab the deck and throw it */
@@ -1456,13 +1460,19 @@ footer {
 
 .deck-card {
   --focus: 0;
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
   flex: 0 0 280px;
   aspect-ratio: 3 / 4;
   position: relative;
   border-radius: 14px;
-  /* magnetic differential — the centered card scales up, brightens, and casts
-     a shadow; cards face the viewer flat (no tilt — drag is the interaction) */
-  transform: scale(calc(0.82 + 0.22 * var(--focus)));
+  /* magnetic differential — the centered card scales up, brightens, casts a
+     shadow. Cards face flat at rest; the card under the cursor tilts in 3D
+     (light shimmer — the deck keeps drifting, no pause). */
+  transform:
+    rotateY(var(--tilt-ry))
+    rotateX(var(--tilt-rx))
+    scale(calc(0.82 + 0.22 * var(--focus)));
   transform-origin: 50% 50%;
   opacity: calc(0.62 + 0.38 * var(--focus));
   filter: drop-shadow(0 14px calc(var(--focus) * var(--focus) * 28px) rgba(0, 0, 0, 0.45));

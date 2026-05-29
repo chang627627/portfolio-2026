@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=93">
+  <link rel="stylesheet" href="style.css?v=94">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -346,8 +346,11 @@
   const SET_LENGTH = cards.length / 3;            // 8 unique photos
   const SPEED = 48;                                // px / sec
   const FOCUS_SPAN_RATIO = 0.28;                   // tighter = sharper protagonist
+  const TILT_MAX = 11;                             // ± degrees of hover tilt
+  const LERP = 0.14;                               // tilt easing per frame
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
   // Mobile (≤768px): render the static 4×2 grid via CSS — no drift or drag.
   if (window.matchMedia('(max-width: 768px)').matches) {
@@ -355,8 +358,11 @@
     return;
   }
 
-  // per-card state — only the last written focus value (to skip redundant writes)
-  const state = cards.map(() => ({ lastFocus: -1 }));
+  // per-card state — focus (skip redundant writes) + tilt target/current (lerp)
+  const state = cards.map(() => ({ lastFocus: -1, tRx: 0, tRy: 0, cRx: 0, cRy: 0 }));
+  // global cursor — paintCards resolves which card it's over each frame, so the
+  // tilt tracks both the cursor AND the cards drifting beneath it
+  let mouseX = -1, mouseY = -1, mouseOver = false;
 
   let acc = 0;
   let lastTime = 0;
@@ -418,6 +424,27 @@
         card.style.setProperty('--focus', focus.toFixed(3));
         s.lastFocus = focus;
       }
+
+      // light-shimmer hover tilt — the card under the cursor tilts toward it
+      // in 3D, recomputed every frame so it tracks the drifting cards. No
+      // pause: the deck keeps drifting (that's what avoids the leave-jump).
+      if (!coarsePointer) {
+        const over = mouseOver && !isDragging &&
+          mouseX >= r.left && mouseX <= r.right &&
+          mouseY >= r.top && mouseY <= r.bottom;
+        if (over) {
+          const px = (mouseX - r.left) / r.width;
+          const py = (mouseY - r.top) / r.height;
+          s.tRy = (px - 0.5) * 2 * TILT_MAX;   // cursor left/right → rotateY
+          s.tRx = (0.5 - py) * 2 * TILT_MAX;   // cursor top/bottom → rotateX
+        } else {
+          s.tRx = 0; s.tRy = 0;
+        }
+        s.cRx += (s.tRx - s.cRx) * LERP;
+        s.cRy += (s.tRy - s.cRy) * LERP;
+        card.style.setProperty('--tilt-rx', s.cRx.toFixed(2) + 'deg');
+        card.style.setProperty('--tilt-ry', s.cRy.toFixed(2) + 'deg');
+      }
     }
   }
 
@@ -435,7 +462,8 @@
         momentum *= FRICTION;
         track.scrollLeft = Math.floor(acc);
       } else {
-        // auto-rotate — always drifting (never pauses); drag is the way to control it
+        // auto-rotate — never stops. The tilt plays over the moving cards, so
+        // the deck stays alive and there's no stop/resume to ever jolt.
         acc += SPEED * dt;
         track.scrollLeft = Math.floor(acc);
       }
@@ -444,6 +472,13 @@
     wrap();
     paintCards();
     requestAnimationFrame(tick);
+  }
+
+  // track the cursor globally for the per-frame hover tilt (fine pointers only)
+  if (!coarsePointer && !reducedMotion) {
+    track.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; mouseOver = true; });
+    track.addEventListener('mouseenter', (e) => { mouseX = e.clientX; mouseY = e.clientY; mouseOver = true; });
+    track.addEventListener('mouseleave', () => { mouseOver = false; });
   }
 
   // drag-to-rotate: grab + throw with momentum.
