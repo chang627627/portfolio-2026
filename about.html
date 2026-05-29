@@ -18,7 +18,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=88">
+  <link rel="stylesheet" href="style.css?v=93">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -345,26 +345,18 @@
   const cards = Array.from(track.children);
   const SET_LENGTH = cards.length / 3;            // 8 unique photos
   const SPEED = 48;                                // px / sec
-  const TILT_MAX = 8;                              // ± degrees
-  const LERP = 0.14;                               // tilt + glare easing
   const FOCUS_SPAN_RATIO = 0.28;                   // tighter = sharper protagonist
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
-  // Mobile (≤768px): render the static 4×2 grid via CSS — no drift, drag, or tilt.
+  // Mobile (≤768px): render the static 4×2 grid via CSS — no drift or drag.
   if (window.matchMedia('(max-width: 768px)').matches) {
     track.classList.add('is-ready');
     return;
   }
 
-  // per-card animation state (tilt + glare position + lerp curves)
-  const state = cards.map(() => ({
-    tRx: 0, tRy: 0, cRx: 0, cRy: 0,
-    tGlare: 0, cGlare: 0,
-    gx: 50, gy: 50,
-    lastFocus: -1
-  }));
+  // per-card state — only the last written focus value (to skip redundant writes)
+  const state = cards.map(() => ({ lastFocus: -1 }));
 
   let acc = 0;
   let lastTime = 0;
@@ -405,7 +397,7 @@
     }
   }
 
-  // per-frame: write --focus, --tilt-*, --glare-opacity, --gx/--gy on each card
+  // per-frame: write --focus on each card (magnetic protagonist — scale + halo)
   function paintCards() {
     const trackRect = track.getBoundingClientRect();
     const centerX = trackRect.left + trackRect.width / 2;
@@ -426,18 +418,6 @@
         card.style.setProperty('--focus', focus.toFixed(3));
         s.lastFocus = focus;
       }
-
-      // tilt + glare lerp (only matters if pointer is present)
-      if (!coarsePointer && !reducedMotion) {
-        s.cRx += (s.tRx - s.cRx) * LERP;
-        s.cRy += (s.tRy - s.cRy) * LERP;
-        s.cGlare += (s.tGlare - s.cGlare) * LERP;
-        card.style.setProperty('--tilt-rx', s.cRx.toFixed(2) + 'deg');
-        card.style.setProperty('--tilt-ry', s.cRy.toFixed(2) + 'deg');
-        card.style.setProperty('--glare-opacity', s.cGlare.toFixed(3));
-        card.style.setProperty('--gx', s.gx.toFixed(1) + '%');
-        card.style.setProperty('--gy', s.gy.toFixed(1) + '%');
-      }
     }
   }
 
@@ -447,15 +427,15 @@
 
     if (!reducedMotion) {
       if (isDragging) {
-        // acc is driven directly by pointermove; just commit it
+        // dragging — acc is driven directly by pointermove; just commit it
         track.scrollLeft = Math.floor(acc);
       } else if (Math.abs(momentum) > 0.15) {
-        // flick glide — decays into the ambient drift
+        // flick glide — a thrown deck keeps gliding even under the cursor
         acc += momentum;
         momentum *= FRICTION;
         track.scrollLeft = Math.floor(acc);
       } else {
-        // sub-pixel honesty: accumulate fractional drift, floor when writing
+        // auto-rotate — always drifting (never pauses); drag is the way to control it
         acc += SPEED * dt;
         track.scrollLeft = Math.floor(acc);
       }
@@ -466,32 +446,9 @@
     requestAnimationFrame(tick);
   }
 
-  // wire cursor tilt + glare (fine pointers only; suppressed mid-drag)
-  if (!coarsePointer && !reducedMotion) {
-    cards.forEach((card, i) => {
-      card.addEventListener('mouseenter', () => { if (!isDragging) state[i].tGlare = 1; });
-      card.addEventListener('mouseleave', () => {
-        state[i].tRx = 0; state[i].tRy = 0; state[i].tGlare = 0;
-      });
-      card.addEventListener('mousemove', (e) => {
-        if (isDragging) return;
-        const r = card.getBoundingClientRect();
-        const px = (e.clientX - r.left) / r.width;
-        const py = (e.clientY - r.top) / r.height;
-        state[i].tRy = (px - 0.5) * 2 * TILT_MAX;
-        state[i].tRx = (0.5 - py) * 2 * TILT_MAX;
-        state[i].gx = px * 100;
-        state[i].gy = py * 100;
-      });
-    });
-  }
-
   // drag-to-rotate: grab + throw with momentum.
   // Resolves direction intent first — horizontal grabs the deck, vertical
   // is released back to the page so scrolling never gets trapped.
-  function flattenTilt() {
-    for (const s of state) { s.tRx = 0; s.tRy = 0; s.tGlare = 0; }
-  }
   if (!reducedMotion) {
     track.addEventListener('pointerdown', (e) => {
       if (e.button && e.button !== 0) return;   // primary button / touch only
@@ -519,7 +476,6 @@
         dragDecided = true;
         isDragging = true;
         momentum = 0;
-        flattenTilt();
         track.classList.add('is-dragging');
         try { track.setPointerCapture(e.pointerId); } catch (_) {}
       }

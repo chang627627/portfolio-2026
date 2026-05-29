@@ -1418,8 +1418,11 @@ footer {
 .deck {
   position: relative;
   width: 100%;
-  padding: 64px 0 96px;
-  perspective: 1000px;
+  /* pull up into the hero's empty bottom padding so the heading→carousel gap
+     balances the heading→header gap (the track's 40px breathing room for the
+     3D otherwise stacks on the hero's 160px bottom padding) */
+  margin-top: -84px;
+  padding: 0 0 96px;
   /* bottom-fade mask — cards dissolve into the page background */
   -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
           mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
@@ -1430,11 +1433,13 @@ footer {
   display: flex;
   gap: 28px;
   /* room so cards bleed off both edges at all times */
-  padding: 64px 50vw 64px;
+  padding: 40px 50vw;
   overflow-x: scroll;
+  /* hidden (not the default auto that overflow-x:scroll would force) so a
+     vertical wheel over the deck scrolls the PAGE instead of getting trapped */
+  overflow-y: hidden;
   scrollbar-width: none;
   scroll-behavior: auto;
-  transform-style: preserve-3d;
   opacity: 0;
   transition: opacity 600ms ease;
   /* drag affordance — grab the deck and throw it */
@@ -1451,25 +1456,16 @@ footer {
 
 .deck-card {
   --focus: 0;
-  --tilt-rx: 0deg;
-  --tilt-ry: 0deg;
-  --gx: 50%;
-  --gy: 50%;
-  --glare-opacity: 0;
   flex: 0 0 280px;
   aspect-ratio: 3 / 4;
   position: relative;
   border-radius: 14px;
-  /* magnetic differential — scale + opacity driven by --focus.
-     Cards face the viewer flat; only cursor-driven tilt rotates them. */
-  transform:
-    rotateY(var(--tilt-ry))
-    rotateX(var(--tilt-rx))
-    scale(calc(0.82 + 0.22 * var(--focus)));
+  /* magnetic differential — the centered card scales up, brightens, and casts
+     a shadow; cards face the viewer flat (no tilt — drag is the interaction) */
+  transform: scale(calc(0.82 + 0.22 * var(--focus)));
   transform-origin: 50% 50%;
   opacity: calc(0.62 + 0.38 * var(--focus));
   filter: drop-shadow(0 14px calc(var(--focus) * var(--focus) * 28px) rgba(0, 0, 0, 0.45));
-  transition: transform 280ms cubic-bezier(0.2, 0.7, 0.2, 1);
   will-change: transform, opacity, filter;
 }
 
@@ -1489,23 +1485,6 @@ footer {
   z-index: -1;
   pointer-events: none;
   transition: opacity 280ms ease;
-}
-
-/* cursor glare — follows pointer, mix-blend overlay */
-.deck-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: radial-gradient(
-    circle 180px at var(--gx) var(--gy),
-    rgba(255, 240, 220, 0.55),
-    transparent 60%
-  );
-  opacity: var(--glare-opacity);
-  mix-blend-mode: overlay;
-  pointer-events: none;
-  transition: opacity 240ms ease;
 }
 
 .deck-card img {
