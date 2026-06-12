@@ -3672,28 +3672,6 @@ footer {
    get the current site; no JS, no fallback states to maintain)
    ============================================================ */
 
-/* --- Cross-document view transitions ---
-   Same-origin navigations soft-crossfade; the four internal work
-   cards morph their thumbnail into the case study's cover image
-   (names are paired per project: card img ↔ cover img). */
-@view-transition {
-  navigation: auto;
-}
-
-::view-transition-group(cover-coffee),
-::view-transition-group(cover-pollen),
-::view-transition-group(cover-ticker),
-::view-transition-group(cover-nova) {
-  animation-duration: 0.45s;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  @view-transition {
-    navigation: none;
-  }
-}
-
 /* --- Scroll-driven card reveals (CSS scroll-timeline, no JS) ---
    Work cards rise/fade during their viewport entry. Unsupported
    browsers skip the @supports block and render cards as today. */
