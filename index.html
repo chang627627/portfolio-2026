@@ -17,8 +17,9 @@
   <meta name="twitter:description" content="iF & Red Dot winner. Shaping AI products with taste.">
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,600,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=105">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=106">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -47,55 +48,30 @@
 
   <!-- Hero -->
   <section class="hero">
-    <div class="cursor-glow"></div>
-    <div class="hero-orbs">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-    </div>
+    <div class="hero-orbs"></div>
     <div class="hero-content">
       <h1>
         <span class="line"><span class="line-inner scramble-text" data-text="AI-first product designer."></span></span>
-        <span class="line"><span class="line-inner scramble-text" data-text="Building what's Next."></span></span>
+        <span class="line"><span class="line-inner scramble-text" data-text="Building what's next."></span></span>
       </h1>
-      <p class="hero-sub">Building intuitive products across SaaS, emerging tech, and social impact. iF & Red Dot Award winner with 3.5+ years turning research into real outcomes.</p>
+      <p class="hero-sub">I design intuitive products across SaaS, emerging tech, and social impact. iF & Red Dot Award winner with 3.5+ years turning research into real outcomes.</p>
       <div class="status-tag"><span class="status-dot"></span>Open to new opportunities</div>
     </div>
   </section>
 
   <script>
     const hero = document.querySelector('.hero');
-    const orbs = document.querySelectorAll('.orb');
-    const glow = document.querySelector('.cursor-glow');
     const heroContent = document.querySelector('.hero-content');
 
-    // Cursor glow + orb parallax + magnetic tilt
+    // Magnetic tilt on hero content
     hero.addEventListener('mousemove', (e) => {
       const rect = hero.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      const nx = x / rect.width - 0.5;
-      const ny = y / rect.height - 0.5;
-
-      // Glow follows cursor
-      glow.style.left = x + 'px';
-      glow.style.top = y + 'px';
-      glow.style.opacity = '1';
-
-      // Orb parallax
-      orbs.forEach((orb, i) => {
-        const speed = (i + 1) * 30;
-        orb.style.transform = `translate(${nx * speed}px, ${ny * speed}px)`;
-      });
-
-      // Magnetic tilt on content
-      const tiltX = ny * -6;
-      const tiltY = nx * 6;
-      heroContent.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+      const nx = (e.clientX - rect.left) / rect.width - 0.5;
+      const ny = (e.clientY - rect.top) / rect.height - 0.5;
+      heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
     });
 
     hero.addEventListener('mouseleave', () => {
-      glow.style.opacity = '0';
       heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
     });
 
@@ -109,13 +85,16 @@
     </div>
     <div class="project-grid">
 
-      <a href="coffee.html" class="project-card">
-        <div class="project-img" style="background-color: #D0D1FD; display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" alt="Coffee Chat" style="width: 65%; object-fit: contain; display: block;"></div>
+      <a href="https://www.storybloom.tech/app" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
+          <div class="card-awards"><img src="images/ny-product-design-silver-2026.png" alt="NY Product Design Award Silver 2026" style="height: 30px;"></div>
+          <img src="images/storybloom-card.png" alt="StoryBloom" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
         <div class="project-info">
           <div class="project-info-left">
-            <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
-            <p>AI powered coffee chat for intentional, pressure free pairings across hybrid teams. 63% opt in, 200+ chats in month one</p>
-            <div class="card-meta"><span class="card-tag">B2B SaaS</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
+            <div class="project-info-top"><h3>StoryBloom</h3><span class="project-year">2026</span></div>
+            <p>Personalized bedtime app that turns how today felt into an illustrated story for kids ages 3 to 8</p>
+            <div class="card-meta"><span class="card-tag">Wellness</span><span class="card-tag">Mobile App</span><span class="card-tag">Award Winner</span></div>
           </div>
         </div>
       </a>
@@ -128,39 +107,36 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>PollenNav</h3><span class="project-year">2025</span></div>
-            <p>Award winning pollen navigation app providing street level guidance for safer city travel</p>
+            <p>Street level pollen guidance for safer city travel, designed for the one billion people with seasonal allergies</p>
             <div class="card-meta"><span class="card-tag">Health</span><span class="card-tag">Mobile App</span><span class="card-tag">Award Winner</span></div>
           </div>
         </div>
       </a>
 
-      <a href="nova.html" class="project-card">
-        <div class="project-img" style="background-color: #F4F4F6; display: flex; align-items: center; justify-content: center;"><img src="images/black_smart_glasses_transparent_simple 3 (2).png" alt="UNICEF NOVA cover" style="width: 65%; object-fit: contain; display: block;"></div>
+      <a href="coffee.html" class="project-card">
+        <div class="project-img" style="background-color: #D0D1FD; display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
-            <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
-            <p>AR navigation system for children that balances independence and parental reassurance</p>
-            <div class="card-meta"><span class="card-tag">Kids</span><span class="card-tag">AR Wearable</span><span class="card-tag">Speculative Design</span></div>
+            <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
+            <p>AI powered coffee chat for intentional, pressure free pairings across hybrid teams. 63% opt in, 200+ chats in month one</p>
+            <div class="card-meta"><span class="card-tag">B2B SaaS</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
       </a>
 
-      <a href="https://www.storybloom.tech/app" target="_blank" rel="noopener" class="project-card">
-        <div class="project-img" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
-          <div class="card-awards"><img src="images/ny-product-design-silver-2026.png" alt="NY Product Design Award Silver 2026" style="height: 30px;"></div>
-          <img src="images/storybloom-card.png" alt="StoryBloom" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-        </div>
+      <a href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener" class="project-card">
+        <div class="project-img" style="background-color: #C8D2BA; display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
-            <div class="project-info-top"><h3>StoryBloom</h3><span class="project-year">2026</span></div>
-            <p>Award winning bedtime app that turns how today felt into an illustrated story for kids ages 3 to 8</p>
-            <div class="card-meta"><span class="card-tag">Wellness</span><span class="card-tag">Mobile App</span><span class="card-tag">Award Winner</span></div>
+            <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
+            <p>AI command center for homeowners. Matches verified contractors, compares quotes, and manages repairs from one workspace.</p>
+            <div class="card-meta"><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span></div>
           </div>
         </div>
       </a>
 
       <a href="ticker.html" class="project-card">
-        <div class="project-img" style="background-color: #E6E7EB; display: flex; align-items: center; justify-content: center;"><img src="images/tickerpulse-card.jpg" alt="TickerPulse" style="width: 65%; object-fit: contain; display: block; border-radius: 0;"></div>
+        <div class="project-img" style="background-color: #E6E7EB; display: flex; align-items: center; justify-content: center;"><img src="images/tickerpulse-card.jpg" alt="TickerPulse" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block; border-radius: 0;"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>TickerPulse</h3><span class="project-year">2025</span></div>
@@ -170,13 +146,13 @@
         </div>
       </a>
 
-      <a href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener" class="project-card">
-        <div class="project-img" style="background-color: #C8D2BA; display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"></div>
+      <a href="nova.html" class="project-card">
+        <div class="project-img" style="background-color: #F4F4F6; display: flex; align-items: center; justify-content: center;"><img src="images/nova-card.png" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
-            <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
-            <p>AI command center for homeowners. Matches verified contractors, compares quotes, and manages repairs from one workspace.</p>
-            <div class="card-meta"><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span></div>
+            <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
+            <p>AR navigation system for children that balances independence and parental reassurance</p>
+            <div class="card-meta"><span class="card-tag">Kids</span><span class="card-tag">AR Wearable</span><span class="card-tag">Speculative Design</span></div>
           </div>
         </div>
       </a>
@@ -299,9 +275,6 @@
     });
   });
 
-  // Footer scroll reveal — now controlled by scroll CTA handler above
-  if (false) {
-  }
 
   // Letter spotlight effect
   const footerEl = document.querySelector('footer');

@@ -201,11 +201,6 @@ nav {
   overflow: hidden;
 }
 
-/* Cursor Glow */
-.cursor-glow {
-  display: none;
-}
-
 /* Mesh Gradient */
 @property --mesh-x1 { syntax: '<percentage>'; initial-value: 20%; inherits: false; }
 @property --mesh-y1 { syntax: '<percentage>'; initial-value: 30%; inherits: false; }
@@ -232,8 +227,6 @@ nav {
   filter: blur(60px);
   animation: meshFlow 12s ease-in-out infinite;
 }
-
-.orb { display: none; }
 
 @keyframes meshFlow {
   0%, 100% {
