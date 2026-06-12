@@ -6,7 +6,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 ## Structure
 - `index.html` — Home (hero + work grid, 6 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker/nova) or external live projects (StoryBloom → storybloom.tech/app, Homewise → homewise-rust.vercel.app, target="_blank"). Grid order is curated, not chronological (2026-06-11 audit): row 1 = StoryBloom + PollenNav (recency + award badges where the 10-second scan lands), then Coffee Chat + Homewise, then TickerPulse + NOVA. **Card image conventions:** thumbnails export at 1920px wide (dimension-matching, PNG lossless / JPEG 100 — NOT full-res exports; an 8MB thumbnail killed first-load until resized). Row-1 card images load eager; all below-fold card images get `loading="lazy" decoding="async"`.
 - `about.html` — About (vertical layout: hero → photo deck → background → experience → education → awards → skills). The photo deck is an infinite drag-to-rotate carousel on desktop, a static 4×2 grid on mobile (see **About photo deck** below).
-- `play.html` — Play (2-column masonry with card wrappers, lightbox on click, 11 projects)
+- `play.html` — Play (2-column masonry with card wrappers, lightbox on click, 12 projects)
 - `coffee.html` — Coffee Chat case study
 - `pollen.html` — PollenNav case study
 - `ticker.html` — TickerPulse case study
