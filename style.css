@@ -1643,7 +1643,9 @@ footer {
 .project-hero {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 160px 0 48px;
+  /* 72px, not 160px: every case study opens with a full-width cover image,
+     so the heading no longer needs floating-nav clearance below it */
+  padding: 72px 0 48px;
 }
 
 .project-hero h1 {
@@ -3563,6 +3565,9 @@ footer {
             mask-image: none;
     overflow: visible;
     padding: 0 0 64px;
+    /* reset the desktop pull-up — the mobile hero is much shorter, so -84px
+       would drag the grid up into the heading */
+    margin-top: 0;
   }
   .deck-track {
     flex-wrap: wrap;
