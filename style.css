@@ -848,12 +848,24 @@ nav {
   }
 
   .project-card:hover .project-img img {
-    transform: scale(1.05);
+    transform: scale(1.04) translateY(-3px);
   }
 }
 
 .project-img img {
-  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), filter 0.5s ease;
+}
+
+/* Floating screenshots sit in soft light — contact shadow, deepened on hover.
+   Direct-child selector so award badges / overlay chips are untouched. */
+.project-img > img {
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.16));
+}
+
+@media (hover: hover) {
+  .project-card:hover .project-img > img {
+    filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.2));
+  }
 }
 
 .card-awards {
