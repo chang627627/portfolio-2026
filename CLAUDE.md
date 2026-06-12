@@ -4,7 +4,7 @@
 Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, minimal, trendy 2026 aesthetic.
 
 ## Structure
-- `index.html` — Home (hero + work grid, 5 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker) or external live projects (StoryBloom → storybloom.tech/app, target="_blank").
+- `index.html` — Home (hero + work grid, 6 projects, 1344px content width). Work cards can link to internal case studies (coffee/pollen/ticker/nova) or external live projects (StoryBloom → storybloom.tech/app, Homewise → homewise-rust.vercel.app, target="_blank"). Grid order is curated, not chronological (2026-06-11 audit): row 1 = StoryBloom + PollenNav (recency + award badges where the 10-second scan lands), then Coffee Chat + Homewise, then TickerPulse + NOVA. **Card image conventions:** thumbnails export at 1920px wide (dimension-matching, PNG lossless / JPEG 100 — NOT full-res exports; an 8MB thumbnail killed first-load until resized). Row-1 card images load eager; all below-fold card images get `loading="lazy" decoding="async"`.
 - `about.html` — About (vertical layout: hero → photo deck → background → experience → education → awards → skills). The photo deck is an infinite drag-to-rotate carousel on desktop, a static 4×2 grid on mobile (see **About photo deck** below).
 - `play.html` — Play (2-column masonry with card wrappers, lightbox on click, 11 projects)
 - `coffee.html` — Coffee Chat case study
@@ -72,6 +72,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - **Vercel project:** chang-mou-portfolio
 - **Domain registrar:** Squarespace Domains (domains.squarespace.com)
 - **Analytics:** Google Analytics 4 (Measurement ID `G-RRQ4XH93F3`) injected in `<head>` of all six HTML pages. Any new page needs the gtag snippet added.
+- **Font loading:** every page carries `<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>` immediately before the Fontshare stylesheet link (the font binaries live on cdn.fontshare.com, a different origin than the api.fontshare.com CSS — preconnect shortens first-visit FOUT). New pages need this line too. index.html loads weights 400,500,700 (600 was never used in CSS and was trimmed); other pages load 400 only.
 - **Social share card:** `images/og-image.jpg` (1200x630, hero mesh gradient + tagline). Referenced via og: and twitter: meta tags on all six pages. New pages need the same meta block. **To regenerate:** edit `og-gen.html`, then run `node /tmp/og-snap.mjs` (Puppeteer at 1200x630 @ 2x DPI, piped through `sips -z 630 1200` to JPEG 95). Signed by "Chang Mou" bottom-right (not a URL — OG images aren't clickable).
 
 ## Dev Notes
