@@ -12,6 +12,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 - `ticker.html` — TickerPulse case study
 - `nova.html` — UNICEF NOVA case study (linked from the home grid as of 2026-05-10). Visuals are pulled from the framer reference site at `aware-acknowledge-592065.framer.app/nova` and stored as `images/nova-*.png`.
 - `style.css` — Shared styles across all pages
+- `api/chat.js` — Vercel serverless function behind the chat widget (Claude Haiku 4.5). Its `SYSTEM_PROMPT` embeds the resume + a PORTFOLIO PROJECTS list. **When the resume, experience, awards, or project lineup change, update this prompt too** — it silently served year-old facts until the 2026-06-11 refresh. Not runnable on the local python preview (`/api/chat` 404s locally); test against production after deploy.
 
 ## Design Decisions
 - **Font:** Neue Montreal (via Fontshare CDN) — single font, weight 400 (regular) everywhere
