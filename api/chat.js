@@ -73,7 +73,7 @@ Education:
 
 - Countersign (2026, newest): agentic credit-analysis prototype. The name is the thesis: the agent analyzes, a human countersigns. A watchable agent loop (plan, tool calls, covenant checks, audit trail) that extracts deal financials, scores risk, and suspends itself at a human approval gate on the consequential call. Front-end only with a mocked, deterministic backend. Live demo at credit-analysis-agent.vercel.app, code at github.com/chang627627/credit-analysis-agent.
 - StoryBloom (2026): personalized bedtime app that turns how a child's day felt into an illustrated story, for kids ages 3 to 8. Live at storybloom.tech. NY Product Design Awards Silver Winner 2026. Built with Ziyu Ye.
-- Homewise (2026): AI command center for homeowners. Matches verified contractors, compares quotes, manages repairs from one workspace. Live prototype.
+- Homewise (2026): AI command center for homeowners. Matches verified contractors, compares quotes, manages repairs from one workspace. Single-page React prototype with its own design system, Hearth v1 (tokens plus a drift linter). Live at homewise-rust.vercel.app, code at github.com/chang627627/homewise.
 - PollenNav (2025): street level pollen navigation app for safer city travel, designed for the one billion people with seasonal allergies. 4x international award winner. Full case study on the site.
 - UNICEF NOVA (2025): AR navigation system for children balancing independence and parental reassurance. CCA MDes capstone with the UNICEF Innovation Node. Full case study on the site.
 - TickerPulse (2025): AI platform monitoring real time news sentiment for explainable, actionable trader alerts. Full case study on the site.
