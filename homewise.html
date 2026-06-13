@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homewise — Chang Mou</title>
+  <meta name="description" content="An AI home command center that defines scope, compares contractor quotes apples-to-apples, and pauses for your approval before hiring.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.chang-mou.com/homewise.html">
+  <meta property="og:title" content="Homewise — Chang Mou">
+  <meta property="og:description" content="An AI home command center that defines scope, compares contractor quotes apples-to-apples, and pauses for your approval before hiring.">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=2">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Homewise — Chang Mou">
+  <meta name="twitter:description" content="An AI home command center that defines scope, compares contractor quotes apples-to-apples, and pauses for your approval before hiring.">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=2">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=115">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-active">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/1z-tqSdPhGxQ3G0n6LHwy1gbi5O1VscmQ/view?usp=sharing" target="_blank">Resume</a>
+      <a href="mailto:changmou627627@gmail.com" class="nav-cta">Get in touch</a>
+    </div>
+  </nav>
+
+  <!-- Immersive Cover (placeholder — swap for hero walkthrough clip) -->
+  <div class="hw-cover">Hero · product walkthrough clip</div>
+
+  <!-- Project Hero -->
+  <section class="project-hero">
+    <h1>Homewise</h1>
+    <p class="project-hero-sub">An AI home command center that defines the scope, compares contractor quotes apples to apples, and pauses for your approval before anything happens</p>
+  </section>
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#insight" class="side-nav-link">Insight</a>
+    <a href="#solution" class="side-nav-link">Solution</a>
+    <a href="#system" class="side-nav-link">System</a>
+    <a href="#outcome" class="side-nav-link">Outcome</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+  </nav>
+
+  <!-- Project Content -->
+  <section class="project-content">
+    <div class="project-details">
+      <div class="project-detail-item">
+        <h3>Project Type</h3>
+        <p>Self-initiated<br>Live prototype</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Timeline</h3>
+        <p>2026</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Role</h3>
+        <p>Research<br>Design system<br>UI + Front-end</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Tools</h3>
+        <p>Figma<br>React + Tailwind<br>Claude Code</p>
+      </div>
+    </div>
+
+    <!-- What I Did -->
+    <div class="project-section">
+      <h2>What I did</h2>
+      <ul class="project-list">
+        <li>Ran 8 voice of customer interviews and synthesized them into six findings that set the product's direction.</li>
+        <li>Designed Hearth, a token based design system with three semantic color roles, and built it as living code with a drift linter.</li>
+        <li>Shipped the full agent flow as a working React prototype: scope, contractor match, apples to apples quotes, and a human approval gate.</li>
+      </ul>
+    </div>
+
+    <!-- Problem -->
+    <div id="problem" class="project-section">
+      <p class="section-label">Problem</p>
+      <h2>You can't really know if the price is fair</h2>
+      <p>Hiring a contractor is stressful, time consuming, and non transparent. The same job comes back with wildly different numbers, and homeowners are left guessing whether any of the quotes are honest. Across interviews, one line came up again and again: you can't really know if the price is fair.</p>
+    </div>
+
+    <!-- Insight -->
+    <div id="insight" class="project-section">
+      <p class="section-label">Insight</p>
+      <h2>The price anxiety is really scope anxiety</h2>
+      <p>Every homeowner who felt unsure about price was actually unsure about scope. When five contractors propose five different interventions, the quotes describe different work, so they can't be compared. Fix the scope and the price finally becomes legible.</p>
+    </div>
+
+    <div class="hw-spread">
+      <p class="hw-spread-label">Same siding repair · 5 contractors quoted</p>
+      <div class="hw-spread-track">
+        <span class="hw-spread-dot" style="left: 0%"></span>
+        <span class="hw-spread-dot" style="left: 9%"></span>
+        <span class="hw-spread-dot" style="left: 24%"></span>
+        <span class="hw-spread-dot" style="left: 58%"></span>
+        <span class="hw-spread-dot" style="left: 100%"></span>
+      </div>
+      <div class="hw-spread-scale">
+        <span class="hw-spread-fig">$250<small>lowest bid</small></span>
+        <span class="hw-spread-fig hw-spread-fig--hi">$7,000<small>highest bid</small></span>
+      </div>
+    </div>
+
+    <!-- Solution -->
+    <div id="solution" class="project-section">
+      <p class="section-label">Solution</p>
+      <h2>An AI that works like a knowledgeable friend, not a search engine</h2>
+      <p>Homewise does what a trusted neighbor would do. It defines the scope first, sends one scope to every contractor, brings back quotes you can actually compare, and pauses for your approval before anything happens.</p>
+    </div>
+
+    <div class="deliverable">
+      <h4>Define the scope, in plain language</h4>
+      <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, the most important artifact in the whole product.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-scope.mp4" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="deliverable">
+      <h4>One scope, every contractor</h4>
+      <p>The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-contractors.mp4" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="deliverable">
+      <h4>A match you can trust, not a list to sort</h4>
+      <p>Homewise surfaces a verified, fairly priced match with its reasoning: a match confidence, the verification badges, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-match.mp4" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="deliverable">
+      <h4>Compare apples to apples, then you sign off</h4>
+      <p>Bids line up side by side with a plain language summary and outlier flags, the comparison homeowners reach for ChatGPT to fake today. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-compare.mp4" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <!-- System -->
+    <div id="system" class="project-section">
+      <p class="section-label">Design System</p>
+      <h2>Hearth, the warmth at the center of every home</h2>
+      <p>Homewise runs on Hearth, a token based design system built as living code. Three semantic roles carry meaning before color does: sage for trust, ember for caution, sky for info. Shadows are banned. Separation comes from hairlines and warm contrast, and new tokens pass a drift linter before they ship.</p>
+    </div>
+
+    <div class="hw-hearth">
+      <div class="hw-swatch">
+        <div class="hw-swatch-chip" style="background: #4F6942"></div>
+        <strong>Sage</strong>
+        <span class="hw-swatch-role">Trust · AI picks, success</span>
+        <code>#4F6942</code>
+      </div>
+      <div class="hw-swatch">
+        <div class="hw-swatch-chip" style="background: #B98132"></div>
+        <strong>Ember</strong>
+        <span class="hw-swatch-role">Caution · flags, warnings</span>
+        <code>#B98132</code>
+      </div>
+      <div class="hw-swatch">
+        <div class="hw-swatch-chip" style="background: #4E6F7A"></div>
+        <strong>Sky</strong>
+        <span class="hw-swatch-role">Info · scheduled, live</span>
+        <code>#4E6F7A</code>
+      </div>
+      <div class="hw-swatch">
+        <div class="hw-swatch-chip" style="background: #F6F4EF"></div>
+        <strong>Canvas</strong>
+        <span class="hw-swatch-role">Warm page surface</span>
+        <code>#F6F4EF</code>
+      </div>
+      <div class="hw-swatch">
+        <div class="hw-swatch-chip" style="background: #1A1A17"></div>
+        <strong>Ink</strong>
+        <span class="hw-swatch-role">Text, primary CTAs</span>
+        <code>#1A1A17</code>
+      </div>
+    </div>
+
+    <!-- Outcome -->
+    <div id="outcome" class="project-section">
+      <p class="section-label">Outcome</p>
+      <h2>A working product, not a mockup</h2>
+      <p>Homewise is live and interactive, a real React build with its own design system and a token linter behind it. The whole flow runs end to end, from the first plain language request to the moment you approve the hire.</p>
+    </div>
+
+    <div class="hw-cta-row">
+      <a href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener" class="hw-cta">Explore the live product <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <!-- Reflection -->
+    <div id="reflection" class="project-section">
+      <p class="section-label">Reflection</p>
+      <h2>What I learned</h2>
+      <p>The hardest part of an AI product isn't the model, it's trust. Every decision in Homewise, from defining scope before price to making the user approve the final hire, was about making an autonomous system feel accountable to the person it works for.</p>
+    </div>
+
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-glow"></div>
+    <div class="footer-big">
+      <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Chang Mou · Built with Claude Code</p>
+      <div class="footer-links">
+        <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+        <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+        <a href="https://drive.google.com/file/d/1z-tqSdPhGxQ3G0n6LHwy1gbi5O1VscmQ/view?usp=sharing" target="_blank">Resume <span class="arrow">↗</span></a>
+        <a href="https://x.com/changmou627" target="_blank" rel="noopener">X <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </footer>
+
+<script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  // Footer scroll reveal
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Letter spotlight effect
+  const footerEl = document.querySelector('footer');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length) {
+    footerEl.addEventListener('mousemove', (e) => {
+      letters.forEach(letter => {
+        const rect = letter.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const dist = Math.abs(e.clientX - cx);
+        const maxDist = 150;
+        const brightness = Math.max(0.3, 1 - dist / maxDist);
+        letter.style.opacity = brightness;
+      });
+    });
+    footerEl.addEventListener('mouseleave', () => {
+      letters.forEach(letter => { letter.style.opacity = ''; });
+    });
+  }
+
+  // Side nav scroll tracking
+  const sideNav = document.querySelector('.side-nav');
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  let locked = false;
+  let userScrolled = false;
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // Back to top button
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>
+
+<script>
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('footer');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<script>
+  // Walkthrough clips: drive a bottom progress bar + defer play to viewport
+  (function() {
+    const vids = document.querySelectorAll('video[preload="metadata"]');
+
+    // Progress bar — rAF while playing so it's smooth and resets cleanly on loop
+    vids.forEach(v => {
+      const bar = v.closest('.hw-clip')?.querySelector('.hw-clip-progress-bar');
+      if (!bar) return;
+      let raf;
+      const tick = () => {
+        if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+        raf = requestAnimationFrame(tick);
+      };
+      v.addEventListener('play', () => { cancelAnimationFrame(raf); tick(); });
+      v.addEventListener('pause', () => cancelAnimationFrame(raf));
+    });
+
+    // Play only when scrolled into view, pause when out
+    if (!('IntersectionObserver' in window)) { vids.forEach(v => v.play().catch(() => {})); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.play().catch(() => {}); }
+        else { e.target.pause(); }
+      });
+    }, { rootMargin: '200px' });
+    vids.forEach(v => io.observe(v));
+  })();
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
+  }
+</script>
+
+</body>
+</html>
