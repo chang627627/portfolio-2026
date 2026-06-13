@@ -3739,26 +3739,6 @@ footer {
    Homewise's warm Hearth palette (sage/ember/sky on cream).
    ============================================================ */
 
-/* Full-bleed cover — placeholder until the hero walkthrough clip lands */
-.hw-cover {
-  width: 100%;
-  aspect-ratio: 16 / 7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background:
-    radial-gradient(ellipse at 30% 30%, #FAF8F3 0%, transparent 60%),
-    radial-gradient(ellipse at 70% 70%, #EEEAE1 0%, transparent 60%),
-    #F6F4EF;
-  color: #6B6B65;
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 16px;
-  box-sizing: border-box;
-}
-
 /* Quote-spread insight graphic — "$250 to $7,000 for the same job" */
 .hw-spread {
   background: var(--surface);
@@ -3811,43 +3791,6 @@ footer {
 }
 .hw-spread-fig--hi { text-align: right; }
 
-/* Hearth design-system swatches — the tri-role color story */
-.hw-hearth {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 14px;
-  margin-top: 32px;
-}
-.hw-swatch {
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--radius);
-  padding: 16px;
-}
-.hw-swatch-chip {
-  width: 100%;
-  height: 56px;
-  border-radius: 6px;
-  margin-bottom: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
-.hw-swatch strong {
-  display: block;
-  font-size: 15px;
-  color: var(--text);
-}
-.hw-swatch-role {
-  font-size: 13px;
-  color: var(--text-muted);
-}
-.hw-swatch code {
-  display: block;
-  margin-top: 10px;
-  font-size: 12px;
-  letter-spacing: 0.04em;
-  color: var(--text-muted);
-}
-
 /* Outcome CTA — handoff to the live product */
 .hw-cta-row { margin-top: 32px; }
 .hw-cta {
@@ -3855,14 +3798,14 @@ footer {
   align-items: center;
   gap: 8px;
   background: var(--text);
-  color: var(--bg);
-  padding: 14px 24px;
-  border-radius: 999px;
+  color: var(--bg) !important;
+  padding: 12px 22px;
+  border-radius: var(--radius);
   font-size: 15px;
   text-decoration: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: opacity 0.2s;
 }
-.hw-cta:hover { transform: translateY(-2px); opacity: 0.9; }
+.hw-cta:hover { opacity: 0.85; }
 
 /* Walkthrough clip wrapper + minimal playback progress bar */
 .hw-clip {
