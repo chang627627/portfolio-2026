@@ -147,6 +147,7 @@ Product designer portfolio. Static HTML/CSS/JS site (no framework). Dark mode, m
 
 - No em dashes in descriptive copy (prefers periods/splitting sentences)
 - Do not brag about awards in copy; let the Recognition/Impact sections do that visually
+- **About-page Background bio (`about.html`) rules, learned 2026-06-13 — apply to any bio rewrite:** (a) **No organization names in the bio** — orgs live in Experience/Education below; don't repeat them up top. (b) **Don't overclaim "agentic"** as the identity — only 2 of 7 projects are truly agentic (Homewise, Countersign); StoryBloom is generative, TickerPulse/Coffee Chat are AI-powered tools, PollenNav/NOVA aren't AI. Lead with broad "AI products" and keep the agentic angle at the *project* level (cards/case studies), not the bio headline. (c) **Figma and code (Claude Code) are separate systems** — never phrase as a Figma-to-code pipeline ("take the work all the way into code" is WRONG); Chang mocks up in Figma on some projects and builds directly in code on others (e.g. Homewise). Keep Figma positive (the role market wants Figma + Cursor, not anti-Figma).
 - Keep "Play" as page name (not "Side") — matches the craft/experimentation signal the checker rewards
 - Do not push to git unless explicitly asked
 - Check sync to `/tmp/portfolio/` before screenshots (some resets happen)
