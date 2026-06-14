@@ -119,7 +119,7 @@
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
             <p>AI command center for homeowners. Matches verified contractors, compares quotes, and manages repairs from one workspace.</p>
-            <div class="card-meta"><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span></div>
+            <div class="card-meta"><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
       </a>
@@ -142,17 +142,6 @@
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
             <p>The agent analyzes, a human countersigns. A watchable agent loop that extracts deal financials, tests covenants, and pauses at the approval gate</p>
             <div class="card-meta"><span class="card-tag">Fintech</span><span class="card-tag">AI Agent</span></div>
-          </div>
-        </div>
-      </a>
-
-      <a href="ticker.html" class="project-card">
-        <div class="project-img" style="background: radial-gradient(ellipse at 30% 30%, #F2F3F6 0%, transparent 60%), radial-gradient(ellipse at 70% 70%, #D9DBE2 0%, transparent 60%), #E6E7EB; display: flex; align-items: center; justify-content: center;"><img src="images/tickerpulse-card.jpg" alt="TickerPulse" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block; border-radius: 0;"></div>
-        <div class="project-info">
-          <div class="project-info-left">
-            <div class="project-info-top"><h3>TickerPulse</h3><span class="project-year">2025</span></div>
-            <p>AI powered platform that monitors real time news sentiment to deliver explainable, actionable alerts for traders</p>
-            <div class="card-meta"><span class="card-tag">Fintech</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
       </a>
@@ -226,37 +215,35 @@
     });
   });
 
-  // Scroll CTA — scroll-position driven word reveal
+  // Scroll CTA — each word reveals as it rises into view, left-to-right.
+  // Keyed to each word's own viewport position (not page-scroll %), so every
+  // word animates while actually on screen — on any viewport height.
   const scrollWords = document.querySelectorAll('.scroll-word');
   const scrollCta = document.querySelector('.scroll-cta');
   const footerBigText = document.querySelector('.footer-big-text');
   if (scrollWords.length && scrollCta) {
     function updateScrollWords() {
-      const scrollY = window.scrollY;
-      const maxScroll = document.body.scrollHeight - window.innerHeight;
-      // progress: 0 at 75% of max scroll, 1 at bottom
-      const progress = Math.max(0, Math.min(1, (scrollY / maxScroll - 0.75) / 0.25));
-      const totalWords = scrollWords.length;
+      const vh = window.innerHeight;
       let allVisible = true;
       scrollWords.forEach((word, i) => {
-        const threshold = 0.15 + (i * 0.12);
-        if (progress >= threshold) {
+        // Reveal once the word has risen above its trigger line. Each successive
+        // word needs the line a little higher, giving a left-to-right stagger.
+        const trigger = vh * 0.92 - i * (vh * 0.05);
+        if (word.getBoundingClientRect().top < trigger) {
           word.classList.add('visible');
         } else {
           word.classList.remove('visible');
           allVisible = false;
         }
       });
-      // Show "Say hello" after a gap — at 85% progress
+      // "Say hello" follows once all four words are in and it has entered view.
       if (footerBigText) {
-        if (allVisible && progress >= 0.85) {
-          footerBigText.classList.add('visible');
-        } else {
-          footerBigText.classList.remove('visible');
-        }
+        const inView = footerBigText.getBoundingClientRect().top < vh * 0.9;
+        footerBigText.classList.toggle('visible', allVisible && inView);
       }
     }
     window.addEventListener('scroll', updateScrollWords, { passive: true });
+    window.addEventListener('resize', updateScrollWords, { passive: true });
     updateScrollWords();
   }
 
