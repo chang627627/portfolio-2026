@@ -1217,8 +1217,21 @@ nav {
 /* Footer */
 footer {
   position: relative;
+}
+
+/* Page end wraps the "Say hello" CTA + the footer bar and owns the
+   glow, so the gradient spans behind both and reaches the page bottom
+   (overflow:hidden clips the glow exactly at the bottom edge — no black
+   gap). "Say hello" living in its own section keeps the giant watermark
+   from ever overlapping the footer links at narrow widths. */
+.page-end {
+  position: relative;
   overflow: hidden;
+}
+
+.say-hello {
   padding-top: 160px;
+  text-align: center;
 }
 
 /* CTA Section */
@@ -1267,13 +1280,18 @@ footer {
 .footer-glow {
   position: absolute;
   inset: 0;
+  /* Warm at the bottom edge (NOT transparent): the page ends here, so a
+     transparent bottom stop just reveals the black background — that was
+     the "black gap below the footer". Top stays transparent to blend into
+     the page above. Amber 88%->100% keeps the 0-88% gradient identical
+     (scrolled-state look unchanged) while filling the bottom edge warm. */
   background: linear-gradient(to bottom,
     transparent 0%,
     rgba(30, 122, 255, 0.68) 30%,
     rgba(255, 48, 176, 0.64) 52%,
     rgba(255, 40, 70, 0.60) 70%,
     rgba(255, 190, 35, 0.64) 88%,
-    transparent 100%);
+    rgba(255, 190, 35, 0.64) 100%);
   pointer-events: none;
   z-index: 0;
   -webkit-transform: translateZ(0);
@@ -1331,7 +1349,6 @@ footer {
   align-items: center;
   position: relative;
   z-index: 3;
-  margin-top: -80px;
   background: transparent;
 }
 
@@ -3732,6 +3749,7 @@ footer {
     display: none;
   }
 
+  .say-hello,
   .footer-big {
     display: none;
   }
