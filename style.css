@@ -251,41 +251,41 @@ nav {
 
 .hero-orbs--g2 {
   background:
-    radial-gradient(ellipse 102% 58% at var(--g2-yellow-x) var(--g2-yellow-y), rgba(255, 206, 0, 0.94), transparent 64%),
-    radial-gradient(ellipse 108% 56% at var(--g2-warm-x) var(--g2-warm-y), rgba(255, 44, 52, 0.90), transparent 62%),
-    radial-gradient(ellipse 100% 52% at var(--g2-pink-x) var(--g2-pink-y), rgba(255, 58, 152, 0.84), transparent 60%),
-    radial-gradient(ellipse 112% 58% at var(--g2-blue-x) var(--g2-blue-y), rgba(26, 116, 255, 0.62), transparent 66%);
+    radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) var(--g2-yellow-y), rgba(255, 214, 0, 0.90), transparent 62%),
+    radial-gradient(ellipse 96% 50% at var(--g2-warm-x) var(--g2-warm-y), rgba(255, 30, 58, 0.85), transparent 60%),
+    radial-gradient(ellipse 96% 50% at var(--g2-pink-x) var(--g2-pink-y), rgba(255, 48, 176, 0.82), transparent 60%),
+    radial-gradient(ellipse 116% 60% at var(--g2-blue-x) var(--g2-blue-y), rgba(22, 120, 255, 0.88), transparent 66%);
   filter: blur(56px);
   animation: irisFlow 13s ease-in-out infinite;
 }
 
 @keyframes irisFlow {
   0%, 100% {
-    --g2-yellow-x: 38%; --g2-yellow-y: 4%;
-    --g2-warm-x: 40%; --g2-warm-y: 26%;
-    --g2-pink-x: 60%; --g2-pink-y: 53%;
-    --g2-blue-x: 44%; --g2-blue-y: 90%;
+    --g2-yellow-x: 38%; --g2-yellow-y: 3%;
+    --g2-warm-x: 40%; --g2-warm-y: 25%;
+    --g2-pink-x: 60%; --g2-pink-y: 48%;
+    --g2-blue-x: 44%; --g2-blue-y: 78%;
     transform: scale(1.03) translate(-2%, -1%);
   }
   25% {
-    --g2-yellow-x: 60%; --g2-yellow-y: 7%;
-    --g2-warm-x: 62%; --g2-warm-y: 33%;
-    --g2-pink-x: 40%; --g2-pink-y: 47%;
-    --g2-blue-x: 62%; --g2-blue-y: 85%;
+    --g2-yellow-x: 60%; --g2-yellow-y: 6%;
+    --g2-warm-x: 62%; --g2-warm-y: 31%;
+    --g2-pink-x: 40%; --g2-pink-y: 43%;
+    --g2-blue-x: 62%; --g2-blue-y: 74%;
     transform: scale(1.07) translate(2%, 1%);
   }
   50% {
-    --g2-yellow-x: 46%; --g2-yellow-y: 2%;
+    --g2-yellow-x: 46%; --g2-yellow-y: 1%;
     --g2-warm-x: 36%; --g2-warm-y: 22%;
-    --g2-pink-x: 63%; --g2-pink-y: 58%;
-    --g2-blue-x: 40%; --g2-blue-y: 93%;
+    --g2-pink-x: 63%; --g2-pink-y: 53%;
+    --g2-blue-x: 40%; --g2-blue-y: 81%;
     transform: scale(1.05) translate(-3%, 2%);
   }
   75% {
-    --g2-yellow-x: 56%; --g2-yellow-y: 6%;
-    --g2-warm-x: 58%; --g2-warm-y: 30%;
-    --g2-pink-x: 43%; --g2-pink-y: 49%;
-    --g2-blue-x: 60%; --g2-blue-y: 87%;
+    --g2-yellow-x: 56%; --g2-yellow-y: 5%;
+    --g2-warm-x: 58%; --g2-warm-y: 28%;
+    --g2-pink-x: 43%; --g2-pink-y: 45%;
+    --g2-blue-x: 60%; --g2-blue-y: 76%;
     transform: scale(1.08) translate(2%, -2%);
   }
 }
