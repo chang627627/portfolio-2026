@@ -221,6 +221,11 @@ nav {
   bottom: 20%;
   pointer-events: none;
   z-index: 0;
+}
+
+/* Gradient 1 — original animated violet/coral mesh (saved 2026-06-15).
+   To restore, swap the active variant class on .hero-orbs back to hero-orbs--g1. */
+.hero-orbs--g1 {
   background:
     radial-gradient(ellipse at var(--mesh-x1) var(--mesh-y1), rgba(100, 70, 220, 0.4), transparent 50%),
     radial-gradient(ellipse at var(--mesh-x2) var(--mesh-y2), rgba(255, 120, 110, 0.32), transparent 50%),
@@ -228,6 +233,49 @@ nav {
     radial-gradient(ellipse at var(--mesh-x4) var(--mesh-y4), rgba(255, 150, 120, 0.22), transparent 55%);
   filter: blur(60px);
   animation: meshFlow 12s ease-in-out infinite;
+}
+
+/* Gradient 2 — vivid spectrum from the reference (2026-06-15): warm at the top
+   (yellow -> red -> pink) flowing into a strong blue behind the heading text.
+   Only the bright core hues, no muted edge tones; full-neon per the reference.
+   The red/pink/blue blobs drift via @property-animated positions (irisFlow) so the
+   field feels alive like g1; the yellow stays anchored at the very top. */
+@property --g2-warm-x { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
+@property --g2-warm-y { syntax: '<percentage>'; initial-value: 19%; inherits: false; }
+@property --g2-pink-x { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
+@property --g2-pink-y { syntax: '<percentage>'; initial-value: 37%; inherits: false; }
+@property --g2-blue-x { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
+@property --g2-blue-y { syntax: '<percentage>'; initial-value: 70%; inherits: false; }
+
+.hero-orbs--g2 {
+  background:
+    radial-gradient(ellipse 92% 52% at 50% 0%, rgba(255, 214, 0, 0.90), transparent 62%),
+    radial-gradient(ellipse 96% 50% at var(--g2-warm-x) var(--g2-warm-y), rgba(255, 30, 58, 0.85), transparent 60%),
+    radial-gradient(ellipse 96% 50% at var(--g2-pink-x) var(--g2-pink-y), rgba(255, 48, 176, 0.82), transparent 60%),
+    radial-gradient(ellipse 116% 60% at var(--g2-blue-x) var(--g2-blue-y), rgba(22, 120, 255, 0.88), transparent 66%);
+  filter: blur(56px);
+  animation: irisFlow 15s ease-in-out infinite;
+}
+
+@keyframes irisFlow {
+  0%, 100% {
+    --g2-warm-x: 45%; --g2-warm-y: 24%;
+    --g2-pink-x: 54%; --g2-pink-y: 45%;
+    --g2-blue-x: 50%; --g2-blue-y: 80%;
+    transform: scale(1.01);
+  }
+  33% {
+    --g2-warm-x: 59%; --g2-warm-y: 28%;
+    --g2-pink-x: 42%; --g2-pink-y: 49%;
+    --g2-blue-x: 58%; --g2-blue-y: 83%;
+    transform: scale(1.05);
+  }
+  66% {
+    --g2-warm-x: 41%; --g2-warm-y: 21%;
+    --g2-pink-x: 58%; --g2-pink-y: 41%;
+    --g2-blue-x: 43%; --g2-blue-y: 77%;
+    transform: scale(1.03);
+  }
 }
 
 @keyframes meshFlow {
@@ -374,7 +422,7 @@ nav {
 
 .hero-sub {
   font-size: 16px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.82);
   max-width: 520px;
   margin: 32px auto 0;
   line-height: 1.75;
@@ -416,10 +464,13 @@ nav {
   align-items: center;
   gap: 8px;
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.02em;
   margin-top: 48px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 10, 12, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 8px 16px;
   border-radius: var(--radius);
   opacity: 0;
@@ -1155,6 +1206,7 @@ nav {
 footer {
   position: relative;
   overflow: hidden;
+  padding-top: 160px;
 }
 
 /* CTA Section */
@@ -1203,11 +1255,13 @@ footer {
 .footer-glow {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 30% 90%, rgba(100, 70, 220, 0.2), transparent),
-    radial-gradient(ellipse 70% 50% at 70% 95%, rgba(255, 120, 110, 0.22), transparent),
-    radial-gradient(ellipse 60% 50% at 50% 85%, rgba(140, 90, 230, 0.12), transparent),
-    radial-gradient(ellipse 90% 40% at 55% 100%, rgba(255, 150, 120, 0.18), transparent);
+  background: linear-gradient(to bottom,
+    transparent 0%,
+    rgba(30, 122, 255, 0.68) 30%,
+    rgba(255, 48, 176, 0.64) 52%,
+    rgba(255, 40, 70, 0.60) 70%,
+    rgba(255, 190, 35, 0.64) 88%,
+    transparent 100%);
   pointer-events: none;
   z-index: 0;
   -webkit-transform: translateZ(0);
@@ -1285,7 +1339,8 @@ footer {
 .footer-links a {
   font-size: 14px;
   font-weight: 400;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1323,7 +1378,8 @@ footer {
 
 .footer-copy {
   font-size: 13px;
-  color: var(--text-muted);
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
 /* Active Nav */
