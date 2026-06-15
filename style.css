@@ -3617,6 +3617,13 @@ footer {
     padding: 120px 24px 40px;
   }
 
+  .hero-orbs {
+    /* The hero is short on mobile, so the default bottom:20% lands the orbs'
+       edge inside the visible hero and overflow:hidden slices the blurred
+       gradient (reads as a hard cut). Pull the bottom past the viewport. */
+    bottom: -12%;
+  }
+
   .hero-sub {
     margin-top: 20px;
   }
