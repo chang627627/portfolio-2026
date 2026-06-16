@@ -3648,10 +3648,25 @@ footer {
   }
 
   .hero-orbs {
-    /* The hero is short on mobile, so the default bottom:20% lands the orbs'
-       edge inside the visible hero and overflow:hidden slices the blurred
-       gradient (reads as a hard cut). Pull the bottom past the viewport. */
-    bottom: -12%;
+    /* The hero is short on mobile, which compresses the gradient and lands the
+       blue blob low. Pull it up a little (was -12%, which shoved the blue to the
+       very bottom edge, where overflow:hidden clipped it into a visible line). */
+    bottom: 8%;
+  }
+  /* Fade the hero's bottom to the EXACT page background so the gradient dissolves
+     into the work section with no clipped edge / dividing line. Mobile-only (the
+     desktop hero is tall enough to fade on its own). Sits above the orbs
+     (z-index 0) and below the text (z-index 2), so it never dims the copy. */
+  .hero::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 42%;
+    background: linear-gradient(to bottom, transparent 0%, #0a0a0a 78%);
+    pointer-events: none;
+    z-index: 1;
   }
 
   .hero-sub {
@@ -3755,7 +3770,11 @@ footer {
   }
 
   .hero h1 {
-    font-size: 32px;
+    /* 32px on standard phones (>=375px), scaling down on narrow screens so the
+       first line ("AI-first product designer.") keeps its period on one line
+       instead of orphaning it (each char is an inline-block, so the line can
+       break right before the "."). */
+    font-size: clamp(26px, 8.5vw, 32px);
   }
 
   .scroll-cta {
