@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=152">
+  <link rel="stylesheet" href="style.css?v=156">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -246,6 +246,7 @@
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
     <div class="footer-glow"></div>
+    <canvas class="px-dissolve" data-edge="top" data-stop=".footer-big" aria-hidden="true"></canvas>
 
     <!-- Say hello -->
     <section class="say-hello">
@@ -740,6 +741,60 @@
   } else if (chatMic) {
     chatMic.style.display = 'none';
   }
+</script>
+
+<script>
+  // Pixel dissolve — twinkling square mask over the static gradient edge (footer top).
+  (function () {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const CELL = 20;
+    const hash = (x, y) => { const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return n - Math.floor(n); };
+    const smooth = t => t * t * (3 - 2 * t);
+    document.querySelectorAll('.px-dissolve').forEach(cv => {
+      if (getComputedStyle(cv).display === 'none') return;
+      const parent = cv.parentElement;
+      const edge = cv.dataset.edge || 'bottom';
+      const stopSel = cv.dataset.stop || '';
+      const ctx = cv.getContext('2d');
+      let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0;
+      function layout() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        W = parent.clientWidth; H = parent.clientHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        let b0 = 0, b1 = 0.34;
+        if (cv.dataset.band) { const p = cv.dataset.band.split(',').map(Number); b0 = p[0]; b1 = p[1]; }
+        const el = stopSel && document.querySelector(stopSel);
+        if (el) { b0 = 0; b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04); }
+        bTop = H * b0; bBot = H * b1;
+      }
+      function draw(t) {
+        if (cv.offsetParent === null) return;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#0a0a0a';
+        const span = bBot - bTop;
+        for (let y = bTop; y < bBot; y += CELL) {
+          let vy = (y - bTop) / span;
+          if (edge === 'top') vy = 1 - vy;
+          const gap = smooth(vy);
+          const amp = reduce ? 0 : 0.16 * 4 * vy * (1 - vy);
+          for (let x = 0; x < W; x += CELL) {
+            const ph = hash(x, y) * 6.283;
+            const rank = hash(x * 1.3 + 5, y * 0.7 + 9);
+            if (rank < gap + amp * Math.sin(t * 1.3 + ph)) ctx.fillRect(Math.round(x), Math.round(y), CELL, CELL);
+          }
+        }
+      }
+      function loop(ts) { draw(ts / 1000); raf = requestAnimationFrame(loop); }
+      function start() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); }
+      function stop() { running = false; cancelAnimationFrame(raf); }
+      layout();
+      draw(0);
+      window.addEventListener('resize', () => { layout(); draw(0); }, { passive: true });
+      if (reduce) return;
+      new IntersectionObserver(es => { es[0].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
+    });
+  })();
 </script>
 </body>
 </html>
