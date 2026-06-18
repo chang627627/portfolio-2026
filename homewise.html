@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=159">
+  <link rel="stylesheet" href="style.css?v=167">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -80,7 +80,7 @@
       </div>
       <div class="project-detail-item">
         <h3>Team</h3>
-        <p>Lead Product Designer (Me)<br>2 Product Designers<br>5 Engineers<br>3 PMs</p>
+        <p>Lead Product Designer (Me)<br>2 Product Designers<br>7 Engineers<br>3 PMs</p>
       </div>
       <div class="project-detail-item">
         <h3>Tools</h3>
@@ -103,22 +103,32 @@
     <div id="problem" class="project-section">
       <p class="section-label">Problem</p>
       <h2>Hiring a contractor is a guessing game</h2>
-      <p>It is one of the most stressful purchases a homeowner makes, and eight interviews showed why. Trust starts social: people ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. They repeat the same problem to contractor after contractor, book visit after visit, and wait on quotes that come back impossible to line up against each other. Three phrases surfaced in almost every interview.</p>
+      <p>It is one of the most stressful purchases a homeowner makes, and eight interviews showed why. Trust starts social: people ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. They repeat the same problem to contractor after contractor, book visit after visit, and wait on quotes that come back impossible to line up against each other. Three frustrations surfaced in almost every interview.</p>
     </div>
 
-    <div class="voc-quotes">
+    <div class="voc-quotes voc-quotes--pain">
       <blockquote>
-        <p>"Finding the right person is the hardest part."</p>
-        <cite>Discovery</cite>
+        <p class="voc-pain">No way to know who to trust</p>
+        <p class="voc-said">"Finding the right person is the hardest part."</p>
       </blockquote>
       <blockquote>
-        <p>"You can't really know if the price is fair."</p>
-        <cite>Transparency</cite>
+        <p class="voc-pain">No benchmark for a fair price</p>
+        <p class="voc-said">"You can't really know if the price is fair."</p>
       </blockquote>
       <blockquote>
-        <p>"I had to make so many phone calls just to compare prices."</p>
-        <cite>Effort</cite>
+        <p class="voc-pain">Comparing quotes is exhausting</p>
+        <p class="voc-said">"I had to make so many phone calls just to compare prices."</p>
       </blockquote>
+    </div>
+
+    <div class="hw-stats">
+      <p class="hw-stats-label">Beyond our eight interviews</p>
+      <div class="hw-stats-row">
+        <div class="hw-stat"><span class="hw-stat-fig">70%</span><span class="hw-stat-cap">worry about hiring an unreliable contractor</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">41%</span><span class="hw-stat-cap">have been deceived by a service provider</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">33%</span><span class="hw-stat-cap">delay repairs to avoid the stress of finding someone</span></div>
+      </div>
+      <p class="hw-stats-source">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
     </div>
 
     <!-- Insight -->
@@ -148,19 +158,20 @@
       <p class="section-label">Solution</p>
       <h2>An agent that scopes the job before it shops it</h2>
       <p>Homewise acts on the reframe: scope first, price second. It turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms, pausing for your approval before anything moves.</p>
+      <p>Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back. A simple chatbot would have handed both problems straight back to them. So we designed a structured workflow instead, one where the product builds the scope, vets the match, and lines the quotes up for you, guiding the decision rather than leaving you to drive it.</p>
     </div>
 
     <table class="compare-table">
       <thead>
         <tr>
-          <th style="width: 160px;">Step</th>
-          <th>What happens</th>
+          <th style="width: 160px;">Stage</th>
+          <th>What the workflow does</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>1. Scope</td>
-          <td style="color: var(--text-muted);">The agent drafts a structured, editable scope of work from your intake conversation and photos.</td>
+          <td style="color: var(--text-muted);">A short intake conversation and a photo become a structured, editable scope of work, so you never have to know the right words.</td>
         </tr>
         <tr>
           <td>2. Match</td>
@@ -170,8 +181,16 @@
           <td>3. Compare</td>
           <td style="color: var(--text-muted);">One scope means comparable bids. Outliers and gaps get flagged, and you approve the right contractor.</td>
         </tr>
+        <tr>
+          <td>4. Track</td>
+          <td style="color: var(--text-muted);">The job stays in one place from booking to done, so it never slips back into scattered calls and texts.</td>
+        </tr>
       </tbody>
     </table>
+
+    <div class="project-section solution-coda">
+      <p>Why not just a marketplace? A marketplace hands you a list and leaves the hard parts to you: describe the job, chase the quotes, and guess who is real. Homewise inverts that, writing the scope, vetting the match against license and permit history, and normalizing the bids, so the work that used to fall on the homeowner falls on the product instead.</p>
+    </div>
 
     <!-- Final Design -->
     <div id="final-design" class="project-section">
@@ -195,7 +214,7 @@
 
     <div class="deliverable">
       <h4>A match you can trust, not a list to sort</h4>
-      <p>Homewise surfaces a verified, fairly priced match with its reasoning: a match confidence, the verification badges, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating.</p>
+      <p>Homewise surfaces a verified, fairly priced match with its reasoning: a match confidence, verification on license, insurance, and real permit history, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating.</p>
     </div>
     <div class="hw-clip project-img-full">
       <video src="images/homewise-match.mp4" loop muted playsinline preload="metadata"></video>
@@ -241,7 +260,7 @@
     <div id="collaboration" class="project-section">
       <p class="section-label">Collaboration</p>
       <h2>We skipped Figma and built the design in code</h2>
-      <p>Working closely with the PM and the engineers, we made an unusual call: skip Figma entirely. The design lived in the codebase from day one, a real React prototype on top of the Hearth design system, instead of static mockups. When it was ready, we handed the dev team the repo itself, so they could spin up their own front end environment and wire in the real backend and APIs without redrawing a thing.</p>
+      <p>Working closely with the PM and the engineers, we made an unusual call: skip Figma entirely. The design lived in the codebase from day one, a real React prototype on top of the Hearth design system, instead of static mockups. When it was ready, we handed the dev team the repo itself, so they could spin up their own front end environment and wire in the real backend and APIs without redrawing a thing. That prototype became the foundation of the real system, with Claude reading the photos, Shovels.ai supplying verified permit history, and Twilio handling the messaging.</p>
     </div>
 
     <div class="hw-cta-row">
@@ -252,7 +271,7 @@
     <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
       <h2>Trust was the hard part, not the automation</h2>
-      <p>Homewise reframed what I thought the hard part of an AI product was. It was never the automation. It was trust. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Defining scope before price, and pausing for approval before hiring, were not features. They were how the product earned the right to act.</p>
+      <p>Homewise reframed what I thought the hard part of an AI product was. It was never the automation. It was trust. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Defining scope before price, and pausing for approval before hiring, were not features. They were how the product earned the right to act. Trust turned out to be a data problem as much as an AI one: the match only felt credible because its eligibility filter and scoring ran on real license and permit records, not the model's best guess.</p>
       <p>It was also my first time building a front end prototype entirely in Claude Code, and the handoff is what sold me. The dev team took the working build as their starting point and wired in the real backend, with no mockups to redraw. The design wasn't a picture of the product. It was the first version of it.</p>
     </div>
 

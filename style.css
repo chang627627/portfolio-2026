@@ -1035,6 +1035,14 @@ nav {
   line-height: 1;
 }
 
+/* Project-type chip (Professional / Personal / Academic) — leads the meta row.
+   Filled variant so the category reads distinct from the stroke descriptor chips. */
+.card-tag--type {
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
 .project-arrow {
   font-size: 18px;
   color: var(--text-muted);
@@ -1921,6 +1929,22 @@ footer {
   .voc-quotes blockquote p {
     font-size: 16px;
   }
+}
+
+/* Homewise pain-point variant — scannable headline, the quote demoted to evidence */
+.voc-quotes--pain blockquote { gap: 14px; }
+.voc-quotes--pain .voc-pain {
+  font-size: 18px;
+  line-height: 1.45;
+  color: var(--text);
+  margin: 0;
+}
+.voc-quotes--pain .voc-said {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
 }
 
 /* Deliverable caption: matches Coffee Chat Final Deliverables h2 style */
@@ -3917,6 +3941,57 @@ footer {
 }
 .hw-spread-fig--hi { text-align: right; }
 
+/* Problem market-stat band — sibling of .hw-spread (dark panel, warm Hearth accent) */
+/* Three stat cards — match the voc-quote card language directly above */
+.hw-stats {
+  margin-top: 40px;
+}
+.hw-stats + .project-section { margin-top: 96px; } /* preserve the Problem -> Insight gap */
+.hw-stats-label {
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 24px;
+}
+.hw-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.hw-stat {
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  padding: 32px 28px;
+  display: flex;
+  flex-direction: column;
+}
+.hw-stat-fig {
+  display: block;
+  font-size: 44px;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  line-height: 1;
+}
+.hw-stat-cap {
+  display: block;
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 14px;
+}
+.hw-stats-source {
+  font-size: 12px;
+  color: var(--text-muted);
+  opacity: 0.6;
+  margin: 24px 0 0;
+}
+
+/* Solution: pull the marketplace coda up so it reads as the Solution's close, not a floating section.
+   Needs .project-content prefix to outrank ".project-content .compare-table + .project-section" (0,3,0). */
+.project-content .project-section.solution-coda { margin-top: 44px; }
+
 /* Outcome CTA — handoff to the live product */
 .hw-cta-row { margin-top: 32px; }
 .hw-cta {
@@ -3961,4 +4036,7 @@ footer {
 @media (max-width: 768px) {
   .hw-spread { padding: 24px 20px; }
   .hw-spread-fig { font-size: 24px; }
+  .hw-stats-row { grid-template-columns: 1fr; gap: 16px; }
+  .hw-stat { padding: 24px 20px; }
+  .hw-stat-fig { font-size: 40px; }
 }
