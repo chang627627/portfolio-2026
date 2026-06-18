@@ -1240,7 +1240,8 @@ footer {
 /* Pixel dissolve — a canvas of twinkling square "gaps" painted over the static
    footer glow's top edge (above "Say hello"). The gradient holds still; only the
    squares animate. Sits above the glow (z-index 0); its band is above the text so
-   it never occludes it. Hidden on mobile (the glow itself is hidden there). */
+   it never occludes it. Shown + animated on mobile too as of 2026-06-18
+   (a static-on-mobile variant was tried and reverted the same day). */
 .px-dissolve {
   position: absolute;
   inset: 0;
@@ -3600,9 +3601,6 @@ footer {
   :root {
     --page-padding: 24px;
   }
-  .footer-glow {
-    display: none;
-  }
 
   .chat-toggle,
   .chat-panel {
@@ -3805,14 +3803,16 @@ footer {
     display: none;
   }
 
-  .say-hello,
-  .footer-big,
-  .px-dissolve {
+  /* Mobile footer carries desktop's glow + pixel-dissolve (the color + effect);
+     the giant "Say hello" text and the © line are dropped. .say-hello stays as
+     the glow band, and .footer-big stays in flow at 0 height as the dissolve's stop. */
+  .footer-big-text,
+  .footer-copy {
     display: none;
   }
 
-  .footer-copy {
-    display: none;
+  .say-hello {
+    padding-top: 130px;
   }
 
   .work {
