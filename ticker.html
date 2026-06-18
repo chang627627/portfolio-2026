@@ -353,6 +353,18 @@
   const letters = document.querySelectorAll('.footer-big-text .letter');
   if (footerEl && letters.length) {
     footerEl.addEventListener('mousemove', (e) => {
+      // Only light the word when the cursor is actually over it (where the
+      // hand cursor shows), not the whole tall .say-hello section. That
+      // section has 160px of top padding above the text, so gate the effect
+      // to the letters' own box plus a small pad.
+      const first = letters[0].getBoundingClientRect();
+      const last = letters[letters.length - 1].getBoundingClientRect();
+      const pad = 16;
+      if (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
+          e.clientX < first.left - pad || e.clientX > last.right + pad) {
+        letters.forEach(l => { l.style.opacity = ''; });
+        return;
+      }
       letters.forEach(letter => {
         const rect = letter.getBoundingClientRect();
         const cx = rect.left + rect.width / 2;
