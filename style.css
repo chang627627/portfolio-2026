@@ -3819,6 +3819,11 @@ footer {
     padding-bottom: 80px;
   }
 
+  /* Cards flagged desktop-only (e.g. Countersign) drop out of the stacked mobile grid */
+  .project-card--desktop-only {
+    display: none;
+  }
+
   .card-awards {
     top: 8px;
     left: 8px;
