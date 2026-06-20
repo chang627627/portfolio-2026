@@ -62,18 +62,46 @@
   <script>
     const hero = document.querySelector('.hero');
     const heroContent = document.querySelector('.hero-content');
+    const heroOrbs = hero.querySelector('.hero-orbs');
 
-    // Magnetic tilt on hero content
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const nx = (e.clientX - rect.left) / rect.width - 0.5;
-      const ny = (e.clientY - rect.top) / rect.height - 0.5;
-      heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
-    });
+    // Desktop + fine pointer + motion-allowed only (gates mobile/touch and prefers-reduced-motion).
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    hero.addEventListener('mouseleave', () => {
-      heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-    });
+    if (finePointer && motionOK) {
+      // Lightfall: the gradient light field leans toward the cursor via the independent
+      // `translate` property, so irisFlow's `transform: scale()` keeps running untouched.
+      const ORB_X = 180; // nx is -0.5..0.5 -> max +/-90px horizontal drift
+      const ORB_Y = 26;  // kept modest -> max +/-13px, so the warm/blue seam under line 1 stays put
+      // widen the orb bleed off-screen so the larger drift never exposes a gradient edge (desktop only)
+      heroOrbs.style.left = '-12%';
+      heroOrbs.style.right = '-12%';
+      heroOrbs.style.transition = 'translate 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+
+      let cx = 0, cy = 0, raf = null;
+
+      const apply = () => {
+        raf = null;
+        const rect = hero.getBoundingClientRect();
+        const nx = (cx - rect.left) / rect.width - 0.5;
+        const ny = (cy - rect.top) / rect.height - 0.5;
+        // existing magnetic tilt on the text block (unchanged)
+        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
+        // the light leans the same way, so tilt + light read as one motion
+        heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
+      };
+
+      hero.addEventListener('mousemove', (e) => {
+        cx = e.clientX; cy = e.clientY;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+
+      hero.addEventListener('mouseleave', () => {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        heroOrbs.style.translate = '0px 0px';
+      });
+    }
 
   </script>
 
