@@ -4060,26 +4060,29 @@ footer {
   .hw-stat-fig { font-size: 40px; }
 }
 
-/* Cross-document page transitions (added 2026-06-20): a subtle crossfade + fade-up on
+/* Cross-document page transitions (added 2026-06-20): a subtle PURE-OPACITY crossfade on
    same-origin navigation (work card -> case study, nav links, back links). Progressive
    enhancement — browsers without cross-document view transitions just navigate instantly;
-   gated off under prefers-reduced-motion. NOT a card->cover morph (that paired-name version
-   was tried + cut 2026-06-11 because the card thumbnails and covers are different images). */
+   gated off under prefers-reduced-motion. NO transform/translate on the root: a 12px "fade-up"
+   was tried first but it lifted the position:fixed chrome (the floating nav, the chat button,
+   the case-study side-nav) 12px on every navigation, because fixed elements ride the root
+   snapshot — so it's a still crossfade now. NOT a card->cover morph (that paired-name version
+   was tried + cut 2026-06-11 — card thumbnails and covers are different images). */
 @view-transition {
   navigation: auto;
 }
 ::view-transition-old(root) {
-  animation: vt-fade-out 0.26s ease both;
+  animation: vt-fade-out 0.3s ease both;
 }
 ::view-transition-new(root) {
-  animation: vt-fade-up 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: vt-fade-in 0.34s ease both;
 }
 @keyframes vt-fade-out {
   to { opacity: 0; }
 }
-@keyframes vt-fade-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
