@@ -61,6 +61,7 @@
     <a href="#problem" class="side-nav-link">Problem</a>
     <a href="#insight" class="side-nav-link">Insight</a>
     <a href="#solution" class="side-nav-link">Solution</a>
+    <a href="#process" class="side-nav-link">Process</a>
     <a href="#final-design" class="side-nav-link">Final Design</a>
     <a href="#system" class="side-nav-link">Design System</a>
     <a href="#collaboration" class="side-nav-link">Collaboration</a>
@@ -187,6 +188,64 @@
         </tr>
       </tbody>
     </table>
+
+    <!-- Process -->
+    <div id="process" class="project-section">
+      <p class="section-label">Process</p>
+      <h2>I designed it by building it</h2>
+      <p>The traditional flow assumes engineering is the slow part: discovery, research, polished mockups, a spec handed off, then a wait for the build. In 2026 that is no longer true. The team can stand up a working version faster than I can finish a static mock, so I flipped the order, aligning with the PM on what we are solving, building it, and iterating on real feedback from the team and users instead of polishing screens upstream. Along the way I use Claude Code as a thinking partner, weighing the pros and cons of each design exploration before I commit. Less time making mockups, more time on the calls only a person can make. I took inspiration from <a href="https://www.lennysnewsletter.com/p/the-design-process-is-dead" target="_blank" rel="noopener" style="color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px;">Jenny Wen</a>, Head of Design for Claude at Anthropic, who argues the traditional design process is dead and that a build-and-feedback loop is what replaces it.</p>
+    </div>
+
+    <div class="flow-chart">
+      <div class="flow-chart-header">
+        <h3 class="flow-chart-title">The traditional process</h3>
+        <ul class="flow-chart-tags">
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> Design upfront, build last</li>
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> A spec thrown over the wall</li>
+          <li><span class="flow-tag-icon flow-tag-negative">✕</span> Slow to a working version</li>
+        </ul>
+      </div>
+      <svg class="flow-svg" viewBox="0 0 960 110" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="hwArrowOld" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.35)"/></marker>
+        </defs>
+        <g class="flow-box"><rect x="1" y="25" width="158" height="60" rx="6"/><text x="80" y="60" text-anchor="middle">Discovery</text></g>
+        <g class="flow-box"><rect x="201" y="25" width="158" height="60" rx="6"/><text x="280" y="60" text-anchor="middle">Research</text></g>
+        <g class="flow-box"><rect x="401" y="25" width="158" height="60" rx="6"/><text x="480" y="60" text-anchor="middle">Mockups</text></g>
+        <g class="flow-box"><rect x="601" y="25" width="158" height="60" rx="6"/><text x="680" y="60" text-anchor="middle">Handoff</text></g>
+        <g class="flow-box"><rect x="801" y="25" width="158" height="60" rx="6"/><text x="880" y="60" text-anchor="middle">Build</text></g>
+        <line x1="161" y1="55" x2="199" y2="55" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#hwArrowOld)"/>
+        <line x1="361" y1="55" x2="399" y2="55" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#hwArrowOld)"/>
+        <line x1="561" y1="55" x2="599" y2="55" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#hwArrowOld)"/>
+        <line x1="761" y1="55" x2="799" y2="55" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#hwArrowOld)"/>
+      </svg>
+    </div>
+
+    <div class="flow-chart">
+      <div class="flow-chart-header">
+        <h3 class="flow-chart-title">How I work now</h3>
+        <ul class="flow-chart-tags">
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> A working version first</li>
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> Feedback from team and users</li>
+          <li><span class="flow-tag-icon flow-tag-positive">✓</span> Claude Code weighs each option</li>
+        </ul>
+      </div>
+      <svg class="flow-svg" viewBox="0 0 960 170" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="hwArrowNew" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.55)"/></marker>
+          <marker id="hwLoop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="rgba(255,255,255,0.55)"/></marker>
+        </defs>
+        <g class="flow-box"><rect x="87" y="35" width="186" height="60" rx="6"/><text x="180" y="70" text-anchor="middle">Align with PM</text></g>
+        <line x1="275" y1="65" x2="313" y2="65" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" marker-end="url(#hwArrowNew)"/>
+        <g class="flow-box"><rect x="315" y="35" width="158" height="60" rx="6" style="fill: rgba(255,255,255,0.09); stroke: rgba(255,255,255,0.32);"/><text x="394" y="70" text-anchor="middle">Build</text></g>
+        <line x1="475" y1="65" x2="513" y2="65" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" marker-end="url(#hwArrowNew)"/>
+        <g class="flow-box"><rect x="515" y="35" width="158" height="60" rx="6"/><text x="594" y="70" text-anchor="middle">Feedback</text></g>
+        <line x1="675" y1="65" x2="713" y2="65" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" marker-end="url(#hwArrowNew)"/>
+        <g class="flow-box"><rect x="715" y="35" width="158" height="60" rx="6"/><text x="794" y="70" text-anchor="middle">Iterate</text></g>
+        <path d="M 794 97 L 794 138 L 394 138 L 394 99" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="1.5" marker-end="url(#hwLoop)"/>
+        <text x="594" y="124" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-family="'Neue Montreal', sans-serif">repeat until it is right</text>
+      </svg>
+    </div>
 
     <!-- Final Design -->
     <div id="final-design" class="project-section">
