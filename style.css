@@ -2298,6 +2298,20 @@ footer {
   width: 100%;
 }
 
+/* Case-study cover image: contained + rounded, inset to match content padding on mobile.
+   The cover <img> is a direct <body> child (outside .project-content), so on mobile it
+   would bleed edge-to-edge; calc(100% - 48px) gives the same 24px side inset as the text. */
+.case-cover {
+  display: block;
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 147px auto 0;
+  border-radius: var(--radius);
+}
+@media (max-width: 768px) {
+  .case-cover { width: calc(100% - 48px); }
+}
+
 /* Comparison Table */
 .compare-table {
   width: 100%;
