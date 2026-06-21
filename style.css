@@ -118,6 +118,36 @@ nav::before {
   nav { background: rgba(18, 18, 20, 0.92); }
 }
 
+/* Scroll-condense (desktop only): the pill narrows (WIDTH ONLY — height + vertical
+   position stay put) and settles into a more solid frost once scrolled past the top.
+   Transition only width/background/box-shadow — never transform (the pill is centered
+   via translateX(-50%); animating transform would break centering) and not
+   backdrop-filter (let the blur snap). `.is-scrolled` toggled by JS with hysteresis. */
+@media (min-width: 769px) {
+  nav {
+    transition:
+      width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      background 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  nav.is-scrolled {
+    width: 700px; /* width-only condense — height + vertical position stay put */
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0) 55%),
+      rgba(15, 15, 17, 0.86);
+    backdrop-filter: blur(32px) saturate(1.5);
+    -webkit-backdrop-filter: blur(32px) saturate(1.5);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.10),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.05),
+      0 10px 30px rgba(0, 0, 0, 0.50),
+      0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  nav { transition: none; }
+}
+
 .logo {
   font-weight: 400;
   font-size: 14px;
@@ -3609,10 +3639,14 @@ footer {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
   border: none;
+  box-shadow: none;       /* reset the main-nav glass shadow that the bare `nav` selector leaks here */
   padding: 0;
   text-align: left;
   justify-content: flex-start;
 }
+
+/* the main nav's specular gradient ring (nav::before) must not paint around the side-nav */
+.side-nav::before { display: none; }
 
 .side-nav.visible {
   opacity: 1;
