@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=188">
+  <link rel="stylesheet" href="style.css?v=189">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -650,24 +650,6 @@
       if (reduce) return;
       new IntersectionObserver(es => { es[0].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
-  })();
-</script>
-<script>
-  // Scroll-condense: the nav tightens into a compact state once scrolled past the top
-  (function () {
-    var nav = document.querySelector('nav');
-    if (!nav) return;
-    var ticking = false;
-    function update() {
-      var y = window.scrollY || window.pageYOffset;
-      if (y > 24) nav.classList.add('is-scrolled');
-      else if (y < 8) nav.classList.remove('is-scrolled'); // hysteresis avoids threshold flicker
-      ticking = false;
-    }
-    window.addEventListener('scroll', function () {
-      if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }, { passive: true });
-    update();
   })();
 </script>
 </body>
