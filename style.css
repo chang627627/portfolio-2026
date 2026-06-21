@@ -80,13 +80,42 @@ nav {
   left: 50%;
   transform: translateX(-50%);
   z-index: 100;
-  background: rgba(20, 20, 20, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  /* Specular glass: a faint top-lit fill over a saturated frosted base — reads as
+     a real frosted slab rather than a flat translucent div (the 2026 material tell) */
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 55%),
+    rgba(18, 18, 20, 0.72);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border: none; /* the hairline is drawn by the nav::before gradient ring below */
   border-radius: var(--radius);
   width: 760px;
   gap: 32px;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.09),    /* specular lip on the top edge */
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),  /* base hairline all around */
+    0 8px 24px rgba(0, 0, 0, 0.42),             /* lift */
+    0 1px 2px rgba(0, 0, 0, 0.30);              /* contact */
+}
+
+/* bright-top gradient hairline (light-catch edge) via a mask-composite ring */
+nav::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 42%, rgba(255, 255, 255, 0.015));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* opaque fallback where backdrop-filter is unsupported */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  nav { background: rgba(18, 18, 20, 0.92); }
 }
 
 .logo {
@@ -131,6 +160,11 @@ nav {
 }
 
 .nav-links a:not(.nav-cta):hover::after {
+  width: 100%;
+}
+
+/* persistent underline under the current page — the nav's "you are here" tick */
+.nav-links a.nav-active::after {
   width: 100%;
 }
 
@@ -3708,6 +3742,7 @@ footer {
   .nav-links a {
     color: var(--text);
   }
+  .nav-links a::after { display: none; } /* no underline tick in the full-screen overlay */
 
   .nav-cta {
     font-size: 18px !important;
@@ -3727,6 +3762,7 @@ footer {
     border-color: transparent;
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    box-shadow: none;
     transform: none;
     left: 0;
     width: 100%;
@@ -3734,6 +3770,7 @@ footer {
     top: 0;
     padding: 22px 20px;
   }
+  body.menu-open nav::before { display: none; } /* drop the glass ring when the overlay is open */
 
   .hero {
     padding: 120px 24px 40px;
