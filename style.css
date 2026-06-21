@@ -89,7 +89,7 @@ nav {
   -webkit-backdrop-filter: blur(28px) saturate(1.4);
   border: none; /* the hairline is drawn by the nav::before gradient ring below */
   border-radius: var(--radius);
-  width: 760px;
+  width: 700px; /* the condensed ("after shrink") size, kept static, with the lighter before-shrink glass opacity */
   gap: 32px;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.09),    /* specular lip on the top edge */
