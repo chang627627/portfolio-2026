@@ -14,6 +14,7 @@ body.menu-open {
   --surface: #1a1a1a;
   --text: #f0f0f0;
   --text-muted: #888;
+  --text-soft: #a0a0a0; /* mid-tier grey for long-read body text (bio, quotes); --text-muted stays for dates/metadata */
   --accent: #e0e0e0;
   --radius: 8px;
   --max-width: 960px;
@@ -1133,6 +1134,17 @@ nav {
   padding: 0 0 96px;
 }
 
+/* Last content section before the footer — match the case-study gap
+   (.project-content uses 200px bottom; mobile uses the tighter 80px) */
+.media-section--end {
+  padding-bottom: 200px;
+}
+@media (max-width: 768px) {
+  .media-section--end {
+    padding-bottom: 80px;
+  }
+}
+
 .media-section h3 {
   font-size: 22px;
   font-weight: 400;
@@ -1170,7 +1182,7 @@ nav {
 .testimonials {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 0 200px;
+  padding: 0 0 96px; /* matches the section rhythm — Testimonials now sits mid-page (Podcasts is last, its 96px + the footer's 160px top carry the gap to the footer) */
 }
 
 .testimonials h3 {
@@ -1194,7 +1206,7 @@ nav {
 .testimonial-quote {
   font-size: 16px;
   line-height: 1.6;
-  color: var(--text-muted);
+  color: var(--text-soft);
   margin-bottom: 24px;
 }
 
@@ -1659,7 +1671,7 @@ footer {
 
 .about-block p {
   font-size: 16px;
-  color: var(--text-muted);
+  color: var(--text-soft);
   line-height: 1.6;
   margin: 0 0 8px 0;
 }
@@ -1695,9 +1707,7 @@ footer {
 }
 
 .experience-list {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  column-gap: 28px;
+  display: block;
 }
 
 .experience-list li,
@@ -1723,7 +1733,16 @@ footer {
 }
 
 .exp-company {
-  flex: 1;
+  color: var(--text-muted);
+}
+
+/* B1: name · detail on one line — a middot separates the white name from the
+   muted detail, so there is no middle column to drift out of alignment between
+   the Experience / Education / Recognition sections */
+.exp-company::before {
+  content: "·";
+  margin-right: 8px;
+  color: var(--text-muted);
 }
 
 .exp-date {
@@ -1731,14 +1750,6 @@ footer {
   color: var(--text-muted);
   flex-shrink: 0;
   margin-left: auto;
-}
-
-.experience-list li {
-  display: grid;
-  grid-template-columns: subgrid;
-  grid-column: 1 / -1;
-  column-gap: 28px;
-  align-items: baseline;
 }
 
 .exp-row {
@@ -1756,6 +1767,7 @@ footer {
   }
   .exp-role { grid-area: role; }
   .exp-company { grid-area: company; }
+  .exp-company::before { content: none; } /* no middot in the stacked mobile layout */
   .exp-date { grid-area: date; }
 }
 
