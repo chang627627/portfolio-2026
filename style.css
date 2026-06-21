@@ -2880,6 +2880,26 @@ footer {
   }
 }
 
+/* Coffee Chat iteration before/after plate: a square lavender plate that contains
+   transparent widget screenshots regardless of their aspect. The image is
+   absolutely positioned so a tall "before" shot can't blow the square out
+   (a %-height in-flow image was overriding aspect-ratio and stretching the box). */
+.iter-plate {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius);
+  background-color: #D0D1FD;
+  overflow: hidden;
+}
+.iter-example__cell .iter-plate img {
+  position: absolute;
+  inset: 24px;
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+  object-fit: contain;
+  display: block;
+}
+
 /* Phone-screen flow grid (NOVA Challenge 2) */
 .phone-flow {
   display: flex;
