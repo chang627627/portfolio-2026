@@ -1135,13 +1135,15 @@ nav {
 }
 
 /* Last content section before the footer — match the case-study gap
-   (.project-content uses 200px bottom; mobile uses the tighter 80px) */
+   (.project-content uses 200px bottom on desktop) */
 .media-section--end {
   padding-bottom: 200px;
 }
+/* Books + Podcasts are hidden on mobile (per user) — Testimonials becomes the
+   last section, and its 80px mobile bottom padding carries the gap to the footer */
 @media (max-width: 768px) {
-  .media-section--end {
-    padding-bottom: 80px;
+  .media-section {
+    display: none;
   }
 }
 
