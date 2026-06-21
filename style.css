@@ -1668,10 +1668,36 @@ footer {
   margin-bottom: 0;
 }
 
+/* Skills + Tools side by side on desktop (break the single-column wall) */
+.about-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 64px;
+  margin-bottom: 96px;
+}
+.about-cols .about-block {
+  margin-bottom: 0;
+}
+@media (max-width: 768px) {
+  .about-cols {
+    display: block;
+    margin-bottom: 0;
+  }
+  .about-cols .about-block {
+    margin-bottom: 96px;
+  }
+}
+
 /* Experience & Recognition Lists */
 .experience-list,
 .recognition-list {
   list-style: none;
+}
+
+.experience-list {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  column-gap: 28px;
 }
 
 .experience-list li,
@@ -1708,13 +1734,29 @@ footer {
 }
 
 .experience-list li {
-  display: block;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  column-gap: 28px;
+  align-items: baseline;
 }
 
 .exp-row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
+  display: contents;
+}
+
+@media (max-width: 768px) {
+  .experience-list { display: block; }
+  .experience-list li {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "role date" "company company";
+    column-gap: 16px;
+    row-gap: 2px;
+  }
+  .exp-role { grid-area: role; }
+  .exp-company { grid-area: company; }
+  .exp-date { grid-area: date; }
 }
 
 .exp-blurb {
