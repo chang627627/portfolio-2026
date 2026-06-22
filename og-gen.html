@@ -16,21 +16,22 @@
     font-weight: 400;
     color: #f0f0f0;
   }
-  /* Hero mesh hues filling the full frame — no black anywhere. Deep-violet
-     base under four corner pools (wide 65% stops so they blend across the
-     center), full-bleed inset so blur(60px) never reveals an edge. */
+  /* Hero g2 hues filling the full frame — warm (yellow/red/pink) across the top
+     flowing into blue across the bottom, mirroring the live hero + favicon.
+     Wide ~64% stops + a warm→blue base so no dark areas show; full-bleed inset
+     so blur(60px) never reveals an edge. */
   .mesh {
     position: absolute;
     inset: -12%;
     pointer-events: none;
     z-index: 0;
     background:
-      radial-gradient(ellipse at 22% 22%, rgba(100, 70, 220, 0.7), transparent 65%),
-      radial-gradient(ellipse at 80% 24%, rgba(140, 90, 230, 0.55), transparent 65%),
-      radial-gradient(ellipse at 78% 80%, rgba(255, 120, 110, 0.6), transparent 65%),
-      radial-gradient(ellipse at 24% 84%, rgba(255, 150, 120, 0.45), transparent 65%),
-      radial-gradient(ellipse at 50% 52%, rgba(120, 80, 225, 0.35), transparent 60%),
-      linear-gradient(135deg, #1c1340, #2a1430);
+      radial-gradient(ellipse at 24% 18%, rgba(255, 205, 40, 0.60), transparent 64%),
+      radial-gradient(ellipse at 80% 20%, rgba(255, 70, 95, 0.58), transparent 64%),
+      radial-gradient(ellipse at 52% 42%, rgba(255, 60, 176, 0.50), transparent 62%),
+      radial-gradient(ellipse at 20% 84%, rgba(34, 112, 255, 0.66), transparent 64%),
+      radial-gradient(ellipse at 82% 82%, rgba(28, 96, 236, 0.62), transparent 64%),
+      linear-gradient(165deg, #3a163c, #142a72);
     filter: blur(60px);
   }
   .content {
