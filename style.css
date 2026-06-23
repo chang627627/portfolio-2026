@@ -3401,9 +3401,10 @@ footer {
   .play-column {
     display: contents;
   }
-  /* Promote the two GPT Image 2 features to top of mobile stack */
-  .play-card { order: 1; }
-  .play-card--m-feature { order: 0; }
+  /* Mobile has its own independent card order via per-card inline `--mo`
+     (set in play.html). Desktop never consumes --mo, so the 2-column desktop
+     layout is unaffected — the two orders are fully decoupled. */
+  .play-card { order: var(--mo, 99); }
 }
 
 .play-card {
