@@ -180,7 +180,7 @@
       <p class="section-label">Solution</p>
       <h2>An agent that scopes the job before it shops it</h2>
       <p>Homewise acts on the reframe: scope first, price second. It turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms, pausing for your approval before anything moves.</p>
-      <p>Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back, so we built a structured workflow, not a chatbot.</p>
+      <p>Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back. <span style="color: var(--text);">A chatbot would leave them guessing at both, so I pushed for a structured workflow instead.</span></p>
     </div>
 
     <table class="compare-table">
@@ -349,8 +349,7 @@
     <div id="collaboration" class="project-section">
       <p class="section-label">Collaboration</p>
       <h2>We skipped Figma and built the design in code</h2>
-      <p>Working closely with the PM and the engineers, we made an unusual call: skip Figma entirely. The design lived in the codebase from day one, a real React prototype on top of the Hearth design system, instead of static mockups. When it was ready, we handed the dev team the repo itself, so they could spin up their own front end environment and wire in the real backend and APIs without redrawing a thing. That prototype became the foundation of the real system, with Claude reading the photos, Shovels.ai supplying verified permit history, and Twilio handling the messaging.</p>
-      <p>Skipping Figma did not mean closing the door on it. If the team ever needs a traditional Figma handoff, I can push the prototype from Claude Code into Figma through Figma's MCP server, which turns the running interface into editable Figma frames. The code stays the source of truth, and Figma becomes a step we reach for only when it earns its place.</p>
+      <p>Working closely with the PM and engineers, we made an unusual call: skip Figma and design in the codebase from day one, a real React prototype on Hearth. We handed the dev team the repo itself, and they built the real backend straight onto it. Skipping Figma did not close the door on it. If the team ever needs a traditional handoff, I can push the prototype from Claude Code into Figma through its MCP server, turning the running interface into editable frames. The code stays the source of truth, and Figma is a step we reach for only when it earns its place.</p>
     </div>
 
     <div class="deliverable">
@@ -369,8 +368,7 @@
     <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
       <h2>Trust was the hard part, not the automation</h2>
-      <p>Homewise reframed what I thought the hard part of an AI product was. It was never the automation. It was trust. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Defining scope before price, and pausing for approval before hiring, were not features. They were how the product earned the right to act. Trust turned out to be a data problem as much as an AI one: the match only felt credible because its eligibility filter and scoring ran on real license and permit records, not the model's best guess.</p>
-      <p>It was also my first time building a front end prototype entirely in Claude Code, and the handoff is what sold me. The dev team took the working build as their starting point and wired in the real backend, with no mockups to redraw. The design wasn't a picture of the product. It was the first version of it.</p>
+      <p>The hard part was never the automation. It was trust. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Trust was a data problem as much as an AI one, credible only because the matching ran on real license and permit records, not the model's best guess. Building a front end prototype in Claude Code for the first time reframed the deliverable too. The design wasn't a picture of the product. It was the first version of it.</p>
     </div>
 
   </section>
