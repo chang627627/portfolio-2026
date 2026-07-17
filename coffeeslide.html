@@ -184,6 +184,11 @@
 
     .split { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; margin-top: 48px; }
     .split .plate img { max-height: 600px; }
+    .intro-photo {
+      width: 100%; display: block;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+    }
     .note-list { display: flex; flex-direction: column; gap: 30px; }
     .note h4 { font-size: 26px; font-weight: 400; margin-bottom: 10px; }
     .note p { font-size: 20px; line-height: 1.55; color: var(--text-soft); }
@@ -422,7 +427,7 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     Chang Mou
   </a>
-  <div class="deck-counter"><b id="cur">01</b> / <span id="total">19</span></div>
+  <div class="deck-counter"><b id="cur">01</b> / <span id="total">20</span></div>
 
   <div class="deck" id="deck">
     <div class="stage" id="stage">
@@ -442,7 +447,21 @@
           </div>
         </section>
 
-        <!-- 2 · Overview -->
+        <!-- 2 · Hello -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Hello</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">I'm Chang Mou</h2>
+                <p class="s-body">A product designer shaping AI products with taste. I design intuitive products across SaaS, emerging tech, and social impact, with 3.5+ years turning research into real outcomes.</p>
+              </div>
+              <img class="intro-photo" src="images/profile.jpg" alt="Chang Mou" decoding="async">
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 · Overview -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Overview</p>
