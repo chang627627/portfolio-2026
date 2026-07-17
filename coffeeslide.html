@@ -33,7 +33,7 @@
       --text: #f0f0f0;
       --text-muted: #888;
       --text-soft: #a0a0a0;
-      --accent: #0094ff;
+      --accent: #1e78ff;         /* the deck's own gradient blue; #0094FF stays NOVA-only */
       --plate: #d0d1fd;         /* lavender app-screen plate, matches coffee.html */
       --radius: 12px;
       --line: rgba(255,255,255,0.08);
@@ -78,6 +78,7 @@
       flex: 0 0 1920px;
       width: 1920px; height: 1080px;
       overflow: hidden;
+      position: relative;               /* pin-layer anchor */
       display: flex; align-items: stretch;
       padding: 84px 120px;
     }
@@ -85,10 +86,19 @@
       width: 100%; height: 100%;
       display: flex; flex-direction: column; justify-content: center;
     }
-    /* Media-forward slides that end in a single full plate: the header stays
-       pinned to the top and the image grows to fill all remaining height
-       (bigger image, consistent header position, and it can never clip). */
-    .slide-inner > .plate:last-child { flex: 1 1 auto; min-height: 0; margin-top: 48px; }
+    /* Every content slide anchors its header at one canvas position (y=150)
+       so the label/title never jump as you arrow through; the title and
+       closing slides keep their centered bookend layout. */
+    .slide:not(.slide--title):not(.slide--end) { padding-top: 150px; }
+    .slide:not(.slide--title):not(.slide--end) .slide-inner { justify-content: flex-start; }
+    /* Media-forward slides that end in a single full plate: the image grows to
+       fill all remaining height, shrink-wrapped so the lavender mat stays
+       symmetric instead of stretching to full width. */
+    .slide-inner > .plate:last-child {
+      flex: 1 1 auto; min-height: 0; margin-top: 32px;
+      align-self: center; width: fit-content; max-width: 100%;
+      padding: 56px 72px;
+    }
     .slide-inner > .plate:last-child img { max-height: 100%; }
 
     /* ===== Reveal on active slide ===== */
@@ -173,7 +183,7 @@
     .plate img { max-width: 100%; max-height: 560px; object-fit: contain; display: block; }
 
     .split { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; margin-top: 48px; }
-    .split .plate img { max-height: 660px; }
+    .split .plate img { max-height: 600px; }
     .note-list { display: flex; flex-direction: column; gap: 30px; }
     .note h4 { font-size: 26px; font-weight: 400; margin-bottom: 10px; }
     .note p { font-size: 20px; line-height: 1.55; color: var(--text-soft); }
@@ -182,8 +192,8 @@
     .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; }
     .ba figure { display: flex; flex-direction: column; gap: 18px; }
     .ba .plate img { max-height: 500px; }
-    .ba figcaption { font-size: 20px; line-height: 1.5; color: var(--text-soft); }
-    .tag { display: inline-block; font-size: 15px; padding: 3px 12px; border-radius: 999px; margin-right: 10px; vertical-align: 2px; }
+    .ba figcaption { font-size: 20px; line-height: 1.5; color: var(--text-soft); display: flex; gap: 12px; align-items: baseline; }
+    .tag { display: inline-block; flex: 0 0 auto; font-size: 15px; padding: 3px 12px; border-radius: 999px; }
     .tag--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
     .tag--good { background: rgba(34,197,94,0.18); color: #22c55e; }
 
@@ -193,7 +203,7 @@
     .flowcard--good { border-color: rgba(34,197,94,0.28); }
     .flowcard h4 { font-size: 26px; font-weight: 400; margin-bottom: 26px; letter-spacing: -0.01em; }
     .flowcard ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-    .flowcard li { font-size: 22px; color: var(--text-soft); display: flex; gap: 14px; align-items: baseline; }
+    .flowcard li { font-size: 20px; color: var(--text-soft); display: flex; gap: 14px; align-items: baseline; }
     .flow-ic { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 1px; }
     .flow-ic--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
     .flow-ic--good { background: rgba(34,197,94,0.18); color: #22c55e; }
@@ -205,10 +215,10 @@
     .tool-top img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; }
     .tool-top b { font-weight: 400; font-size: 22px; }
     .tool-cat { font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
-    .tool-con { font-size: 19px; line-height: 1.5; color: var(--text-soft); margin-top: auto; }
+    .tool-con { font-size: 20px; line-height: 1.5; color: var(--text-soft); margin-top: auto; }
     .insight {
       margin-top: 30px; padding: 30px 34px; border-radius: var(--radius);
-      background: rgba(0,148,255,0.07); border: 1px solid rgba(0,148,255,0.28);
+      background: rgba(30,120,255,0.07); border: 1px solid rgba(30,120,255,0.28);
       font-size: 26px; line-height: 1.5; color: var(--text);
     }
 
@@ -216,10 +226,10 @@
     .callout {
       margin-top: 48px; padding: 34px 38px; border-radius: var(--radius);
       background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
-      display: flex; gap: 48px; flex-wrap: wrap;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
     }
     .callout .co-num { font-size: 60px; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
-    .callout .co-lbl { font-size: 19px; color: var(--text-muted); margin-top: 10px; }
+    .callout .co-lbl { font-size: 20px; color: var(--text-muted); margin-top: 10px; }
 
     /* closing */
     .slide--end { position: relative; }
@@ -232,10 +242,7 @@
       filter: blur(50px); z-index: 0;
     }
     .slide--end .slide-inner { position: relative; z-index: 1; }
-    .end-stats { display: flex; gap: 60px; flex-wrap: wrap; margin: 40px 0 52px; }
-    .end-stats .es-num { font-size: 84px; letter-spacing: -0.03em; line-height: 1; }
-    .end-stats .es-lbl { font-size: 19px; color: var(--text-soft); margin-top: 10px; }
-    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 48px; }
     .cta {
       display: inline-flex; align-items: center; gap: 11px;
       padding: 18px 30px; border-radius: 999px; font-size: 21px;
@@ -248,10 +255,13 @@
     .cta svg { width: 20px; height: 20px; }
 
     /* ===== Chrome: viewport-fixed overlay (NOT scaled) ===== */
+    /* Full-width gradient revealed by clip-path, so the 4-color ramp is never
+       squashed into a sliver on early slides. */
     .deck-progress {
-      position: fixed; top: 0; left: 0; height: 4px; z-index: 40; width: 0%;
+      position: fixed; top: 0; left: 0; height: 4px; z-index: 40; width: 100%;
       background: linear-gradient(90deg, #ffd600, #ff1e3c, #ff3cb0, #1e78ff);
-      transition: width 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.5s cubic-bezier(0.76, 0, 0.24, 1);
     }
     .deck-brand {
       position: fixed; top: 28px; left: 34px; z-index: 30;
@@ -287,8 +297,113 @@
     .deck-hint kbd { font-family: inherit; font-size: 12px; padding: 2px 7px; border: 1px solid var(--line-2); border-radius: 5px; color: var(--text-soft); }
     .deck-hint.hidden { opacity: 0; pointer-events: none; }
 
+    /* ===== Comment mode (Figma-style pins) =====
+       Pins live INSIDE each .slide (so they ride the track transform) and are
+       anchored at % coordinates of the 1920x1080 stage. A 0x0 .pin-anchor sits
+       at the exact point; the pin/popover scale by 1/--scale about that point
+       so they render at constant screen size at any viewport. */
+    .pin-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+    body.commenting .pin-layer {
+      pointer-events: auto;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M4 26 V10 a6 6 0 0 1 6-6 h10 a6 6 0 0 1 6 6 v4 a6 6 0 0 1-6 6 H10 Z' fill='%23f0f0f0' stroke='%230a0a0a' stroke-width='2'/><path d='M11 12 h8 M15 8 v8' stroke='%230a0a0a' stroke-width='2' stroke-linecap='round'/></svg>") 4 26, crosshair;
+    }
+    .pin-anchor { position: absolute; width: 0; height: 0; }
+    .pin {
+      position: absolute; left: 0; bottom: 0;
+      width: 34px; height: 34px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      transform-origin: bottom left;
+      border-radius: 17px 17px 17px 3px;      /* Figma teardrop, tail at the point */
+      background: #1c1c1c;
+      border: 1.5px solid rgba(255,255,255,0.38);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.55);
+      color: var(--text); font-size: 14px; font-family: inherit; padding: 0;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; pointer-events: auto;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    body.commenting .pin { display: flex; }
+    .pin:hover, .pin.open { background: #2a2a2a; border-color: rgba(255,255,255,0.7); }
+    .cmt-pop {
+      position: absolute;
+      width: 340px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      background: rgba(20,20,20,0.97);
+      border: 1px solid var(--line-2);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      padding: 16px;
+      display: none; flex-direction: column; gap: 10px;
+      pointer-events: auto; cursor: default;
+      font-size: 14px; line-height: 1.5; text-align: left;
+    }
+    body.commenting .cmt-pop { display: flex; }
+    .cmt-pop input, .cmt-pop textarea {
+      font-family: inherit; font-size: 14px; color: var(--text);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--line-2); border-radius: 6px;
+      padding: 8px 10px; outline: none; resize: none;
+    }
+    .cmt-pop input:focus, .cmt-pop textarea:focus { border-color: rgba(255,255,255,0.4); }
+    .cmt-pop textarea { min-height: 64px; }
+    .cmt-pop-row { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+    .cmt-btn {
+      font-family: inherit; font-size: 13px; cursor: pointer;
+      padding: 7px 14px; border-radius: 999px;
+      background: transparent; border: 1px solid var(--line-2); color: var(--text-soft);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .cmt-btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .cmt-btn--solid { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .cmt-btn--solid:hover { background: #fff; color: var(--bg); }
+    .cmt-meta { display: flex; align-items: center; gap: 10px; }
+    .cmt-ava {
+      width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto;
+      background: rgba(255,255,255,0.12); border: 1px solid var(--line-2);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--text);
+    }
+    .cmt-name { color: var(--text); }
+    .cmt-time { color: var(--text-muted); font-size: 12px; }
+    .cmt-text { color: var(--text-soft); white-space: pre-wrap; word-break: break-word; }
+    .cmt-del {
+      background: none; border: none; padding: 0; margin-left: auto;
+      font-family: inherit; font-size: 12px; color: var(--text-muted); cursor: pointer;
+    }
+    .cmt-del:hover { color: #ef4444; }
+
+    /* Comment chrome (viewport-fixed, unscaled) */
+    .navbtn--comment { right: 150px; }
+    .navbtn--comment.on { background: var(--text); color: var(--bg); border-color: var(--text); }
+    .cmt-count {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+      background: var(--text); color: var(--bg);
+      font-size: 11px; line-height: 18px; text-align: center;
+      display: none;
+    }
+    .cmt-count.show { display: block; }
+    .navbtn--comment.on .cmt-count { background: var(--bg); color: var(--text); }
+    .cmt-bar {
+      position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+      z-index: 35;
+      display: none; align-items: center; gap: 14px;
+      padding: 10px 18px; border-radius: 999px;
+      background: rgba(26,26,26,0.85); border: 1px solid var(--line-2);
+      backdrop-filter: blur(10px);
+      font-size: 13.5px; color: var(--text-soft); white-space: nowrap;
+    }
+    body.commenting .cmt-bar { display: inline-flex; }
+    .cmt-bar kbd {
+      font-family: inherit; font-size: 11px; padding: 1px 6px;
+      border: 1px solid var(--line-2); border-radius: 4px; color: var(--text-soft);
+    }
+    .cmt-bar a { color: var(--text); text-decoration: none; }
+    .cmt-bar a:hover { text-decoration: underline; }
+
     @media (max-width: 640px) {
       .deck-hint { display: none; }
+      .navbtn--comment, .cmt-bar { display: none !important; }
       .deck-brand, .deck-counter { font-size: 13px; top: 20px; }
       .deck-brand { left: 20px; } .deck-counter { right: 20px; }
       .navbtn { bottom: 20px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 76px; }
@@ -318,7 +433,7 @@
           <div class="slide-inner">
             <p class="title-kicker">Case Study</p>
             <h1 class="title-h1">Litespace<br>Coffee Chat</h1>
-            <p class="title-sub">AI-powered coffee chat for intentional, pressure-free pairings across hybrid teams.</p>
+            <p class="title-sub">AI-matched pairings that take the social pressure out of meeting hybrid teammates.</p>
             <div class="title-meta">
               <span>Lead Product Designer</span>
               <span>Litespace</span>
@@ -331,9 +446,13 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Overview</p>
-            <h2 class="s-title">Bridging structured meetings and casual interactions</h2>
-            <p class="s-body">Litespace is an AI-powered enterprise platform that helps organizations improve engagement in hybrid and remote workplaces. Coffee Chat is a 0-to-1 feature designed to spark spontaneous, meaningful conversations across distributed teams.</p>
-            <p class="s-body">It turns routine meetings into casual yet purposeful interactions that strengthen culture.</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">Bridging structured meetings and casual interactions</h2>
+                <p class="s-body">Litespace is an AI-powered enterprise platform that helps organizations improve engagement in hybrid and remote workplaces. Coffee Chat is a 0-to-1 feature designed to spark spontaneous, meaningful conversations across distributed teams.</p>
+              </div>
+              <div class="plate"><img src="images/coffeechat-card.png" alt="Coffee Chat in the Litespace app" decoding="async"></div>
+            </div>
           </div>
         </section>
 
@@ -343,9 +462,9 @@
             <p class="s-label">Impact</p>
             <h2 class="s-title">Driving engagement across hybrid teams</h2>
             <div class="grid grid-3">
-              <div class="stat"><span class="stat-num">63%</span><p>Users opted into Coffee Chat within the first month, signaling strong early adoption.</p></div>
+              <div class="stat"><span class="stat-num">63%</span><p>Users opted into Coffee Chat within the first month.</p></div>
               <div class="stat"><span class="stat-num">200+</span><p>Chats generated in the first month through auto-matched pairings.</p></div>
-              <div class="stat"><span class="stat-num">$4.5M</span><p>Company valuation reached alongside the Coffee Chat launch and other key rollouts.</p></div>
+              <div class="stat"><span class="stat-num">$4.5M</span><p>Company valuation reached in the launch cycle that included Coffee Chat.</p></div>
             </div>
           </div>
         </section>
@@ -370,7 +489,7 @@
             <h2 class="s-title">Why existing tools fall short</h2>
             <div class="tools">
               <div class="tool"><div class="tool-top"><img src="images/tool-donut.jpg" alt="Donut" decoding="async"><b>Donut</b></div><span class="tool-cat">Slack bot</span><p class="tool-con">Feels robotic and repetitive if not personalized.</p></div>
-              <div class="tool"><div class="tool-top"><img src="images/tool-watercooler.jpg" alt="Watercooler Trivia" decoding="async"><b>Watercooler</b></div><span class="tool-cat">Slack bot</span><p class="tool-con">Fun, but a shallow connection that can distract.</p></div>
+              <div class="tool"><div class="tool-top"><img src="images/tool-watercooler.jpg" alt="Watercooler Trivia" decoding="async"><b>Watercooler Trivia</b></div><span class="tool-cat">Slack bot</span><p class="tool-con">Fun, but the connection stays shallow and can distract.</p></div>
               <div class="tool"><div class="tool-top"><img src="images/tool-gather.jpg" alt="Gather" decoding="async"><b>Gather</b></div><span class="tool-cat">Virtual space</span><p class="tool-con">High presence, but needs onboarding and feels game-like.</p></div>
               <div class="tool"><div class="tool-top"><img src="images/tool-focusmate.jpg" alt="Focusmate" decoding="async"><b>Focusmate</b></div><span class="tool-cat">Co-working</span><p class="tool-con">Built for deep individual focus, not social interaction.</p></div>
             </div>
@@ -387,7 +506,7 @@
               <div class="card"><h3>Pairing with purpose</h3><p>Match people and clearly explain the reason, so they feel confident joining.</p></div>
               <div class="card"><h3>Conversation starters</h3><p>Suggest topics and icebreakers to help people begin comfortably.</p></div>
               <div class="card"><h3>Smart scheduling</h3><p>Pick preferred times and auto-schedule within available slots.</p></div>
-              <div class="card"><h3>Cross-department</h3><p>Connect people across teams to break silos and grow networks.</p></div>
+              <div class="card"><h3>Cross-department reach</h3><p>Connect people across teams to break silos and grow networks.</p></div>
             </div>
           </div>
         </section>
@@ -412,11 +531,11 @@
             <p class="s-label">Exploration · Challenge 1</p>
             <h2 class="s-title">Creating meaningful pairings</h2>
             <div class="split">
-              <div class="plate"><img src="images/coffee-pairing-card.jpg" alt="AI-generated pairing card showing match reasoning" decoding="async"></div>
+              <div class="plate"><img src="images/coffee-pairing-card-slide.jpg" alt="AI-generated pairing card showing match reasoning" decoding="async"></div>
               <div class="note-list">
                 <div class="note"><h4>AI-generated intro</h4><p>A warm profile summary grounded in each person's background, so users understand who they're meeting beyond a static bio.</p></div>
                 <div class="note"><h4>Explainable match</h4><p>Transparent reasons for the pairing give users the confidence to accept, instead of dismissing a random match.</p></div>
-                <p class="note" style="font-size:19px;line-height:1.55;color:var(--text-soft);">I championed using the GPT-3 API to infer connections from lightweight signals like profiles, onboarding inputs, and shared Slack channels, then generate a plain-language reason for each match.</p>
+                <div class="note"><h4>Powered by GPT-3</h4><p>I championed using the GPT-3 API to infer connections from lightweight signals like profiles, onboarding inputs, and shared Slack channels, then generate a plain-language reason for each match.</p></div>
               </div>
             </div>
           </div>
@@ -426,7 +545,7 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Exploration · Challenge 2</p>
-            <h2 class="s-title">Mapping the user flow</h2>
+            <h2 class="s-title">Remove the messaging, remove the drop-off</h2>
             <p class="s-body">Existing tools rely on back-and-forth DMs that create friction and drop-offs. Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
             <div class="flowcards">
               <div class="flowcard">
@@ -440,7 +559,7 @@
               <div class="flowcard flowcard--good">
                 <h4>Our Coffee Chat flow</h4>
                 <ul>
-                  <li><span class="flow-ic flow-ic--good">✓</span> Automated pairing</li>
+                  <li><span class="flow-ic flow-ic--good">✓</span> Automated pairing and scheduling</li>
                   <li><span class="flow-ic flow-ic--good">✓</span> Clear fallback path, reschedule or skip</li>
                   <li><span class="flow-ic flow-ic--good">✓</span> No direct-message coordination needed</li>
                 </ul>
@@ -457,11 +576,11 @@
             <div class="ba">
               <figure>
                 <div class="plate"><img src="images/onewidget.png" alt="Before: one multi-functional widget" decoding="async"></div>
-                <figcaption><span class="tag tag--bad">Before</span>One multi-functional widget. High cognitive load in user testing.</figcaption>
+                <figcaption><span class="tag tag--bad">Before</span><span>One multi-functional widget. High cognitive load in user testing.</span></figcaption>
               </figure>
               <figure>
                 <div class="plate"><img src="images/twowidgets.png" alt="After: split into two simpler widgets" decoding="async"></div>
-                <figcaption><span class="tag tag--good">After</span>Split into two simpler widgets for availability and reasons. Won internal A/B testing.</figcaption>
+                <figcaption><span class="tag tag--good">After</span><span>Split into two simpler widgets for availability and match reasons. Won the internal A/B test.</span></figcaption>
               </figure>
             </div>
           </div>
@@ -475,11 +594,11 @@
             <div class="ba">
               <figure>
                 <div class="plate"><img src="images/iteration2-before.png" alt="Before: virtual or in-person selection" decoding="async"></div>
-                <figcaption><span class="tag tag--bad">Before</span>Users picked virtual or in-person. It caused delays and confusion.</figcaption>
+                <figcaption><span class="tag tag--bad">Before</span><span>Choosing virtual or in-person caused delays and confusion.</span></figcaption>
               </figure>
               <figure>
                 <div class="plate"><img src="images/iteration2-after.png" alt="After: simplified scheduling" decoding="async"></div>
-                <figcaption><span class="tag tag--good">After</span>Format selection removed. In-person was rarely chosen in a remote setting, so scheduling is simpler and faster.</figcaption>
+                <figcaption><span class="tag tag--good">After</span><span>Format selection removed. In-person was rarely chosen in a remote setting, so scheduling is simpler and faster.</span></figcaption>
               </figure>
             </div>
           </div>
@@ -489,8 +608,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final Design · 1 of 5</p>
-            <h2 class="s-title">Seamless scheduling with contextual matchmaking</h2>
-            <p class="s-body">Coffee Chat auto-pairs users each week based on availability, integrated with Google Calendar. Matches carry shared interests and suggested topics, and the chat is set to "Going" by default. On confirmation, the system generates a Google Meet link and adds it to both calendars.</p>
+            <h2 class="s-title">Scheduling with contextual matchmaking</h2>
+            <p class="s-body">Coffee Chat auto-pairs users each week based on Google Calendar availability. Matches carry shared interests and suggested topics, and confirmation adds a Meet link to both calendars.</p>
             <div class="plate"><img src="images/coffeefinal1.png" alt="Seamless scheduling with contextual matchmaking" decoding="async"></div>
           </div>
         </section>
@@ -500,7 +619,7 @@
           <div class="slide-inner">
             <p class="s-label">Final Design · 2 of 5</p>
             <h2 class="s-title">Handling chat declines without friction</h2>
-            <p class="s-body">If either participant declines, both users see a notification. No reason is required. Users are simply told their next coffee chat will be scheduled in the following cycle.</p>
+            <p class="s-body">If either person declines, both see a notification. No reason is required. Their next chat is simply scheduled for the following cycle.</p>
             <div class="plate"><img src="images/handling-declines.png" alt="Handling chat declines without friction" decoding="async"></div>
           </div>
         </section>
@@ -509,8 +628,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final Design · 3 of 5</p>
-            <h2 class="s-title">Flexible scheduling for better availability</h2>
-            <p class="s-body">To reschedule, users pick from alternative slots automatically recommended from both people's availability. Pre-selected options keep it quick. Once both agree on a new time, the chat is confirmed.</p>
+            <h2 class="s-title">Rescheduling from recommended slots</h2>
+            <p class="s-body">To reschedule, users pick from alternative slots automatically recommended from both people's availability. Pre-selected options keep it quick.</p>
             <div class="plate"><img src="images/Flexible1.png" alt="Reschedule with recommended time slots" decoding="async"></div>
           </div>
         </section>
@@ -519,8 +638,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final Design · 4 of 5</p>
-            <h2 class="s-title">Review and select proposed times</h2>
-            <p class="s-body">If the other person proposes new times, users review and pick a slot that works for both. It stays flexible while keeping a structured approach, reducing the need for back-and-forth coordination.</p>
+            <h2 class="s-title">Reviewing the other person's proposed times</h2>
+            <p class="s-body">If the other person proposes new times, users pick the one that works for both. No DMs, no coordination thread.</p>
             <div class="plate"><img src="images/Flexible2.png" alt="Review and select proposed times" decoding="async"></div>
           </div>
         </section>
@@ -529,8 +648,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final Design · 5 of 5</p>
-            <h2 class="s-title">Propose your own availability</h2>
-            <p class="s-body">If none of the suggested times work, users can propose their own availability for the other person to review. This flexible approach increases the likelihood of finding a time that works for both.</p>
+            <h2 class="s-title">Proposing your own availability</h2>
+            <p class="s-body">If none of the suggested times work, users propose their own availability for the other person to review, so scheduling never hits a dead end.</p>
             <div class="plate"><img src="images/Flexible3.png" alt="Propose your own availability" decoding="async"></div>
           </div>
         </section>
@@ -539,8 +658,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Design System</p>
-            <h2 class="s-title">A new identity design system</h2>
-            <p class="s-body">I partnered with another designer to build the atomic foundations of the new identity, defining color tokens and typography. I also created molecule-level components that balance consistency with flexibility across product needs.</p>
+            <h2 class="s-title">A design system for the new identity</h2>
+            <p class="s-body">I partnered with another designer to build the atomic foundations of the new identity, defining color tokens and typography. I also created the molecule-level components on top of them: buttons, badges, alerts, and cards.</p>
             <div class="plate"><img src="images/coffeedesignsystem.png" alt="New identity design system" decoding="async"></div>
           </div>
         </section>
@@ -550,26 +669,20 @@
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
             <h2 class="s-title">What I learned</h2>
-            <p class="s-body">Designing Coffee Chat during the shift from a green identity to a blue-focused system taught me to stay flexible while keeping the experience clear and lightweight.</p>
-            <p class="s-body">With only two weeks, I focused the MVP on one meaningful weekly pairing and removed anything that added friction. Working with early AI pairing logic gave me a deeper understanding of how contextual signals shape user trust.</p>
+            <p class="s-body">Designing Coffee Chat mid-rebrand taught me to design for the identity that was coming, not the one being retired.</p>
+            <p class="s-body">With only two weeks, I focused the MVP on one meaningful weekly pairing and removed anything that added friction. Working with early AI pairing logic showed me how contextual signals shape user trust.</p>
           </div>
         </section>
 
-        <!-- 19 · Closing -->
+        <!-- 19 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
-            <p class="s-label">Litespace Coffee Chat</p>
-            <h2 class="s-title">Intentional pairings, without the pressure.</h2>
-            <div class="end-stats">
-              <div><div class="es-num">63%</div><div class="es-lbl">opted in, month one</div></div>
-              <div><div class="es-num">200+</div><div class="es-lbl">chats generated</div></div>
-              <div><div class="es-num">$4.5M</div><div class="es-lbl">valuation reached</div></div>
-            </div>
+            <p class="s-label">Thank you</p>
+            <h2 class="s-title">See it in full</h2>
             <div class="cta-row">
               <a class="cta cta--solid" href="coffee.html">View the full case study
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
               </a>
-              <a class="cta" href="index.html">Back to portfolio</a>
               <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
             </div>
           </div>
@@ -577,6 +690,16 @@
 
       </div>
     </div>
+  </div>
+
+  <button class="navbtn navbtn--comment" id="cmtToggle" aria-label="Comment mode (C)" title="Comment mode (C)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="cmt-count" id="cmtCount"></span>
+  </button>
+  <div class="cmt-bar" id="cmtBar">
+    <span>Comment mode · click anywhere on a slide to leave a note</span>
+    <a href="#" id="cmtSend" hidden>Send notes to Chang ↗</a>
+    <span><kbd>Esc</kbd> to exit</span>
   </div>
 
   <button class="navbtn navbtn--prev" id="prev" aria-label="Previous slide" disabled>
@@ -613,7 +736,9 @@
 
       // Scale the fixed 1920×1080 stage to fit the viewport (letterboxed).
       function fit() {
-        const s = Math.min(window.innerWidth / SLIDE_W, window.innerHeight / SLIDE_H);
+        // Reserve a 76px chrome lane (brand row top, nav circles bottom) so the
+        // fixed chrome never sits on top of stage content at any window size.
+        const s = Math.min(window.innerWidth / SLIDE_W, (window.innerHeight - 76) / SLIDE_H);
         stage.style.setProperty('--scale', s);
       }
       window.addEventListener('resize', fit, { passive: true });
@@ -625,7 +750,7 @@
 
       function render() {
         track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
-        progress.style.width = ((index + 1) / total * 100) + '%';
+        progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
         curEl.textContent = pad(index + 1);
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index === total - 1;
@@ -652,6 +777,7 @@
       }
 
       document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) return; // typing a comment
         if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(index + 1); dismissHint(); }
         else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(index - 1); dismissHint(); }
         else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); go(index + 1); dismissHint(); }
@@ -666,6 +792,7 @@
       deck.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true; }, { passive: true });
       deck.addEventListener('touchend', (e) => {
         if (!tracking) return;
+        if (document.body.classList.contains('commenting')) { tracking = false; return; }
         tracking = false;
         const dx = e.changedTouches[0].clientX - sx;
         const dy = e.changedTouches[0].clientY - sy;
@@ -679,6 +806,178 @@
 
       render();
       setTimeout(dismissHint, 6000);
+    })();
+  </script>
+
+  <script>
+    // Comment mode — Figma-style pins. Notes are stored in the reviewer's own
+    // browser (localStorage); "Send notes" packages them into a prefilled email.
+    (function () {
+      const KEY = 'coffeeslide_comments_v1';
+      const NAME_KEY = 'coffeeslide_commenter';
+      const EMAIL = 'changmou627627@gmail.com';
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const layers = slides.map((s) => {
+        const l = document.createElement('div');
+        l.className = 'pin-layer';
+        s.appendChild(l);
+        return l;
+      });
+      const toggle = document.getElementById('cmtToggle');
+      const countEl = document.getElementById('cmtCount');
+      const sendEl = document.getElementById('cmtSend');
+      let comments = [];
+      try { comments = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+      let pop = null; // currently-open popover node (draft: whole anchor, view: just the card)
+
+      function save() { localStorage.setItem(KEY, JSON.stringify(comments)); }
+      function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+      function closePop() {
+        if (pop) { pop.remove(); pop = null; }
+        document.querySelectorAll('.pin.open').forEach(p => p.classList.remove('open'));
+      }
+
+      function updateChrome() {
+        const n = comments.length;
+        countEl.textContent = n;
+        countEl.classList.toggle('show', n > 0);
+        sendEl.hidden = n === 0;
+        sendEl.textContent = 'Send ' + n + (n === 1 ? ' note' : ' notes') + ' to Chang ↗';
+        const lines = ['Hi Chang,', '', 'Notes on your Coffee Chat deck:', ''];
+        comments.slice().sort((a, b) => a.slide - b.slide || a.ts - b.ts)
+          .forEach(c => lines.push('Slide ' + (c.slide + 1) + ' · ' + c.name + ': ' + c.text));
+        sendEl.href = 'mailto:' + EMAIL +
+          '?subject=' + encodeURIComponent('Feedback on your Coffee Chat deck') +
+          '&body=' + encodeURIComponent(lines.join('\n'));
+      }
+
+      function anchorAt(layer, x, y) {
+        const a = document.createElement('div');
+        a.className = 'pin-anchor';
+        a.style.left = (x * 100) + '%';
+        a.style.top = (y * 100) + '%';
+        layer.appendChild(a);
+        return a;
+      }
+
+      // Open the card away from the nearest slide edges, scaling from the
+      // corner closest to the anchor so it grows away from the pin.
+      function placePop(el, x, y) {
+        const h = x > 0.62 ? 'right' : 'left';
+        const v = y > 0.55 ? 'bottom' : 'top';
+        el.style[h] = '10px';
+        el.style[v] = (v === 'bottom') ? '46px' : '10px';
+        el.style.transformOrigin = v + ' ' + h;
+      }
+
+      function openDraft(slideIdx, x, y) {
+        closePop();
+        const a = anchorAt(layers[slideIdx], x, y);
+        const savedName = localStorage.getItem(NAME_KEY) || '';
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        el.innerHTML =
+          '<input type="text" class="cmt-in-name" placeholder="Your name" maxlength="40" value="' + esc(savedName) + '">' +
+          '<textarea class="cmt-in-text" placeholder="Leave a note on this slide" maxlength="600"></textarea>' +
+          '<div class="cmt-pop-row">' +
+            '<button class="cmt-btn" data-act="cancel">Cancel</button>' +
+            '<button class="cmt-btn cmt-btn--solid" data-act="post">Post</button>' +
+          '</div>';
+        placePop(el, x, y);
+        a.appendChild(el);
+        pop = a;
+        const nameIn = el.querySelector('.cmt-in-name');
+        const textIn = el.querySelector('.cmt-in-text');
+        (savedName ? textIn : nameIn).focus();
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const act = e.target.dataset && e.target.dataset.act;
+          if (act === 'cancel') closePop();
+          if (act === 'post') {
+            const name = nameIn.value.trim() || 'Anonymous';
+            const text = textIn.value.trim();
+            if (!text) { textIn.focus(); return; }
+            localStorage.setItem(NAME_KEY, name);
+            comments.push({
+              id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+              slide: slideIdx, x, y, name, text, ts: Date.now(),
+            });
+            save(); closePop(); render();
+          }
+        });
+        textIn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) el.querySelector('[data-act="post"]').click();
+        });
+      }
+
+      function openView(c, pinAnchor, pinEl) {
+        closePop();
+        pinEl.classList.add('open');
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        const when = new Date(c.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        el.innerHTML =
+          '<div class="cmt-meta">' +
+            '<span class="cmt-ava">' + esc((c.name[0] || '?').toUpperCase()) + '</span>' +
+            '<span class="cmt-name">' + esc(c.name) + '</span>' +
+            '<span class="cmt-time">' + when + '</span>' +
+            '<button class="cmt-del" data-act="del">Delete</button>' +
+          '</div>' +
+          '<div class="cmt-text">' + esc(c.text) + '</div>';
+        placePop(el, c.x, c.y);
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (e.target.dataset && e.target.dataset.act === 'del') {
+            comments = comments.filter(k => k.id !== c.id);
+            save(); closePop(); render();
+          }
+        });
+        pinAnchor.appendChild(el);
+        pop = el;
+      }
+
+      function render() {
+        layers.forEach(l => { l.innerHTML = ''; });
+        pop = null;
+        comments.slice().sort((a, b) => a.ts - b.ts).forEach((c, i) => {
+          const layer = layers[c.slide];
+          if (!layer) return;
+          const a = anchorAt(layer, c.x, c.y);
+          const p = document.createElement('button');
+          p.className = 'pin';
+          p.type = 'button';
+          p.textContent = i + 1;
+          p.setAttribute('aria-label', 'Note ' + (i + 1) + ' by ' + c.name);
+          p.addEventListener('click', (e) => { e.stopPropagation(); openView(c, a, p); });
+          a.appendChild(p);
+        });
+        updateChrome();
+      }
+
+      layers.forEach((l, idx) => {
+        l.addEventListener('click', (e) => {
+          if (e.target !== l) return; // pins/popovers handle their own clicks
+          const r = l.getBoundingClientRect();
+          openDraft(idx, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+        });
+      });
+
+      function setMode(on) {
+        document.body.classList.toggle('commenting', on);
+        toggle.classList.toggle('on', on);
+        if (!on) closePop();
+      }
+      toggle.addEventListener('click', () => setMode(!document.body.classList.contains('commenting')));
+      document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) {
+          if (e.key === 'Escape') closePop();
+          return;
+        }
+        if (e.key === 'c' || e.key === 'C') setMode(!document.body.classList.contains('commenting'));
+        if (e.key === 'Escape') { if (pop) closePop(); else setMode(false); }
+      });
+
+      render();
     })();
   </script>
 </body>
