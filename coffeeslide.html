@@ -184,8 +184,9 @@
 
     .split { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; margin-top: 48px; }
     .split .plate img { max-height: 600px; }
-    .intro-photo {
-      width: 100%; display: block;
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .intro-grid img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
       border-radius: var(--radius);
       border: 1px solid var(--line);
     }
@@ -454,9 +455,15 @@
             <div class="split">
               <div>
                 <h2 class="s-title">I'm Chang Mou</h2>
-                <p class="s-body">A product designer shaping AI products with taste. I design intuitive products across SaaS, emerging tech, and social impact, with 3.5+ years turning research into real outcomes.</p>
+                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
+                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
               </div>
-              <img class="intro-photo" src="images/profile.jpg" alt="Chang Mou" decoding="async">
+              <div class="intro-grid">
+                <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
+                <img src="images/food.jpeg" alt="Cooking" decoding="async">
+                <img src="images/pier.jpeg" alt="Walking the city" decoding="async">
+                <img src="images/jenga.jpeg" alt="With friends" decoding="async">
+              </div>
             </div>
           </div>
         </section>
