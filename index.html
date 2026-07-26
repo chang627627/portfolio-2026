@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chang Mou — Product Designer</title>
-  <meta name="description" content="iF & Red Dot winner. Shaping AI products with taste.">
+  <meta name="description" content="Chang Mou is an AI-first product designer in San Francisco. iF & Red Dot Award winner who prototypes in real code. Open to new opportunities.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://www.chang-mou.com/">
   <meta property="og:title" content="Chang Mou — Product Designer">
@@ -20,6 +20,52 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=192">
+  <link rel="canonical" href="https://www.chang-mou.com/">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Chang Mou",
+    "jobTitle": "Product Designer",
+    "description": "AI-first product designer in San Francisco, prototyping in real code.",
+    "url": "https://www.chang-mou.com/",
+    "email": "mailto:changmou627627@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "San Francisco",
+      "addressRegion": "CA",
+      "addressCountry": "US"
+    },
+    "alumniOf": [
+      {
+        "@type": "CollegeOrUniversity",
+        "name": "California College of the Arts"
+      },
+      {
+        "@type": "CollegeOrUniversity",
+        "name": "Simon Fraser University"
+      }
+    ],
+    "award": [
+      "iF Design Award, Winner (2026)",
+      "Red Dot Design Award, Winner (2025, 2026)",
+      "NY Product Design Awards, Silver Winner (2025, 2026)",
+      "European Product Design Award, Winner (2025)"
+    ],
+    "sameAs": [
+      "https://www.linkedin.com/in/chang-mou/",
+      "https://x.com/changmou627"
+    ],
+    "knowsAbout": [
+      "Product Design",
+      "AI Products",
+      "Design Systems",
+      "Prototyping in Code",
+      "UX Research",
+      "AI Evaluation"
+    ]
+  }
+  </script>
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -117,7 +163,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
-            <p>AI command center for homeowners. Matches verified contractors, compares quotes, and manages repairs from one workspace</p>
+            <p>AI command center for homeowners. Prototyped in code, shipped by the dev team, managing repairs from one workspace</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Professional</span><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
@@ -178,7 +224,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
-            <p>AR navigation system for children that balances independence and parental reassurance</p>
+            <p>AR navigation system for children that balances independence and parental reassurance, tested with 20+ parents and kids</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Academic</span><span class="card-tag">Kids</span><span class="card-tag">AR Wearable</span><span class="card-tag">Speculative Design</span></div>
           </div>
         </div>
@@ -430,14 +476,14 @@
     if (teaser) teaser.classList.remove('visible');
   });
 
-  // First-visit teaser
+  // First-visit teaser: fires on first scroll (not a timer) so it never overlaps the hero headline
   const teaser = document.getElementById('chatTeaser');
   if (teaser && !localStorage.getItem('chat_teaser_seen')) {
-    setTimeout(() => {
+    window.addEventListener('scroll', () => {
       teaser.classList.add('visible');
       localStorage.setItem('chat_teaser_seen', '1');
       setTimeout(() => teaser.classList.remove('visible'), 6000);
-    }, 4000);
+    }, { once: true, passive: true });
   }
   chatClose.addEventListener('click', () => {
     chatPanel.classList.remove('open');

@@ -1,13 +1,36 @@
 module.exports = async function handler(req, res) {
-  // CORS
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  // CORS: only the site's own origins may use this endpoint from a browser
+  const ALLOWED_ORIGINS = [
+    'https://www.chang-mou.com',
+    'https://chang-mou.com',
+    'https://chang-mou-portfolio.vercel.app',
+  ];
+  const origin = req.headers.origin;
+  if (origin && !ALLOWED_ORIGINS.includes(origin)) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+  if (origin) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
+  }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
-  const { message, history } = req.body;
-  if (!message) return res.status(400).json({ error: 'Message is required' });
+  // Best-effort rate limit: 20 requests / 5 min per IP, per warm serverless instance
+  const ip = ((req.headers['x-forwarded-for'] || '').split(',')[0] || '').trim() || 'unknown';
+  const now = Date.now();
+  globalThis.__chatRate = globalThis.__chatRate || new Map();
+  if (globalThis.__chatRate.size > 500) globalThis.__chatRate.clear();
+  const hits = (globalThis.__chatRate.get(ip) || []).filter((t) => now - t < 5 * 60 * 1000);
+  if (hits.length >= 20) return res.status(429).json({ error: 'Too many requests. Try again in a few minutes.' });
+  hits.push(now);
+  globalThis.__chatRate.set(ip, hits);
+
+  const { message, history } = req.body || {};
+  if (!message || typeof message !== 'string') return res.status(400).json({ error: 'Message is required' });
+  if (message.length > 2000) return res.status(400).json({ error: 'Message too long' });
 
   const SYSTEM_PROMPT = `You are Chang Mou's personal AI on his portfolio website. ALWAYS answer in first person as if you ARE Chang Mou (use "I", "my", "me"). Answer questions about your work, skills, experience, and background. Be friendly, concise, and professional. Keep answers short (2-4 sentences) unless asked to elaborate. Never use em dashes (—) in your responses. If you don't know something specific, say so honestly.
 
@@ -71,20 +94,21 @@ Education:
 
 --- PORTFOLIO PROJECTS (what visitors see on this site) ---
 
-- New Craft Society (2026, newest, in active development): a home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. For designers who still believe the work matters. Live at newcraftsociety.com.
+- New Craft Society (2026, newest, in active development): a home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. For designers who still believe the work matters. Live at newcraftsociety.com. I am both a designer on it and one of the product engineers building it.
 - Countersign (2026): agentic credit-analysis prototype. The name is the thesis: the agent analyzes, a human countersigns. A watchable agent loop (plan, tool calls, covenant checks, audit trail) that extracts deal financials, scores risk, and suspends itself at a human approval gate on the consequential call. Front-end only with a mocked, deterministic backend. Live demo at credit-analysis-agent.vercel.app, code at github.com/chang627627/credit-analysis-agent.
 - StoryBloom (2026): personalized bedtime app that turns how a child's day felt into an illustrated story, for kids ages 3 to 8. Live at storybloom.tech. NY Product Design Awards Silver Winner 2026. Built with Ziyu Ye.
 - Homewise (2026): AI command center for homeowners. Matches verified contractors, compares quotes, manages repairs from one workspace. Single-page React prototype with its own design system, Hearth v1 (tokens plus a drift linter). Live at homewise-rust.vercel.app, code at github.com/chang627627/homewise.
 - PollenNav (2025): street level pollen navigation app for safer city travel, designed for the one billion people with seasonal allergies. 4x international award winner. Full case study on the site.
 - UNICEF NOVA (2025): AR navigation system for children balancing independence and parental reassurance. CCA MDes capstone with the UNICEF Innovation Node. Full case study on the site.
-- TickerPulse (2025): AI platform monitoring real time news sentiment for explainable, actionable trader alerts. Full case study on the site.
+- TickerPulse (2025): AI trading terminal monitoring real time news sentiment for explainable, actionable trader alerts. Its final design wireframes are in a carousel on the Play page; it no longer has a standalone case study page, so do not direct visitors to one.
 - Litespace Coffee Chat (2023): shipped B2B SaaS feature, 63% opt in and 200+ chats in month one. Full case study on the site.`;
 
-  // Build messages array with conversation history
+  // Build messages array from sanitized history: only user/assistant roles, capped length
   const messages = [];
   if (history && Array.isArray(history)) {
     for (const msg of history.slice(-10)) { // Keep last 10 messages for context
-      messages.push({ role: msg.role, content: msg.content });
+      if (!msg || (msg.role !== 'user' && msg.role !== 'assistant') || typeof msg.content !== 'string') continue;
+      messages.push({ role: msg.role, content: msg.content.slice(0, 2000) });
     }
   }
   messages.push({ role: 'user', content: message });
