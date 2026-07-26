@@ -984,6 +984,35 @@ nav::before {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* The hairline draws itself in, left to right, the first time it comes into view.
+   Deliberately a one-shot transition and NOT an `animation-timeline: view()`
+   scrub like card-rise: .section-meta sits ~855px down the page, which is ABOVE
+   the fold on any viewport taller than ~860px, so a scrubbed reveal renders a
+   PARTIAL line on first paint and then just sits there (measured: 17% drawn at
+   1440x900, 48% at 1000px tall). Time-based means it always plays in full,
+   whether it starts on screen or gets scrolled to.
+
+   The collapsed state is scoped to .rule-wipe, which JS adds at runtime, so if
+   JS never runs the line renders full-width instead of invisible.
+
+   The `transition` lives on .visible, NOT on .rule-wipe, and that split is
+   load-bearing. With both on .rule-wipe, adding that class animates the line
+   from full width DOWN to zero over 400ms, and the observer then retargets it
+   back to 1 mid-flight, so it just wobbles near full width and the wipe never
+   plays. Declaring it only on the outbound state makes the collapse instant
+   and the draw animated. */
+@media (prefers-reduced-motion: no-preference) {
+  .section-rule.rule-wipe {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .section-rule.rule-wipe.visible {
+    transform: scaleX(1);
+    transition: transform var(--dur-slow) var(--ease-out);
+  }
+}
+
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -1008,7 +1037,16 @@ nav::before {
   transition: transform var(--dur-slow) var(--ease-out),
               border-color var(--dur-base) var(--ease-out),
               box-shadow var(--dur-base) var(--ease-out),
-              opacity var(--dur-slow) var(--ease-out);
+              opacity var(--dur-slow) var(--ease-out),
+              /* Plate light is scenery, not acknowledgment — it trails the
+                 cursor rather than sticking to it. See .project-img--lit.
+                 --plate-sx is deliberately NOT listed: it feeds the img's
+                 `filter`, which already carries `filter 0.5s ease` from
+                 `.project-img img`. Easing the property AND the filter it
+                 produces compounds into a ~900ms chase that never lands on
+                 its target. Let the existing filter transition own it. */
+              --plate-dx var(--dur-slow) var(--ease-out),
+              --plate-dy var(--dur-slow) var(--ease-out);
 }
 
 .project-card::before {
@@ -1029,6 +1067,36 @@ nav::before {
     box-shadow: 0 0 20px rgba(255,255,255,0.04), 0 0 40px rgba(255,255,255,0.02);
   }
 
+  /* The glow spilling past the border is the card's OWN light, not a generic
+     white haze — so the plate's lit scene continues past its edge instead of
+     stopping at it. --plate-light is each card's highlight hue (set on the
+     card, which is also where .project-img--lit reads it from).
+
+     Why it is rebuilt in oklch rather than just tinted: every plate hue is a
+     pale pastel, and at these alphas over #0a0a0a a pastel and pure white land
+     within ~2 RGB units of each other — the hue would be mathematically
+     present and visually absent. Taking only the HUE and forcing lightness +
+     chroma makes the colour read while each card keeps its own identity.
+
+     The white-plate cards need no special-casing: #FFFFFF has chroma 0, so
+     calc(c * 5) is still 0 and NOVA + Mercor glow neutral, which is exactly
+     right for plates that must stay flat white.
+
+     `min(..., 0.18)` caps the top rather than clamping to a band, because the
+     source pastels are not equally saturated: unclamped, x5 ran 0.105
+     (StoryBloom) to 0.249 (New Craft), so one card would glow 2.4x more
+     vividly than another for no reason a viewer could read. A clamp() with a
+     floor would have been wrong here — it would drag the chroma-0 whites up
+     to the floor and put a colour cast on the two plates that must stay
+     neutral. Capping preserves the 0 and only tames the loudest. */
+  @supports (color: oklch(from white l c h)) {
+    .project-card:hover {
+      box-shadow:
+        0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.10),
+        0 0 52px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.05);
+    }
+  }
+
   .project-card:hover .project-img img {
     transform: scale(1.04) translateY(-3px);
   }
@@ -1047,6 +1115,45 @@ nav::before {
 @media (hover: hover) {
   .project-card:hover .project-img > img {
     filter: drop-shadow(0 22px 36px rgba(0, 0, 0, 0.2));
+  }
+}
+
+/* ---- Lit plates: the light scene is a source, not paint --------------------
+   The two-radial plate (highlight upper-left, shade lower-right) used to be a
+   baked inline gradient. Now both pools translate together by --plate-dx/dy so
+   the whole field LEANS toward the cursor, and the screenshot's contact shadow
+   casts the opposite way (--plate-sx). Same grammar as the hero's Lightfall
+   drift: move the light that is already there, never paint a new glow disc.
+
+   Sizes are pinned to `ellipse 70% 70%` because that is exactly what the old
+   `radial-gradient(ellipse at 30% 30%, ...)` resolved to via farthest-corner on
+   a 16:9 plate — so the at-rest render is unchanged and only the POSITION
+   moves. Without the pin, a moving origin would also resize the pool.
+
+   Applies to the four two-radial cards only. NOVA + Mercor keep flat #FFFFFF
+   (their PNGs carry a baked shadow that halos against anything darker) and
+   StoryBloom + New Craft Society are full-bleed covers with no visible plate. */
+@property --plate-dx { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
+@property --plate-dy { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
+@property --plate-sx { syntax: '<length>'; initial-value: 0px; inherits: true; }
+
+.project-img--lit {
+  background:
+    radial-gradient(ellipse 70% 70% at calc(30% + var(--plate-dx)) calc(30% + var(--plate-dy)),
+                    var(--plate-light) 0%, transparent 60%),
+    radial-gradient(ellipse 70% 70% at calc(70% + var(--plate-dx)) calc(70% + var(--plate-dy)),
+                    var(--plate-deep) 0%, transparent 60%),
+    var(--plate-base);
+}
+
+/* Source-order tie-break over `.project-img > img` (same specificity). */
+.project-img--lit > img {
+  filter: drop-shadow(var(--plate-sx) 16px 28px rgba(0, 0, 0, 0.16));
+}
+
+@media (hover: hover) {
+  .project-card:hover .project-img--lit > img {
+    filter: drop-shadow(var(--plate-sx) 22px 36px rgba(0, 0, 0, 0.2));
   }
 }
 
@@ -4129,9 +4236,46 @@ footer {
       animation-fill-mode: both;
       animation-timeline: view();
       animation-range: entry 5% entry 45%;
+
+      /* Named timeline for the thumbnail parallax below. It has to be NAMED:
+         `view()` binds to the nearest ancestor scroll container, and both
+         .project-card and .project-img are `overflow: hidden` — which makes
+         them scroll containers — so an anonymous view() on the <img> would
+         bind to the plate, which never scrolls, and the timeline would sit
+         dead at 0. Declared here on the card (whose own nearest scrollport IS
+         the viewport); name lookup walks up the ancestor chain, so the img
+         inside can reference it. Same family as the documented body-overflow
+         trap: watch what silently became a scroll container. */
+      view-timeline-name: --card-view;
     }
 
+    /* The screenshot drifts against its plate as the card crosses the
+       viewport, so the floating-screenshot-on-a-lit-plate material gains real
+       depth. Drives `translate`, NOT `transform`: the hover state owns
+       `transform: scale(1.04) translateY(-3px)` on this same element, and
+       `.project-img img` transitions `transform` at 0.8s — a shared property
+       would mean the two fight and the parallax would be rubber-banded by the
+       hover transition. Exactly why Lightfall uses `translate` against
+       irisFlow's `transform`.
+
+       :not(--cover) excludes StoryBloom + New Craft Society, whose covers are
+       full-bleed `object-fit: cover` and exactly fill the plate — translating
+       those would swing a bare edge into view. The other six are contained
+       screenshots with plate margin to move within. */
+    .project-grid .project-img:not(.project-img--cover) > img {
+      animation-name: card-parallax;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: --card-view;
+      animation-range: cover 0% cover 100%;
+    }
   }
+}
+
+@keyframes card-parallax {
+  from { translate: 0 -8px; }
+  to   { translate: 0 8px; }
 }
 
 
