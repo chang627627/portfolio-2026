@@ -304,14 +304,49 @@ nav::before {
 @property --g2-blue-x { syntax: '<percentage>'; initial-value: 50%; inherits: false; }
 @property --g2-blue-y { syntax: '<percentage>'; initial-value: 70%; inherits: false; }
 
+/* Scroll offset folded into every blob's Y. NOT animated by irisFlow — that is
+   the whole point: irisFlow keeps sole ownership of --g2-*-y, this composes on
+   top via calc(), so the two never fight for the same property. At rest it is
+   0%, so the hand-tuned warm/blue seam under headline line 1 is untouched. */
+@property --g2-lift { syntax: '<percentage>'; initial-value: 0%; inherits: false; }
+
 .hero-orbs--g2 {
   background:
-    radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) var(--g2-yellow-y), rgba(255, 214, 0, 0.90), transparent 62%),
-    radial-gradient(ellipse 96% 50% at var(--g2-warm-x) var(--g2-warm-y), rgba(255, 30, 58, 0.85), transparent 60%),
-    radial-gradient(ellipse 96% 50% at var(--g2-pink-x) var(--g2-pink-y), rgba(255, 48, 176, 0.82), transparent 60%),
-    radial-gradient(ellipse 116% 60% at var(--g2-blue-x) var(--g2-blue-y), rgba(22, 120, 255, 0.88), transparent 66%);
+    radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
+    radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.85), transparent 60%),
+    radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(255, 48, 176, 0.82), transparent 60%),
+    radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
   filter: blur(56px);
   animation: irisFlow 13s ease-in-out infinite;
+}
+
+/* --- Light lags the scroll (desktop, motion-safe) ---------------------
+   As the hero scrolls away the whole light field drifts DOWN, so it appears
+   to linger behind the page rather than travel with it — the field reads as
+   an environment the page moves through instead of a texture stuck to it.
+   Implemented as a second animation on the SAME element: irisFlow keeps the
+   document timeline, g2Lift runs on a scroll() timeline over the first
+   viewport. Two animations coexist because they animate different custom
+   properties. Mobile is excluded on purpose — its gradient is separately
+   tuned for the hero/work seam (.hero::after). */
+@supports (animation-timeline: scroll()) {
+  @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+    .hero-orbs--g2 {
+      animation-name: irisFlow, g2Lift;
+      animation-duration: 13s, auto;
+      animation-timing-function: ease-in-out, linear;
+      animation-iteration-count: infinite, 1;
+      animation-fill-mode: none, both;
+      animation-timeline: auto, scroll(root block);
+      animation-range: normal, 0 100vh;
+    }
+  }
+}
+
+@keyframes g2Lift {
+  to {
+    --g2-lift: 30%;
+  }
 }
 
 @keyframes irisFlow {
@@ -4098,6 +4133,7 @@ footer {
 
   }
 }
+
 
 @keyframes card-rise {
   from {
