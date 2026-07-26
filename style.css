@@ -141,7 +141,12 @@ nav::before {
   align-items: center;
   gap: 24px;
   font-size: 13px;
-  color: var(--text-muted);
+  /* --text-soft, not --text-muted: at 13px over the hero gradient the muted
+     #888 measured 3.44:1 worst-case across the irisFlow cycle (fails WCAG AA
+     4.5:1 for normal text). #a0a0a0 measures 4.67:1 there and ~7.6:1 on the
+     dark pages. Deliberately NOT brighter — these must stay clearly secondary
+     to the white .nav-active link. */
+  color: var(--text-soft);
 }
 
 .nav-links a:not(.nav-cta) {
@@ -472,7 +477,7 @@ nav::before {
   color: rgba(255, 255, 255, 0.82);
   max-width: 520px;
   margin: 32px auto 0;
-  line-height: 1.75;
+  line-height: 1.6; /* was 1.75 — the leading scale is now uniform with body (see P5 note) */
   opacity: 0;
   animation: fadeUp 0.8s ease forwards 2.2s;
   position: relative;
@@ -662,6 +667,24 @@ nav::before {
 .chat-toggle.hidden {
   opacity: 0;
   pointer-events: none;
+}
+
+/* Below 1136px the 960px content column reaches into the chat button's lane
+   (button occupies the rightmost 88px; content right edge = viewport/2 + 480),
+   so at bottom:220px it sat mid-screen on top of the About date column and
+   clipped the years. Drop both toward the corner there. 96px, NOT 24px: the
+   footer links row occupies the bottom 32–54px, and at 24px the button covered
+   the "X" link entirely (elementFromPoint returned the button, so the link was
+   unclickable). 96px clears the links by ~42px and only ever overlaps the
+   decorative watermark, which is pointer-events:none. Above 1136px nothing
+   changes. */
+@media (max-width: 1135px) {
+  .chat-toggle {
+    bottom: 96px;
+  }
+  .chat-panel {
+    bottom: 156px;
+  }
 }
 
 .chat-panel {
@@ -918,7 +941,11 @@ nav::before {
 }
 
 .project-card {
-  display: block;
+  /* flex column (was `block`) so .project-info can absorb the leftover height
+     when the grid row stretches to its tallest card — that is what lets the
+     chip rows pin to a shared baseline below 1440px. See .card-meta. */
+  display: flex;
+  flex-direction: column;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
@@ -1014,17 +1041,21 @@ nav::before {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0; /* card is now a flex column — never let the 16:9 plate compress */
 }
 
 .project-info {
   padding: 20px 20px 20px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch; /* was center — must stretch so the inner column can fill */
+  flex: 1;              /* absorb the row-stretch slack */
 }
 
 .project-info-left {
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .project-info-top {
@@ -1047,15 +1078,22 @@ nav::before {
 .project-info p {
   font-size: 16px;
   color: var(--text-muted);
-  line-height: 1.4;
-  min-height: calc(1.4em * 2);
+  line-height: 1.5; /* was 1.4 — leading scale: 1.6 prose / 1.5 cards */
+  /* PAIRED with line-height: this reserve is what keeps all 8 cards' chip
+     rows aligned when a description fits one line — change both together */
+  min-height: calc(1.5em * 2);
 }
 
 .card-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 14px;
+  /* margin-top:auto pins the chip row to the card bottom so every row aligns
+     on a shared chip baseline at any width; padding-top keeps the original
+     14px minimum gap when there is no slack to absorb (auto would collapse
+     to 0). Both are needed — do not merge back into `margin-top: 14px`. */
+  margin-top: auto;
+  padding-top: 14px;
 }
 
 .card-tag {
@@ -1163,9 +1201,9 @@ nav::before {
 
 /* Books & Podcasts */
 .media-section {
-  max-width: var(--max-width);
+  max-width: calc(var(--max-width) + 48px);
   margin: 0 auto;
-  padding: 0 0 96px;
+  padding: 0 24px 96px; /* side rail per the .about-vertical note */
 }
 
 /* Last content section before the footer — match the case-study gap
@@ -1216,9 +1254,9 @@ nav::before {
 
 /* Testimonials */
 .testimonials {
-  max-width: var(--max-width);
+  max-width: calc(var(--max-width) + 48px);
   margin: 0 auto;
-  padding: 0 0 96px; /* matches the section rhythm — Testimonials now sits mid-page (Podcasts is last, its 96px + the footer's 160px top carry the gap to the footer) */
+  padding: 0 24px 96px; /* matches the section rhythm — Testimonials now sits mid-page (Podcasts is last, its 96px + the footer's 160px top carry the gap to the footer); side rail per the .about-vertical note */
 }
 
 .testimonials h3 {
@@ -1244,6 +1282,7 @@ nav::before {
   line-height: 1.6;
   color: var(--text-soft);
   margin-bottom: 24px;
+  /* no measure cap — see the .about-block p note (62ch reverted per user) */
 }
 
 .testimonial-author {
@@ -1572,8 +1611,10 @@ footer {
   transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.photo-wrap:hover img {
-  transform: scale(1.08);
+@media (hover: hover) {
+  .photo-wrap:hover img {
+    transform: scale(1.08);
+  }
 }
 
 /* ───────── Photo Deck (infinite editorial carousel) ───────── */
@@ -1689,9 +1730,15 @@ footer {
 }
 
 /* About Vertical */
+/* The 24px side rail is unconditional (NOT gated to the ≤768px block) — between
+   769px and ~1007px the viewport is too wide for the mobile padding but too
+   narrow for the 960px cap to leave any margin, so text used to touch both
+   screen edges (iPad portrait is 810–834px). max-width carries the +48px so the
+   content measure stays exactly 960px on desktop. Same on .testimonials and
+   .media-section. */
 .about-vertical {
-  padding: 0;
-  max-width: var(--max-width);
+  padding: 0 24px;
+  max-width: calc(var(--max-width) + 48px);
   margin: 0 auto;
 }
 
@@ -1710,6 +1757,9 @@ footer {
   color: var(--text-soft);
   line-height: 1.6;
   margin: 0 0 8px 0;
+  /* NO max-width/measure cap: a 62ch cap was tried 2026-07-26 (UI-craft P5)
+     and REVERTED per user — "too much white space". Full-width prose is the
+     deliberate choice here; do not re-add a reading-measure cap. */
 }
 
 .about-block p:last-child {
@@ -3314,9 +3364,11 @@ footer {
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.lightbox-close:hover {
-  background: rgba(30, 30, 30, 0.9);
-  border-color: rgba(255, 255, 255, 0.16);
+@media (hover: hover) {
+  .lightbox-close:hover {
+    background: rgba(30, 30, 30, 0.9);
+    border-color: rgba(255, 255, 255, 0.16);
+  }
 }
 
 .play-card img {
@@ -3336,7 +3388,13 @@ footer {
 
 .play-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* minmax(0, 1fr), NOT 1fr: bare `1fr` means minmax(auto, 1fr), so a track can
+     never shrink below its widest content. Whisper XR's 11-dot carousel rail
+     (11x24 + 10x8 gap + 112 padding = 456px min-content) floored the right
+     column at ~498px, so below ~900px the column overflowed the viewport and
+     ~72px of every right-column card was clipped — invisible only because
+     html{overflow-x:hidden} swallowed it. */
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 32px;
   max-width: 1344px;
   margin: 0 auto;
@@ -3359,9 +3417,14 @@ footer {
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-.play-card:hover {
-  border-color: rgba(255, 255, 255, 0.14);
-  box-shadow: 0 0 24px rgba(255, 255, 255, 0.04);
+/* Gated for touch: without this, tapping a card on the 20-card mobile stack
+   leaves its border + glow lit until you tap elsewhere, so scrolling
+   progressively lights up cards nobody is looking at. */
+@media (hover: hover) {
+  .play-card:hover {
+    border-color: rgba(255, 255, 255, 0.14);
+    box-shadow: 0 0 24px rgba(255, 255, 255, 0.04);
+  }
 }
 
 .play-card > :not(.play-info) {
@@ -3564,9 +3627,11 @@ footer {
   flex-shrink: 0;
 }
 
-.carousel-arrow:hover {
-  color: var(--text);
-  border-color: rgba(255, 255, 255, 0.3);
+@media (hover: hover) {
+  .carousel-arrow:hover {
+    color: var(--text);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
 }
 
 .carousel-dots {
@@ -3574,6 +3639,10 @@ footer {
   justify-content: center;
   align-items: center;
   gap: 8px;
+  /* 56px horizontal padding is arrow clearance (.carousel-arrow is absolute at
+     left/right: 0) — keep it. flex-wrap lets the dots stack instead of forcing
+     the grid track wide once .play-grid can actually shrink (see minmax note). */
+  flex-wrap: wrap;
   padding: 24px 56px;
   min-height: 84px;
 }
@@ -4205,4 +4274,42 @@ footer {
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none; }
+}
+
+/* ═══════════ Interaction state layer (added 2026-07-26, UI-craft review P3) ═══════════
+   Before this block the whole 84KB stylesheet contained zero :focus-visible rules,
+   zero :active rules, and exactly one `outline` declaration (`outline: none` on
+   .chat-input). Keyboard users therefore got Chrome's stock #005FCC double ring —
+   the only undesigned chrome on the site, in a blue the design system reserves for
+   the NOVA case study. Everything here is ADDITIVE: no existing rule is modified,
+   so mouse users see no change. */
+
+/* Focus ring — `outline` (not box-shadow) so it can never collide with the
+   component box-shadows on cards/nav, and because outline follows border-radius
+   in every modern engine. White per the chrome-stays-neutral rule, NOT #0094FF.
+   Placed last in the file so it wins the specificity tie against
+   `.chat-input { outline: none }`. */
+:focus-visible {
+  outline: 2px solid rgba(240, 240, 240, 0.9);
+  outline-offset: 3px;
+}
+
+/* Press feedback on the small controls. The large work/play cards are
+   deliberately excluded — scaling a 660px card on press reads as a glitch,
+   and their hover lift already acknowledges the pointer. */
+.carousel-arrow:active,
+.carousel-dot:active,
+.hamburger:active,
+.lightbox-close:active,
+.chat-toggle:active,
+.chat-send:active,
+.chat-close:active {
+  transform: scale(0.96);
+  transition-duration: 100ms;
+}
+
+/* Kill the grey flash box on tap (iOS/Android) — the :active states above are
+   the designed replacement. */
+body {
+  -webkit-tap-highlight-color: transparent;
 }

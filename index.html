@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=192">
+  <link rel="stylesheet" href="style.css?v=197">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -292,30 +292,76 @@
 <script>
   // Scramble text reveal
   const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  document.querySelectorAll('.scramble-text').forEach((el, lineIndex) => {
-    const target = el.getAttribute('data-text');
-    const delay = lineIndex * 400;
-    // Build character spans
-    el.innerHTML = target.split('').map(c =>
-      c === ' ' ? ' ' : `<span class="char" data-target="${c}"></span>`
-    ).join('');
-    const charEls = el.querySelectorAll('.char');
-    charEls.forEach((span, i) => {
-      const targetChar = span.getAttribute('data-target');
-      span.textContent = '\u00A0';
-      setTimeout(() => {
-        let iterations = 0;
-        const maxIterations = 3 + Math.floor(Math.random() * 3);
-        const interval = setInterval(() => {
-          if (iterations < maxIterations) {
-            span.textContent = chars[Math.floor(Math.random() * chars.length)];
-            iterations++;
-          } else {
-            span.textContent = targetChar;
-            clearInterval(interval);
-          }
-        }, 40);
-      }, 500 + delay + i * 30);
+  // Width-pinned scramble (2026-07-26): substitute glyphs have different
+  // advances, so unpinned inline-block chars made the centered line breathe
+  // \u00B1104px mid-animation (and momentarily wrap to 3 lines at 375px, jumping
+  // the subtitle a full line box). Fix: render the real text first, measure
+  // each glyph's advance, pin every span to that width, THEN animate \u2014 the
+  // line occupies its final geometry from frame 0. Each span un-pins as it
+  // settles (target glyph = measured width, so nothing shifts), leaving the
+  // finished headline as natural responsive text. Waits on document.fonts
+  // so widths are measured in Neue Montreal, not the fallback font.
+  const scrambleReady = (document.fonts && document.fonts.ready)
+    ? document.fonts.ready : Promise.resolve();
+  scrambleReady.then(() => {
+    // Width-matched substitute pools: with pinned boxes, a wide "W" cycling
+    // inside an "i"-width box overlaps its neighbours. Measure the charset's
+    // advances once (ratios are size-invariant, so 100px is fine) and scramble
+    // each glyph only with glyphs within ~14% of its own advance.
+    const meas = document.createElement('canvas').getContext('2d');
+    const h1cs = getComputedStyle(document.querySelector('.hero h1'));
+    meas.font = '100px ' + h1cs.fontFamily;
+    const charList = chars.split('');
+    const adv = {};
+    charList.forEach(c => { adv[c] = meas.measureText(c).width; });
+    const poolFor = (t) => {
+      const tw = meas.measureText(t).width;
+      const pool = charList.filter(c => Math.abs(adv[c] - tw) <= tw * 0.14);
+      if (pool.length >= 3) return pool;
+      // narrow targets (I, i, l, punctuation) have few same-width letters —
+      // fall back to the 6 NEAREST advances, never the full charset (a wide
+      // glyph cycling in an "I"-width box is exactly the overlap we pinned
+      // the boxes to prevent)
+      return [...charList]
+        .sort((a, b) => Math.abs(adv[a] - tw) - Math.abs(adv[b] - tw))
+        .slice(0, 6);
+    };
+    document.querySelectorAll('.scramble-text').forEach((el, lineIndex) => {
+      const target = el.getAttribute('data-text');
+      const delay = lineIndex * 400;
+      // Build character spans with the REAL characters in place
+      el.innerHTML = target.split('').map(c =>
+        c === ' ' ? ' ' : `<span class="char" data-target="${c}">${c}</span>`
+      ).join('');
+      const charEls = el.querySelectorAll('.char');
+      // One layout pass: read every target advance, then pin
+      const widths = [...charEls].map(s => s.getBoundingClientRect().width);
+      charEls.forEach((span, i) => {
+        span.style.width = widths[i] + 'px';
+        span.style.textAlign = 'center';
+        span.textContent = '\u00A0';
+      });
+      charEls.forEach((span, i) => {
+        const targetChar = span.getAttribute('data-target');
+        const pool = poolFor(targetChar);
+        setTimeout(() => {
+          let iterations = 0;
+          const maxIterations = 3 + Math.floor(Math.random() * 3);
+          const interval = setInterval(() => {
+            if (iterations < maxIterations) {
+              span.textContent = pool[Math.floor(Math.random() * pool.length)];
+              iterations++;
+            } else {
+              span.textContent = targetChar;
+              // un-pin: target glyph == measured width, so no shift; the
+              // settled headline reflows naturally on resize/rotation
+              span.style.width = '';
+              span.style.textAlign = '';
+              clearInterval(interval);
+            }
+          }, 40);
+        }, 500 + delay + i * 30);
+      });
     });
   });
 
