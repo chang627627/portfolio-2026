@@ -19,6 +19,21 @@ body.menu-open {
   --radius: 8px;
   --max-width: 960px;
   --page-padding: 48px;
+
+  /* Motion tokens (2026-07-26, UI-craft review P8). --ease-out is the curve
+     the site already used on its best transitions (cards, photo deck, footer
+     reveal); these names exist so new code inherits it instead of copying
+     `0.3s ease`. USE THESE for any new transition.
+     Durations follow the acknowledgment/scenery split: a hover must ANSWER
+     the pointer in ~160ms (--dur-base), while decorative travel (image zoom,
+     panel slides) can take --dur-slow. Deliberately NOT swept across the ~40
+     remaining `ease` transitions — at 200-300ms that swap is imperceptible
+     and would touch panels/overlays for no visible gain. Convert them
+     opportunistically when editing those components. */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 100ms;
+  --dur-base: 160ms;
+  --dur-slow: 400ms;
 }
 
 html {
@@ -47,7 +62,7 @@ a {
   color: inherit;
   padding-bottom: 1px;
   border-bottom: 1px solid var(--text-muted);
-  transition: color 0.2s;
+  transition: color var(--dur-base) var(--ease-out);
 }
 
 .about-block p a::after {
@@ -58,7 +73,7 @@ a {
   width: 0;
   height: 1px;
   background: var(--text);
-  transition: width 0.3s ease;
+  transition: width var(--dur-base) var(--ease-out);
 }
 
 .about-block p a:hover {
@@ -161,7 +176,7 @@ nav::before {
   width: 0;
   height: 1px;
   background: var(--text);
-  transition: width 0.3s ease;
+  transition: width var(--dur-base) var(--ease-out);
 }
 
 .nav-links a:not(.nav-cta):hover::after {
@@ -184,7 +199,7 @@ nav::before {
   border-radius: var(--radius);
   font-weight: 400;
   font-size: 13px;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur-base) var(--ease-out);
   white-space: nowrap;
 }
 
@@ -211,7 +226,7 @@ nav::before {
   background: var(--text);
   position: absolute;
   left: 0;
-  transition: transform 0.3s ease, top 0.3s ease;
+  transition: transform var(--dur-base) var(--ease-out), top var(--dur-base) var(--ease-out);
 }
 
 .hamburger span:first-child {
@@ -951,7 +966,14 @@ nav::before {
   background: var(--surface);
   border: 1px solid rgba(255,255,255,0.08);
   position: relative;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease, opacity 0.4s ease;
+  /* Acknowledgment vs scenery: border + glow answer the pointer in 160ms so
+     the card never feels like it lags the cursor (400ms is ~2.5x the norm for
+     hover feedback), while the image's travel stays slow and cinematic — see
+     .project-img img at 0.8s. Do not re-unify these durations. */
+  transition: transform var(--dur-slow) var(--ease-out),
+              border-color var(--dur-base) var(--ease-out),
+              box-shadow var(--dur-base) var(--ease-out),
+              opacity var(--dur-slow) var(--ease-out);
 }
 
 .project-card::before {
@@ -1483,7 +1505,7 @@ footer {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: color 0.2s;
+  transition: color var(--dur-base) var(--ease-out);
 }
 
 .footer-links a::after {
@@ -1494,7 +1516,7 @@ footer {
   width: 0;
   height: 1px;
   background: var(--text);
-  transition: width 0.3s ease;
+  transition: width var(--dur-base) var(--ease-out);
 }
 
 .footer-links a:hover {
@@ -3088,7 +3110,7 @@ footer {
   font-size: 16px;
   color: var(--text-muted);
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color var(--dur-base) var(--ease-out);
 }
 
 .project-nav-link:hover {
@@ -3407,6 +3429,7 @@ footer {
   gap: 32px;
 }
 
+
 .play-card {
   display: flex;
   flex-direction: column;
@@ -3414,7 +3437,7 @@ footer {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--radius);
   padding: 20px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: border-color var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
 
 /* Gated for touch: without this, tapping a card on the 20-card mobile stack
@@ -3547,7 +3570,7 @@ footer {
   font-size: 15px;
   color: var(--text-muted);
   position: relative;
-  transition: color 0.2s;
+  transition: color var(--dur-base) var(--ease-out);
   padding-bottom: 4px;
   border-bottom: 1px solid var(--text-muted);
 }
@@ -3560,7 +3583,7 @@ footer {
   width: 0;
   height: 1px;
   background: var(--text);
-  transition: width 0.3s ease;
+  transition: width var(--dur-base) var(--ease-out);
 }
 
 .play-link:hover {
@@ -3623,7 +3646,7 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.2s, border-color 0.2s;
+  transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out);
   flex-shrink: 0;
 }
 
@@ -3673,7 +3696,7 @@ footer {
   opacity: 0.3;
   cursor: pointer;
   padding: 0;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 
 .carousel-dot.active {
@@ -4072,6 +4095,7 @@ footer {
       animation-timeline: view();
       animation-range: entry 5% entry 45%;
     }
+
   }
 }
 
@@ -4210,7 +4234,7 @@ footer {
   border-radius: var(--radius);
   font-size: 15px;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: opacity var(--dur-base) var(--ease-out);
 }
 .hw-cta:hover { opacity: 0.85; }
 
