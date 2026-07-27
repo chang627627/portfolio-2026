@@ -57,6 +57,17 @@ a {
   text-decoration: none;
 }
 
+/* Even rag on headings, no orphan words in body copy (ui-skills:
+   make-interfaces-feel-better #10). No-ops where lines are manual — the home
+   hero h1 is char-split into spans, so balance has nothing to rebalance. */
+h1, h2, h3, h4 {
+  text-wrap: balance;
+}
+
+p, figcaption {
+  text-wrap: pretty;
+}
+
 .about-block p a {
   position: relative;
   color: inherit;
@@ -1172,25 +1183,6 @@ nav::before {
   transform: none !important;
 }
 
-/* Card index number — top-right of card */
-.card-num {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 3;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.55);
-  background: rgba(10, 10, 10, 0.5);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum";
-  pointer-events: none;
-}
-
 @media (hover: hover) {
   .project-card:hover::before {
     opacity: 1;
@@ -1871,6 +1863,9 @@ footer {
   border-radius: inherit;
   display: block;
   pointer-events: none;
+  /* hairline edge — see the shared image-outline rule near .play-card img */
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
 }
 
 /* prefers-reduced-motion: lock to static centered row (no drift, no tilt, no halo pulse) */
@@ -1999,6 +1994,8 @@ footer {
   font-size: 13px;
   color: var(--text-muted);
   flex-shrink: 0;
+  /* equal-width digits so the right-aligned date column reads as one rail */
+  font-variant-numeric: tabular-nums;
   margin-left: auto;
 }
 
@@ -3491,12 +3488,31 @@ footer {
   padding: 40px;
   cursor: zoom-out;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  /* The old `transition: opacity 0.2s` NEVER ran — display:none -> flex means
+     the element is newly rendered, so it snapped to full 95%-black instantly.
+     @starting-style supplies the before-first-frame values and allow-discrete
+     holds `display` until the fade finishes on close (ui-skills:
+     emil-design-eng). Longhands on purpose: an unknown `allow-discrete` inside
+     the `transition` shorthand would invalidate the WHOLE declaration in older
+     browsers; as a standalone `transition-behavior` line they drop just that
+     line and keep today's behavior. Exit here (160ms) is faster than enter
+     (240ms on .open) — exits softer than enters. */
+  transition-property: opacity, display;
+  transition-duration: 160ms;
+  transition-timing-function: var(--ease-out);
+  transition-behavior: allow-discrete;
 }
 
 .lightbox.open {
   display: flex;
   opacity: 1;
+  transition-duration: 240ms;
+}
+
+@starting-style {
+  .lightbox.open {
+    opacity: 0;
+  }
 }
 
 .lightbox img {
@@ -3506,6 +3522,27 @@ footer {
   display: block;
   border-radius: 8px;
   cursor: zoom-out;
+}
+
+/* The image itself settles in from 0.97 — the modal exception applies, so it
+   scales from center, not from a trigger. Motion-gated; reduced-motion users
+   keep the pure fade above. */
+@media (prefers-reduced-motion: no-preference) {
+  .lightbox img {
+    transform: scale(0.97);
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .lightbox.open img {
+    transform: scale(1);
+    transition: transform 240ms var(--ease-out);
+  }
+
+  @starting-style {
+    .lightbox.open img {
+      transform: scale(0.97);
+    }
+  }
 }
 
 .lightbox-close {
@@ -3538,6 +3575,21 @@ footer {
 .play-card img {
   cursor: zoom-in;
   border-radius: 4px !important;
+  /* Dark-content photos dissolve into the #0a0a0a page at their edges; a 1px
+     PURE-white hairline defines them (ui-skills: make-interfaces-feel-better
+     #11 — never a tinted neutral, it reads as dirt on the edge). 0.08 alpha
+     matches the site's card hairlines. outline, not border, so it draws on
+     top of the image and follows the radius; negative offset keeps it inside.
+     Same treatment on .deck-card img and .lightbox img. Deliberately NOT on
+     the home grid: NOVA/Mercor are transparent PNGs where an outline would
+     draw the box the alpha exists to avoid. */
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
+}
+
+.lightbox img {
+  outline: 1px solid rgba(255, 255, 255, 0.08);
+  outline-offset: -1px;
 }
 
 .play-card .carousel-track,
@@ -3830,15 +3882,32 @@ footer {
 }
 
 .carousel-dot {
+  /* The painted 24x4 bar moved to ::before so the button can carry a 24x20
+     hit target — 4px of vertical target was the hardest tap on the site
+     (ui-skills: make-interfaces-feel-better #16; 40x40 isn't reachable here
+     without visibly respacing the 11-dot rail, so this is a deliberate
+     partial fix). Opacity states stay on the button and cascade to the bar,
+     so the active/hover/:active rules need no change. */
   width: 24px;
-  height: 4px;
-  border-radius: 2px;
+  height: 20px;
   border: none;
-  background: var(--text-muted);
+  background: transparent;
+  position: relative;
   opacity: 0.3;
   cursor: pointer;
   padding: 0;
   transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.carousel-dot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 8px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--text-muted);
 }
 
 .carousel-dot.active {
@@ -4247,6 +4316,22 @@ footer {
          inside can reference it. Same family as the documented body-overflow
          trap: watch what silently became a scroll container. */
       view-timeline-name: --card-view;
+    }
+
+    /* Play cards get the SAME entry rise as the work grid — one motion
+       vocabulary across sibling pages (ui-skills: emil-design-eng, cohesion).
+       Verified before shipping: .play-column and .play-grid set no overflow,
+       so neither is a scroll container and the anonymous view() binds to the
+       viewport (the trap that forced --card-view above does not apply here).
+       Play's first row sits high enough that visible-at-load cards are
+       already past `entry 45%` and render settled, not faded. */
+    .play-grid .play-card {
+      animation-name: card-rise;
+      animation-duration: auto;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 45%;
     }
 
     /* The screenshot drifts against its plate as the card crosses the
