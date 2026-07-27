@@ -74,16 +74,13 @@
   <!-- Side Nav -->
   <nav class="side-nav">
     <a href="#overview" class="side-nav-link">Overview</a>
-    <a href="#impact" class="side-nav-link">Impact</a>
     <a href="#problem" class="side-nav-link">Problem</a>
     <a href="#research" class="side-nav-link">Research</a>
-    <a href="#design-goals" class="side-nav-link">Design Goals</a>
-    <a href="#constraints" class="side-nav-link">Constraints</a>
-    <a href="#exploration-1" class="side-nav-link">Exploration 1</a>
-    <a href="#exploration-2" class="side-nav-link">Exploration 2</a>
-    <a href="#iteration-1" class="side-nav-link">Iteration 1</a>
-    <a href="#iteration-2" class="side-nav-link">Iteration 2</a>
-    <a href="#final-deliverables" class="side-nav-link">Final Deliverables</a>
+    <a href="#design-goals" class="side-nav-link">Goals and constraints</a>
+    <a href="#exploration-1" class="side-nav-link">Meaningful pairings</a>
+    <a href="#exploration-2" class="side-nav-link">The user flow</a>
+    <a href="#iteration-1" class="side-nav-link">What testing changed</a>
+    <a href="#final-deliverables" class="side-nav-link">Final Design</a>
     <a href="#design-system" class="side-nav-link">Design System</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
   </nav>
@@ -126,12 +123,6 @@
       <p class="section-label">Overview</p>
       <h2>Bridging the gap between structured meetings and casual interactions</h2>
       <p>Litespace is an AI-powered enterprise platform for engagement in hybrid and remote workplaces. Coffee Chat is its 0-to-1 feature. It pairs two people who would not otherwise meet, tells them why they were matched, and takes the social pressure out of accepting.</p>
-    </div>
-
-    <!-- Impact -->
-    <div id="impact" class="project-section">
-      <p class="section-label">Impact</p>
-      <h2>Driving engagement and adoption across hybrid teams</h2>
     </div>
 
     <div class="impact-grid grid-2x2">
@@ -241,8 +232,9 @@
 
     <!-- Design Goals -->
     <div id="design-goals" class="project-section">
-      <p class="section-label">Design Goals</p>
+      <p class="section-label">Goals and constraints</p>
       <h2>Designing intentional connections with minimal social pressure</h2>
+      <p>The rebrand from a green identity to a blue one was still in progress, and we had two weeks to design and ship. That scoped the MVP to one meaningful chat per week.</p>
     </div>
 
     <div class="goals-grid">
@@ -264,16 +256,9 @@
       </div>
     </div>
 
-    <!-- Constraints -->
-    <div id="constraints" class="project-section">
-      <p class="section-label">Constraints</p>
-      <h2>Launching a new feature ahead of the rebranding</h2>
-      <p>The product was transitioning from a green-dominant identity to a modern blue-focused visual system, but the rebrand was still in progress. We had just two weeks to design and release the coffee chat feature. This pushed us to focus the MVP on enabling one meaningful chat per week.</p>
-    </div>
-
     <!-- Exploration 1 -->
     <div id="exploration-1" class="project-section">
-      <p class="section-label">Exploration · Challenge 1</p>
+      <p class="section-label">Exploration</p>
       <h2>Creating meaningful pairings</h2>
       <p>Users were more likely to accept a pairing when they understood why they were matched. I championed using the GPT-3 API to infer connections from lightweight signals (profiles, onboarding inputs, shared Slack channels) and generate a plain-language explanation for each match.</p>
     </div>
@@ -296,7 +281,7 @@
 
     <!-- Exploration 2 -->
     <div id="exploration-2" class="project-section">
-      <p class="section-label">Exploration · Challenge 2</p>
+      <p class="section-label">Exploration</p>
       <h2>Mapping the user flow</h2>
       <p>Existing tools rely on back-and-forth DMs that create friction and drop-offs. Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
     </div>
@@ -452,7 +437,7 @@
 
     <!-- Iteration 1 -->
     <div id="iteration-1" class="project-section">
-      <p class="section-label">Iteration · Challenge 1</p>
+      <p class="section-label">Iteration</p>
       <h2>Simplifying coffee chat's interface</h2>
       <p>Faced with a complex UI, I initially designed a multi-functional widget. User testing revealed its high cognitive load, leading me to divide it into two simpler widgets for availability and reasons, which received more positive feedback during internal A/B testing.</p>
     </div>
@@ -470,9 +455,7 @@
       </div>
     </div>
 
-    <!-- Iteration 2 -->
-    <div id="iteration-2" class="project-section">
-      <p class="section-label">Iteration · Challenge 2</p>
+    <div class="project-section">
       <h2>Optimizing meeting format selection</h2>
       <p>I explored letting users choose between virtual and in-person meetings, but A/B testing showed it caused delays and confusion. In-person meetings were rarely chosen in our remote and hybrid setting. We removed the selection to simplify scheduling and reduce cognitive load.</p>
     </div>
@@ -492,7 +475,7 @@
 
     <!-- Final Deliverables -->
     <div id="final-deliverables" class="project-section">
-      <p class="section-label">Final Deliverables</p>
+      <p class="section-label">Final Design</p>
       <h2>One pairing a week, scheduled for you</h2>
       <p>Each week you get a pairing built from your Google Calendar availability, with shared interests and suggested topics to start on. It arrives set to "Going" by default. Once you both confirm, a Google Meet link lands on your calendars.</p>
     </div>
