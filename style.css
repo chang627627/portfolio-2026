@@ -512,7 +512,9 @@ nav::before {
 
 .hero h1 .line {
   display: block;
-  overflow: hidden;
+  /* no overflow:hidden — it existed for the pre-scramble masked line-rise and
+     would clip the sweep entrance's blur halo and the specular bloom below.
+     padding-bottom stays: removing it would shift the settled layout. */
   padding-bottom: 6px;
 }
 
@@ -521,9 +523,51 @@ nav::before {
   opacity: 1;
 }
 
-.hero h1 .line-inner .char {
+/* ---- Light-sweep reveal + specular type (replaces the scramble) ----------
+   Entrance: each glyph wakes from blur as the light passes over it, staggered
+   by HORIZONTAL POSITION (JS sets --d from each glyph's x), so both lines
+   light left-to-right as one wave — the field sweeping the type awake, not
+   "elements animating in". Spaces stay bare text nodes so wrapping is
+   untouched.
+
+   Afterward the type stays lit: .settled swaps the transition channels to
+   filter/text-shadow, and JS writes a per-glyph specular response (brightness
+   + bloom, gaussian falloff around the cursor) through the SAME rAF handler
+   that drives the tilt and Lightfall. The CSS transition supplies the trail,
+   exactly like Lightfall's translate easing.
+
+   Trap: .settled must set `filter: none`, NOT blur(0). Interpolation between
+   different filter-function lists is discrete, so blur(0) -> brightness()
+   snaps; `none` counts as the identity list and eases smoothly into any
+   function the specular layer writes. */
+.hero h1 .line-inner span {
   display: inline-block;
-  min-width: 0.1em;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1.sweep-in .line-inner span {
+    opacity: 0;
+    transform: translateY(14px);
+    filter: blur(9px);
+    transition: opacity 0.7s var(--ease-out) var(--d, 0ms),
+                transform 0.7s var(--ease-out) var(--d, 0ms),
+                filter 0.7s var(--ease-out) var(--d, 0ms);
+  }
+
+  .hero h1.sweep-in.lit .line-inner span {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+}
+
+/* .lit.settled (not .settled alone) so this OUTGUNS the .sweep-in.lit rule
+   above — same class count, later in source. Without that, blur(0) from .lit
+   wins over `none`, and blur(0) -> brightness() is a mismatched filter list,
+   which interpolates DISCRETELY: the specular fade-out would snap. */
+.hero h1.lit.settled .line-inner span {
+  filter: none;
+  transition: filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out);
 }
 
 @keyframes revealLine {
@@ -540,7 +584,10 @@ nav::before {
   margin: 32px auto 0;
   line-height: 1.6; /* was 1.75 — the leading scale is now uniform with body (see P5 note) */
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 2.2s;
+  /* keyed to the sweep entrance: headline settles ~1.15s (450ms position
+     stagger + 700ms per glyph), so the sub lands just as it finishes.
+     The old 2.2s was tuned to the scramble's longer runway. */
+  animation: fadeUp 0.8s ease forwards 1.05s;
   position: relative;
   z-index: 2;
 }
@@ -587,7 +634,7 @@ nav::before {
   padding: 8px 16px;
   border-radius: var(--radius);
   opacity: 0;
-  animation: fadeUp 0.8s ease forwards 2.6s;
+  animation: fadeUp 0.8s ease forwards 1.35s; /* follows the sub, see .hero-sub */
 }
 
 .status-dot {
@@ -4232,6 +4279,13 @@ footer {
        instead of orphaning it (each char is an inline-block, so the line can
        break right before the "."). */
     font-size: clamp(26px, 8.5vw, 32px);
+  }
+
+  /* Mobile sweep = staggered fade + rise only. !important kills the filter in
+     BOTH entrance states (blur is the costly channel on phones) and the
+     specular layer never arms on touch, so nothing else writes filters here. */
+  .hero h1 .line-inner span {
+    filter: none !important;
   }
 
   .scroll-cta {

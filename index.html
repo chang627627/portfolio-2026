@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=215">
+  <link rel="stylesheet" href="style.css?v=217">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -96,8 +96,8 @@
     <div class="hero-orbs hero-orbs--g2"></div>
     <div class="hero-content">
       <h1>
-        <span class="line"><span class="line-inner scramble-text" data-text="AI-first product designer."></span></span>
-        <span class="line"><span class="line-inner scramble-text" data-text="Building what's next."></span></span>
+        <span class="line"><span class="line-inner" data-text="AI-first product designer."></span></span>
+        <span class="line"><span class="line-inner" data-text="Building what's next."></span></span>
       </h1>
       <p class="hero-sub">I design intuitive products across SaaS, emerging tech, and social impact, and I prototype in real code, this site included. iF & Red Dot Award winner with 3.5+ years turning research into real outcomes.</p>
       <div class="status-tag"><span class="status-dot"></span>Open to new opportunities</div>
@@ -134,6 +134,9 @@
         heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
         // the light leans the same way, so tilt + light read as one motion
         heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
+        // per-glyph specular on the headline rides the same frame (defined by
+        // the sweep script once the type has settled; no-op before that)
+        if (window.__heroSpecular) window.__heroSpecular(cx, cy, rect);
       };
 
       hero.addEventListener('mousemove', (e) => {
@@ -145,6 +148,7 @@
         if (raf) { cancelAnimationFrame(raf); raf = null; }
         heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
         heroOrbs.style.translate = '0px 0px';
+        if (window.__heroSpecular) window.__heroSpecular(null);
       });
     }
 
@@ -290,79 +294,138 @@
   </div>
 
 <script>
-  // Scramble text reveal
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-  // Width-pinned scramble (2026-07-26): substitute glyphs have different
-  // advances, so unpinned inline-block chars made the centered line breathe
-  // \u00B1104px mid-animation (and momentarily wrap to 3 lines at 375px, jumping
-  // the subtitle a full line box). Fix: render the real text first, measure
-  // each glyph's advance, pin every span to that width, THEN animate \u2014 the
-  // line occupies its final geometry from frame 0. Each span un-pins as it
-  // settles (target glyph = measured width, so nothing shifts), leaving the
-  // finished headline as natural responsive text. Waits on document.fonts
-  // so widths are measured in Neue Montreal, not the fallback font.
-  const scrambleReady = (document.fonts && document.fonts.ready)
+  // Light-sweep reveal + specular type (replaced the width-pinned scramble
+  // 2026-07-27). Entrance: each glyph wakes from blur, delayed by its own
+  // HORIZONTAL POSITION (--d), so both lines light left-to-right as one wave —
+  // the light field sweeping the type awake. No glyph substitution means the
+  // old width-pinning machinery is gone entirely: real glyphs render in place
+  // from frame 0, so the line never breathes and never re-wraps.
+  // Afterward, the type stays lit: __heroSpecular gives glyphs near the cursor
+  // a brightness lift + bloom with gaussian falloff. It is CALLED from the
+  // same rAF handler that drives the tilt and Lightfall (Script A near the
+  // hero), so tilt + light field + glyph sheen move as one system; the CSS
+  // transition on .settled spans supplies the Lightfall-style trail.
+  // Waits on document.fonts so positions are measured in Neue Montreal.
+  const sweepReady = (document.fonts && document.fonts.ready)
     ? document.fonts.ready : Promise.resolve();
-  scrambleReady.then(() => {
-    // Width-matched substitute pools: with pinned boxes, a wide "W" cycling
-    // inside an "i"-width box overlaps its neighbours. Measure the charset's
-    // advances once (ratios are size-invariant, so 100px is fine) and scramble
-    // each glyph only with glyphs within ~14% of its own advance.
-    const meas = document.createElement('canvas').getContext('2d');
-    const h1cs = getComputedStyle(document.querySelector('.hero h1'));
-    meas.font = '100px ' + h1cs.fontFamily;
-    const charList = chars.split('');
-    const adv = {};
-    charList.forEach(c => { adv[c] = meas.measureText(c).width; });
-    const poolFor = (t) => {
-      const tw = meas.measureText(t).width;
-      const pool = charList.filter(c => Math.abs(adv[c] - tw) <= tw * 0.14);
-      if (pool.length >= 3) return pool;
-      // narrow targets (I, i, l, punctuation) have few same-width letters —
-      // fall back to the 6 NEAREST advances, never the full charset (a wide
-      // glyph cycling in an "I"-width box is exactly the overlap we pinned
-      // the boxes to prevent)
-      return [...charList]
-        .sort((a, b) => Math.abs(adv[a] - tw) - Math.abs(adv[b] - tw))
-        .slice(0, 6);
-    };
-    document.querySelectorAll('.scramble-text').forEach((el, lineIndex) => {
-      const target = el.getAttribute('data-text');
-      const delay = lineIndex * 400;
-      // Build character spans with the REAL characters in place
-      el.innerHTML = target.split('').map(c =>
-        c === ' ' ? ' ' : `<span class="char" data-target="${c}">${c}</span>`
+  sweepReady.then(() => {
+    const h1 = document.querySelector('.hero h1');
+    if (!h1) return;
+    h1.querySelectorAll('.line-inner').forEach(el => {
+      const text = el.getAttribute('data-text');
+      // spaces stay bare text nodes so line-wrapping behaves as plain text
+      el.innerHTML = text.split('').map(c =>
+        c === ' ' ? ' ' : `<span>${c}</span>`
       ).join('');
-      const charEls = el.querySelectorAll('.char');
-      // One layout pass: read every target advance, then pin
-      const widths = [...charEls].map(s => s.getBoundingClientRect().width);
-      charEls.forEach((span, i) => {
-        span.style.width = widths[i] + 'px';
-        span.style.textAlign = 'center';
-        span.textContent = '\u00A0';
-      });
-      charEls.forEach((span, i) => {
-        const targetChar = span.getAttribute('data-target');
-        const pool = poolFor(targetChar);
-        setTimeout(() => {
-          let iterations = 0;
-          const maxIterations = 3 + Math.floor(Math.random() * 3);
-          const interval = setInterval(() => {
-            if (iterations < maxIterations) {
-              span.textContent = pool[Math.floor(Math.random() * pool.length)];
-              iterations++;
-            } else {
-              span.textContent = targetChar;
-              // un-pin: target glyph == measured width, so no shift; the
-              // settled headline reflows naturally on resize/rotation
-              span.style.width = '';
-              span.style.textAlign = '';
-              clearInterval(interval);
-            }
-          }, 40);
-        }, 500 + delay + i * 30);
-      });
     });
+    const spans = [...h1.querySelectorAll('.line-inner span')];
+    const sweepMotionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const SWEEP = 450;   // ms between the leftmost and rightmost glyph starting
+    const GLYPH = 700;   // each glyph's own transition length (matches the CSS)
+
+    h1.classList.add('sweep-in');
+    if (!sweepMotionOK) {
+      // reduced motion: skip straight to the settled headline
+      h1.classList.add('lit', 'settled');
+      return;
+    }
+
+    const rects = spans.map(s => s.getBoundingClientRect());
+    const minX = Math.min(...rects.map(r => r.left));
+    const range = Math.max(1, Math.max(...rects.map(r => r.right)) - minX);
+    spans.forEach((s, i) => {
+      const cx = (rects[i].left + rects[i].right) / 2;
+      s.style.setProperty('--d', Math.round(((cx - minX) / range) * SWEEP) + 'ms');
+    });
+    // double rAF: the hidden start state must be committed before .lit lands,
+    // or the transition never runs (same class of bug as the rule wipe)
+    requestAnimationFrame(() => requestAnimationFrame(() => h1.classList.add('lit')));
+    setTimeout(() => {
+      h1.classList.add('settled');
+      armSpecular(spans);
+    }, SWEEP + GLYPH + 80);
+
+    function armSpecular(glyphs) {
+      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+      const heroEl = document.querySelector('.hero');
+      const orbsEl = heroEl.querySelector('.hero-orbs');
+      let centers = null, heroW = 1;
+      const cache = () => {
+        const hr = heroEl.getBoundingClientRect();
+        heroW = hr.width;
+        centers = glyphs.map(g => {
+          const r = g.getBoundingClientRect();
+          return { x: r.left + r.width / 2 - hr.left, y: r.top + r.height / 2 - hr.top };
+        });
+      };
+      window.addEventListener('resize', () => { centers = null; }, { passive: true });
+
+      const last = new Float32Array(glyphs.length);
+      const SX = 2 * 90 * 90;    // cursor: sigma 90px across, about two glyph widths
+      const SY = 2 * 170 * 170;  // soft vertical falloff so hovering the sub barely lights the h1
+      const AX = 2 * 230 * 230;  // ambient: broad sweep, not a spotlight
+      const AMBIENT = 0.55;      // ceiling of the always-on shimmer (cursor peaks at 1).
+                                 // 0.38 measured near-invisible (brightness 1.04,
+                                 // shadow alpha 0.13) — the "too subliminal to earn
+                                 // its place" failure mode. This is the one dial.
+      let cur = null;            // latest cursor position in hero coords, or null
+
+      // Script A still owns the cursor input — this only records it, so tilt,
+      // Lightfall and the sheen all read the same pointer.
+      window.__heroSpecular = (cx, cy, rect) => {
+        cur = (cx === null) ? null : { x: cx - rect.left, y: cy - rect.top };
+      };
+
+      // The headline catches the light field's OWN motion, so the sheen exists
+      // for every visitor instead of only for someone who drags a mouse across
+      // it. irisFlow already drifts the warm blob (the light sitting behind
+      // line 1) via the registered @property --g2-warm-x, so that value IS the
+      // light's position — read it rather than re-deriving the animation in JS,
+      // which would silently drift out of sync if the keyframes ever change.
+      let running = false, lastT = -1e4;
+      const frame = (t) => {
+        if (!running) return;
+        requestAnimationFrame(frame);
+        // ~16Hz is plenty: the .settled spans carry a 0.45s filter transition,
+        // so CSS interpolates every gap. Keeps the per-frame style read cheap.
+        if (t - lastT < 60) return;
+        lastT = t;
+        if (!centers) cache();
+        const wx = parseFloat(getComputedStyle(orbsEl).getPropertyValue('--g2-warm-x'));
+        const lightX = (isNaN(wx) ? 50 : wx) / 100 * heroW;
+        for (let i = 0; i < glyphs.length; i++) {
+          const c = centers[i];
+          const adx = c.x - lightX;
+          let I = AMBIENT * Math.exp(-(adx * adx) / AX);
+          if (cur) {
+            const dx = c.x - cur.x, dy = c.y - cur.y;
+            const p = Math.exp(-(dx * dx) / SX - (dy * dy) / SY);
+            I = p + I * (1 - p);   // screen blend: cursor wins locally, ambient fills the rest
+          }
+          if (I < 0.02) I = 0;
+          if (Math.abs(I - last[i]) < 0.015) continue;   // skip imperceptible writes
+          last[i] = I;
+          if (!I) {
+            glyphs[i].style.filter = '';
+            glyphs[i].style.textShadow = '';
+          } else {
+            glyphs[i].style.filter = 'brightness(' + (1 + 0.10 * I).toFixed(3) + ')';
+            glyphs[i].style.textShadow =
+              '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
+              '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')';
+          }
+        }
+      };
+      // Only burn frames while the hero is actually on screen — same gating
+      // discipline as the footer pixel-dissolve.
+      new IntersectionObserver(([e]) => {
+        if (e.isIntersecting) {
+          if (!running) { running = true; lastT = -1e4; requestAnimationFrame(frame); }
+        } else {
+          running = false;
+        }
+      }).observe(heroEl);
+    }
   });
 
   // Scroll CTA — each word reveals as it rises into view, left-to-right.
