@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=217">
+  <link rel="stylesheet" href="style.css?v=219">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -259,14 +259,6 @@
     </div>
   </section>
 
-  <!-- Scroll CTA -->
-  <section class="scroll-cta">
-    <span class="scroll-word">Like</span>
-    <span class="scroll-word">what</span>
-    <span class="scroll-word">you</span>
-    <span class="scroll-word">see?</span>
-  </section>
-
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
     <div class="footer-glow"></div>
@@ -428,36 +420,35 @@
     }
   });
 
-  // Scroll CTA — each word reveals as it rises into view, left-to-right.
-  // Keyed to each word's own viewport position (not page-scroll %), so every
-  // word animates while actually on screen — on any viewport height.
-  const scrollWords = document.querySelectorAll('.scroll-word');
-  const scrollCta = document.querySelector('.scroll-cta');
+  // Footer scroll reveal — the IntersectionObserver pattern the other pages
+  // use (the scroll-CTA ghost words that used to gate this reveal on index
+  // were deleted 2026-07-27; the footer glow + watermark carry the close).
   const footerBigText = document.querySelector('.footer-big-text');
-  if (scrollWords.length && scrollCta) {
-    function updateScrollWords() {
-      const vh = window.innerHeight;
-      let allVisible = true;
-      scrollWords.forEach((word, i) => {
-        // Reveal once the word has risen above its trigger line. Each successive
-        // word needs the line a little higher, giving a left-to-right stagger.
-        const trigger = vh * 0.92 - i * (vh * 0.05);
-        if (word.getBoundingClientRect().top < trigger) {
-          word.classList.add('visible');
-        } else {
-          word.classList.remove('visible');
-          allVisible = false;
-        }
-      });
-      // "Say hello" follows once all four words are in and it has entered view.
-      if (footerBigText) {
-        const inView = footerBigText.getBoundingClientRect().top < vh * 0.9;
-        footerBigText.classList.toggle('visible', allVisible && inView);
+  if (footerBigText) {
+    let lastScroll = window.scrollY;
+    let footerVisible = false;
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !footerVisible) {
+        footerBigText.classList.add('visible');
+        footerVisible = true;
       }
-    }
-    window.addEventListener('scroll', updateScrollWords, { passive: true });
-    window.addEventListener('resize', updateScrollWords, { passive: true });
-    updateScrollWords();
+    }, { threshold: 0.1 }).observe(footerBigText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerBigText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (footerVisible && currentScroll < lastScroll && !atBottom) {
+        footerBigText.classList.remove('visible');
+        footerVisible = false;
+      } else if (!footerVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerBigText.classList.add('visible');
+          footerVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
   }
 
   // Logo letter stagger
