@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homewise — Slides — Chang Mou</title>
+  <meta name="description" content="A slide-deck walkthrough of the Homewise case study: an AI home command center that scopes the job before it shops it.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.chang-mou.com/homewiseslide">
+  <meta property="og:title" content="Homewise — Slides — Chang Mou">
+  <meta property="og:description" content="A slide-deck walkthrough of the Homewise case study.">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=4">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=4">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://www.chang-mou.com/homewiseslide">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+  <style>
+    /* ===== Hearth tokens — the Homewise design system, lifted from its own
+       /designsystem page. Deliberately NOT the portfolio's dark chrome or its
+       warm-to-blue hero gradient: this deck wears the case study's identity.
+       Hearth rules honored here: warm canvas, near-black ink, tri-role accents
+       (sage = trust, ember = caution, sky = info), a 5-tier surface ladder,
+       hairlines instead of shadows (shadows are banned), and the rule-line
+       eyebrow gesture. ===== */
+    :root {
+      --canvas: #F6F4EF;         /* tier 0 · page */
+      --canvas-soft: #FAF8F3;    /* tier 1 · sidebar, hover */
+      --card: #FFFFFF;           /* tier 2 · content tiles */
+      --canvas-deep: #EEEAE1;    /* tier 3 · inset wells */
+      --ink-900: #1A1A17;        /* tier 4 · CTAs, inverted */
+      --ink-700: #3C3C38;
+      --ink-500: #6B6B65;
+      --ink-300: #A8A8A1;
+      --ink-200: #CFCEC7;
+      --ink-100: #E7E5DE;
+
+      --sage-50: #F1F4EF;  --sage-100: #E2E8DC; --sage-300: #9AAE8C;
+      --sage-400: #738A63; --sage-500: #4F6942; --sage-700: #2F4027;
+
+      --ember-50: #FBF3EA; --ember-100: #F5E4CE; --ember-300: #D9A461;
+      --ember-400: #B98132; --ember-500: #8E601E;
+
+      --sky-50: #EEF3F5;  --sky-100: #D9E4E9; --sky-300: #8FAAB3;
+      --sky-500: #4E6F7A; --sky-700: #2E4850;
+
+      --radius: 14px;
+      --hair: 1px solid var(--ink-200);
+      --hair-soft: 1px solid var(--ink-100);
+      /* on ink-900 surfaces */
+      --hair-dark: 1px solid rgba(255,255,255,0.12);
+      --ink-on-dark: rgba(255,255,255,0.92);
+      --ink-on-dark-soft: rgba(255,255,255,0.66);
+      --ink-on-dark-mute: rgba(255,255,255,0.45);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;                /* the deck owns the viewport */
+      background: var(--ink-900);      /* letterbox around the cream stage */
+      color: var(--ink-900);
+      font-family: 'Neue Montreal', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ===== Deck shell: a fixed 1920×1080 stage, scaled to fit (letterboxed) ===== */
+    .deck {
+      position: fixed; inset: 0; overflow: hidden;
+      background: var(--ink-900);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stage {
+      position: relative;
+      width: 1920px; height: 1080px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      transform: scale(var(--scale, 1));
+      transform-origin: center center;
+    }
+    .deck-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.62s cubic-bezier(0.76, 0, 0.24, 1);
+      will-change: transform;
+    }
+    .slide {
+      flex: 0 0 1920px;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      position: relative;               /* pin-layer anchor */
+      display: flex; align-items: stretch;
+      padding: 84px 120px;
+      background: var(--canvas);
+    }
+    .slide-inner {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    /* Every content slide anchors its header at one canvas position so the
+       label/title never jump as you arrow through; the title and sign-off
+       slides keep their centered bookend layout. */
+    .slide:not(.slide--title):not(.slide--end) { padding-top: 140px; }
+    .slide:not(.slide--title):not(.slide--end) .slide-inner { justify-content: flex-start; }
+
+    /* ===== Reveal on active slide ===== */
+    .slide-inner > * {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide.is-active .slide-inner > * { opacity: 1; transform: none; }
+    .slide.is-active .slide-inner > *:nth-child(1) { transition-delay: 0.06s; }
+    .slide.is-active .slide-inner > *:nth-child(2) { transition-delay: 0.13s; }
+    .slide.is-active .slide-inner > *:nth-child(3) { transition-delay: 0.20s; }
+    .slide.is-active .slide-inner > *:nth-child(4) { transition-delay: 0.27s; }
+    .slide.is-active .slide-inner > *:nth-child(5) { transition-delay: 0.34s; }
+    .slide.is-active .slide-inner > *:nth-child(6) { transition-delay: 0.41s; }
+
+    /* ===== Typography (fixed px on the 1920×1080 canvas) =====
+       The site loads Neue Montreal at 400/500 only, so EVERY heading sets
+       font-weight explicitly. Left to UA defaults an h1/h2 asks for 700 and
+       the browser synthesizes a fake bold. */
+    /* Hearth's eyebrow: 0.20em tracked caps paired with the 24px rule-line. */
+    .s-label {
+      display: flex; align-items: center; gap: 14px;
+      font-size: 15px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-500); margin: 0;
+    }
+    .s-label::before { content: ""; flex: 0 0 auto; width: 24px; height: 1px; background: var(--ink-300); }
+    .s-title {
+      font-size: 54px; font-weight: 500; line-height: 1.12; letter-spacing: -0.035em;
+      margin: 22px 0 0; color: var(--ink-900); max-width: 1500px;
+    }
+    .s-body {
+      font-size: 24px; font-weight: 400; line-height: 1.6; color: var(--ink-500);
+      max-width: 1180px; margin-top: 24px;
+    }
+    .highlight { color: var(--ink-900); }
+    .s-foot { font-size: 17px; line-height: 1.5; color: var(--ink-300); margin-top: 22px; }
+    .s-foot a { color: var(--ink-500); text-decoration: underline; text-decoration-color: var(--ink-200); text-underline-offset: 3px; }
+
+    /* ===== Dark bookends (title + sign-off) — Hearth tier 4 with the
+       .dot-grid brand texture. No blurred colour blobs: this deck does not
+       borrow the site's hero gradient. ===== */
+    .slide--title, .slide--end {
+      background: linear-gradient(180deg, #23231F 0%, var(--ink-900) 62%);
+      color: var(--ink-on-dark);
+    }
+    .slide--title::before, .slide--end::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.075) 1px, transparent 1px);
+      background-size: 18px 18px;
+      z-index: 0;
+    }
+    /* a quiet sage wash so the dark slides still read as Homewise, not generic black */
+    .slide--title::after, .slide--end::after {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 88% 92%, rgba(154,174,140,0.16), transparent 62%),
+        radial-gradient(ellipse 60% 55% at 4% 6%, rgba(217,164,97,0.10), transparent 60%);
+    }
+    .slide--title .slide-inner, .slide--end .slide-inner { position: relative; z-index: 1; }
+    .slide--title .s-label, .slide--end .s-label { color: var(--sage-300); }
+    .slide--title .s-label::before, .slide--end .s-label::before { background: var(--sage-300); }
+    .title-h1 {
+      font-size: 136px; font-weight: 500; line-height: 1.0; letter-spacing: -0.045em;
+      margin: 34px 0 32px; color: #fff;
+    }
+    .title-sub {
+      font-size: 31px; font-weight: 400; line-height: 1.5; color: var(--ink-on-dark-soft);
+      max-width: 1180px; margin-bottom: 48px;
+    }
+    .title-meta { display: flex; flex-wrap: wrap; gap: 12px; }
+    .title-meta span {
+      font-size: 19px; color: var(--ink-on-dark-soft);
+      padding: 11px 22px; border-radius: 999px;
+      border: var(--hair-dark); background: rgba(255,255,255,0.04);
+    }
+    .slide--end .s-title { color: #fff; }
+
+    /* ===== Card grids ===== */
+    .grid { display: grid; gap: 24px; margin-top: 44px; }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* Hearth tier 2: white tile, hairline, no shadow. */
+    .card {
+      background: var(--card); border: var(--hair-soft);
+      border-radius: var(--radius); padding: 34px 32px;
+    }
+    .card h3 { font-size: 26px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 14px; color: var(--ink-900); }
+    .card p { font-size: 19px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
+    .card-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 30px; height: 30px; border-radius: 8px; margin-bottom: 18px;
+      background: var(--sage-50); border: 1px solid var(--sage-100);
+      color: var(--sage-500); font-size: 15px; font-weight: 500;
+    }
+
+    /* pain cards — the quote demoted below a plain-language headline */
+    .card--pain { background: var(--canvas-soft); border-color: var(--ink-100); }
+    .card--pain .voc { font-size: 19px; line-height: 1.55; color: var(--ink-500); font-style: italic; margin-top: 14px; }
+
+    /* ===== Stats ===== */
+    .stat-num {
+      display: block; font-size: 104px; font-weight: 500; line-height: 1;
+      letter-spacing: -0.045em; margin-bottom: 18px; color: var(--ink-900);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat p { font-size: 19px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
+    .src { font-size: 16px; color: var(--ink-300); margin-top: 26px; }
+
+    /* ===== Quote spread graphic (the $250 → $7,000 reframe) ===== */
+    .spread {
+      margin-top: 44px; padding: 40px 44px 34px;
+      background: var(--canvas-deep); border: var(--hair); border-radius: var(--radius);
+    }
+    .spread-label {
+      font-size: 15px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-500); margin-bottom: 34px;
+    }
+    .spread-track { position: relative; height: 2px; background: var(--ink-200); border-radius: 2px; }
+    .spread-dot {
+      position: absolute; top: 50%; width: 15px; height: 15px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card); border: 2px solid var(--ink-300);
+    }
+    .spread-dot--hi { border-color: var(--ember-400); background: var(--ember-100); }
+    .spread-scale { display: flex; justify-content: space-between; margin-top: 26px; }
+    .spread-fig {
+      display: flex; flex-direction: column; gap: 5px;
+      font-size: 46px; font-weight: 500; letter-spacing: -0.035em; color: var(--ink-900);
+      font-variant-numeric: tabular-nums;
+    }
+    .spread-fig small { font-size: 16px; font-weight: 400; letter-spacing: 0; color: var(--ink-500); }
+    .spread-fig--hi { color: var(--ember-500); text-align: right; }
+    .spread-fig--hi small { color: var(--ember-400); }
+
+    /* ===== Workflow stages ===== */
+    .stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 44px; }
+    .stage-card {
+      background: var(--card); border: var(--hair-soft); border-radius: var(--radius);
+      padding: 32px 30px; display: flex; flex-direction: column;
+    }
+    .stage-step {
+      font-size: 14px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--sage-500); margin-bottom: 16px;
+    }
+    .stage-card h3 { font-size: 27px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 13px; color: var(--ink-900); }
+    .stage-card p { font-size: 19px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
+
+    /* ===== Split layout ===== */
+    .split { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; margin-top: 44px; }
+    .split-media img {
+      display: block; width: 100%; border-radius: var(--radius); border: var(--hair);
+    }
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .intro-grid img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
+      border-radius: 12px; border: var(--hair);
+    }
+
+    /* ===== Process flow charts (Hearth-toned rebuild of the case study SVGs) ===== */
+    .flows { margin-top: 40px; display: flex; flex-direction: column; gap: 26px; }
+    .flow { max-width: 1240px; }
+    .flow-head { display: flex; align-items: baseline; gap: 28px; flex-wrap: wrap; margin-bottom: 14px; }
+    .flow-head h3 { font-size: 22px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink-900); }
+    .flow-tags { list-style: none; display: flex; gap: 22px; flex-wrap: wrap; }
+    .flow-tags li { font-size: 16px; color: var(--ink-500); display: inline-flex; align-items: center; gap: 8px; }
+    .tick {
+      flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
+    }
+    .tick--bad { background: var(--ember-100); color: var(--ember-500); }
+    .tick--good { background: var(--sage-100); color: var(--sage-500); }
+    .flow svg { display: block; width: 100%; height: auto; }
+    .flow-box rect { fill: var(--card); stroke: var(--ink-200); stroke-width: 1; }
+    .flow-box text { fill: var(--ink-700); font-size: 19px; font-family: inherit; }
+
+    /* ===== Walkthrough clip =====
+       Height-driven: flex hands the clip the remaining space and aspect-ratio
+       derives the width from it, so the frame is always exactly 16:9 and never
+       overflows the slide. Hairline, no shadow. */
+    .clip {
+      position: relative; overflow: hidden;
+      border-radius: var(--radius); border: var(--hair);
+      background: var(--canvas-deep);
+    }
+    /* flex-basis MUST be 0, not auto. With `auto` the aspect-ratio's own
+       content size (width 100% → 1680 → height 945) feeds into the basis and
+       survives shrinking, so the frame overran the slide by ~18px and got
+       clipped. A zero basis makes the height purely the leftover free space.
+       The ratio is the clips' REAL size (1920×1204 screen recordings, not 16:9)
+       so object-fit has nothing to crop and nothing to letterbox. */
+    .slide-inner > .clip:last-child {
+      flex: 1 1 0; min-height: 0; margin-top: 24px;
+      align-self: center; aspect-ratio: 1920 / 1204; max-width: 100%;
+    }
+    .slide-inner > .clip--play:last-child { aspect-ratio: 1920 / 994; }
+    /* Media slides trim the bottom padding to hand the artifact more room.
+       Only padding-BOTTOM moves, so the header stays anchored at the same
+       canvas y as every other content slide. */
+    .slide--media { padding-bottom: 56px; }
+    .clip video { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--canvas-deep); }
+    .clip-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(26,26,23,0.10); }
+    .clip-bar i { display: block; height: 100%; width: 0; background: var(--sage-500); }
+    /* the click-to-play shipped-build recording keeps native controls */
+    .clip--play video { object-fit: contain; background: var(--ink-900); }
+
+    /* ===== CTAs ===== */
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 44px; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 11px;
+      padding: 17px 28px; border-radius: 999px; font-size: 20px;
+      border: var(--hair); text-decoration: none; color: var(--ink-700);
+      background: var(--card);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .cta:hover { background: var(--canvas-soft); border-color: var(--ink-300); color: var(--ink-900); }
+    .cta--solid { background: var(--ink-900); color: var(--canvas); border-color: var(--ink-900); }
+    .cta--solid:hover { background: #000; color: #fff; border-color: #000; }
+    .cta svg { width: 19px; height: 19px; }
+    .slide--end .cta { background: rgba(255,255,255,0.06); border: var(--hair-dark); color: var(--ink-on-dark); }
+    .slide--end .cta:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); color: #fff; }
+    .slide--end .cta--solid { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
+    .slide--end .cta--solid:hover { background: #fff; color: var(--ink-900); }
+
+    /* ===== Chrome: viewport-fixed overlay (NOT scaled), sits in the letterbox ===== */
+    /* Hearth's tri-role story as the progress ramp: trust → caution → info. */
+    .deck-progress {
+      position: fixed; top: 0; left: 0; height: 4px; z-index: 40; width: 100%;
+      background: linear-gradient(90deg, var(--sage-500), var(--sage-300), var(--ember-400), var(--sky-500));
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .deck-brand {
+      position: fixed; top: 26px; left: 34px; z-index: 30;
+      display: inline-flex; align-items: center; gap: 9px;
+      font-size: 16px; color: var(--ink-on-dark-mute); text-decoration: none; transition: color 0.2s ease;
+    }
+    .deck-brand:hover { color: var(--ink-on-dark); }
+    .deck-counter {
+      position: fixed; top: 26px; right: 34px; z-index: 30;
+      font-size: 15px; letter-spacing: 0.08em; color: var(--ink-on-dark-mute); font-variant-numeric: tabular-nums;
+    }
+    .deck-counter b { color: var(--ink-on-dark); font-weight: 400; }
+
+    .navbtn {
+      position: fixed; bottom: 24px; z-index: 30;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,0.07); border: var(--hair-dark);
+      color: var(--ink-on-dark); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    }
+    .navbtn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+    .navbtn:disabled { opacity: 0.26; cursor: default; }
+    .navbtn svg { width: 20px; height: 20px; }
+    .navbtn--prev { right: 90px; }
+    .navbtn--next { right: 34px; }
+
+    .deck-hint {
+      position: fixed; bottom: 33px; left: 34px; z-index: 30;
+      font-size: 14px; color: var(--ink-on-dark-mute);
+      display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.5s ease;
+    }
+    .deck-hint kbd { font-family: inherit; font-size: 12px; padding: 2px 7px; border: var(--hair-dark); border-radius: 5px; color: var(--ink-on-dark-soft); }
+    .deck-hint.hidden { opacity: 0; pointer-events: none; }
+
+    /* ===== Comment mode (Figma-style pins) =====
+       Pins live INSIDE each .slide (so they ride the track transform) and are
+       anchored at % coordinates of the 1920x1080 stage. A 0x0 .pin-anchor sits
+       at the exact point; the pin/popover scale by 1/--scale about that point
+       so they render at constant screen size at any viewport. */
+    .pin-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+    body.commenting .pin-layer {
+      pointer-events: auto;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M4 26 V10 a6 6 0 0 1 6-6 h10 a6 6 0 0 1 6 6 v4 a6 6 0 0 1-6 6 H10 Z' fill='%231a1a17' stroke='%23f6f4ef' stroke-width='2'/><path d='M11 12 h8 M15 8 v8' stroke='%23f6f4ef' stroke-width='2' stroke-linecap='round'/></svg>") 4 26, crosshair;
+    }
+    .pin-anchor { position: absolute; width: 0; height: 0; }
+    .pin {
+      position: absolute; left: 0; bottom: 0;
+      width: 34px; height: 34px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      transform-origin: bottom left;
+      border-radius: 17px 17px 17px 3px;      /* Figma teardrop, tail at the point */
+      background: var(--ink-900);
+      border: 1.5px solid var(--canvas);
+      color: var(--canvas); font-size: 14px; font-family: inherit; padding: 0;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; pointer-events: auto;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    body.commenting .pin { display: flex; }
+    .pin:hover, .pin.open { background: var(--sage-700); border-color: var(--sage-100); }
+    .cmt-pop {
+      position: absolute;
+      width: 340px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      background: var(--card);
+      border: var(--hair);
+      border-radius: 12px;
+      padding: 16px;
+      display: none; flex-direction: column; gap: 10px;
+      pointer-events: auto; cursor: default;
+      font-size: 14px; line-height: 1.5; text-align: left; color: var(--ink-900);
+    }
+    body.commenting .cmt-pop { display: flex; }
+    .cmt-pop input, .cmt-pop textarea {
+      font-family: inherit; font-size: 14px; color: var(--ink-900);
+      background: var(--canvas-soft);
+      border: var(--hair); border-radius: 7px;
+      padding: 8px 10px; outline: none; resize: none;
+    }
+    .cmt-pop input:focus, .cmt-pop textarea:focus { border-color: var(--sage-300); }
+    .cmt-pop textarea { min-height: 64px; }
+    .cmt-pop-row { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+    .cmt-btn {
+      font-family: inherit; font-size: 13px; cursor: pointer;
+      padding: 7px 14px; border-radius: 999px;
+      background: transparent; border: var(--hair); color: var(--ink-500);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .cmt-btn:hover { background: var(--canvas-soft); color: var(--ink-900); }
+    .cmt-btn--solid { background: var(--ink-900); border-color: var(--ink-900); color: var(--canvas); }
+    .cmt-btn--solid:hover { background: #000; color: #fff; }
+    .cmt-meta { display: flex; align-items: center; gap: 10px; }
+    .cmt-ava {
+      width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto;
+      background: var(--sage-50); border: 1px solid var(--sage-100);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--sage-500);
+    }
+    .cmt-name { color: var(--ink-900); }
+    .cmt-time { color: var(--ink-300); font-size: 12px; }
+    .cmt-text { color: var(--ink-500); white-space: pre-wrap; word-break: break-word; }
+    .cmt-del {
+      background: none; border: none; padding: 0; margin-left: auto;
+      font-family: inherit; font-size: 12px; color: var(--ink-300); cursor: pointer;
+    }
+    .cmt-del:hover { color: var(--ember-500); }
+
+    /* Comment chrome (viewport-fixed, unscaled) */
+    .navbtn--comment { right: 146px; }
+    .navbtn--comment.on { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
+    .cmt-count {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+      background: var(--canvas); color: var(--ink-900);
+      font-size: 11px; line-height: 18px; text-align: center;
+      display: none;
+    }
+    .cmt-count.show { display: block; }
+    .navbtn--comment.on .cmt-count { background: var(--ink-900); color: var(--canvas); }
+    .cmt-bar {
+      position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
+      z-index: 35;
+      display: none; align-items: center; gap: 14px;
+      padding: 10px 18px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); border: var(--hair-dark);
+      backdrop-filter: blur(10px);
+      font-size: 13.5px; color: var(--ink-on-dark-soft); white-space: nowrap;
+    }
+    body.commenting .cmt-bar { display: inline-flex; }
+    .cmt-bar kbd {
+      font-family: inherit; font-size: 11px; padding: 1px 6px;
+      border: var(--hair-dark); border-radius: 4px; color: var(--ink-on-dark-soft);
+    }
+    .cmt-bar a { color: var(--ink-on-dark); text-decoration: none; }
+    .cmt-bar a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .deck-hint { display: none; }
+      .navbtn--comment, .cmt-bar { display: none !important; }
+      .deck-brand, .deck-counter { font-size: 13px; top: 18px; }
+      .deck-brand { left: 20px; } .deck-counter { right: 20px; }
+      .navbtn { bottom: 18px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 74px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deck-track, .deck-progress { transition: none; }
+      .slide-inner > * { transition: none; opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="deck-progress" id="progress"></div>
+  <a class="deck-brand" href="index.html" aria-label="Back to portfolio">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Chang Mou
+  </a>
+  <div class="deck-counter"><b id="cur">01</b> / <span id="total">21</span></div>
+
+  <div class="deck" id="deck">
+    <div class="stage" id="stage">
+      <div class="deck-track" id="track">
+
+        <!-- 1 · Title -->
+        <section class="slide slide--title is-active">
+          <div class="slide-inner">
+            <p class="s-label">Case study</p>
+            <h1 class="title-h1">Homewise</h1>
+            <p class="title-sub">AI command center for homeowners. It defines the scope, compares contractor quotes apples to apples, and pauses for your approval before anything happens.</p>
+            <div class="title-meta">
+              <span>Lead Product Designer</span>
+              <span>13 person team</span>
+              <span>May – Jun 2026</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 · Hello -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Hello</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">I'm Chang Mou</h2>
+                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
+                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
+              </div>
+              <div class="intro-grid">
+                <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
+                <img src="images/food.jpeg" alt="Cooking" decoding="async">
+                <img src="images/pier.jpeg" alt="Walking the city" decoding="async">
+                <img src="images/jenga.jpeg" alt="With friends" decoding="async">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 · Overview -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Overview</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">A home command center, not another marketplace</h2>
+                <p class="s-body">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. The agent recommends, but nothing moves until you approve it.</p>
+              </div>
+              <div class="split-media"><img src="images/homewise-cover.jpg" alt="Homewise comparing three contractor quotes against one scope" decoding="async"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 · My role -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">My role</p>
+            <h2 class="s-title">What I owned</h2>
+            <div class="grid grid-4">
+              <div class="card">
+                <span class="card-num">01</span>
+                <h3>Voice of customer</h3>
+                <p>Led the research. Eight interviews synthesized into six findings, including the reframe from price to scope that set the product's direction.</p>
+              </div>
+              <div class="card">
+                <span class="card-num">02</span>
+                <h3>Hearth, the design system</h3>
+                <p>Built it as living code, with a drift linter that caught drift before it shipped.</p>
+              </div>
+              <div class="card">
+                <span class="card-num">03</span>
+                <h3>Design review in the repo</h3>
+                <p>Reviewed and merged the other two designers' pull requests, so every contribution extended Hearth instead of fragmenting it.</p>
+              </div>
+              <div class="card">
+                <span class="card-num">04</span>
+                <h3>The front end prototype</h3>
+                <p>Built the full agent flow in Claude Code, from scope to human approval, then handed the dev team the repo. No Figma in between.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 · Problem -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Problem</p>
+            <h2 class="s-title">Hiring a contractor is a guessing game</h2>
+            <p class="s-body">Trust starts social. People ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. Three frustrations surfaced in almost every interview.</p>
+            <div class="grid grid-3">
+              <div class="card card--pain">
+                <h3>No way to know who to trust</h3>
+                <p class="voc">"Finding the right person is the hardest part."</p>
+              </div>
+              <div class="card card--pain">
+                <h3>No benchmark for a fair price</h3>
+                <p class="voc">"You can't really know if the price is fair."</p>
+              </div>
+              <div class="card card--pain">
+                <h3>Comparing quotes is exhausting</h3>
+                <p class="voc">"I had to make so many phone calls just to compare prices."</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 · Market stats -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Beyond our eight interviews</p>
+            <h2 class="s-title">The same pattern, at national scale</h2>
+            <div class="grid grid-3">
+              <div class="card stat"><span class="stat-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
+              <div class="card stat"><span class="stat-num">41%</span><p>have been deceived by a service provider.</p></div>
+              <div class="card stat"><span class="stat-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
+            </div>
+            <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
+          </div>
+        </section>
+
+        <!-- 7 · Insight -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Insight</p>
+            <h2 class="s-title">The price anxiety is really scope anxiety</h2>
+            <p class="s-body">When contractors propose different fixes for the same issue, their quotes describe different work, so there is nothing to compare. One homeowner was quoted $250 to $7,000 for the same siding repair, and the telling part is that he had already worked out the answer. <span class="highlight">He described Homewise before we built it.</span></p>
+            <div class="spread">
+              <p class="spread-label">Same siding repair · 5 contractors quoted</p>
+              <div class="spread-track">
+                <span class="spread-dot" style="left: 0%"></span>
+                <span class="spread-dot" style="left: 9%"></span>
+                <span class="spread-dot" style="left: 24%"></span>
+                <span class="spread-dot" style="left: 58%"></span>
+                <span class="spread-dot spread-dot--hi" style="left: 100%"></span>
+              </div>
+              <div class="spread-scale">
+                <span class="spread-fig">$250<small>lowest bid</small></span>
+                <span class="spread-fig spread-fig--hi">$7,000<small>highest bid</small></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8 · Solution -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Solution</p>
+            <h2 class="s-title">An agent that scopes the job before it shops it</h2>
+            <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible.</p>
+            <p class="s-body">Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back. <span class="highlight">A chatbot would leave them guessing at both, so I pushed for a structured workflow instead.</span></p>
+          </div>
+        </section>
+
+        <!-- 9 · The workflow -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Solution · The workflow</p>
+            <h2 class="s-title">Four stages, one scope</h2>
+            <div class="stages">
+              <div class="stage-card">
+                <span class="stage-step">Stage 01</span>
+                <h3>Scope</h3>
+                <p>A short intake conversation and a photo become a structured, editable scope of work, so you never have to know the right words.</p>
+              </div>
+              <div class="stage-card">
+                <span class="stage-step">Stage 02</span>
+                <h3>Match</h3>
+                <p>It finds and vets contractors, surfacing verified pros and the ones other Homewisers recommend.</p>
+              </div>
+              <div class="stage-card">
+                <span class="stage-step">Stage 03</span>
+                <h3>Compare</h3>
+                <p>One scope means comparable bids. Outliers and gaps get flagged, and you approve the right contractor.</p>
+              </div>
+              <div class="stage-card">
+                <span class="stage-step">Stage 04</span>
+                <h3>Track</h3>
+                <p>The job stays in one place from booking to done, so it never slips back into scattered calls and texts.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10 · Process -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Process</p>
+            <h2 class="s-title">I flipped the process and designed by building</h2>
+            <p class="s-body">Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock. Each loop starts from the PM's PRD, our shared intent, and the prototype exposes gaps the document cannot.</p>
+            <div class="flows">
+              <div class="flow">
+                <div class="flow-head">
+                  <h3>The traditional process</h3>
+                  <ul class="flow-tags">
+                    <li><span class="tick tick--bad">✕</span> Design upfront, build last</li>
+                    <li><span class="tick tick--bad">✕</span> A spec thrown over the wall</li>
+                    <li><span class="tick tick--bad">✕</span> Slow to a working version</li>
+                  </ul>
+                </div>
+                <svg viewBox="0 0 960 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Discovery to Research to Mockups to Handoff to Build, a one way line">
+                  <defs>
+                    <marker id="hwsArrowOld" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A8A8A1"/></marker>
+                  </defs>
+                  <g class="flow-box"><rect x="1" y="25" width="158" height="60" rx="8"/><text x="80" y="60" text-anchor="middle" dominant-baseline="middle">Discovery</text></g>
+                  <g class="flow-box"><rect x="201" y="25" width="158" height="60" rx="8"/><text x="280" y="60" text-anchor="middle" dominant-baseline="middle">Research</text></g>
+                  <g class="flow-box"><rect x="401" y="25" width="158" height="60" rx="8"/><text x="480" y="60" text-anchor="middle" dominant-baseline="middle">Mockups</text></g>
+                  <g class="flow-box"><rect x="601" y="25" width="158" height="60" rx="8"/><text x="680" y="60" text-anchor="middle" dominant-baseline="middle">Handoff</text></g>
+                  <g class="flow-box"><rect x="801" y="25" width="158" height="60" rx="8"/><text x="880" y="60" text-anchor="middle" dominant-baseline="middle">Build</text></g>
+                  <line x1="161" y1="55" x2="199" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#hwsArrowOld)"/>
+                  <line x1="361" y1="55" x2="399" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#hwsArrowOld)"/>
+                  <line x1="561" y1="55" x2="599" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#hwsArrowOld)"/>
+                  <line x1="761" y1="55" x2="799" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#hwsArrowOld)"/>
+                </svg>
+              </div>
+              <div class="flow">
+                <div class="flow-head">
+                  <h3>How I work now</h3>
+                  <ul class="flow-tags">
+                    <li><span class="tick tick--good">✓</span> A working version first</li>
+                    <li><span class="tick tick--good">✓</span> Feedback from team and users</li>
+                    <li><span class="tick tick--good">✓</span> Claude Code weighs each option</li>
+                  </ul>
+                </div>
+                <svg viewBox="0 0 960 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Align with PM to Build to Feedback to Iterate, looping back to Build">
+                  <defs>
+                    <marker id="hwsArrowNew" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#738A63"/></marker>
+                  </defs>
+                  <g class="flow-box"><rect x="87" y="35" width="186" height="60" rx="8"/><text x="180" y="70" text-anchor="middle" dominant-baseline="middle">Align with PM</text></g>
+                  <line x1="275" y1="65" x2="313" y2="65" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowNew)"/>
+                  <g class="flow-box"><rect x="315" y="35" width="158" height="60" rx="8" style="fill: #E2E8DC; stroke: #9AAE8C;"/><text x="394" y="70" text-anchor="middle" dominant-baseline="middle" style="fill: #2F4027;">Build</text></g>
+                  <line x1="475" y1="65" x2="513" y2="65" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowNew)"/>
+                  <g class="flow-box"><rect x="515" y="35" width="158" height="60" rx="8"/><text x="594" y="70" text-anchor="middle" dominant-baseline="middle">Feedback</text></g>
+                  <line x1="675" y1="65" x2="713" y2="65" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowNew)"/>
+                  <g class="flow-box"><rect x="715" y="35" width="158" height="60" rx="8"/><text x="794" y="70" text-anchor="middle" dominant-baseline="middle">Iterate</text></g>
+                  <path d="M 794 97 L 794 138 L 394 138 L 394 99" fill="none" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowNew)"/>
+                  <text x="594" y="130" text-anchor="middle" fill="#6B6B65" font-size="15" font-family="'Neue Montreal', sans-serif">repeat until it is right</text>
+                </svg>
+              </div>
+            </div>
+            <p class="s-foot">Less time on mockups, more time on the calls only a person can make. I took this from <a href="https://www.lennysnewsletter.com/p/the-design-process-is-dead" target="_blank" rel="noopener">Jenny Wen</a>, Head of Design for Claude, who argues the design process is dead.</p>
+          </div>
+        </section>
+
+        <!-- 11 · Final Design 1 -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 1 of 5</p>
+            <h2 class="s-title">Define the scope, in plain language</h2>
+            <p class="s-body">You describe the problem in your own words. The agent turns it into a structured, editable scope of work, the most important artifact in the whole product.</p>
+            <div class="clip">
+              <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 12 · Final Design 2 -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 2 of 5</p>
+            <h2 class="s-title">One scope, every contractor</h2>
+            <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job.</p>
+            <div class="clip">
+              <video src="images/homewise-contractors.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 13 · Final Design 3 -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 3 of 5</p>
+            <h2 class="s-title">A match you can trust, not a list to sort</h2>
+            <p class="s-body">A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
+            <div class="clip">
+              <video src="images/homewise-match.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 14 · Final Design 4 -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 4 of 5</p>
+            <h2 class="s-title">Compare apples to apples, then you sign off</h2>
+            <p class="s-body">Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+            <div class="clip">
+              <video src="images/homewise-compare.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 15 · Final Design 5 -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 5 of 5</p>
+            <h2 class="s-title">One place, from booking to done</h2>
+            <p class="s-body">Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+            <div class="clip">
+              <video src="images/homewise-track.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 16 · Outcome -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Outcome</p>
+            <h2 class="s-title">A working prototype, not a mockup</h2>
+            <p class="s-body">Homewise is live and interactive. The whole flow runs end to end, from the first plain language request to the moment you approve the hire. It is the artifact I handed the dev team, and the product they shipped was built straight onto it.</p>
+            <div class="cta-row">
+              <a class="cta cta--solid" href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener">Explore the live prototype
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+              </a>
+              <a class="cta" href="https://github.com/chang627627/homewise" target="_blank" rel="noopener">View the repository
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 17 · Design System -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Design system</p>
+            <h2 class="s-title">Hearth, one warm system across every screen</h2>
+            <p class="s-body">The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter.</p>
+            <div class="clip">
+              <video src="images/homewise-hearth.mp4" data-clip loop muted playsinline preload="none"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 18 · Collaboration -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Collaboration</p>
+            <h2 class="s-title">We skipped Figma and built the design in code</h2>
+            <p class="s-body">Working closely with the PM and engineers, we made an unusual call: skip Figma and design in the codebase from day one, a real React prototype on Hearth. We handed the dev team the repo itself, and they built the real backend straight onto it.</p>
+            <p class="s-body">Skipping Figma did not close the door on it. If the team ever needs a traditional handoff, I can push the prototype from Claude Code into Figma through its MCP server, turning the running interface into editable frames. <span class="highlight">The code stays the source of truth, and Figma is a step we reach for only when it earns its place.</span></p>
+          </div>
+        </section>
+
+        <!-- 19 · The shipped build -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Collaboration · Proof</p>
+            <h2 class="s-title">See it running for real</h2>
+            <p class="s-body">A full walkthrough of the shipped build, start to finish. I built the front end and the data structures, the engineers wired live data and the backend onto them. Press play.</p>
+            <div class="clip clip--play">
+              <video src="images/homewise-live.mp4" controls preload="none" poster="images/homewise-live-poster.jpg" playsinline></video>
+            </div>
+          </div>
+        </section>
+
+        <!-- 20 · Reflection -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Reflection</p>
+            <h2 class="s-title">Trust was the hard part, not the automation</h2>
+            <p class="s-body">People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Trust was a data problem as much as an AI one, credible only because the matching ran on real license and permit records, not the model's best guess.</p>
+            <p class="s-body">Building a front end prototype in Claude Code for the first time reframed the deliverable too. <span class="highlight">The design wasn't a picture of the product. It was the first version of it.</span></p>
+          </div>
+        </section>
+
+        <!-- 21 · Sign-off -->
+        <section class="slide slide--end">
+          <div class="slide-inner">
+            <p class="s-label">Thank you</p>
+            <h2 class="s-title">See it in full</h2>
+            <div class="cta-row">
+              <a class="cta cta--solid" href="homewise.html">View the full case study
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              </a>
+              <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <button class="navbtn navbtn--comment" id="cmtToggle" aria-label="Comment mode (C)" title="Comment mode (C)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="cmt-count" id="cmtCount"></span>
+  </button>
+  <div class="cmt-bar" id="cmtBar">
+    <span>Comment mode · click anywhere on a slide to leave a note</span>
+    <a href="#" id="cmtSend" hidden>Send notes to Chang ↗</a>
+    <span><kbd>Esc</kbd> to exit</span>
+  </div>
+
+  <button class="navbtn navbtn--prev" id="prev" aria-label="Previous slide" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="navbtn navbtn--next" id="next" aria-label="Next slide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+
+  <div class="deck-hint" id="hint"><kbd>←</kbd><kbd>→</kbd> or swipe to navigate · <kbd>C</kbd> to comment</div>
+
+  <noscript>
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;background:#F6F4EF;">
+      <p style="max-width:40ch;line-height:1.6;color:#6B6B65;">This slide deck needs JavaScript. View the <a href="homewise.html" style="color:#1A1A17;">full Homewise case study</a> instead.</p>
+    </div>
+  </noscript>
+
+  <script>
+    (function () {
+      const stage = document.getElementById('stage');
+      const track = document.getElementById('track');
+      const slides = Array.from(track.children);
+      const total = slides.length;
+      const SLIDE_W = 1920, SLIDE_H = 1080;
+      const progress = document.getElementById('progress');
+      const curEl = document.getElementById('cur');
+      const totalEl = document.getElementById('total');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const hint = document.getElementById('hint');
+      const pad = (n) => String(n).padStart(2, '0');
+
+      totalEl.textContent = pad(total);
+
+      // Scale the fixed 1920×1080 stage to fit the viewport (letterboxed).
+      // The lane is 160px, not coffeeslide's 76px: the stage is CREAM here, so
+      // the light chrome must stay fully inside the ink-900 letterbox or it
+      // lands on the slide and disappears.
+      function fit() {
+        const s = Math.min(window.innerWidth / SLIDE_W, (window.innerHeight - 160) / SLIDE_H);
+        stage.style.setProperty('--scale', s);
+      }
+      window.addEventListener('resize', fit, { passive: true });
+      fit();
+
+      let index = 0;
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      if (!isNaN(fromHash) && fromHash >= 1 && fromHash <= total) index = fromHash - 1;
+
+      // Videos: nothing preloads (the six clips total ~100MB). The active
+      // slide's looping clip is played on arrival, which is what triggers its
+      // load, and the next slide's clip is warmed so the hand-off is seamless.
+      // NOTE: an IntersectionObserver would be wrong here for the same reason
+      // loading="lazy" is wrong in a deck — slides move by transform, so they
+      // never leave the scroll viewport.
+      function syncMedia() {
+        slides.forEach((s, i) => {
+          s.querySelectorAll('video').forEach(v => {
+            const isLoop = v.hasAttribute('data-clip');
+            if (i === index) {
+              if (isLoop) v.play().catch(() => {});
+            } else {
+              v.pause();
+              if (isLoop) { try { v.currentTime = 0; } catch (e) {} }
+            }
+          });
+        });
+        const nx = slides[index + 1];
+        if (nx) nx.querySelectorAll('video[data-clip]').forEach(v => {
+          if (v.preload === 'none') v.preload = 'auto';
+        });
+      }
+
+      function render() {
+        track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
+        progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
+        curEl.textContent = pad(index + 1);
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === total - 1;
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+        syncMedia();
+        const h = '#' + (index + 1);
+        if (location.hash !== h) history.replaceState(null, '', h);
+      }
+
+      function go(n) {
+        const next = Math.max(0, Math.min(total - 1, n));
+        if (next === index) return;
+        index = next;
+        render();
+      }
+
+      prevBtn.addEventListener('click', () => go(index - 1));
+      nextBtn.addEventListener('click', () => go(index + 1));
+
+      let hintDismissed = false;
+      function dismissHint() {
+        if (hintDismissed) return;
+        hintDismissed = true;
+        hint.classList.add('hidden');
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) return; // typing a comment
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(index + 1); dismissHint(); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(index - 1); dismissHint(); }
+        else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); go(index + 1); dismissHint(); }
+        else if (e.key === ' ' && e.shiftKey) { e.preventDefault(); go(index - 1); dismissHint(); }
+        else if (e.key === 'Home') { go(0); dismissHint(); }
+        else if (e.key === 'End') { go(total - 1); dismissHint(); }
+      });
+
+      // Touch swipe (thresholds in viewport px; fine for intent detection).
+      let sx = 0, sy = 0, tracking = false;
+      const deck = document.getElementById('deck');
+      deck.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true; }, { passive: true });
+      deck.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        if (document.body.classList.contains('commenting')) { tracking = false; return; }
+        tracking = false;
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) { go(index + (dx < 0 ? 1 : -1)); dismissHint(); }
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        const n = parseInt((location.hash || '').replace('#', ''), 10);
+        if (!isNaN(n) && n >= 1 && n <= total) go(n - 1);
+      });
+
+      // Per-clip playback progress bar (mirrors the case study's hw-clip bar).
+      document.querySelectorAll('.clip video[data-clip]').forEach(v => {
+        const bar = v.closest('.clip').querySelector('.clip-bar i');
+        if (!bar) return;
+        let raf;
+        const tick = () => {
+          if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+          raf = requestAnimationFrame(tick);
+        };
+        v.addEventListener('play', () => { cancelAnimationFrame(raf); tick(); });
+        v.addEventListener('pause', () => cancelAnimationFrame(raf));
+      });
+
+      render();
+      setTimeout(dismissHint, 6000);
+    })();
+  </script>
+
+  <script>
+    // Comment mode — Figma-style pins. Notes are stored in the reviewer's own
+    // browser (localStorage); "Send notes" packages them into a prefilled email.
+    (function () {
+      const KEY = 'homewiseslide_comments_v1';
+      const NAME_KEY = 'homewiseslide_commenter';
+      const EMAIL = 'changmou627627@gmail.com';
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const layers = slides.map((s) => {
+        const l = document.createElement('div');
+        l.className = 'pin-layer';
+        s.appendChild(l);
+        return l;
+      });
+      const toggle = document.getElementById('cmtToggle');
+      const countEl = document.getElementById('cmtCount');
+      const sendEl = document.getElementById('cmtSend');
+      let comments = [];
+      try { comments = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+      let pop = null; // currently-open popover node (draft: whole anchor, view: just the card)
+
+      function save() { localStorage.setItem(KEY, JSON.stringify(comments)); }
+      function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+      function closePop() {
+        if (pop) { pop.remove(); pop = null; }
+        document.querySelectorAll('.pin.open').forEach(p => p.classList.remove('open'));
+      }
+
+      function updateChrome() {
+        const n = comments.length;
+        countEl.textContent = n;
+        countEl.classList.toggle('show', n > 0);
+        sendEl.hidden = n === 0;
+        sendEl.textContent = 'Send ' + n + (n === 1 ? ' note' : ' notes') + ' to Chang ↗';
+        const lines = ['Hi Chang,', '', 'Notes on your Homewise deck:', ''];
+        comments.slice().sort((a, b) => a.slide - b.slide || a.ts - b.ts)
+          .forEach(c => lines.push('Slide ' + (c.slide + 1) + ' · ' + c.name + ': ' + c.text));
+        sendEl.href = 'mailto:' + EMAIL +
+          '?subject=' + encodeURIComponent('Feedback on your Homewise deck') +
+          '&body=' + encodeURIComponent(lines.join('\n'));
+      }
+
+      function anchorAt(layer, x, y) {
+        const a = document.createElement('div');
+        a.className = 'pin-anchor';
+        a.style.left = (x * 100) + '%';
+        a.style.top = (y * 100) + '%';
+        layer.appendChild(a);
+        return a;
+      }
+
+      // Open the card away from the nearest slide edges, scaling from the
+      // corner closest to the anchor so it grows away from the pin.
+      function placePop(el, x, y) {
+        const h = x > 0.62 ? 'right' : 'left';
+        const v = y > 0.55 ? 'bottom' : 'top';
+        el.style[h] = '10px';
+        el.style[v] = (v === 'bottom') ? '46px' : '10px';
+        el.style.transformOrigin = v + ' ' + h;
+      }
+
+      function openDraft(slideIdx, x, y) {
+        closePop();
+        const a = anchorAt(layers[slideIdx], x, y);
+        const savedName = localStorage.getItem(NAME_KEY) || '';
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        el.innerHTML =
+          '<input type="text" class="cmt-in-name" placeholder="Your name" maxlength="40" value="' + esc(savedName) + '">' +
+          '<textarea class="cmt-in-text" placeholder="Leave a note on this slide" maxlength="600"></textarea>' +
+          '<div class="cmt-pop-row">' +
+            '<button class="cmt-btn" data-act="cancel">Cancel</button>' +
+            '<button class="cmt-btn cmt-btn--solid" data-act="post">Post</button>' +
+          '</div>';
+        placePop(el, x, y);
+        a.appendChild(el);
+        pop = a;
+        const nameIn = el.querySelector('.cmt-in-name');
+        const textIn = el.querySelector('.cmt-in-text');
+        (savedName ? textIn : nameIn).focus();
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const act = e.target.dataset && e.target.dataset.act;
+          if (act === 'cancel') closePop();
+          if (act === 'post') {
+            const name = nameIn.value.trim() || 'Anonymous';
+            const text = textIn.value.trim();
+            if (!text) { textIn.focus(); return; }
+            localStorage.setItem(NAME_KEY, name);
+            comments.push({
+              id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+              slide: slideIdx, x, y, name, text, ts: Date.now(),
+            });
+            save(); closePop(); render();
+          }
+        });
+        textIn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) el.querySelector('[data-act="post"]').click();
+        });
+      }
+
+      function openView(c, pinAnchor, pinEl) {
+        closePop();
+        pinEl.classList.add('open');
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        const when = new Date(c.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        el.innerHTML =
+          '<div class="cmt-meta">' +
+            '<span class="cmt-ava">' + esc((c.name[0] || '?').toUpperCase()) + '</span>' +
+            '<span class="cmt-name">' + esc(c.name) + '</span>' +
+            '<span class="cmt-time">' + when + '</span>' +
+            '<button class="cmt-del" data-act="del">Delete</button>' +
+          '</div>' +
+          '<div class="cmt-text">' + esc(c.text) + '</div>';
+        placePop(el, c.x, c.y);
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (e.target.dataset && e.target.dataset.act === 'del') {
+            comments = comments.filter(k => k.id !== c.id);
+            save(); closePop(); render();
+          }
+        });
+        pinAnchor.appendChild(el);
+        pop = el;
+      }
+
+      function render() {
+        layers.forEach(l => { l.innerHTML = ''; });
+        pop = null;
+        comments.slice().sort((a, b) => a.ts - b.ts).forEach((c, i) => {
+          const layer = layers[c.slide];
+          if (!layer) return;
+          const a = anchorAt(layer, c.x, c.y);
+          const p = document.createElement('button');
+          p.className = 'pin';
+          p.type = 'button';
+          p.textContent = i + 1;
+          p.setAttribute('aria-label', 'Note ' + (i + 1) + ' by ' + c.name);
+          p.addEventListener('click', (e) => { e.stopPropagation(); openView(c, a, p); });
+          a.appendChild(p);
+        });
+        updateChrome();
+      }
+
+      layers.forEach((l, idx) => {
+        l.addEventListener('click', (e) => {
+          if (e.target !== l) return; // pins/popovers handle their own clicks
+          const r = l.getBoundingClientRect();
+          openDraft(idx, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+        });
+      });
+
+      function setMode(on) {
+        document.body.classList.toggle('commenting', on);
+        toggle.classList.toggle('on', on);
+        if (!on) closePop();
+      }
+      toggle.addEventListener('click', () => setMode(!document.body.classList.contains('commenting')));
+      document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) {
+          if (e.key === 'Escape') closePop();
+          return;
+        }
+        if (e.key === 'c' || e.key === 'C') setMode(!document.body.classList.contains('commenting'));
+        if (e.key === 'Escape') { if (pop) closePop(); else setMode(false); }
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
