@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=219">
+  <link rel="stylesheet" href="style.css?v=221">
   <link rel="canonical" href="https://www.chang-mou.com/nova.html">
   <script type="application/ld+json">
   {
@@ -773,6 +773,171 @@
   }
 </script>
 
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.textContent = '...';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
+  }
+</script>
 
 <script>
   // Pixel dissolve — twinkling square mask over the static gradient edge (footer top).

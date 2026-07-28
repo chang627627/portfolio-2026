@@ -1005,11 +1005,12 @@ nav::before {
 
 /* Work Section */
 .work {
-  /* 200px bottom = the site's case-study content->footer standard. The deleted
-     scroll-CTA section used to supply ~40vh of spacing here; without this the
-     last card row sat 80px off the footer band. Mobile stays 80px (the CTA
-     was display:none there, so mobile spacing never depended on it). */
-  padding: 80px 48px 200px;
+  /* 80px bottom because the .scroll-cta section below supplies ~40vh of the
+     grid->footer gap on desktop. If that section is ever removed again, this
+     needs to go back to 200px (the site's case-study content->footer standard)
+     or the last card row lands 80px off the footer band. Mobile overrides this
+     to 80px anyway, since .scroll-cta is display:none there. */
+  padding: 80px 48px 80px;
   max-width: 1440px;
   margin: 0 auto;
 }
@@ -1564,6 +1565,33 @@ footer {
   line-height: 1.1;
   pointer-events: none;
   user-select: none;
+}
+
+/* Scroll CTA */
+.scroll-cta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 0 48px;
+  min-height: 40vh;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.scroll-word {
+  font-size: clamp(48px, 8vw, 80px);
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: -0.03em;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.scroll-word.visible {
+  opacity: 0.15;
+  transform: translateY(0);
 }
 
 .footer-glow {
@@ -4044,10 +4072,13 @@ footer {
   height: 18px;
 }
 
-/* Hide side nav on smaller screens where it would overlap content */
+/* Hide side nav on smaller screens where it would overlap content.
+   .back-to-top is deliberately NOT in this rule: it is a fixed bottom-right
+   button that overlaps nothing, so the side-nav's margin-collision reason
+   never applied to it. Bundling them here hid it on every common laptop
+   width (1440 / 1366 / 1280). It now hides only at the mobile breakpoint. */
 @media (max-width: 1440px) {
-  .side-nav,
-  .back-to-top {
+  .side-nav {
     display: none;
   }
 }
@@ -4263,6 +4294,17 @@ footer {
      specular layer never arms on touch, so nothing else writes filters here. */
   .hero h1 .line-inner span {
     filter: none !important;
+  }
+
+  .scroll-cta {
+    display: none;
+  }
+
+  /* Mobile keeps no back-to-top (unchanged behaviour): the desktop rule that
+     used to hide it at <=1440px was retargeted to the side-nav only, so the
+     mobile hide has to be stated here explicitly. */
+  .back-to-top {
+    display: none;
   }
 
   /* Mobile footer carries desktop's glow + pixel-dissolve (the color + effect);

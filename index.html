@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=219">
+  <link rel="stylesheet" href="style.css?v=221">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -259,6 +259,14 @@
     </div>
   </section>
 
+  <!-- Scroll CTA -->
+  <section class="scroll-cta">
+    <span class="scroll-word">Like</span>
+    <span class="scroll-word">what</span>
+    <span class="scroll-word">you</span>
+    <span class="scroll-word">see?</span>
+  </section>
+
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
     <div class="footer-glow"></div>
@@ -420,9 +428,31 @@
     }
   });
 
-  // Footer scroll reveal — the IntersectionObserver pattern the other pages
-  // use (the scroll-CTA ghost words that used to gate this reveal on index
-  // were deleted 2026-07-27; the footer glow + watermark carry the close).
+  // Scroll CTA — each word reveals as it rises into view, left-to-right.
+  // Keyed to each word's own viewport position (not page-scroll %), so every
+  // word animates while actually on screen — on any viewport height.
+  // Note: this deliberately does NOT gate the "Say hello" reveal the way the
+  // pre-2026-07-27 version did. The footer keeps the plain IntersectionObserver
+  // pattern below, the same one coffee/homewise/ticker run, so index does not
+  // go back to being the one special case.
+  const scrollWords = document.querySelectorAll('.scroll-word');
+  const scrollCta = document.querySelector('.scroll-cta');
+  if (scrollWords.length && scrollCta) {
+    const updateScrollWords = () => {
+      const vh = window.innerHeight;
+      scrollWords.forEach((word, i) => {
+        // Reveal once the word has risen above its trigger line. Each successive
+        // word needs the line a little higher, giving a left-to-right stagger.
+        const trigger = vh * 0.92 - i * (vh * 0.05);
+        word.classList.toggle('visible', word.getBoundingClientRect().top < trigger);
+      });
+    };
+    window.addEventListener('scroll', updateScrollWords, { passive: true });
+    window.addEventListener('resize', updateScrollWords, { passive: true });
+    updateScrollWords();
+  }
+
+  // Footer scroll reveal — the IntersectionObserver pattern the other pages use.
   const footerBigText = document.querySelector('.footer-big-text');
   if (footerBigText) {
     let lastScroll = window.scrollY;
