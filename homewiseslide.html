@@ -270,6 +270,15 @@
     .split-media img {
       display: block; width: 100%; border-radius: var(--radius); border: var(--hair);
     }
+    /* Ownership list inside a .split. h4 sets font-weight explicitly: left to
+       the UA default it asks for 700 and the browser synthesizes a fake bold,
+       since only 400/500 of Neue Montreal are loaded. */
+    .note-list { display: flex; flex-direction: column; gap: 22px; }
+    .note h4 {
+      font-size: 23px; font-weight: 500; letter-spacing: -0.02em;
+      color: var(--ink-900); margin-bottom: 7px;
+    }
+    .note p { font-size: 18px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .intro-grid img {
       width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
@@ -506,7 +515,7 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     Chang Mou
   </a>
-  <div class="deck-counter"><b id="cur">01</b> / <span id="total">21</span></div>
+  <div class="deck-counter"><b id="cur">01</b> / <span id="total">19</span></div>
 
   <div class="deck" id="deck">
     <div class="stage" id="stage">
@@ -526,74 +535,45 @@
           </div>
         </section>
 
-        <!-- 2 · Hello -->
+        <!-- 2 · The bet -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Hello</p>
-            <div class="split">
-              <div>
-                <h2 class="s-title">I'm Chang Mou</h2>
-                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
-                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
-              </div>
-              <div class="intro-grid">
-                <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
-                <img src="images/food.jpeg" alt="Cooking" decoding="async">
-                <img src="images/pier.jpeg" alt="Walking the city" decoding="async">
-                <img src="images/jenga.jpeg" alt="With friends" decoding="async">
-              </div>
+            <p class="s-label">The bet</p>
+            <h2 class="s-title">People will hand the hire to an agent they can trust</h2>
+            <p class="s-body">Hiring a contractor is one of the most stressful purchases a homeowner makes, and the market says the fear is earned. Homewise bets an agent can run the hire end to end, from problem to booked job. So the question that decides product-market fit is not whether the automation works. <span class="highlight">It is whether people will trust it.</span></p>
+            <div class="grid grid-3">
+              <div class="card stat"><span class="stat-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
+              <div class="card stat"><span class="stat-num">41%</span><p>have been deceived by a service provider.</p></div>
+              <div class="card stat"><span class="stat-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
             </div>
+            <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
           </div>
         </section>
 
-        <!-- 3 · Overview -->
+        <!-- 3 · Overview + my role -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Overview</p>
+            <p class="s-label">Overview · My role</p>
             <div class="split">
               <div>
                 <h2 class="s-title">A home command center, not another marketplace</h2>
-                <p class="s-body">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. The agent recommends, but nothing moves until you approve it.</p>
+                <p class="s-body">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
+                <div class="note-list" style="margin-top: 32px;">
+                  <div class="note"><h4>Voice of customer</h4><p>Eight interviews synthesized into six findings, including the reframe that set the direction.</p></div>
+                  <div class="note"><h4>Hearth, the design system</h4><p>Built as living code, with a drift linter that caught drift before it shipped.</p></div>
+                  <div class="note"><h4>Design review in the repo</h4><p>Merged the other two designers' pull requests so every contribution extended Hearth.</p></div>
+                  <div class="note"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo. No Figma in between.</p></div>
+                </div>
               </div>
               <div class="split-media"><img src="images/homewise-cover.jpg" alt="Homewise comparing three contractor quotes against one scope" decoding="async"></div>
             </div>
           </div>
         </section>
 
-        <!-- 4 · My role -->
+        <!-- 4 · Evidence -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">My role</p>
-            <h2 class="s-title">What I owned</h2>
-            <div class="grid grid-4">
-              <div class="card">
-                <span class="card-num">01</span>
-                <h3>Voice of customer</h3>
-                <p>Led the research. Eight interviews synthesized into six findings, including the reframe from price to scope that set the product's direction.</p>
-              </div>
-              <div class="card">
-                <span class="card-num">02</span>
-                <h3>Hearth, the design system</h3>
-                <p>Built it as living code, with a drift linter that caught drift before it shipped.</p>
-              </div>
-              <div class="card">
-                <span class="card-num">03</span>
-                <h3>Design review in the repo</h3>
-                <p>Reviewed and merged the other two designers' pull requests, so every contribution extended Hearth instead of fragmenting it.</p>
-              </div>
-              <div class="card">
-                <span class="card-num">04</span>
-                <h3>The front end prototype</h3>
-                <p>Built the full agent flow in Claude Code, from scope to human approval, then handed the dev team the repo. No Figma in between.</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 5 · Problem -->
-        <section class="slide">
-          <div class="slide-inner">
-            <p class="s-label">Problem</p>
+            <p class="s-label">Evidence · Eight interviews</p>
             <h2 class="s-title">Hiring a contractor is a guessing game</h2>
             <p class="s-body">Trust starts social. People ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. Three frustrations surfaced in almost every interview.</p>
             <div class="grid grid-3">
@@ -613,21 +593,7 @@
           </div>
         </section>
 
-        <!-- 6 · Market stats -->
-        <section class="slide">
-          <div class="slide-inner">
-            <p class="s-label">Beyond our eight interviews</p>
-            <h2 class="s-title">The same pattern, at national scale</h2>
-            <div class="grid grid-3">
-              <div class="card stat"><span class="stat-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
-              <div class="card stat"><span class="stat-num">41%</span><p>have been deceived by a service provider.</p></div>
-              <div class="card stat"><span class="stat-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
-            </div>
-            <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
-          </div>
-        </section>
-
-        <!-- 7 · Insight -->
+        <!-- 5 · Insight -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Insight</p>
@@ -650,17 +616,35 @@
           </div>
         </section>
 
-        <!-- 8 · Solution -->
+        <!-- 6 · Why this is hard -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Solution</p>
-            <h2 class="s-title">An agent that scopes the job before it shops it</h2>
-            <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible.</p>
-            <p class="s-body">Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back. <span class="highlight">A chatbot would leave them guessing at both, so I pushed for a structured workflow instead.</span></p>
+            <p class="s-label">Why this is hard</p>
+            <h2 class="s-title">A user problem and a data problem, at system level</h2>
+            <p class="s-body">Three constraints shaped every call that follows.</p>
+            <div class="grid grid-3">
+              <div class="card"><h3>A user problem</h3><p>Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back.</p></div>
+              <div class="card"><h3>A data problem</h3><p>Trust is only credible on real license, insurance, and permit records. A model's best guess is not verification.</p></div>
+              <div class="card"><h3>One connected system</h3><p>A single change ripples through scope, matching, quotes, and tracking. No screen can be designed in isolation.</p></div>
+            </div>
           </div>
         </section>
 
-        <!-- 9 · The workflow -->
+        <!-- 7 · Design statement -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Design statement</p>
+            <h2 class="s-title">An agent that scopes the job before it shops it</h2>
+            <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible. <span class="highlight">Three principles follow, one for each constraint.</span></p>
+            <div class="grid grid-3">
+              <div class="card"><h3>Structured, not conversational</h3><p>A chatbot would leave people guessing at scope and price both. The workflow walks them through it instead.</p></div>
+              <div class="card"><h3>Verified, not scraped</h3><p>Matching and flags run on license, insurance, and permit records, so every trust signal is a checkable fact.</p></div>
+              <div class="card"><h3>The human signs off</h3><p>The agent recommends. Nothing is booked until you approve. A deliberate moment, never an autopilot default.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8 · The workflow -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Solution · The workflow</p>
@@ -690,7 +674,7 @@
           </div>
         </section>
 
-        <!-- 10 · Process -->
+        <!-- 9 · Process -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Process</p>
@@ -750,12 +734,12 @@
           </div>
         </section>
 
-        <!-- 11 · Final Design 1 -->
+        <!-- 10 · Final design 1 -->
         <section class="slide slide--media">
           <div class="slide-inner">
-            <p class="s-label">Final design · 1 of 5</p>
+            <p class="s-label">Final design · 1 of 4</p>
             <h2 class="s-title">Define the scope, in plain language</h2>
-            <p class="s-body">You describe the problem in your own words. The agent turns it into a structured, editable scope of work, the most important artifact in the whole product.</p>
+            <p class="s-body">You describe the problem in your own words. The agent turns it into a structured, editable scope of work, and that one scope goes out to every contractor, so everyone quotes the exact same job and you never repeat yourself on the phone.</p>
             <div class="clip">
               <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -763,23 +747,10 @@
           </div>
         </section>
 
-        <!-- 12 · Final Design 2 -->
+        <!-- 11 · Final design 2 -->
         <section class="slide slide--media">
           <div class="slide-inner">
-            <p class="s-label">Final design · 2 of 5</p>
-            <h2 class="s-title">One scope, every contractor</h2>
-            <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job.</p>
-            <div class="clip">
-              <video src="images/homewise-contractors.mp4" data-clip loop muted playsinline preload="none"></video>
-              <div class="clip-bar"><i></i></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 13 · Final Design 3 -->
-        <section class="slide slide--media">
-          <div class="slide-inner">
-            <p class="s-label">Final design · 3 of 5</p>
+            <p class="s-label">Final design · 2 of 4</p>
             <h2 class="s-title">A match you can trust, not a list to sort</h2>
             <p class="s-body">A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
             <div class="clip">
@@ -789,10 +760,10 @@
           </div>
         </section>
 
-        <!-- 14 · Final Design 4 -->
+        <!-- 12 · Final design 3 -->
         <section class="slide slide--media">
           <div class="slide-inner">
-            <p class="s-label">Final design · 4 of 5</p>
+            <p class="s-label">Final design · 3 of 4</p>
             <h2 class="s-title">Compare apples to apples, then you sign off</h2>
             <p class="s-body">Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
             <div class="clip">
@@ -802,10 +773,10 @@
           </div>
         </section>
 
-        <!-- 15 · Final Design 5 -->
+        <!-- 13 · Final design 4 -->
         <section class="slide slide--media">
           <div class="slide-inner">
-            <p class="s-label">Final design · 5 of 5</p>
+            <p class="s-label">Final design · 4 of 4</p>
             <h2 class="s-title">One place, from booking to done</h2>
             <p class="s-body">Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
             <div class="clip">
@@ -815,7 +786,7 @@
           </div>
         </section>
 
-        <!-- 16 · Outcome -->
+        <!-- 14 · Outcome -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -832,7 +803,7 @@
           </div>
         </section>
 
-        <!-- 17 · Design System -->
+        <!-- 15 · Design system -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system</p>
@@ -845,39 +816,49 @@
           </div>
         </section>
 
-        <!-- 18 · Collaboration -->
-        <section class="slide">
+        <!-- 16 · Collaboration + shipped build -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Collaboration</p>
             <h2 class="s-title">We skipped Figma and built the design in code</h2>
-            <p class="s-body">Working closely with the PM and engineers, we made an unusual call: skip Figma and design in the codebase from day one, a real React prototype on Hearth. We handed the dev team the repo itself, and they built the real backend straight onto it.</p>
-            <p class="s-body">Skipping Figma did not close the door on it. If the team ever needs a traditional handoff, I can push the prototype from Claude Code into Figma through its MCP server, turning the running interface into editable frames. <span class="highlight">The code stays the source of truth, and Figma is a step we reach for only when it earns its place.</span></p>
-          </div>
-        </section>
-
-        <!-- 19 · The shipped build -->
-        <section class="slide slide--media">
-          <div class="slide-inner">
-            <p class="s-label">Collaboration · Proof</p>
-            <h2 class="s-title">See it running for real</h2>
-            <p class="s-body">A full walkthrough of the shipped build, start to finish. I built the front end and the data structures, the engineers wired live data and the backend onto them. Press play.</p>
+            <p class="s-body">We designed in the codebase from day one, a real React prototype on Hearth, then handed the dev team the repo itself. I built the front end and the data structures, the engineers wired live data and the backend onto them. Here is the shipped build, start to finish. Press play.</p>
             <div class="clip clip--play">
               <video src="images/homewise-live.mp4" controls preload="none" poster="images/homewise-live-poster.jpg" playsinline></video>
             </div>
           </div>
         </section>
 
-        <!-- 20 · Reflection -->
+        <!-- 17 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
             <h2 class="s-title">Trust was the hard part, not the automation</h2>
-            <p class="s-body">People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Trust was a data problem as much as an AI one, credible only because the matching ran on real license and permit records, not the model's best guess.</p>
+            <p class="s-body">People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. That is the answer to the opening bet: trust is not a promise, it is something the interface earns screen by screen.</p>
             <p class="s-body">Building a front end prototype in Claude Code for the first time reframed the deliverable too. <span class="highlight">The design wasn't a picture of the product. It was the first version of it.</span></p>
           </div>
         </section>
 
-        <!-- 21 · Sign-off -->
+        <!-- 18 · Hello -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Hello</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">I'm Chang Mou</h2>
+                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
+                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
+              </div>
+              <div class="intro-grid">
+                <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
+                <img src="images/food.jpeg" alt="Cooking" decoding="async">
+                <img src="images/pier.jpeg" alt="Walking the city" decoding="async">
+                <img src="images/jenga.jpeg" alt="With friends" decoding="async">
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 19 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>

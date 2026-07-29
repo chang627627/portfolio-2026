@@ -97,6 +97,7 @@
   <nav class="side-nav">
     <a href="#problem" class="side-nav-link">Problem</a>
     <a href="#insight" class="side-nav-link">Insight</a>
+    <a href="#complexity" class="side-nav-link">Why this is hard</a>
     <a href="#solution" class="side-nav-link">Solution</a>
     <a href="#process" class="side-nav-link">Process</a>
     <a href="#final-design" class="side-nav-link">Final Design</a>
@@ -130,7 +131,7 @@
     <div class="project-section">
       <h2>What I did</h2>
       <ul class="project-list">
-        <li>Led the voice of customer research, 8 interviews synthesized into six findings, including the reframe from price to scope that set the product's direction.</li>
+        <li>Led the voice of customer research, 8 interviews synthesized into six findings that set the product's direction.</li>
         <li>Owned Hearth, the design system, and built it as living code with a drift linter that caught drift before it shipped.</li>
         <li>Reviewed and merged the other two designers' pull requests, so every contribution extended Hearth instead of fragmenting it.</li>
         <li>Built the front end prototype in Claude Code, the full agent flow from scope to human approval, then handed the dev team the repo to integrate the real backend, with no Figma in between.</li>
@@ -141,6 +142,19 @@
     <div id="problem" class="project-section">
       <p class="section-label">Problem</p>
       <h2>Hiring a contractor is a guessing game</h2>
+    </div>
+
+    <div class="hw-stats">
+      <p class="hw-stats-label">Most homeowners already expect this to go wrong</p>
+      <div class="hw-stats-row">
+        <div class="hw-stat"><span class="hw-stat-fig">70%</span><span class="hw-stat-cap">worry about hiring an unreliable contractor</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">41%</span><span class="hw-stat-cap">have been deceived by a service provider</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">33%</span><span class="hw-stat-cap">delay repairs to avoid the stress of finding someone</span></div>
+      </div>
+      <p class="hw-stats-source">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
+    </div>
+
+    <div class="project-section" style="margin-top: 40px;">
       <p>It is one of the most stressful purchases a homeowner makes, and eight interviews showed why. Trust starts social: people ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. They repeat the same problem to contractor after contractor, book visit after visit, and wait on quotes that come back impossible to line up against each other. Three frustrations surfaced in almost every interview.</p>
     </div>
 
@@ -157,16 +171,6 @@
         <p class="voc-pain">Comparing quotes is exhausting</p>
         <p class="voc-said">"I had to make so many phone calls just to compare prices."</p>
       </blockquote>
-    </div>
-
-    <div class="hw-stats">
-      <p class="hw-stats-label">Beyond our eight interviews</p>
-      <div class="hw-stats-row">
-        <div class="hw-stat"><span class="hw-stat-fig">70%</span><span class="hw-stat-cap">worry about hiring an unreliable contractor</span></div>
-        <div class="hw-stat"><span class="hw-stat-fig">41%</span><span class="hw-stat-cap">have been deceived by a service provider</span></div>
-        <div class="hw-stat"><span class="hw-stat-fig">33%</span><span class="hw-stat-cap">delay repairs to avoid the stress of finding someone</span></div>
-      </div>
-      <p class="hw-stats-source">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
     </div>
 
     <!-- Insight -->
@@ -191,37 +195,59 @@
       </div>
     </div>
 
+    <!-- Why this is hard -->
+    <div id="complexity" class="project-section">
+      <p class="section-label">Why this is hard</p>
+      <h2>Trust was the hard part, not the automation</h2>
+      <p>Three constraints shaped every decision that follows.</p>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>A user problem</h3>
+        <p>Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back.</p>
+      </div>
+      <div class="problem-card">
+        <h3>A data problem</h3>
+        <p>Trust is a data problem as much as an AI one. Credible matching has to run on real license and permit records, not the model's best guess.</p>
+      </div>
+      <div class="problem-card">
+        <h3>One connected system</h3>
+        <p>One change ripples through scope, matching, quotes, and tracking, so nothing here could be designed as a single screen.</p>
+      </div>
+    </div>
+
     <!-- Solution -->
     <div id="solution" class="project-section">
       <p class="section-label">Solution</p>
       <h2>An agent that scopes the job before it shops it</h2>
-      <p>Homewise acts on the reframe: scope first, price second. It turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms, pausing for your approval before anything moves.</p>
-      <p>Two things make hiring hard, and neither is the automation. Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back. <span style="color: var(--text);">A chatbot would leave them guessing at both, so I pushed for a structured workflow instead.</span></p>
+      <p>Homewise acts on the reframe: scope first, price second. Neither the words nor the numbers is an automation problem. <span style="color: var(--text);">A chatbot would leave them guessing at both, so I pushed for a structured workflow instead.</span> Every step stays checkable: the scope is editable before it goes out, the trust signals are public records rather than ratings, and the agent recommends but never books.</p>
     </div>
+
 
     <table class="compare-table">
       <thead>
         <tr>
           <th style="width: 160px;">Stage</th>
-          <th>What the workflow does</th>
+          <th>Why the stage exists</th>
         </tr>
       </thead>
       <tbody>
         <tr>
           <td>1. Scope</td>
-          <td style="color: var(--text-muted);">A short intake conversation and a photo become a structured, editable scope of work, so you never have to know the right words.</td>
+          <td style="color: var(--text-muted);">You do not know the right words, so the agent writes them with you.</td>
         </tr>
         <tr>
           <td>2. Match</td>
-          <td style="color: var(--text-muted);">It finds and vets contractors, surfacing verified pros and the ones other Homewisers recommend.</td>
+          <td style="color: var(--text-muted);">You cannot vet a stranger yourself, so the agent checks licenses, insurance, and permits.</td>
         </tr>
         <tr>
           <td>3. Compare</td>
-          <td style="color: var(--text-muted);">One scope means comparable bids. Outliers and gaps get flagged, and you approve the right contractor.</td>
+          <td style="color: var(--text-muted);">Different scopes cannot be compared, so every bid answers the same one.</td>
         </tr>
         <tr>
           <td>4. Track</td>
-          <td style="color: var(--text-muted);">The job stays in one place from booking to done, so it never slips back into scattered calls and texts.</td>
+          <td style="color: var(--text-muted);">Jobs slip back into scattered calls, so the whole job stays in one place.</td>
         </tr>
       </tbody>
     </table>
@@ -230,7 +256,7 @@
     <div id="process" class="project-section">
       <p class="section-label">Process</p>
       <h2>I flipped the process and designed by building</h2>
-      <p>Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock, so I flipped the order and build first. Each loop starts from the PM's PRD, our shared intent: the problem, the users, and the metrics to move. The prototype exposes gaps the document cannot, which feed back into the PRD. Homewise especially needed this, since one change ripples through scope, matching, quotes, and tracking, so I validated it live. Less time on mockups, more time on the calls only a person can make. I took this from <a href="https://www.lennysnewsletter.com/p/the-design-process-is-dead" target="_blank" rel="noopener" style="color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px;">Jenny Wen</a>, Head of Design for Claude, who argues the design process is dead.</p>
+      <p>Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock, so I flipped the order and build first. Each loop starts from the PM's PRD, our shared intent: the problem, the users, and the metrics to move. The prototype exposes gaps the document cannot, which feed back into the PRD. Because Homewise is one connected system, I validated it live rather than trusting static mocks. Less time on mockups, more time on the calls only a person can make. I took this from <a href="https://www.lennysnewsletter.com/p/the-design-process-is-dead" target="_blank" rel="noopener" style="color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px;">Jenny Wen</a>, Head of Design for Claude, who argues the design process is dead.</p>
     </div>
 
     <div class="flow-chart">
@@ -310,7 +336,7 @@
 
     <div class="deliverable">
       <h4>A match you can trust, not a list to sort</h4>
-      <p>Homewise surfaces a verified, fairly priced match with its reasoning: a match confidence, verification on license, insurance, and real permit history, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating.</p>
+      <p>Homewise surfaces a verified, fairly priced match with its reasoning: a match confidence, verification on license, insurance, and real permit history, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating. Ratings can be gamed. Permit records cannot.</p>
     </div>
     <div class="hw-clip project-img-full">
       <video src="images/homewise-match.mp4" loop muted playsinline preload="metadata"></video>
@@ -337,7 +363,7 @@
 
     <div class="deliverable">
       <h4>A working prototype, not a mockup</h4>
-      <p>Homewise is live and interactive. The whole flow runs end to end, from the first plain language request to the moment you approve the hire.</p>
+      <p>Homewise is live and interactive.</p>
     </div>
 
     <div class="hw-cta-row">
@@ -370,7 +396,7 @@
 
     <div class="deliverable">
       <h4>See it running for real</h4>
-      <p>A full walkthrough of the shipped build, start to finish.</p>
+      <p>A full walkthrough of the shipped build, four minutes.</p>
     </div>
     <div class="hw-clip project-img-full">
       <video src="images/homewise-live.mp4" controls preload="none" poster="images/homewise-live-poster.jpg" playsinline></video>
@@ -383,8 +409,8 @@
     <!-- Reflection -->
     <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
-      <h2>Trust was the hard part, not the automation</h2>
-      <p>The hard part was never the automation. It was trust. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. Trust was a data problem as much as an AI one, credible only because the matching ran on real license and permit records, not the model's best guess. Building a front end prototype in Claude Code for the first time reframed the deliverable too. The design wasn't a picture of the product. It was the first version of it.</p>
+      <h2>The design was not a picture of the product</h2>
+      <p>People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. That is why the verification had to run on real records rather than the model's best guess. Building a front end prototype in Claude Code for the first time reframed the deliverable too. It was not a picture of the product. It was the first version of it.</p>
     </div>
 
   </section>
