@@ -428,28 +428,67 @@
     }
   });
 
-  // Scroll CTA — each word reveals as it rises into view, left-to-right.
-  // Keyed to each word's own viewport position (not page-scroll %), so every
-  // word animates while actually on screen — on any viewport height.
-  // Note: this deliberately does NOT gate the "Say hello" reveal the way the
-  // pre-2026-07-27 version did. The footer keeps the plain IntersectionObserver
-  // pattern below, the same one coffee/homewise/ticker run, so index does not
-  // go back to being the one special case.
+  // Scroll CTA — continuous, reversible light instead of a one-shot class
+  // toggle. Each word's progress is mapped from its own viewport position
+  // (same trigger geometry as before, so the left-to-right stagger holds on
+  // any viewport height), and scrolling back down un-lights them. As the
+  // footer glow rises under the words they brighten past their 0.15 rest and
+  // pick up a blue cast — blue because the glow's nearest (top) stop is blue,
+  // so the words read as lit by the approaching light field, not by a new
+  // painted glow.
+  // Still deliberately decoupled from the "Say hello" reveal below: the
+  // footer keeps the plain IntersectionObserver pattern coffee/homewise/
+  // ticker run, so index does not go back to being the one special case.
   const scrollWords = document.querySelectorAll('.scroll-word');
   const scrollCta = document.querySelector('.scroll-cta');
   if (scrollWords.length && scrollCta) {
-    const updateScrollWords = () => {
-      const vh = window.innerHeight;
-      scrollWords.forEach((word, i) => {
-        // Reveal once the word has risen above its trigger line. Each successive
-        // word needs the line a little higher, giving a left-to-right stagger.
-        const trigger = vh * 0.92 - i * (vh * 0.05);
-        word.classList.toggle('visible', word.getBoundingClientRect().top < trigger);
-      });
-    };
-    window.addEventListener('scroll', updateScrollWords, { passive: true });
-    window.addEventListener('resize', updateScrollWords, { passive: true });
-    updateScrollWords();
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !matchMedia('(min-width: 769px)').matches) {
+      // Reduced motion (or the mobile width, where .scroll-cta is
+      // display:none anyway): the original one-shot class toggle.
+      const updateScrollWords = () => {
+        const vh = window.innerHeight;
+        scrollWords.forEach((word, i) => {
+          const trigger = vh * 0.92 - i * (vh * 0.05);
+          word.classList.toggle('visible', word.getBoundingClientRect().top < trigger);
+        });
+      };
+      window.addEventListener('scroll', updateScrollWords, { passive: true });
+      window.addEventListener('resize', updateScrollWords, { passive: true });
+      updateScrollWords();
+    } else {
+      const ctaPageEnd = document.querySelector('.page-end');
+      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+      const clamp01 = (t) => Math.min(1, Math.max(0, t));
+      // Direct per-frame writes: the stylesheet's 0.3s transition would lag
+      // and smear a scrubbed value, so it is disabled on this path.
+      scrollWords.forEach((w) => { w.style.transition = 'none'; });
+      let raf = null;
+      const paint = () => {
+        raf = null;
+        const vh = window.innerHeight;
+        // Same progress the footer-glow height uses: how far .page-end has
+        // entered the viewport.
+        let glow = 0;
+        if (ctaPageEnd) {
+          const pe = ctaPageEnd.getBoundingClientRect();
+          glow = clamp01((vh - pe.top) / pe.height);
+        }
+        scrollWords.forEach((word, i) => {
+          const trigger = vh * 0.92 - i * (vh * 0.05);
+          const p = easeOut(clamp01((trigger - word.getBoundingClientRect().top) / (vh * 0.16)));
+          word.style.opacity = (p * (0.15 + glow * 0.25)).toFixed(3);
+          word.style.transform = 'translateY(' + ((1 - p) * 20).toFixed(1) + 'px)';
+          word.style.textShadow = glow > 0.02
+            ? '0 10px 44px rgba(30, 120, 255, ' + (glow * 0.5).toFixed(3) + ')'
+            : 'none';
+        });
+      };
+      const onScrollCta = () => { if (raf === null) raf = requestAnimationFrame(paint); };
+      window.addEventListener('scroll', onScrollCta, { passive: true });
+      window.addEventListener('resize', onScrollCta, { passive: true });
+      paint();
+    }
   }
 
   // Footer scroll reveal — the IntersectionObserver pattern the other pages use.
@@ -565,37 +604,79 @@
   });
 
 
-  // Letter spotlight effect
+  // Letter light on "Say hello" — ambient sweep + cursor spotlight.
+  // Same grammar as the headline specular: the ambient sweep runs on its own
+  // so a visitor who never hovers still sees the word lit (the old hover-only
+  // spotlight was an easter egg), and the cursor layers on top via screen
+  // blend — the mousemove handler only RECORDS the pointer; all painting
+  // happens in one rAF loop that is IntersectionObserver-gated to the footer
+  // being on-screen. Reduced motion gets a fully static word (no sweep, no
+  // spotlight — same gating call as Lightfall/tilt).
   const footerEl = document.querySelector('.say-hello');
   const letters = document.querySelectorAll('.footer-big-text .letter');
-  if (footerEl && letters.length) {
-    footerEl.addEventListener('mousemove', (e) => {
-      // Only light the word when the cursor is actually over it (where the
-      // hand cursor shows), not the whole tall .say-hello section. That
-      // section has 160px of top padding above the text, so gate the effect
-      // to the letters' own box plus a small pad.
+  if (footerEl && letters.length &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const bigTextEl = document.querySelector('.footer-big-text');
+    let cursorX = null;
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      footerEl.addEventListener('mousemove', (e) => {
+        // Only treat the cursor as a light source when it is actually over
+        // the word (where the hand cursor shows), not the whole tall padded
+        // band above it.
+        const first = letters[0].getBoundingClientRect();
+        const last = letters[letters.length - 1].getBoundingClientRect();
+        const pad = 16;
+        cursorX = (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
+                   e.clientX < first.left - pad || e.clientX > last.right + pad)
+          ? null : e.clientX;
+      });
+      footerEl.addEventListener('mouseleave', () => { cursorX = null; });
+    }
+
+    const BASE = 0.5;      // unlit letter opacity
+    const AMB = 0.6;       // ambient sweep peak intensity
+    const SIG_A = 220;     // ambient pool width (px)
+    const SIG_C = 150;     // cursor pool width (px)
+    const PERIOD = 7000;   // one full sweep bounce (ms)
+    let sweepRaf = 0, sweepRunning = false;
+    const sweepT0 = performance.now();
+
+    const sweepFrame = (now) => {
       const first = letters[0].getBoundingClientRect();
       const last = letters[letters.length - 1].getBoundingClientRect();
-      const pad = 16;
-      if (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
-          e.clientX < first.left - pad || e.clientX > last.right + pad) {
-        letters.forEach(l => { l.style.opacity = ''; });
-        return;
-      }
-      letters.forEach(letter => {
-        const rect = letter.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const dist = Math.abs(e.clientX - cx);
-        const maxDist = 150;
-        const brightness = Math.max(0, 1 - dist / maxDist);
-        letter.style.opacity = 0.12 + brightness * 0.88;
+      const left = first.left;
+      const width = Math.max(1, last.right - left);
+      // The ambient light drifts back and forth across the word.
+      const ambX = left + width * (0.5 + 0.45 * Math.sin((now - sweepT0) / PERIOD * Math.PI * 2));
+      letters.forEach((letter) => {
+        const r = letter.getBoundingClientRect();
+        if (!r.width) return;                              // the space span
+        const cx = r.left + r.width / 2;
+        const da = ambX - cx;
+        const a = AMB * Math.exp(-(da * da) / (2 * SIG_A * SIG_A));
+        let I = a;
+        if (cursorX !== null) {
+          const dc = cursorX - cx;
+          const c = Math.exp(-(dc * dc) / (2 * SIG_C * SIG_C));
+          I = c + a * (1 - c);                             // screen blend, cursor on top
+        }
+        letter.style.opacity = (BASE + (1 - BASE) * I).toFixed(3);
+        letter.style.textShadow = I > 0.04
+          ? '0 0 32px rgba(255, 255, 255, ' + (0.3 * I).toFixed(3) + ')'
+          : 'none';
       });
-    });
-    footerEl.addEventListener('mouseleave', () => {
-      letters.forEach(letter => {
-        letter.style.opacity = '';
-      });
-    });
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStart = () => {
+      // bigTextEl is display:none on mobile — no point painting hidden glyphs
+      if (sweepRunning || getComputedStyle(bigTextEl).display === 'none') return;
+      sweepRunning = true;
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStop = () => { sweepRunning = false; cancelAnimationFrame(sweepRaf); };
+    new IntersectionObserver((es) => { es[0].isIntersecting ? sweepStart() : sweepStop(); },
+      { rootMargin: '80px' }).observe(footerEl);
   }
 </script>
 
