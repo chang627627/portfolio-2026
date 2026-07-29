@@ -94,7 +94,7 @@
       </div>
       <div class="project-detail-item">
         <h3>Timeline</h3>
-        <p>Sep 2023</p>
+        <p>2 weeks · Sep 2023</p>
       </div>
       <div class="project-detail-item">
         <h3>Team</h3>
@@ -112,8 +112,8 @@
       <ul class="project-list">
         <li>Led end-to-end design of an AI-powered coffee chat feature.</li>
         <li>Identified social friction through qualitative research and internal testing.</li>
-        <li>Designed transparent pairing logic that explains why users are matched.</li>
-        <li>Simplified scheduling to reduce coordination effort and cognitive load.</li>
+        <li>Owned the pairing model end to end, from the matching signals to how a match is presented.</li>
+        <li>Designed the full scheduling flow, including the decline and reschedule paths.</li>
         <li>Partnered closely with engineering to iterate on the MVP.</li>
       </ul>
     </div>
@@ -122,7 +122,7 @@
     <div id="overview" class="project-section">
       <p class="section-label">Overview</p>
       <h2>Bridging the gap between structured meetings and casual interactions</h2>
-      <p>Litespace is an AI-powered enterprise platform for engagement in hybrid and remote workplaces. Coffee Chat is its 0-to-1 feature. It pairs two people who would not otherwise meet, tells them why they were matched, and takes the social pressure out of accepting.</p>
+      <p>Coffee Chat is the 0-to-1 feature of Litespace, an AI-powered enterprise platform for engagement in hybrid and remote workplaces. It pairs two people who would not otherwise meet, tells them why they were matched, and takes the social pressure out of accepting.</p>
     </div>
 
     <div class="impact-grid grid-2x2">
@@ -140,21 +140,21 @@
     <div id="problem" class="project-section">
       <p class="section-label">Problem</p>
       <h2>Remote teams lack casual social interactions</h2>
-      <p>To improve team connection in hybrid and remote environments, I identified key challenges through observations, customer feedback, and teammate interviews.</p>
+      <p>To improve team connection in hybrid and remote environments, I identified key challenges through observations, customer feedback, and teammate interviews. Three of them made this hard to design.</p>
     </div>
 
     <div class="problem-grid">
       <div class="problem-card">
-        <h3>Lack of Spontaneous Interactions</h3>
-        <p>In hybrid and remote environments, opportunities for spontaneous, meaningful conversations are limited, leading to reduced team cohesion.</p>
+        <h3>Nobody wants to go first</h3>
+        <p>Nothing tells you why you were paired, so accepting the invite and starting the conversation both carry social pressure.</p>
       </div>
       <div class="problem-card">
-        <h3>Sense of Disconnection</h3>
-        <p>Traditional work models often create a disconnect among team members, particularly in settings where remote and in-office work are mixed.</p>
+        <h3>A good pairing has to be inferred</h3>
+        <p>There is no rich profile to match on. The only signals available are lightweight: profiles, onboarding inputs, and shared Slack channels.</p>
       </div>
       <div class="problem-card">
-        <h3>Ineffective Communication Channels</h3>
-        <p>Existing meeting structures tend to be formal and rigid, making it difficult to foster casual, purposeful interactions.</p>
+        <h3>Scheduling has two sides</h3>
+        <p>Both people have to land on one time, and every existing tool pushes that into direct messages, where message overload and drop-off follow.</p>
       </div>
     </div>
 
@@ -227,40 +227,21 @@
     </table>
 
     <div class="project-section table-caption">
-      <p>Existing tools approach casual interaction from different angles, such as automated matching, shared spaces, or structured activities, <span class="highlight">but few clearly communicate the reason behind a specific pairing or reduce the social pressure of starting the conversation.</span> This insight shaped Coffee Chat's direction: combining intentional pairing with a low pressure experience, without requiring direct message coordination.</p>
+      <p>Existing tools approach casual interaction from different angles, such as automated matching, shared spaces, or structured activities, but few clearly communicate the reason behind a specific pairing or reduce the social pressure of starting the conversation. <span class="highlight">This insight shaped Coffee Chat's direction: combining intentional pairing with a low pressure experience, without requiring direct message coordination.</span></p>
     </div>
 
     <!-- Design Goals -->
     <div id="design-goals" class="project-section">
       <p class="section-label">Goals and constraints</p>
       <h2>Designing intentional connections with minimal social pressure</h2>
-      <p>The rebrand from a green identity to a blue one was still in progress, and we had two weeks to design and ship. That scoped the MVP to one meaningful chat per week.</p>
-    </div>
-
-    <div class="goals-grid">
-      <div class="goal-card">
-        <h3>Automated Pairing with Purpose</h3>
-        <p>Match employees and clearly communicate the reason behind each pairing, helping users feel confident about joining.</p>
-      </div>
-      <div class="goal-card">
-        <h3>Conversation Starters</h3>
-        <p>Suggest engaging topics or icebreakers to help participants initiate conversations comfortably.</p>
-      </div>
-      <div class="goal-card">
-        <h3>Smart Scheduling</h3>
-        <p>Allow users to select preferred times and automatically schedule chats within available time slots.</p>
-      </div>
-      <div class="goal-card">
-        <h3>Cross-Department Matching</h3>
-        <p>Enable connections between employees from different teams to break down silos and foster networking.</p>
-      </div>
+      <p>The rebrand from a green identity to a blue one was still in progress, and we had two weeks to design and ship. That scoped the MVP to one meaningful chat per week, and anything that added friction had to go.</p>
     </div>
 
     <!-- Exploration 1 -->
     <div id="exploration-1" class="project-section">
-      <p class="section-label">Exploration</p>
+      <p class="section-label">Meaningful pairings</p>
       <h2>Creating meaningful pairings</h2>
-      <p>Users were more likely to accept a pairing when they understood why they were matched. I championed using the GPT-3 API to infer connections from lightweight signals (profiles, onboarding inputs, shared Slack channels) and generate a plain-language explanation for each match.</p>
+      <p>Users were more likely to accept a pairing when they understood why they were matched. I championed using the GPT-3 API to infer a connection from those lightweight signals and generate a plain-language explanation for each match.</p>
     </div>
 
     <div class="pairing-annotated">
@@ -281,9 +262,9 @@
 
     <!-- Exploration 2 -->
     <div id="exploration-2" class="project-section">
-      <p class="section-label">Exploration</p>
+      <p class="section-label">The user flow</p>
       <h2>Mapping the user flow</h2>
-      <p>Existing tools rely on back-and-forth DMs that create friction and drop-offs. Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
+      <p>Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
     </div>
 
     <div class="flow-chart">
@@ -437,7 +418,7 @@
 
     <!-- Iteration 1 -->
     <div id="iteration-1" class="project-section">
-      <p class="section-label">Iteration</p>
+      <p class="section-label">What testing changed</p>
       <h2>Simplifying coffee chat's interface</h2>
       <p>Faced with a complex UI, I initially designed a multi-functional widget. User testing revealed its high cognitive load, leading me to divide it into two simpler widgets for availability and reasons, which received more positive feedback during internal A/B testing.</p>
     </div>
@@ -477,7 +458,7 @@
     <div id="final-deliverables" class="project-section">
       <p class="section-label">Final Design</p>
       <h2>One pairing a week, scheduled for you</h2>
-      <p>Each week you get a pairing built from your Google Calendar availability, with shared interests and suggested topics to start on. It arrives set to "Going" by default. Once you both confirm, a Google Meet link lands on your calendars.</p>
+      <p>Each week you get a pairing built from your Google Calendar availability, with shared interests and suggested topics to start on. It arrives set to "Going" by default, so nobody has to be the one who says yes. Once you both confirm, a Google Meet link lands on your calendars.</p>
     </div>
 
     <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
@@ -486,7 +467,7 @@
 
     <div class="project-section">
       <h2>Handling chat declines without friction</h2>
-      <p>If either person declines, you both get a notification. No reason required. Your next chat is scheduled in the following cycle.</p>
+      <p>If either person declines, or never responds, you both get a notification. No reason required. Asking for one would put the pressure back. Your next chat is scheduled in the following cycle.</p>
     </div>
 
     <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
@@ -503,7 +484,8 @@
     </div>
 
     <div class="project-section">
-      <p>If the other person proposes new times, you review them and pick one. No message thread to chase.</p>
+      <h2>No message thread to chase</h2>
+      <p>If the other person proposes new times, you review them and pick one.</p>
     </div>
 
     <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
@@ -511,7 +493,8 @@
     </div>
 
     <div class="project-section">
-      <p>If none of their times work, you send back your own availability for them to review.</p>
+      <h2>When none of their times work</h2>
+      <p>You send back your own availability for them to review.</p>
     </div>
 
     <div class="project-img-full" style="background-color: #D0D1FD; aspect-ratio: 16/9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; padding: 48px;">
@@ -533,7 +516,7 @@
     <div id="reflection" class="project-section">
       <p class="section-label">Reflection</p>
       <h2>What I learned</h2>
-      <p>Designing Coffee Chat during the shift from a green-dominant identity to a modern blue-focused system taught me how to stay flexible while keeping the experience clear and lightweight. With only two weeks, I focused the MVP on one meaningful weekly pairing and removed anything that added friction. Working with early AI pairing logic gave me a deeper understanding of how contextual signals shape user trust.</p>
+      <p>Designing Coffee Chat during the shift from a green-dominant identity to a modern blue-focused system taught me how to stay flexible while keeping the experience clear and lightweight. Working with early AI pairing logic gave me a deeper understanding of how contextual signals shape user trust.</p>
     </div>
 
   </section>
