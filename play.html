@@ -342,21 +342,82 @@
     }, { passive: true });
   }
 
+  // Letter light on "Say hello" — ambient sweep + cursor spotlight.
+  // Same grammar as the headline specular: the ambient sweep runs on its own
+  // so a visitor who never hovers still sees the word lit (the old hover-only
+  // spotlight was an easter egg), and the cursor layers on top via screen
+  // blend — the mousemove handler only RECORDS the pointer; all painting
+  // happens in one rAF loop that is IntersectionObserver-gated to the footer
+  // being on-screen. Reduced motion gets a fully static word (no sweep, no
+  // spotlight — same gating call as Lightfall/tilt).
   const footerEl = document.querySelector('.say-hello');
   const letters = document.querySelectorAll('.footer-big-text .letter');
-  if (footerEl && letters.length) {
-    footerEl.addEventListener('mousemove', (e) => {
-      letters.forEach(letter => {
-        const rect = letter.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const dist = Math.abs(e.clientX - cx);
-        const brightness = Math.max(0, 1 - dist / 150);
-        letter.style.opacity = 0.12 + brightness * 0.88;
+  if (footerEl && letters.length &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const bigTextEl = document.querySelector('.footer-big-text');
+    let cursorX = null;
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      footerEl.addEventListener('mousemove', (e) => {
+        // Only treat the cursor as a light source when it is actually over
+        // the word (where the hand cursor shows), not the whole tall padded
+        // band above it.
+        const first = letters[0].getBoundingClientRect();
+        const last = letters[letters.length - 1].getBoundingClientRect();
+        const pad = 16;
+        cursorX = (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
+                   e.clientX < first.left - pad || e.clientX > last.right + pad)
+          ? null : e.clientX;
       });
-    });
-    footerEl.addEventListener('mouseleave', () => {
-      letters.forEach(letter => { letter.style.opacity = ''; });
-    });
+      footerEl.addEventListener('mouseleave', () => { cursorX = null; });
+    }
+
+    const BASE = 0.35;     // unlit letter opacity
+    const AMB = 0.28;      // ambient peak — idle tops out ~0.53, half the
+                           // cursor's 1.0, so the word rests as a quiet
+                           // watermark and hovering is a real step up
+                           // (0.6 then 0.35 both judged too bright by user)
+    const SIG_A = 220;     // ambient pool width (px)
+    const SIG_C = 150;     // cursor pool width (px)
+    const PERIOD = 7000;   // one full sweep bounce (ms)
+    let sweepRaf = 0, sweepRunning = false;
+    const sweepT0 = performance.now();
+
+    const sweepFrame = (now) => {
+      const first = letters[0].getBoundingClientRect();
+      const last = letters[letters.length - 1].getBoundingClientRect();
+      const left = first.left;
+      const width = Math.max(1, last.right - left);
+      // The ambient light drifts back and forth across the word.
+      const ambX = left + width * (0.5 + 0.45 * Math.sin((now - sweepT0) / PERIOD * Math.PI * 2));
+      letters.forEach((letter) => {
+        const r = letter.getBoundingClientRect();
+        if (!r.width) return;                              // the space span
+        const cx = r.left + r.width / 2;
+        const da = ambX - cx;
+        const a = AMB * Math.exp(-(da * da) / (2 * SIG_A * SIG_A));
+        let I = a;
+        if (cursorX !== null) {
+          const dc = cursorX - cx;
+          const c = Math.exp(-(dc * dc) / (2 * SIG_C * SIG_C));
+          I = c + a * (1 - c);                             // screen blend, cursor on top
+        }
+        letter.style.opacity = (BASE + (1 - BASE) * I).toFixed(3);
+        letter.style.textShadow = I > 0.04
+          ? '0 0 32px rgba(255, 255, 255, ' + (0.3 * I).toFixed(3) + ')'
+          : 'none';
+      });
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStart = () => {
+      // bigTextEl is display:none on mobile — no point painting hidden glyphs
+      if (sweepRunning || getComputedStyle(bigTextEl).display === 'none') return;
+      sweepRunning = true;
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStop = () => { sweepRunning = false; cancelAnimationFrame(sweepRaf); };
+    new IntersectionObserver((es) => { es[0].isIntersecting ? sweepStart() : sweepStop(); },
+      { rootMargin: '80px' }).observe(footerEl);
   }
 </script>
 
