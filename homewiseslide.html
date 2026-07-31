@@ -31,9 +31,14 @@
        /designsystem page. Deliberately NOT the portfolio's dark chrome or its
        warm-to-blue hero gradient: this deck wears the case study's identity.
        Hearth rules honored here: warm canvas, near-black ink, tri-role accents
-       (sage = trust, ember = caution, sky = info), a 5-tier surface ladder,
-       hairlines instead of shadows (shadows are banned), and the rule-line
-       eyebrow gesture. ===== */
+       (sage = trust, ember = caution, sky = info), hairlines instead of
+       shadows (shadows are banned), and sentence-case headings.
+
+       The LAYOUT grammar is editorial print, not boxed cards: every slide is
+       framed by an in-slide header rule and a folio footer rule, stats run as
+       full-width hairline rows with oversized numerals, triads are rule-topped
+       columns, and content blocks anchor to the bottom of the frame so the
+       composition reads top / bottom, never "small cards floating in cream". ===== */
     :root {
       --canvas: #F6F4EF;         /* tier 0 · page */
       --canvas-soft: #FAF8F3;    /* tier 1 · sidebar, hover */
@@ -103,20 +108,35 @@
       flex: 0 0 1920px;
       width: 1920px; height: 1080px;
       overflow: hidden;
-      position: relative;               /* pin-layer anchor */
+      position: relative;               /* pin-layer + folio anchor */
       display: flex; align-items: stretch;
-      padding: 84px 120px;
+      padding: 72px 110px 148px;
       background: var(--canvas);
     }
     .slide-inner {
       width: 100%; height: 100%;
-      display: flex; flex-direction: column; justify-content: center;
+      display: flex; flex-direction: column; justify-content: flex-start;
     }
-    /* Every content slide anchors its header at one canvas position so the
-       label/title never jump as you arrow through; the title and sign-off
-       slides keep their centered bookend layout. */
-    .slide:not(.slide--title):not(.slide--end) { padding-top: 140px; }
-    .slide:not(.slide--title):not(.slide--end) .slide-inner { justify-content: flex-start; }
+
+    /* ===== In-slide document chrome (the print frame) =====
+       Header rule at the top of every slide, folio rule at the bottom. The
+       folio is injected once by JS (it carries each slide's own number), so
+       the markup stays clean. Together they close the composition: even a
+       sparse slide reads as a designed page, not a floating fragment. */
+    .page-foot {
+      position: absolute; left: 110px; right: 110px; bottom: 54px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-top: var(--hair); padding-top: 18px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-300);
+      pointer-events: none; z-index: 2;
+    }
+    .page-foot b { font-weight: 500; color: var(--ink-500); font-variant-numeric: tabular-nums; }
+    .slide--title .page-foot, .slide--end .page-foot, .slide--ink .page-foot {
+      border-top: 1px solid rgba(255,255,255,0.16);
+      color: var(--ink-on-dark-mute);
+    }
+    .slide--title .page-foot b, .slide--end .page-foot b, .slide--ink .page-foot b { color: var(--ink-on-dark-soft); }
 
     /* ===== Reveal on active slide ===== */
     .slide-inner > * {
@@ -136,24 +156,44 @@
        The site loads Neue Montreal at 400/500 only, so EVERY heading sets
        font-weight explicitly. Left to UA defaults an h1/h2 asks for 700 and
        the browser synthesizes a fake bold. */
-    /* Hearth's eyebrow: 0.20em tracked caps paired with the 24px rule-line. */
+
+    /* Header rule: section label left, deck name right, hairline under.
+       This is the slide's top frame, anchored at one canvas y everywhere. */
     .s-label {
-      display: flex; align-items: center; gap: 14px;
-      font-size: 15px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 40px;
+      width: 100%;
+      border-bottom: var(--hair); padding-bottom: 20px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
       color: var(--ink-500); margin: 0;
     }
-    .s-label::before { content: ""; flex: 0 0 auto; width: 24px; height: 1px; background: var(--ink-300); }
-    .s-title {
-      font-size: 54px; font-weight: 500; line-height: 1.12; letter-spacing: -0.035em;
-      margin: 22px 0 0; color: var(--ink-900); max-width: 1500px;
+    .s-label::after {
+      content: "Homewise · Case study";
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em;
+      color: var(--ink-300); white-space: nowrap;
     }
+    .slide--title .s-label, .slide--end .s-label, .slide--ink .s-label {
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+      color: var(--sage-300);
+    }
+    .slide--title .s-label::after, .slide--end .s-label::after, .slide--ink .s-label::after { color: var(--ink-on-dark-mute); }
+
+    .s-title {
+      font-size: 76px; font-weight: 500; line-height: 1.04; letter-spacing: -0.035em;
+      margin: 46px 0 0; color: var(--ink-900); max-width: 1620px;
+    }
+    .s-title--compact { font-size: 54px; line-height: 1.1; letter-spacing: -0.03em; }
     .s-body {
-      font-size: 24px; font-weight: 400; line-height: 1.6; color: var(--ink-500);
-      max-width: 1180px; margin-top: 24px;
+      font-size: 22px; font-weight: 400; line-height: 1.6; color: var(--ink-500);
+      max-width: 1240px; margin-top: 28px;
     }
     .highlight { color: var(--ink-900); }
-    .s-foot { font-size: 17px; line-height: 1.5; color: var(--ink-300); margin-top: 22px; }
+    .s-foot { font-size: 16px; line-height: 1.5; color: var(--ink-300); margin-top: 26px; }
     .s-foot a { color: var(--ink-500); text-decoration: underline; text-decoration-color: var(--ink-200); text-underline-offset: 3px; }
+
+    /* Bottom-anchored artifact zone: whatever carries this class is pushed to
+       the lower band of the frame, just above the folio. The padding-top is
+       the guaranteed minimum gap to the prose above. */
+    .push { margin-top: auto; padding-top: 44px; }
 
     /* ===== Dark bookends (title + sign-off) — Hearth tier 4 with the
        .dot-grid brand texture. No blurred colour blobs: this deck does not
@@ -176,113 +216,142 @@
         radial-gradient(ellipse 60% 55% at 4% 6%, rgba(217,164,97,0.10), transparent 60%);
     }
     .slide--title .slide-inner, .slide--end .slide-inner { position: relative; z-index: 1; }
-    .slide--title .s-label, .slide--end .s-label { color: var(--sage-300); }
-    .slide--title .s-label::before, .slide--end .s-label::before { background: var(--sage-300); }
+
+    /* Mid-deck ink statement slide (the outcome peak): flat tier 4, no dot
+       grid — the texture stays reserved for the two bookends. */
+    .slide--ink {
+      background: var(--ink-900);
+      color: var(--ink-on-dark);
+    }
+    .slide--ink::after {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 64% 58% at 92% 88%, rgba(154,174,140,0.14), transparent 62%);
+    }
+    .slide--ink .slide-inner { position: relative; z-index: 1; }
+    .slide--ink .s-title { color: #fff; font-size: 96px; letter-spacing: -0.04em; max-width: 1560px; }
+    .slide--ink .s-body { color: var(--ink-on-dark-soft); }
+    .slide--ink .highlight { color: #fff; }
+
+    /* ===== Title slide: metadata columns up top, giant wordmark at the
+       bottom, description bottom-right. ===== */
+    .title-meta-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+      padding-top: 8px;
+    }
+    .tm { display: flex; flex-direction: column; gap: 10px; }
+    .tm-k {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-on-dark-mute);
+    }
+    .tm-v { font-size: 17.5px; line-height: 1.5; color: var(--ink-on-dark-soft); }
+    .title-bottom {
+      margin-top: auto;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 70px;
+    }
+    .title-kicker {
+      font-size: 14px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--sage-300); margin-bottom: 30px;
+    }
     .title-h1 {
-      font-size: 136px; font-weight: 500; line-height: 1.0; letter-spacing: -0.045em;
-      margin: 34px 0 32px; color: #fff;
+      font-size: 280px; font-weight: 500; line-height: 0.92; letter-spacing: -0.05em;
+      margin: 0 0 0 -13px; color: #fff; white-space: nowrap;
     }
     .title-sub {
-      font-size: 31px; font-weight: 400; line-height: 1.5; color: var(--ink-on-dark-soft);
-      max-width: 1180px; margin-bottom: 48px;
-    }
-    .title-meta { display: flex; flex-wrap: wrap; gap: 12px; }
-    .title-meta span {
-      font-size: 19px; color: var(--ink-on-dark-soft);
-      padding: 11px 22px; border-radius: 999px;
-      border: var(--hair-dark); background: rgba(255,255,255,0.04);
-    }
-    .slide--end .s-title { color: #fff; }
-
-    /* ===== Card grids ===== */
-    .grid { display: grid; gap: 24px; margin-top: 44px; }
-    .grid-3 { grid-template-columns: repeat(3, 1fr); }
-    .grid-4 { grid-template-columns: repeat(4, 1fr); }
-
-    /* Hearth tier 2: white tile, hairline, no shadow. */
-    .card {
-      background: var(--card); border: var(--hair-soft);
-      border-radius: var(--radius); padding: 34px 32px;
-    }
-    .card h3 { font-size: 26px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 14px; color: var(--ink-900); }
-    .card p { font-size: 19px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
-    .card-num {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 30px; height: 30px; border-radius: 8px; margin-bottom: 18px;
-      background: var(--sage-50); border: 1px solid var(--sage-100);
-      color: var(--sage-500); font-size: 15px; font-weight: 500;
+      font-size: 18px; font-weight: 400; line-height: 1.65; color: var(--ink-on-dark-soft);
+      max-width: 430px; margin-bottom: 14px; flex: 0 1 auto;
     }
 
-    /* pain cards — the quote demoted below a plain-language headline */
-    .card--pain { background: var(--canvas-soft); border-color: var(--ink-100); }
-    .card--pain .voc { font-size: 19px; line-height: 1.55; color: var(--ink-500); font-style: italic; margin-top: 14px; }
+    /* ===== Sign-off ===== */
+    .end-big {
+      font-size: 170px; font-weight: 500; line-height: 0.95; letter-spacing: -0.05em;
+      color: #fff; margin: 0 0 0 -8px;
+    }
 
-    /* ===== Stats ===== */
-    .stat-num {
-      display: block; font-size: 104px; font-weight: 500; line-height: 1;
-      letter-spacing: -0.045em; margin-bottom: 18px; color: var(--ink-900);
+    /* ===== Stat rows (the Geist table): numeral left, annotation pinned to a
+       right column, full-width hairlines between. ===== */
+    .rows { width: 100%; }
+    .row {
+      display: grid; grid-template-columns: 560px 1fr; align-items: center;
+      border-top: var(--hair); padding: 24px 0;
+    }
+    .rows .row:last-of-type { border-bottom: var(--hair); }
+    .row-num {
+      font-size: 112px; font-weight: 500; line-height: 0.92; letter-spacing: -0.045em;
+      color: var(--ink-900); font-variant-numeric: tabular-nums;
+    }
+    .row p {
+      font-size: 20px; font-weight: 400; line-height: 1.5; color: var(--ink-500);
+      max-width: 620px; justify-self: end; width: 100%;
+    }
+    .src { font-size: 15px; letter-spacing: 0.02em; color: var(--ink-300); margin-top: 20px; }
+
+    /* ===== Editorial columns (triads and the four workflow stages): each
+       column opens with its own rule and an index, no boxes. ===== */
+    .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; width: 100%; }
+    .cols--4 { grid-template-columns: repeat(4, 1fr); gap: 48px; }
+    .col { border-top: 1px solid var(--ink-300); padding-top: 26px; }
+    .col-idx {
+      display: block;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--sage-500); margin-bottom: 40px;
       font-variant-numeric: tabular-nums;
     }
-    .stat p { font-size: 19px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
-    .src { font-size: 16px; color: var(--ink-300); margin-top: 26px; }
+    .col h3 { font-size: 29px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 14px; color: var(--ink-900); }
+    .col p { font-size: 18.5px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
+    .col .voc { font-style: italic; }
 
-    /* ===== Quote spread graphic (the $250 → $7,000 reframe) ===== */
-    .spread {
-      margin-top: 44px; padding: 40px 44px 34px;
-      background: var(--canvas-deep); border: var(--hair); border-radius: var(--radius);
-    }
+    /* ===== Quote spread graphic (the $250 → $7,000 reframe) — open
+       composition, no box: label, dot track, two oversized figures. ===== */
+    .spread { width: 100%; }
     .spread-label {
-      font-size: 15px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--ink-500); margin-bottom: 34px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-500); margin-bottom: 44px;
     }
     .spread-track { position: relative; height: 2px; background: var(--ink-200); border-radius: 2px; }
     .spread-dot {
       position: absolute; top: 50%; width: 15px; height: 15px; border-radius: 50%;
       transform: translate(-50%, -50%);
-      background: var(--card); border: 2px solid var(--ink-300);
+      background: var(--canvas); border: 2px solid var(--ink-300);
     }
     .spread-dot--hi { border-color: var(--ember-400); background: var(--ember-100); }
-    .spread-scale { display: flex; justify-content: space-between; margin-top: 26px; }
+    .spread-scale { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; }
     .spread-fig {
-      display: flex; flex-direction: column; gap: 5px;
-      font-size: 46px; font-weight: 500; letter-spacing: -0.035em; color: var(--ink-900);
+      display: flex; flex-direction: column; gap: 12px;
+      font-size: 128px; font-weight: 500; line-height: 0.9; letter-spacing: -0.045em; color: var(--ink-900);
       font-variant-numeric: tabular-nums;
     }
-    .spread-fig small { font-size: 16px; font-weight: 400; letter-spacing: 0; color: var(--ink-500); }
+    .spread-fig small { font-size: 15px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-500); }
     .spread-fig--hi { color: var(--ember-500); text-align: right; }
     .spread-fig--hi small { color: var(--ember-400); }
 
-    /* ===== Workflow stages ===== */
-    .stages { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 44px; }
-    .stage-card {
-      background: var(--card); border: var(--hair-soft); border-radius: var(--radius);
-      padding: 32px 30px; display: flex; flex-direction: column;
-    }
-    .stage-step {
-      font-size: 14px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--sage-500); margin-bottom: 16px;
-    }
-    .stage-card h3 { font-size: 27px; font-weight: 500; letter-spacing: -0.02em; margin-bottom: 13px; color: var(--ink-900); }
-    .stage-card p { font-size: 19px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
-
-    /* ===== Split layout ===== */
-    .split { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 56px; align-items: center; margin-top: 44px; }
+    /* ===== Split layout (overview, hello) ===== */
+    .split { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 72px; align-items: center; margin-top: 24px; }
+    /* the split fills the frame between header and folio, so its content
+       centers vertically instead of pooling a void at the bottom */
+    .slide-inner > .split { flex: 1 1 0; min-height: 0; }
     .split-media img {
-      display: block; width: 100%; border-radius: var(--radius); border: var(--hair);
+      display: block; width: 100%; border-radius: 8px; border: var(--hair);
     }
-    /* Ownership list inside a .split. h4 sets font-weight explicitly: left to
-       the UA default it asks for 700 and the browser synthesizes a fake bold,
-       since only 400/500 of Neue Montreal are loaded. */
-    .note-list { display: flex; flex-direction: column; gap: 22px; }
-    .note h4 {
-      font-size: 23px; font-weight: 500; letter-spacing: -0.02em;
+    /* Ownership list inside a .split, as compact rule-topped rows. h4 sets
+       font-weight explicitly: left to the UA default it asks for 700 and the
+       browser synthesizes a fake bold, since only 400/500 are loaded. */
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; margin-top: 40px; }
+    .mini { border-top: var(--hair); padding-top: 16px; }
+    .mini h4 {
+      font-size: 20px; font-weight: 500; letter-spacing: -0.015em;
       color: var(--ink-900); margin-bottom: 7px;
     }
-    .note p { font-size: 18px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
+    .mini p { font-size: 16.5px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .intro-grid img {
       width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
-      border-radius: 12px; border: var(--hair);
+      border-radius: 8px; border: var(--hair);
+    }
+
+    /* ===== Reflection pull line ===== */
+    .pull {
+      font-size: 46px; font-weight: 500; line-height: 1.25; letter-spacing: -0.025em;
+      color: var(--ink-900); max-width: 1420px;
     }
 
     /* ===== Process flow charts (Hearth-toned rebuild of the case study SVGs) ===== */
@@ -302,13 +371,22 @@
     .flow-box rect { fill: var(--card); stroke: var(--ink-200); stroke-width: 1; }
     .flow-box text { fill: var(--ink-700); font-size: 19px; font-family: inherit; }
 
+    /* ===== Media slides: title left, annotation right, artifact filling the
+       rest of the frame. ===== */
+    .media-head {
+      display: grid; grid-template-columns: minmax(0, 1fr) 620px; gap: 80px;
+      align-items: start; margin-top: 40px;
+    }
+    .media-head .s-title { margin: 0; font-size: 46px; line-height: 1.12; letter-spacing: -0.025em; }
+    .media-head p { font-size: 19px; font-weight: 400; line-height: 1.6; color: var(--ink-500); margin: 0; padding-top: 5px; }
+
     /* ===== Walkthrough clip =====
        Height-driven: flex hands the clip the remaining space and aspect-ratio
-       derives the width from it, so the frame is always exactly 16:9 and never
-       overflows the slide. Hairline, no shadow. */
+       derives the width from it, so the frame is always exactly the clip's
+       ratio and never overflows the slide. Hairline, no shadow. */
     .clip {
       position: relative; overflow: hidden;
-      border-radius: var(--radius); border: var(--hair);
+      border-radius: 8px; border: var(--hair);
       background: var(--canvas-deep);
     }
     /* flex-basis MUST be 0, not auto. With `auto` the aspect-ratio's own
@@ -318,14 +396,14 @@
        The ratio is the clips' REAL size (1920×1204 screen recordings, not 16:9)
        so object-fit has nothing to crop and nothing to letterbox. */
     .slide-inner > .clip:last-child {
-      flex: 1 1 0; min-height: 0; margin-top: 24px;
+      flex: 1 1 0; min-height: 0; margin-top: 36px;
       align-self: center; aspect-ratio: 1920 / 1204; max-width: 100%;
     }
     .slide-inner > .clip--play:last-child { aspect-ratio: 1920 / 994; }
     /* Media slides trim the bottom padding to hand the artifact more room.
        Only padding-BOTTOM moves, so the header stays anchored at the same
        canvas y as every other content slide. */
-    .slide--media { padding-bottom: 56px; }
+    .slide--media { padding-bottom: 128px; }
     .clip video { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--canvas-deep); }
     .clip-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(26,26,23,0.10); }
     .clip-bar i { display: block; height: 100%; width: 0; background: var(--sage-500); }
@@ -333,28 +411,27 @@
     .clip--play video { object-fit: contain; background: var(--ink-900); }
 
     /* ===== CTAs ===== */
-    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 44px; }
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
     .cta {
       display: inline-flex; align-items: center; gap: 11px;
-      padding: 17px 28px; border-radius: 999px; font-size: 20px;
+      padding: 17px 28px; border-radius: 999px; font-size: 19px;
       border: var(--hair); text-decoration: none; color: var(--ink-700);
-      background: var(--card);
+      background: transparent;
       transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
     .cta:hover { background: var(--canvas-soft); border-color: var(--ink-300); color: var(--ink-900); }
     .cta--solid { background: var(--ink-900); color: var(--canvas); border-color: var(--ink-900); }
     .cta--solid:hover { background: #000; color: #fff; border-color: #000; }
     .cta svg { width: 19px; height: 19px; }
-    .slide--end .cta { background: rgba(255,255,255,0.06); border: var(--hair-dark); color: var(--ink-on-dark); }
-    .slide--end .cta:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); color: #fff; }
-    .slide--end .cta--solid { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
-    .slide--end .cta--solid:hover { background: #fff; color: var(--ink-900); }
+    .slide--end .cta, .slide--ink .cta { background: rgba(255,255,255,0.06); border: var(--hair-dark); color: var(--ink-on-dark); }
+    .slide--end .cta:hover, .slide--ink .cta:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); color: #fff; }
+    .slide--end .cta--solid, .slide--ink .cta--solid { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
+    .slide--end .cta--solid:hover, .slide--ink .cta--solid:hover { background: #fff; color: var(--ink-900); }
 
     /* ===== Chrome: viewport-fixed overlay (NOT scaled), sits in the letterbox ===== */
-    /* Hearth's tri-role story as the progress ramp: trust → caution → info. */
     .deck-progress {
-      position: fixed; top: 0; left: 0; height: 4px; z-index: 40; width: 100%;
-      background: linear-gradient(90deg, var(--sage-500), var(--sage-300), var(--ember-400), var(--sky-500));
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 40; width: 100%;
+      background: var(--sage-400);
       clip-path: inset(0 100% 0 0);
       transition: clip-path 0.5s cubic-bezier(0.76, 0, 0.24, 1);
     }
@@ -364,11 +441,6 @@
       font-size: 16px; color: var(--ink-on-dark-mute); text-decoration: none; transition: color 0.2s ease;
     }
     .deck-brand:hover { color: var(--ink-on-dark); }
-    .deck-counter {
-      position: fixed; top: 26px; right: 34px; z-index: 30;
-      font-size: 15px; letter-spacing: 0.08em; color: var(--ink-on-dark-mute); font-variant-numeric: tabular-nums;
-    }
-    .deck-counter b { color: var(--ink-on-dark); font-weight: 400; }
 
     .navbtn {
       position: fixed; bottom: 24px; z-index: 30;
@@ -497,8 +569,7 @@
     @media (max-width: 640px) {
       .deck-hint { display: none; }
       .navbtn--comment, .cmt-bar { display: none !important; }
-      .deck-brand, .deck-counter { font-size: 13px; top: 18px; }
-      .deck-brand { left: 20px; } .deck-counter { right: 20px; }
+      .deck-brand { font-size: 13px; top: 18px; left: 20px; }
       .navbtn { bottom: 18px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 74px; }
     }
 
@@ -515,7 +586,6 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     Chang Mou
   </a>
-  <div class="deck-counter"><b id="cur">01</b> / <span id="total">19</span></div>
 
   <div class="deck" id="deck">
     <div class="stage" id="stage">
@@ -524,13 +594,18 @@
         <!-- 1 · Title -->
         <section class="slide slide--title is-active">
           <div class="slide-inner">
-            <p class="s-label">Case study</p>
-            <h1 class="title-h1">Homewise</h1>
-            <p class="title-sub">AI command center for homeowners. It defines the scope, compares contractor quotes apples to apples, and pauses for your approval before anything happens.</p>
-            <div class="title-meta">
-              <span>Lead Product Designer</span>
-              <span>13 person team</span>
-              <span>May – Jun 2026</span>
+            <div class="title-meta-row">
+              <div class="tm"><span class="tm-k">Role</span><span class="tm-v">Lead Product Designer</span></div>
+              <div class="tm"><span class="tm-k">Team</span><span class="tm-v">13 people · 3 PM, 3 design, 7 engineering</span></div>
+              <div class="tm"><span class="tm-k">Timeline</span><span class="tm-v">May – Jun 2026</span></div>
+              <div class="tm"><span class="tm-k">Built with</span><span class="tm-v">React + Tailwind · Claude Code</span></div>
+            </div>
+            <div class="title-bottom">
+              <div>
+                <p class="title-kicker">Case study · 2026</p>
+                <h1 class="title-h1">Homewise</h1>
+              </div>
+              <p class="title-sub">AI command center for homeowners. It defines the scope, compares contractor quotes apples to apples, and pauses for your approval before anything happens.</p>
             </div>
           </div>
         </section>
@@ -541,12 +616,12 @@
             <p class="s-label">The bet</p>
             <h2 class="s-title">People will hand the hire to an agent they can trust</h2>
             <p class="s-body">Hiring a contractor is one of the most stressful purchases a homeowner makes, and the market says the fear is earned. Homewise bets an agent can run the hire end to end, from problem to booked job. So the question that decides product-market fit is not whether the automation works. <span class="highlight">It is whether people will trust it.</span></p>
-            <div class="grid grid-3">
-              <div class="card stat"><span class="stat-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
-              <div class="card stat"><span class="stat-num">41%</span><p>have been deceived by a service provider.</p></div>
-              <div class="card stat"><span class="stat-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
+            <div class="rows push">
+              <div class="row"><span class="row-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
+              <div class="row"><span class="row-num">41%</span><p>have been deceived by a service provider.</p></div>
+              <div class="row"><span class="row-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
+              <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
             </div>
-            <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
           </div>
         </section>
 
@@ -556,13 +631,13 @@
             <p class="s-label">Overview · My role</p>
             <div class="split">
               <div>
-                <h2 class="s-title">A home command center, not another marketplace</h2>
-                <p class="s-body">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
-                <div class="note-list" style="margin-top: 32px;">
-                  <div class="note"><h4>Voice of customer</h4><p>Eight interviews synthesized into six findings, including the reframe that set the direction.</p></div>
-                  <div class="note"><h4>Hearth, the design system</h4><p>Built as living code, with a drift linter that caught drift before it shipped.</p></div>
-                  <div class="note"><h4>Design review in the repo</h4><p>Merged the other two designers' pull requests so every contribution extended Hearth.</p></div>
-                  <div class="note"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo. No Figma in between.</p></div>
+                <h2 class="s-title s-title--compact" style="margin-top: 0;">A home command center, not another marketplace</h2>
+                <p class="s-body" style="font-size: 20px;">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
+                <div class="mini-grid">
+                  <div class="mini"><h4>Voice of customer</h4><p>Eight interviews synthesized into six findings, including the reframe that set the direction.</p></div>
+                  <div class="mini"><h4>Hearth, the design system</h4><p>Built as living code, with a drift linter that caught drift before it shipped.</p></div>
+                  <div class="mini"><h4>Design review in the repo</h4><p>Merged the other two designers' pull requests so every contribution extended Hearth.</p></div>
+                  <div class="mini"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo. No Figma in between.</p></div>
                 </div>
               </div>
               <div class="split-media"><img src="images/homewise-cover.jpg" alt="Homewise comparing three contractor quotes against one scope" decoding="async"></div>
@@ -576,16 +651,19 @@
             <p class="s-label">Evidence · Eight interviews</p>
             <h2 class="s-title">Hiring a contractor is a guessing game</h2>
             <p class="s-body">Trust starts social. People ask a neighbor or a friend first, because they assume online ratings can be gamed. When word of mouth runs out, they fall back on marketplaces they trust even less. Then the grind begins. Three frustrations surfaced in almost every interview.</p>
-            <div class="grid grid-3">
-              <div class="card card--pain">
+            <div class="cols push">
+              <div class="col">
+                <span class="col-idx">01</span>
                 <h3>No way to know who to trust</h3>
                 <p class="voc">"Finding the right person is the hardest part."</p>
               </div>
-              <div class="card card--pain">
+              <div class="col">
+                <span class="col-idx">02</span>
                 <h3>No benchmark for a fair price</h3>
                 <p class="voc">"You can't really know if the price is fair."</p>
               </div>
-              <div class="card card--pain">
+              <div class="col">
+                <span class="col-idx">03</span>
                 <h3>Comparing quotes is exhausting</h3>
                 <p class="voc">"I had to make so many phone calls just to compare prices."</p>
               </div>
@@ -599,7 +677,7 @@
             <p class="s-label">Insight</p>
             <h2 class="s-title">The price anxiety is really scope anxiety</h2>
             <p class="s-body">When contractors propose different fixes for the same issue, their quotes describe different work, so there is nothing to compare. One homeowner was quoted $250 to $7,000 for the same siding repair, and the telling part is that he had already worked out the answer. <span class="highlight">He described Homewise before we built it.</span></p>
-            <div class="spread">
+            <div class="spread push">
               <p class="spread-label">Same siding repair · 5 contractors quoted</p>
               <div class="spread-track">
                 <span class="spread-dot" style="left: 0%"></span>
@@ -622,10 +700,10 @@
             <p class="s-label">Why this is hard</p>
             <h2 class="s-title">A user problem and a data problem, at system level</h2>
             <p class="s-body">Three constraints shaped every call that follows.</p>
-            <div class="grid grid-3">
-              <div class="card"><h3>A user problem</h3><p>Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back.</p></div>
-              <div class="card"><h3>A data problem</h3><p>Trust is only credible on real license, insurance, and permit records. A model's best guess is not verification.</p></div>
-              <div class="card"><h3>One connected system</h3><p>A single change ripples through scope, matching, quotes, and tracking. No screen can be designed in isolation.</p></div>
+            <div class="cols push">
+              <div class="col"><span class="col-idx">01</span><h3>A user problem</h3><p>Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back.</p></div>
+              <div class="col"><span class="col-idx">02</span><h3>A data problem</h3><p>Trust is only credible on real license, insurance, and permit records. A model's best guess is not verification.</p></div>
+              <div class="col"><span class="col-idx">03</span><h3>One connected system</h3><p>A single change ripples through scope, matching, quotes, and tracking. No screen can be designed in isolation.</p></div>
             </div>
           </div>
         </section>
@@ -636,10 +714,10 @@
             <p class="s-label">Design statement</p>
             <h2 class="s-title">An agent that scopes the job before it shops it</h2>
             <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible. <span class="highlight">Three principles follow, one for each constraint.</span></p>
-            <div class="grid grid-3">
-              <div class="card"><h3>Structured, not conversational</h3><p>A chatbot would leave people guessing at scope and price both. The workflow walks them through it instead.</p></div>
-              <div class="card"><h3>Verified, not scraped</h3><p>Matching and flags run on license, insurance, and permit records, so every trust signal is a checkable fact.</p></div>
-              <div class="card"><h3>The human signs off</h3><p>The agent recommends. Nothing is booked until you approve. Human in the loop, never an autopilot default.</p></div>
+            <div class="cols push">
+              <div class="col"><span class="col-idx">01</span><h3>Structured, not conversational</h3><p>A chatbot would leave people guessing at scope and price both. The workflow walks them through it instead.</p></div>
+              <div class="col"><span class="col-idx">02</span><h3>Verified, not scraped</h3><p>Matching and flags run on license, insurance, and permit records, so every trust signal is a checkable fact.</p></div>
+              <div class="col"><span class="col-idx">03</span><h3>The human signs off</h3><p>The agent recommends. Nothing is booked until you approve. Human in the loop, never an autopilot default.</p></div>
             </div>
           </div>
         </section>
@@ -649,24 +727,24 @@
           <div class="slide-inner">
             <p class="s-label">Solution · The workflow</p>
             <h2 class="s-title">Four stages, one scope</h2>
-            <div class="stages">
-              <div class="stage-card">
-                <span class="stage-step">Stage 01</span>
+            <div class="cols cols--4 push">
+              <div class="col">
+                <span class="col-idx">Stage 01</span>
                 <h3>Scope</h3>
                 <p>A short intake conversation and a photo become a structured, editable scope of work, so you never have to know the right words.</p>
               </div>
-              <div class="stage-card">
-                <span class="stage-step">Stage 02</span>
+              <div class="col">
+                <span class="col-idx">Stage 02</span>
                 <h3>Match</h3>
                 <p>It finds and vets contractors, surfacing verified pros and the ones other Homewisers recommend.</p>
               </div>
-              <div class="stage-card">
-                <span class="stage-step">Stage 03</span>
+              <div class="col">
+                <span class="col-idx">Stage 03</span>
                 <h3>Compare</h3>
                 <p>One scope means comparable bids. Outliers and gaps get flagged, and you approve the right contractor.</p>
               </div>
-              <div class="stage-card">
-                <span class="stage-step">Stage 04</span>
+              <div class="col">
+                <span class="col-idx">Stage 04</span>
                 <h3>Track</h3>
                 <p>The job stays in one place from booking to done, so it never slips back into scattered calls and texts.</p>
               </div>
@@ -678,8 +756,8 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Process</p>
-            <h2 class="s-title">I flipped the process and designed by building</h2>
-            <p class="s-body">Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock. Each loop starts from the PM's PRD, our shared intent, and the prototype exposes gaps the document cannot.</p>
+            <h2 class="s-title s-title--compact">I flipped the process and designed by building</h2>
+            <p class="s-body" style="font-size: 20px; margin-top: 22px;">Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock. Each loop starts from the PM's PRD, our shared intent, and the prototype exposes gaps the document cannot.</p>
             <div class="flows">
               <div class="flow">
                 <div class="flow-head">
@@ -738,8 +816,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 4</p>
-            <h2 class="s-title">Define the scope, in plain language</h2>
-            <p class="s-body">You describe the problem in your own words. The agent turns it into a structured, editable scope of work, and that one scope goes out to every contractor, so everyone quotes the exact same job and you never repeat yourself on the phone.</p>
+            <div class="media-head">
+              <h2 class="s-title">Define the scope, in plain language</h2>
+              <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, and that one scope goes out to every contractor, so everyone quotes the exact same job and you never repeat yourself on the phone.</p>
+            </div>
             <div class="clip">
               <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -751,8 +831,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 4</p>
-            <h2 class="s-title">A match you can trust, not a list to sort</h2>
-            <p class="s-body">A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
+            <div class="media-head">
+              <h2 class="s-title">A match you can trust, not a list to sort</h2>
+              <p>A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
+            </div>
             <div class="clip">
               <video src="images/homewise-match.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -764,8 +846,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 4</p>
-            <h2 class="s-title">Compare apples to apples, then you sign off</h2>
-            <p class="s-body">Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+            <div class="media-head">
+              <h2 class="s-title">Compare apples to apples, then you sign off</h2>
+              <p>Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+            </div>
             <div class="clip">
               <video src="images/homewise-compare.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -777,8 +861,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 4</p>
-            <h2 class="s-title">One place, from booking to done</h2>
-            <p class="s-body">Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+            <div class="media-head">
+              <h2 class="s-title">One place, from booking to done</h2>
+              <p>Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+            </div>
             <div class="clip">
               <video src="images/homewise-track.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -787,12 +873,12 @@
         </section>
 
         <!-- 14 · Outcome -->
-        <section class="slide">
+        <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
             <h2 class="s-title">A working prototype, not a mockup</h2>
             <p class="s-body">Homewise is live and interactive. The whole flow runs end to end, from the first plain language request to the moment you approve the hire. It is the artifact I handed the dev team, and the product they shipped was built straight onto it.</p>
-            <div class="cta-row">
+            <div class="cta-row push">
               <a class="cta cta--solid" href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener">Explore the live prototype
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
               </a>
@@ -807,8 +893,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system</p>
-            <h2 class="s-title">Hearth, one warm system across every screen</h2>
-            <p class="s-body">The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter.</p>
+            <div class="media-head">
+              <h2 class="s-title">Hearth, one warm system across every screen</h2>
+              <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter.</p>
+            </div>
             <div class="clip">
               <video src="images/homewise-hearth.mp4" data-clip loop muted playsinline preload="none"></video>
               <div class="clip-bar"><i></i></div>
@@ -820,8 +908,10 @@
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Collaboration</p>
-            <h2 class="s-title">We skipped Figma and built the design in code</h2>
-            <p class="s-body">We designed in the codebase from day one, a real React prototype on Hearth, then handed the dev team the repo itself. I built the front end and the data structures, the engineers wired live data and the backend onto them. Here is the shipped build, start to finish. Press play.</p>
+            <div class="media-head">
+              <h2 class="s-title">We skipped Figma and built the design in code</h2>
+              <p>We designed in the codebase from day one, a real React prototype on Hearth, then handed the dev team the repo itself. I built the front end and the data structures, the engineers wired live data and the backend onto them. Here is the shipped build, start to finish. Press play.</p>
+            </div>
             <div class="clip clip--play">
               <video src="images/homewise-live.mp4" controls preload="none" poster="images/homewise-live-poster.jpg" playsinline></video>
             </div>
@@ -834,7 +924,8 @@
             <p class="s-label">Reflection</p>
             <h2 class="s-title">Trust was the hard part, not the automation</h2>
             <p class="s-body">People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. That is the answer to the opening bet: trust is not a promise, it is something the interface earns screen by screen.</p>
-            <p class="s-body">Building a front end prototype in Claude Code for the first time reframed the deliverable too. <span class="highlight">The design wasn't a picture of the product. It was the first version of it.</span></p>
+            <p class="s-body">Building a front end prototype in Claude Code for the first time reframed the deliverable too.</p>
+            <p class="pull push">The design wasn't a picture of the product. It was the first version of it.</p>
           </div>
         </section>
 
@@ -844,9 +935,9 @@
             <p class="s-label">Hello</p>
             <div class="split">
               <div>
-                <h2 class="s-title">I'm Chang Mou</h2>
-                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
-                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
+                <h2 class="s-title s-title--compact" style="margin-top: 0;">I'm Chang Mou</h2>
+                <p class="s-body" style="font-size: 20px;">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
+                <p class="s-body" style="font-size: 20px;">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
               </div>
               <div class="intro-grid">
                 <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
@@ -862,12 +953,14 @@
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
-            <h2 class="s-title">See it in full</h2>
-            <div class="cta-row">
-              <a class="cta cta--solid" href="homewise.html">View the full case study
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-              </a>
-              <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+            <div class="push">
+              <h2 class="end-big">See it in full</h2>
+              <div class="cta-row" style="margin-top: 56px;">
+                <a class="cta cta--solid" href="homewise.html">View the full case study
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </a>
+                <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+              </div>
             </div>
           </div>
         </section>
@@ -909,14 +1002,20 @@
       const total = slides.length;
       const SLIDE_W = 1920, SLIDE_H = 1080;
       const progress = document.getElementById('progress');
-      const curEl = document.getElementById('cur');
-      const totalEl = document.getElementById('total');
       const prevBtn = document.getElementById('prev');
       const nextBtn = document.getElementById('next');
       const hint = document.getElementById('hint');
       const pad = (n) => String(n).padStart(2, '0');
 
-      totalEl.textContent = pad(total);
+      // The folio: every slide closes with a rule and its own page number,
+      // like a printed publication. Injected here so the markup stays clean;
+      // the numbers are static per slide, so render() never touches them.
+      slides.forEach((s, i) => {
+        const f = document.createElement('div');
+        f.className = 'page-foot';
+        f.innerHTML = '<span>A case study by Chang Mou</span><b>' + pad(i + 1) + ' / ' + pad(total) + '</b>';
+        s.appendChild(f);
+      });
 
       // Scale the fixed 1920×1080 stage to fit the viewport (letterboxed).
       // The lane is 160px, not coffeeslide's 76px: the stage is CREAM here, so
@@ -960,7 +1059,6 @@
       function render() {
         track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
         progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
-        curEl.textContent = pad(index + 1);
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index === total - 1;
         slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
