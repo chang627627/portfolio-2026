@@ -327,7 +327,7 @@ nav::before {
     radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.85), transparent 60%),
     radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(255, 48, 176, 0.82), transparent 60%),
     radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
-  filter: blur(56px);
+  filter: blur(32px); /* was 56px — closes the hero-vividness open thread; matches the footer's crispness */
   animation: irisFlow 13s ease-in-out infinite;
 }
 
@@ -471,7 +471,7 @@ nav::before {
   font-size: 13px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em; /* unified label token: 13px / 0.12em / muted / 400 */
   margin-bottom: 32px;
   display: flex;
   align-items: center;
@@ -626,15 +626,27 @@ nav::before {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.02em;
-  margin-top: 48px;
+  margin-top: 40px; /* was 48 — the .hero-meta row now sits between sub and pill */
   background: rgba(10, 10, 12, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.22);
   padding: 8px 16px;
   border-radius: var(--radius);
+  text-decoration: none; /* it is a live mailto now */
+  transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
   opacity: 0;
   animation: fadeUp 0.8s ease forwards 1.35s; /* follows the sub, see .hero-sub */
+}
+
+.status-tag:hover {
+  border-color: rgba(255, 255, 255, 0.45);
+  background: rgba(10, 10, 12, 0.6);
+}
+
+.status-tag .arrow {
+  font-size: 11px;
+  opacity: 0.7;
 }
 
 .status-dot {
@@ -1016,10 +1028,10 @@ nav::before {
 }
 
 .section-title {
-  font-size: 14px;
+  font-size: 13px; /* unified label token */
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
   margin-bottom: 48px;
 }
@@ -1274,12 +1286,13 @@ nav::before {
 }
 
 .project-info h3 {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 .project-year {
-  font-size: 16px;
+  font-size: 14px; /* was 16 — recedes so the title leads the row */
   color: var(--text-muted);
 }
 
@@ -1374,9 +1387,9 @@ nav::before {
 
 .about-gallery .section-label {
   font-size: 13px;
-  font-weight: 300;
+  font-weight: 400; /* was 300 — a weight the single-face system could only synthesize */
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em; /* unified label token */
   color: var(--text-muted);
   margin-bottom: 32px;
 }
@@ -1761,7 +1774,7 @@ footer {
   font-size: 13px;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.12em; /* unified label token */
   margin-bottom: 32px;
   display: flex;
   align-items: center;
@@ -1958,8 +1971,9 @@ footer {
 }
 
 .about-block h3 {
-  font-size: 22px;
+  font-size: 28px; /* same ramp step as .project-section h2 */
   font-weight: 400;
+  letter-spacing: -0.02em;
   margin: 0 0 8px 0;
 }
 
@@ -2116,8 +2130,9 @@ footer {
 }
 
 .project-hero-sub {
-  font-size: 16px;
-  color: var(--text-muted);
+  font-size: 18px; /* was 16/--text-muted — the thesis line was dimmer than the body below it */
+  color: var(--text-soft);
+  max-width: 680px;
 }
 
 .project-content {
@@ -2626,8 +2641,9 @@ footer {
 }
 
 .project-section h2 {
-  font-size: 22px;
+  font-size: 28px; /* was 22 — the ramp's missing middle; size is the only hierarchy channel in a single-weight system */
   font-weight: 400;
+  letter-spacing: -0.02em;
   margin: 0;
 }
 
@@ -3310,10 +3326,10 @@ footer {
 
 /* Project Page — Section Label */
 .project-section .section-label {
-  font-size: 14px;
+  font-size: 13px; /* unified label token */
   font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--text-muted);
   margin: 0 0 8px 0;
 }
