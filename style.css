@@ -1286,9 +1286,9 @@ nav::before {
 }
 
 .project-info h3 {
-  font-size: 20px;
+  font-size: 21px; /* Mobbin vibe audit: titles must clearly lead the text zone (Runway/Figma card refs) */
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
 .project-year {
@@ -1480,6 +1480,14 @@ nav::before {
   padding: 0 24px 96px; /* matches the section rhythm — Testimonials now sits mid-page (Podcasts is last, its 96px + the footer's 160px top carry the gap to the footer); side rail per the .about-vertical note */
 }
 
+/* About sections use the .section-meta eyebrow + hairline grammar (2026-08-01
+   Mobbin vibe audit) — tighter bottom margin than home's 48px band. */
+.about-vertical .section-meta,
+.testimonials .section-meta,
+.media-section .section-meta {
+  margin-bottom: 28px;
+}
+
 .testimonials h3 {
   font-size: 22px;
   font-weight: 400;
@@ -1490,6 +1498,19 @@ nav::before {
   display: flex;
   flex-direction: column;
   gap: 20px;
+}
+
+/* Featured quote — unboxed display treatment (Mobbin vibe audit: Vizcom/Slash
+   display-quote refs); the other two stay as cards below. */
+.testimonial-feature {
+  margin: 8px 0 44px;
+}
+.testimonial-feature .testimonial-quote {
+  font-size: 24px; /* 30 was "too big" per user — still clearly display vs the 16px cards */
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+  color: var(--text);
+  margin-bottom: 26px;
 }
 
 .testimonial-card {
@@ -4507,10 +4528,11 @@ footer {
   align-items: baseline;
 }
 .hw-spread-fig {
-  font-size: 30px;
-  letter-spacing: -0.02em;
+  font-size: 72px; /* was 30 — ports the homewiseslide decision (display-scale money figures); Mobbin refs spike stats to display scale */
+  letter-spacing: -0.03em;
   color: var(--text);
   line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 .hw-spread-fig small {
   display: block;
@@ -4519,7 +4541,8 @@ footer {
   color: var(--text-muted);
   margin-top: 6px;
 }
-.hw-spread-fig--hi { text-align: right; }
+.hw-spread-fig--hi { text-align: right; color: #D9A461; /* ember-300, the deck's highest-bid caution hue on dark */ }
+.hw-spread-fig--hi small { color: #B98132; }
 
 /* Problem market-stat band — sibling of .hw-spread (dark panel, warm Hearth accent) */
 /* Three stat cards — match the voc-quote card language directly above */
