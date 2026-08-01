@@ -1500,18 +1500,6 @@ nav::before {
   gap: 20px;
 }
 
-/* Featured quote — unboxed display treatment (Mobbin vibe audit: Vizcom/Slash
-   display-quote refs); the other two stay as cards below. */
-.testimonial-feature {
-  margin: 8px 0 44px;
-}
-.testimonial-feature .testimonial-quote {
-  font-size: 24px; /* 30 was "too big" per user — still clearly display vs the 16px cards */
-  line-height: 1.5;
-  letter-spacing: -0.015em;
-  color: var(--text);
-  margin-bottom: 26px;
-}
 
 .testimonial-card {
   background: var(--surface);
