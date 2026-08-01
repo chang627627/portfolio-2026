@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found — Chang Mou</title>
+  <meta name="description" content="This page doesn't exist. The work does.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=224">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+  <style>
+    /* 404-only: two pills side by side under the sub; .status-tag brings its
+       own 40px top margin and 1.35s entrance. Absolute asset paths ("/style.css",
+       "/index.html") on purpose — a 404 renders at arbitrary broken URLs, so
+       relative paths would 404 too. */
+    .notfound-tags {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      position: relative;
+      z-index: 2;
+    }
+    /* plain-text headline (no per-glyph machinery on this page) */
+    .hero h1 { position: relative; z-index: 2; }
+  </style>
+</head>
+<body>
+  <!-- Nav -->
+  <nav>
+    <a href="/index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="/index.html">Work</a>
+      <a href="/play.html">Play</a>
+      <a href="/about.html">About</a>
+      <a href="https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view?usp=sharing" target="_blank">Resume</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-orbs hero-orbs--g2"></div>
+    <div class="hero-content">
+      <h1>Lost in the fog.</h1>
+      <p class="hero-sub">This page doesn't exist. The work does.</p>
+      <div class="notfound-tags">
+        <a class="status-tag" href="/index.html"><span class="status-dot"></span>Back to the work <span class="arrow">↗</span></a>
+        <a class="status-tag" href="mailto:changmou627627@gmail.com">Say hello <span class="arrow">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Same Lightfall + tilt gating as the home hero, minus the type machinery.
+    const hero = document.querySelector('.hero');
+    const heroContent = document.querySelector('.hero-content');
+    const heroOrbs = hero.querySelector('.hero-orbs');
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (finePointer && motionOK) {
+      const ORB_X = 180, ORB_Y = 26;
+      heroOrbs.style.left = '-12%';
+      heroOrbs.style.right = '-12%';
+      heroOrbs.style.transition = 'translate 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+      let cx = 0, cy = 0, raf = null;
+      const apply = () => {
+        raf = null;
+        const rect = hero.getBoundingClientRect();
+        const nx = (cx - rect.left) / rect.width - 0.5;
+        const ny = (cy - rect.top) / rect.height - 0.5;
+        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
+        heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
+      };
+      hero.addEventListener('mousemove', (e) => {
+        cx = e.clientX; cy = e.clientY;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      hero.addEventListener('mouseleave', () => {
+        if (raf) { cancelAnimationFrame(raf); raf = null; }
+        heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+        heroOrbs.style.translate = '0px 0px';
+      });
+    }
+
+    // Hamburger (standard pattern) — the overlay nav still works on a 404.
+    const hamburger = document.querySelector('.hamburger');
+    if (hamburger) hamburger.addEventListener('click', function () {
+      this.classList.toggle('active');
+      document.querySelector('.nav-links').classList.toggle('open');
+      document.body.classList.toggle('menu-open');
+    });
+  </script>
+</body>
+</html>

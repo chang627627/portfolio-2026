@@ -647,6 +647,11 @@ nav::before {
 .status-tag .arrow {
   font-size: 11px;
   opacity: 0.7;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.status-tag:hover .arrow {
+  transform: translate(2px, -2px);
 }
 
 .status-dot {
@@ -740,7 +745,7 @@ nav::before {
   align-items: center;
   justify-content: center;
   z-index: 90;
-  transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  transition: background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out);
   border: none;
   overflow: visible;
 }
@@ -779,9 +784,11 @@ nav::before {
 
 
 
-.chat-toggle:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text);
+@media (hover: hover) {
+  .chat-toggle:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+  }
 }
 
 .chat-toggle.hidden {
@@ -832,6 +839,27 @@ nav::before {
   display: flex;
 }
 
+/* The panel eases in/out like the lightbox (@starting-style + allow-discrete);
+   longhands on purpose — see the lightbox note. Reduced motion keeps the
+   instant swap. Exit is faster than enter, matching the lightbox asymmetry. */
+@media (prefers-reduced-motion: no-preference) {
+  .chat-panel {
+    transition-property: opacity, transform, display;
+    transition-duration: 160ms;
+    transition-timing-function: var(--ease-out);
+    transition-behavior: allow-discrete;
+  }
+  .chat-panel.open {
+    transition-duration: 240ms;
+  }
+  @starting-style {
+    .chat-panel.open {
+      opacity: 0;
+      transform: translateY(10px) scale(0.95);
+    }
+  }
+}
+
 .chat-panel-header {
   display: flex;
   justify-content: flex-end;
@@ -860,6 +888,24 @@ nav::before {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}
+
+/* WebKit: slim floating pill (content-box clip keeps a 3px gutter) */
+.chat-messages::-webkit-scrollbar { width: 10px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.22);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
+}
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background-clip: content-box;
 }
 
 .chat-message {
@@ -899,6 +945,27 @@ nav::before {
 
 .chat-msg.assistant.typing {
   opacity: 0.5;
+}
+
+/* Three staggered dots while Claude responds (2-5s round-trip) — a designed
+   loading state, not a frozen string. Static dots under reduced motion. */
+.chat-msg.typing span {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 4px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.chat-msg.typing span:last-child { margin-right: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .chat-msg.typing span { animation: chatBlink 1.2s ease-in-out infinite; }
+  .chat-msg.typing span:nth-child(2) { animation-delay: 0.2s; }
+  .chat-msg.typing span:nth-child(3) { animation-delay: 0.4s; }
+}
+@keyframes chatBlink {
+  0%, 60%, 100% { opacity: 0.35; }
+  30% { opacity: 1; }
 }
 
 .chat-msg.user {
@@ -3905,6 +3972,17 @@ footer {
   display: block;
 }
 
+/* Entering slide eases in instead of display-snapping (exit stays instant
+   under the fade — a cut under a crossfade reads fine). */
+@media (prefers-reduced-motion: no-preference) {
+  .carousel-slide.active {
+    transition: opacity var(--dur-base) var(--ease-out);
+  }
+  @starting-style {
+    .carousel-slide.active { opacity: 0; }
+  }
+}
+
 .carousel-arrow {
   width: 36px;
   height: 36px;
@@ -3987,6 +4065,10 @@ footer {
   background: var(--text-muted);
 }
 
+@media (hover: hover) {
+  .carousel-dot:hover { opacity: 0.6; }
+}
+
 .carousel-dot.active {
   opacity: 1;
 }
@@ -4030,7 +4112,7 @@ footer {
   letter-spacing: 0.08em;
   color: var(--text-muted);
   opacity: 0.4;
-  transition: opacity 0.3s ease, color 0.3s ease, padding-left 0.2s ease;
+  transition: opacity var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out), padding-left var(--dur-base) var(--ease-out);
   cursor: pointer;
   padding-left: 0;
   position: relative;
@@ -4686,6 +4768,7 @@ footer {
 .carousel-dot:active,
 .hamburger:active,
 .lightbox-close:active,
+.back-to-top:active,
 .chat-toggle:active,
 .chat-send:active,
 .chat-close:active {
@@ -4697,4 +4780,11 @@ footer {
    the designed replacement. */
 body {
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Text selection joins the design system — white inversion per the
+   chrome-stays-neutral rule (never #0094FF; blue is NOVA content only). */
+::selection {
+  background: rgba(240, 240, 240, 0.92);
+  color: #0a0a0a;
 }
