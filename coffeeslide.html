@@ -16,7 +16,7 @@
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=4">
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500&display=swap" rel="stylesheet">
   <link rel="canonical" href="https://www.chang-mou.com/coffeeslide">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -27,7 +27,15 @@
     gtag('config', 'G-RRQ4XH93F3');
   </script>
   <style>
-    /* ===== Tokens (mirrors the portfolio's style.css) ===== */
+    /* ===== Tokens (mirrors the portfolio's style.css) =====
+       This deck wears the SITE's identity: dark canvas, the warm-to-blue
+       gradient on the two bookends, lavender app-screen plates. The LAYOUT
+       grammar is the shared slide-deck system (see CLAUDE.md Design
+       Decisions): editorial print, not boxed cards — every slide framed by an
+       in-slide header rule and a folio footer, stats as hairline rows with
+       oversized numerals, triads as rule-topped columns, artifact blocks
+       anchored to the bottom of the frame. Palette is per-deck; the grammar
+       is what transfers. ===== */
     :root {
       --bg: #0a0a0a;
       --surface: #1a1a1a;
@@ -35,10 +43,16 @@
       --text-muted: #888;
       --text-soft: #a0a0a0;
       --accent: #1e78ff;         /* the deck's own gradient blue; #0094FF stays NOVA-only */
-      --plate: #d0d1fd;         /* lavender app-screen plate, matches coffee.html */
+      --plate: #d0d1fd;          /* lavender app-screen plate, matches coffee.html */
       --radius: 12px;
       --line: rgba(255,255,255,0.08);
       --line-2: rgba(255,255,255,0.14);
+      --line-3: rgba(255,255,255,0.24); /* column rules, a step brighter than the frame */
+      /* the one light slide (Reflection) inverts to ink-on-lavender */
+      --ink: #1a1a1a;
+      --ink-soft: rgba(26,26,26,0.72);
+      --ink-mute: rgba(26,26,26,0.52);
+      --ink-line: rgba(26,26,26,0.28);
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -79,28 +93,37 @@
       flex: 0 0 1920px;
       width: 1920px; height: 1080px;
       overflow: hidden;
-      position: relative;               /* pin-layer anchor */
+      position: relative;               /* pin-layer + folio anchor */
       display: flex; align-items: stretch;
-      padding: 84px 120px;
+      padding: 72px 110px 148px;
+      background: var(--bg);
     }
     .slide-inner {
       width: 100%; height: 100%;
-      display: flex; flex-direction: column; justify-content: center;
+      display: flex; flex-direction: column; justify-content: flex-start;
     }
-    /* Every content slide anchors its header at one canvas position (y=150)
-       so the label/title never jump as you arrow through; the title and
-       closing slides keep their centered bookend layout. */
-    .slide:not(.slide--title):not(.slide--end) { padding-top: 150px; }
-    .slide:not(.slide--title):not(.slide--end) .slide-inner { justify-content: flex-start; }
-    /* Media-forward slides that end in a single full plate: the image grows to
-       fill all remaining height, shrink-wrapped so the lavender mat stays
-       symmetric instead of stretching to full width. */
-    .slide-inner > .plate:last-child {
-      flex: 1 1 auto; min-height: 0; margin-top: 32px;
-      align-self: center; width: fit-content; max-width: 100%;
-      padding: 56px 72px;
+
+    /* ===== In-slide document chrome (the print frame) =====
+       Header rule at the top of every slide, folio rule at the bottom. The
+       folio is injected once by JS (it carries each slide's own number), so
+       the markup stays clean. Together they close the composition: even a
+       sparse slide reads as a designed page, not a floating fragment. */
+    .page-foot {
+      position: absolute; left: 110px; right: 110px; bottom: 54px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-top: 1px solid var(--line-2); padding-top: 18px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.42);
+      pointer-events: none; z-index: 2;
     }
-    .slide-inner > .plate:last-child img { max-height: 100%; }
+    .page-foot b { font-weight: 500; color: rgba(255,255,255,0.62); font-variant-numeric: tabular-nums; }
+    .slide--title .page-foot, .slide--end .page-foot {
+      border-top: 1px solid rgba(255,255,255,0.26);
+      color: rgba(255,255,255,0.6);
+    }
+    .slide--title .page-foot b, .slide--end .page-foot b { color: rgba(255,255,255,0.82); }
+    .slide--lav .page-foot { border-top: 1px solid var(--ink-line); color: var(--ink-mute); }
+    .slide--lav .page-foot b { color: var(--ink-soft); }
 
     /* ===== Reveal on active slide ===== */
     .slide-inner > * {
@@ -116,23 +139,50 @@
     .slide.is-active .slide-inner > *:nth-child(5) { transition-delay: 0.34s; }
     .slide.is-active .slide-inner > *:nth-child(6) { transition-delay: 0.41s; }
 
-    /* ===== Typography (fixed px on the 1920×1080 canvas) ===== */
-    /* Section label with the site's hairline-rule treatment (mirrors .section-meta). */
+    /* ===== Typography (fixed px on the 1920×1080 canvas) =====
+       The page loads Neue Montreal at 400/500 only, so EVERY heading sets
+       font-weight explicitly — UA-default h1/h2 bold would synthesize a fake
+       700. */
+
+    /* Header rule: section label left, deck name right, hairline under.
+       This is the slide's top frame, anchored at one canvas y everywhere. */
     .s-label {
-      display: flex; align-items: center; gap: 24px;
-      font-size: 17px; letter-spacing: 0.14em; text-transform: uppercase;
+      display: flex; justify-content: space-between; align-items: baseline; gap: 40px;
+      width: 100%;
+      border-bottom: 1px solid var(--line-2); padding-bottom: 20px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
       color: var(--text-muted); margin: 0;
     }
-    .s-label::after { content: ""; flex: 1; height: 1px; background: rgba(255,255,255,0.10); }
-    .s-title {
-      font-size: 52px; font-weight: 400; line-height: 1.1; letter-spacing: -0.02em; margin: 20px 0 0;
+    .s-label::after {
+      content: "Coffee Chat · Case study";
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em;
+      color: rgba(255,255,255,0.35); white-space: nowrap;
     }
+    .slide--title .s-label, .slide--end .s-label {
+      border-bottom: 1px solid rgba(255,255,255,0.26);
+      color: rgba(255,255,255,0.85);
+    }
+    .slide--title .s-label::after, .slide--end .s-label::after { color: rgba(255,255,255,0.55); }
+    .slide--lav .s-label { border-bottom: 1px solid var(--ink-line); color: var(--ink-mute); }
+    .slide--lav .s-label::after { color: var(--ink-mute); }
+
+    .s-title {
+      font-size: 76px; font-weight: 500; line-height: 1.04; letter-spacing: -0.035em;
+      margin: 46px 0 0; color: var(--text); max-width: 1620px;
+    }
+    .s-title--compact { font-size: 54px; line-height: 1.1; letter-spacing: -0.03em; }
     .s-body {
-      font-size: 24px; line-height: 1.6; color: var(--text-soft); max-width: 1180px; margin-top: 24px;
+      font-size: 22px; font-weight: 400; line-height: 1.6; color: var(--text-soft);
+      max-width: 1360px; margin-top: 28px;
     }
     .highlight { color: var(--text); }
 
-    /* ===== Title slide ===== */
+    /* Bottom-anchored artifact zone: whatever carries this class is pushed to
+       the lower band of the frame, just above the folio. The padding-top is
+       the guaranteed minimum gap to the prose above. */
+    .push { margin-top: auto; padding-top: 44px; }
+
+    /* ===== Title + sign-off bookends: the site's warm-to-blue field ===== */
     .slide--title { position: relative; }
     .slide--title::before {
       content: ""; position: absolute; inset: -10%;
@@ -144,101 +194,6 @@
       filter: blur(46px); z-index: 0;
     }
     .slide--title .slide-inner { position: relative; z-index: 1; }
-    .title-kicker {
-      font-size: 20px; letter-spacing: 0.16em; text-transform: uppercase;
-      color: rgba(255,255,255,0.72); margin-bottom: 34px;
-    }
-    .title-h1 { font-size: 132px; font-weight: 400; line-height: 1.0; letter-spacing: -0.03em; margin-bottom: 36px; }
-    .title-sub {
-      font-size: 32px; line-height: 1.5; color: rgba(255,255,255,0.86);
-      max-width: 1100px; margin-bottom: 50px;
-    }
-    .title-meta {
-      display: flex; flex-wrap: wrap; gap: 12px 16px; align-items: center;
-      font-size: 21px; color: rgba(255,255,255,0.78);
-    }
-    .title-meta span { display: inline-flex; align-items: center; }
-    .title-meta span:not(:last-child)::after { content: "·"; margin-left: 16px; opacity: 0.5; }
-
-    /* ===== Card grids ===== */
-    .grid { display: grid; gap: 24px; margin-top: 48px; }
-    .grid-3 { grid-template-columns: repeat(3, 1fr); }
-    .grid-4 { grid-template-columns: repeat(4, 1fr); }
-
-    .card {
-      background: var(--surface); border: 1px solid var(--line);
-      border-radius: var(--radius); padding: 38px 34px;
-    }
-    .card h3 { font-size: 28px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 14px; }
-    .card p { font-size: 20px; line-height: 1.55; color: var(--text-soft); }
-
-    /* ===== Stat / impact ===== */
-    .stat-num { display: block; font-size: 128px; line-height: 1; letter-spacing: -0.03em; margin-bottom: 22px; }
-    .stat p { font-size: 20px; line-height: 1.5; color: var(--text-soft); }
-
-    /* ===== Image plate ===== */
-    .plate {
-      background: var(--plate); border-radius: var(--radius);
-      display: flex; align-items: center; justify-content: center; padding: 44px;
-    }
-    .plate img { max-width: 100%; max-height: 560px; object-fit: contain; display: block; }
-
-    .split { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 56px; align-items: center; margin-top: 48px; }
-    .split .plate img { max-height: 600px; }
-    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .intro-grid img {
-      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
-      border-radius: var(--radius);
-      border: 1px solid var(--line);
-    }
-    .note-list { display: flex; flex-direction: column; gap: 30px; }
-    .note h4 { font-size: 26px; font-weight: 400; margin-bottom: 10px; }
-    .note p { font-size: 20px; line-height: 1.55; color: var(--text-soft); }
-
-    /* before / after image pair */
-    .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 48px; }
-    .ba figure { display: flex; flex-direction: column; gap: 18px; }
-    .ba .plate img { max-height: 500px; }
-    .ba figcaption { font-size: 20px; line-height: 1.5; color: var(--text-soft); display: flex; gap: 12px; align-items: baseline; }
-    .tag { display: inline-block; flex: 0 0 auto; font-size: 15px; padding: 3px 12px; border-radius: 999px; }
-    .tag--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
-    .tag--good { background: rgba(34,197,94,0.18); color: #22c55e; }
-
-    /* flow contrast cards */
-    .flowcards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 48px; }
-    .flowcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 40px 36px; }
-    .flowcard--good { border-color: rgba(34,197,94,0.28); }
-    .flowcard h4 { font-size: 26px; font-weight: 400; margin-bottom: 26px; letter-spacing: -0.01em; }
-    .flowcard ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
-    .flowcard li { font-size: 20px; color: var(--text-soft); display: flex; gap: 14px; align-items: baseline; }
-    .flow-ic { flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 13px; margin-top: 1px; }
-    .flow-ic--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
-    .flow-ic--good { background: rgba(34,197,94,0.18); color: #22c55e; }
-
-    /* research tool tiles */
-    .tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-top: 48px; }
-    .tool { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 28px; display: flex; flex-direction: column; gap: 16px; }
-    .tool-top { display: flex; align-items: center; gap: 14px; }
-    .tool-top img { width: 52px; height: 52px; border-radius: 10px; object-fit: cover; flex: 0 0 auto; }
-    .tool-top b { font-weight: 400; font-size: 22px; }
-    .tool-cat { font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
-    .tool-con { font-size: 20px; line-height: 1.5; color: var(--text-soft); margin-top: auto; }
-    .insight {
-      margin-top: 30px; padding: 30px 34px; border-radius: var(--radius);
-      background: rgba(30,120,255,0.07); border: 1px solid rgba(30,120,255,0.28);
-      font-size: 26px; line-height: 1.5; color: var(--text);
-    }
-
-    /* callout (constraints) */
-    .callout {
-      margin-top: 48px; padding: 34px 38px; border-radius: var(--radius);
-      background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--accent);
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px;
-    }
-    .callout .co-num { font-size: 60px; letter-spacing: -0.02em; line-height: 1; white-space: nowrap; }
-    .callout .co-lbl { font-size: 20px; color: var(--text-muted); margin-top: 10px; }
-
-    /* closing */
     .slide--end { position: relative; }
     .slide--end::before {
       content: ""; position: absolute; inset: -10%;
@@ -249,42 +204,195 @@
       filter: blur(50px); z-index: 0;
     }
     .slide--end .slide-inner { position: relative; z-index: 1; }
-    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 48px; }
+
+    /* Title slide: metadata columns up top, giant wordmark at the bottom,
+       description bottom-right. Size the wordmark and the sub max-width as a
+       PAIR — together they must clear the 1700px content width. */
+    .title-meta-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+      padding-top: 8px;
+    }
+    .tm { display: flex; flex-direction: column; gap: 10px; }
+    .tm-k {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: rgba(255,255,255,0.52);
+    }
+    .tm-v { font-size: 17.5px; line-height: 1.5; color: rgba(255,255,255,0.85); }
+    .title-bottom {
+      margin-top: auto;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 70px;
+    }
+    .title-kicker {
+      font-size: 14px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase;
+      color: rgba(255,255,255,0.72); margin-bottom: 30px;
+    }
+    .title-h1 {
+      font-size: 280px; font-weight: 500; line-height: 0.92; letter-spacing: -0.05em;
+      margin: 0 0 0 -13px; color: #fff; white-space: nowrap;
+    }
+    .title-sub {
+      font-size: 18px; font-weight: 400; line-height: 1.65; color: rgba(255,255,255,0.82);
+      max-width: 430px; margin-bottom: 14px; flex: 0 1 auto;
+    }
+
+    /* ===== Sign-off ===== */
+    .end-big {
+      font-size: 170px; font-weight: 500; line-height: 0.95; letter-spacing: -0.05em;
+      color: #fff; margin: 0 0 0 -8px;
+    }
+
+    /* ===== The one light slide (Reflection): ink on lavender ===== */
+    .slide--lav { background: var(--plate); color: var(--ink); }
+    .slide--lav .s-title { color: var(--ink); }
+    .slide--lav .s-body { color: var(--ink-soft); }
+    .slide--lav .highlight { color: var(--ink); }
+    .pull {
+      font-size: 46px; font-weight: 500; line-height: 1.25; letter-spacing: -0.025em;
+      color: var(--ink); max-width: 1480px;
+    }
+
+    /* ===== Stat rows (the editorial table): numeral left, annotation pinned
+       to a right column, full-width hairlines between. ===== */
+    .rows { width: 100%; }
+    .row {
+      display: grid; grid-template-columns: 560px 1fr; align-items: center;
+      border-top: 1px solid var(--line-2); padding: 20px 0;
+    }
+    .rows .row:last-of-type { border-bottom: 1px solid var(--line-2); }
+    .row-num {
+      font-size: 100px; font-weight: 500; line-height: 0.92; letter-spacing: -0.045em;
+      color: var(--text); font-variant-numeric: tabular-nums;
+    }
+    .row p {
+      font-size: 20px; font-weight: 400; line-height: 1.5; color: var(--text-soft);
+      max-width: 620px; justify-self: end; width: 100%;
+    }
+
+    /* ===== Editorial columns: each opens with its own rule, no boxes.
+       Indexed variant for argument triads; plain variant for fact bands. ===== */
+    .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; width: 100%; }
+    .cols--4 { grid-template-columns: repeat(4, 1fr); gap: 48px; }
+    .cols--2 { grid-template-columns: repeat(2, 1fr); gap: 56px; }
+    .col { border-top: 1px solid var(--line-3); padding-top: 26px; }
+    .col-idx {
+      display: block;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 40px;
+      font-variant-numeric: tabular-nums;
+    }
+    .col h3 { font-size: 29px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 14px; color: var(--text); }
+    .col p { font-size: 18.5px; font-weight: 400; line-height: 1.55; color: var(--text-soft); }
+    .col-cat {
+      display: block; font-size: 13px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-muted); margin: -6px 0 14px;
+    }
+    /* fact band (the constraints): big value + small label, no index */
+    .col-num {
+      font-size: 64px; font-weight: 500; line-height: 1; letter-spacing: -0.03em;
+      color: var(--text); white-space: nowrap; margin-bottom: 14px;
+    }
+    /* checklist columns (the user flow) */
+    .col h4 { font-size: 24px; font-weight: 500; letter-spacing: -0.015em; margin-bottom: 24px; color: var(--text); }
+    .col ul { list-style: none; display: flex; flex-direction: column; gap: 16px; }
+    .col li { font-size: 19px; color: var(--text-soft); display: flex; gap: 14px; align-items: baseline; }
+    .flow-ic { flex: 0 0 auto; width: 23px; height: 23px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; }
+    .flow-ic--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
+    .flow-ic--good { background: rgba(34,197,94,0.18); color: #22c55e; }
+
+    /* research payoff line under the tool columns */
+    .insight {
+      font-size: 25px; font-weight: 400; line-height: 1.55; color: var(--text-soft);
+      max-width: 1560px; margin-top: 48px;
+    }
+
+    /* ===== Image plate (the lavender mat) ===== */
+    .plate {
+      background: var(--plate); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center; padding: 44px;
+    }
+    .plate img { max-width: 100%; max-height: 560px; object-fit: contain; display: block; }
+    /* Media-forward slides that end in a single full plate: the image grows to
+       fill all remaining height, shrink-wrapped so the lavender mat stays
+       symmetric instead of stretching to full width. */
+    .slide-inner > .plate:last-child {
+      flex: 1 1 auto; min-height: 0; margin-top: 36px;
+      align-self: center; width: fit-content; max-width: 100%;
+      padding: 48px 64px;
+    }
+    .slide-inner > .plate:last-child img { max-height: 100%; }
+    /* Media slides trim only the bottom padding to hand the artifact more
+       room — never padding-top, which would break the header anchor. */
+    .slide--media { padding-bottom: 128px; }
+
+    /* Media slides: title left, annotation right, artifact filling the rest. */
+    .media-head {
+      display: grid; grid-template-columns: minmax(0, 1fr) 620px; gap: 80px;
+      align-items: start; margin-top: 40px;
+    }
+    .media-head .s-title { margin: 0; font-size: 46px; line-height: 1.12; letter-spacing: -0.025em; }
+    .media-head p { font-size: 19px; font-weight: 400; line-height: 1.6; color: var(--text-soft); margin: 0; padding-top: 5px; }
+
+    /* ===== Split layout (overview, pairing, hello) ===== */
+    .split { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 72px; align-items: center; margin-top: 24px; }
+    /* the split fills the frame between header and folio, so its content
+       centers vertically instead of pooling a void at the bottom */
+    .slide-inner > .split { flex: 1 1 0; min-height: 0; }
+    .split .plate { align-self: center; }
+    .split .plate img { max-height: 620px; }
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .intro-grid img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
+      border-radius: 8px; border: 1px solid var(--line-2);
+    }
+    /* annotation list inside a .split, as compact rule-topped rows */
+    .mini-list { display: flex; flex-direction: column; gap: 26px; }
+    .mini { border-top: 1px solid var(--line-2); padding-top: 18px; }
+    .mini h4 {
+      font-size: 22px; font-weight: 500; letter-spacing: -0.015em;
+      color: var(--text); margin-bottom: 8px;
+    }
+    .mini p { font-size: 17.5px; font-weight: 400; line-height: 1.55; color: var(--text-soft); }
+
+    /* ===== Before / after image pair ===== */
+    .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; width: 100%; }
+    .ba figure { display: flex; flex-direction: column; gap: 18px; }
+    .ba .plate img { max-height: 470px; }
+    .ba figcaption { font-size: 18px; line-height: 1.5; color: var(--text-soft); display: flex; gap: 12px; align-items: baseline; }
+    .tag { display: inline-block; flex: 0 0 auto; font-size: 14px; font-weight: 500; padding: 3px 12px; border-radius: 999px; }
+    .tag--bad { background: rgba(239,68,68,0.18); color: #ef4444; }
+    .tag--good { background: rgba(34,197,94,0.18); color: #22c55e; }
+
+    /* ===== CTAs ===== */
+    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; }
     .cta {
       display: inline-flex; align-items: center; gap: 11px;
-      padding: 18px 30px; border-radius: 999px; font-size: 21px;
-      border: 1px solid var(--line-2); text-decoration: none;
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      padding: 18px 30px; border-radius: 999px; font-size: 20px;
+      border: 1px solid rgba(255,255,255,0.28); text-decoration: none; color: var(--text);
+      background: rgba(255,255,255,0.05);
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
-    .cta:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.28); transform: translateY(-1px); }
+    .cta:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.45); color: #fff; }
     .cta--solid { background: var(--text); color: var(--bg); border-color: var(--text); }
-    .cta--solid:hover { background: #fff; }
+    .cta--solid:hover { background: #fff; color: var(--bg); }
     .cta svg { width: 20px; height: 20px; }
 
-    /* ===== Chrome: viewport-fixed overlay (NOT scaled) ===== */
-    /* Full-width gradient revealed by clip-path, so the 4-color ramp is never
-       squashed into a sliver on early slides. */
+    /* ===== Chrome: viewport-fixed overlay (NOT scaled), sits in the letterbox ===== */
     .deck-progress {
-      position: fixed; top: 0; left: 0; height: 4px; z-index: 40; width: 100%;
-      background: linear-gradient(90deg, #ffd600, #ff1e3c, #ff3cb0, #1e78ff);
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 40; width: 100%;
+      background: var(--accent);
       clip-path: inset(0 100% 0 0);
       transition: clip-path 0.5s cubic-bezier(0.76, 0, 0.24, 1);
     }
     .deck-brand {
-      position: fixed; top: 28px; left: 34px; z-index: 30;
+      position: fixed; top: 26px; left: 34px; z-index: 30;
       display: inline-flex; align-items: center; gap: 9px;
       font-size: 16px; color: var(--text-muted); text-decoration: none; transition: color 0.2s ease;
     }
     .deck-brand:hover { color: var(--text); }
-    .deck-counter {
-      position: fixed; top: 28px; right: 34px; z-index: 30;
-      font-size: 15px; letter-spacing: 0.08em; color: var(--text-muted); font-variant-numeric: tabular-nums;
-    }
-    .deck-counter b { color: var(--text); font-weight: 400; }
 
     .navbtn {
-      position: fixed; bottom: 28px; z-index: 30;
-      width: 48px; height: 48px; border-radius: 50%;
+      position: fixed; bottom: 24px; z-index: 30;
+      width: 46px; height: 46px; border-radius: 50%;
       background: rgba(26,26,26,0.72); border: 1px solid var(--line-2);
       color: var(--text); cursor: pointer; backdrop-filter: blur(10px);
       display: inline-flex; align-items: center; justify-content: center;
@@ -292,12 +400,12 @@
     }
     .navbtn:hover { background: rgba(40,40,40,0.85); border-color: rgba(255,255,255,0.3); }
     .navbtn:disabled { opacity: 0.28; cursor: default; }
-    .navbtn svg { width: 21px; height: 21px; }
-    .navbtn--prev { right: 92px; }
+    .navbtn svg { width: 20px; height: 20px; }
+    .navbtn--prev { right: 90px; }
     .navbtn--next { right: 34px; }
 
     .deck-hint {
-      position: fixed; bottom: 36px; left: 34px; z-index: 30;
+      position: fixed; bottom: 33px; left: 34px; z-index: 30;
       font-size: 14px; color: var(--text-muted);
       display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.5s ease;
     }
@@ -342,7 +450,7 @@
       padding: 16px;
       display: none; flex-direction: column; gap: 10px;
       pointer-events: auto; cursor: default;
-      font-size: 14px; line-height: 1.5; text-align: left;
+      font-size: 14px; line-height: 1.5; text-align: left; color: var(--text);
     }
     body.commenting .cmt-pop { display: flex; }
     .cmt-pop input, .cmt-pop textarea {
@@ -380,7 +488,7 @@
     .cmt-del:hover { color: #ef4444; }
 
     /* Comment chrome (viewport-fixed, unscaled) */
-    .navbtn--comment { right: 150px; }
+    .navbtn--comment { right: 146px; }
     .navbtn--comment.on { background: var(--text); color: var(--bg); border-color: var(--text); }
     .cmt-count {
       position: absolute; top: -5px; right: -5px;
@@ -392,7 +500,7 @@
     .cmt-count.show { display: block; }
     .navbtn--comment.on .cmt-count { background: var(--bg); color: var(--text); }
     .cmt-bar {
-      position: fixed; top: 24px; left: 50%; transform: translateX(-50%);
+      position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
       z-index: 35;
       display: none; align-items: center; gap: 14px;
       padding: 10px 18px; border-radius: 999px;
@@ -411,9 +519,8 @@
     @media (max-width: 640px) {
       .deck-hint { display: none; }
       .navbtn--comment, .cmt-bar { display: none !important; }
-      .deck-brand, .deck-counter { font-size: 13px; top: 20px; }
-      .deck-brand { left: 20px; } .deck-counter { right: 20px; }
-      .navbtn { bottom: 20px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 76px; }
+      .deck-brand { font-size: 13px; top: 18px; left: 20px; }
+      .navbtn { bottom: 18px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 74px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -429,7 +536,6 @@
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
     Chang Mou
   </a>
-  <div class="deck-counter"><b id="cur">01</b> / <span id="total">19</span></div>
 
   <div class="deck" id="deck">
     <div class="stage" id="stage">
@@ -438,13 +544,18 @@
         <!-- 1 · Title -->
         <section class="slide slide--title is-active">
           <div class="slide-inner">
-            <p class="title-kicker">Case Study</p>
-            <h1 class="title-h1">Litespace<br>Coffee Chat</h1>
-            <p class="title-sub">AI-matched pairings that take the social pressure out of meeting hybrid teammates.</p>
-            <div class="title-meta">
-              <span>Lead Product Designer</span>
-              <span>Litespace</span>
-              <span>Sep 2023</span>
+            <div class="title-meta-row">
+              <div class="tm"><span class="tm-k">Role</span><span class="tm-v">Lead Product Designer</span></div>
+              <div class="tm"><span class="tm-k">Company</span><span class="tm-v">Litespace</span></div>
+              <div class="tm"><span class="tm-k">Timeline</span><span class="tm-v">2 weeks · Sep 2023</span></div>
+              <div class="tm"><span class="tm-k">Type</span><span class="tm-v">0 to 1 feature</span></div>
+            </div>
+            <div class="title-bottom">
+              <div>
+                <p class="title-kicker">Case study · 2023</p>
+                <h1 class="title-h1">Coffee Chat</h1>
+              </div>
+              <p class="title-sub">AI-matched pairings that take the social pressure out of meeting hybrid teammates.</p>
             </div>
           </div>
         </section>
@@ -455,10 +566,10 @@
             <p class="s-label">The bet</p>
             <h2 class="s-title">People will meet a stranger if you take the pressure out</h2>
             <p class="s-body">Litespace sells engagement for hybrid and remote teams, and Coffee Chat was its 0-to-1 bet on the hardest part of that: getting two people who have never spoken to actually meet. Every tool on the market proved they will not do it over direct messages. <span class="highlight">So the question that decides the feature is not whether we can match people. It is whether they will say yes.</span></p>
-            <div class="grid grid-3">
-              <div class="stat"><span class="stat-num">63%</span><p>Users opted into Coffee Chat within the first month.</p></div>
-              <div class="stat"><span class="stat-num">200+</span><p>Chats generated in the first month through auto-matched pairings.</p></div>
-              <div class="stat"><span class="stat-num">$4.5M</span><p>Company valuation reached in the launch cycle that included Coffee Chat.</p></div>
+            <div class="rows push">
+              <div class="row"><span class="row-num">63%</span><p>Users opted into Coffee Chat within the first month.</p></div>
+              <div class="row"><span class="row-num">200+</span><p>Chats generated in the first month through auto-matched pairings.</p></div>
+              <div class="row"><span class="row-num">$4.5M</span><p>Company valuation reached in the launch cycle that included Coffee Chat.</p></div>
             </div>
           </div>
         </section>
@@ -469,8 +580,8 @@
             <p class="s-label">Overview</p>
             <div class="split">
               <div>
-                <h2 class="s-title">Bridging structured meetings and casual interactions</h2>
-                <p class="s-body">Litespace is an AI-powered enterprise platform that helps organizations improve engagement in hybrid and remote workplaces. Coffee Chat is a 0-to-1 feature designed to spark spontaneous, meaningful conversations across distributed teams.</p>
+                <h2 class="s-title s-title--compact" style="margin-top: 0;">Bridging structured meetings and casual interactions</h2>
+                <p class="s-body" style="font-size: 20px;">Litespace is an AI-powered enterprise platform that helps organizations improve engagement in hybrid and remote workplaces. Coffee Chat is a 0-to-1 feature designed to spark spontaneous, meaningful conversations across distributed teams.</p>
               </div>
               <div class="plate"><img src="images/coffeechat-card.png" alt="Coffee Chat in the Litespace app" decoding="async"></div>
             </div>
@@ -482,10 +593,22 @@
           <div class="slide-inner">
             <p class="s-label">Problem</p>
             <h2 class="s-title">Three things made this hard to design</h2>
-            <div class="grid grid-3">
-              <div class="card"><h3>Nobody wants to go first</h3><p>Nothing tells you why you were paired, so accepting the invite and starting the conversation both carry social pressure.</p></div>
-              <div class="card"><h3>A good pairing has to be inferred</h3><p>There is no rich profile to match on. The only signals available are lightweight: profiles, onboarding inputs, and shared Slack channels.</p></div>
-              <div class="card"><h3>Scheduling has two sides</h3><p>Both people have to land on one time, and every existing tool pushes that into direct messages, where message overload and drop-off follow.</p></div>
+            <div class="cols push">
+              <div class="col">
+                <span class="col-idx">01</span>
+                <h3>Nobody wants to go first</h3>
+                <p>Nothing tells you why you were paired, so accepting the invite and starting the conversation both carry social pressure.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">02</span>
+                <h3>A good pairing has to be inferred</h3>
+                <p>There is no rich profile to match on. The only signals available are lightweight: profiles, onboarding inputs, and shared Slack channels.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">03</span>
+                <h3>Scheduling has two sides</h3>
+                <p>Both people have to land on one time, and every existing tool pushes that into direct messages, where message overload and drop-off follow.</p>
+              </div>
             </div>
           </div>
         </section>
@@ -495,54 +618,58 @@
           <div class="slide-inner">
             <p class="s-label">Research · Competitive analysis</p>
             <h2 class="s-title">Why existing tools fall short</h2>
-            <div class="tools">
-              <div class="tool"><div class="tool-top"><img src="images/tool-donut.jpg" alt="Donut" decoding="async"><b>Donut</b></div><span class="tool-cat">Slack bot</span><p class="tool-con">Feels robotic and repetitive if not personalized.</p></div>
-              <div class="tool"><div class="tool-top"><img src="images/tool-watercooler.jpg" alt="Watercooler Trivia" decoding="async"><b>Watercooler Trivia</b></div><span class="tool-cat">Slack bot</span><p class="tool-con">Fun, but the connection stays shallow and can distract.</p></div>
-              <div class="tool"><div class="tool-top"><img src="images/tool-gather.jpg" alt="Gather" decoding="async"><b>Gather</b></div><span class="tool-cat">Virtual space</span><p class="tool-con">High presence, but needs onboarding and feels game-like.</p></div>
-              <div class="tool"><div class="tool-top"><img src="images/tool-focusmate.jpg" alt="Focusmate" decoding="async"><b>Focusmate</b></div><span class="tool-cat">Co-working</span><p class="tool-con">Built for deep individual focus, not social interaction.</p></div>
+            <div class="push">
+              <div class="cols cols--4">
+                <div class="col"><span class="col-idx">01</span><h3>Donut</h3><span class="col-cat">Slack bot</span><p>Feels robotic and repetitive if not personalized.</p></div>
+                <div class="col"><span class="col-idx">02</span><h3>Watercooler Trivia</h3><span class="col-cat">Slack bot</span><p>Fun, but the connection stays shallow and can distract.</p></div>
+                <div class="col"><span class="col-idx">03</span><h3>Gather</h3><span class="col-cat">Virtual space</span><p>High presence, but needs onboarding and feels game-like.</p></div>
+                <div class="col"><span class="col-idx">04</span><h3>Focusmate</h3><span class="col-cat">Co-working</span><p>Built for deep individual focus, not social interaction.</p></div>
+              </div>
+              <p class="insight">Few tools clearly communicate <span class="highlight">why</span> a pairing was made, or reduce the social pressure of starting the conversation. That gap shaped Coffee Chat: <span class="highlight">intentional pairing with a low-pressure experience, no direct-message coordination required.</span></p>
             </div>
-            <p class="insight">Few tools clearly communicate <span class="highlight">why</span> a pairing was made, or reduce the social pressure of starting the conversation. That gap shaped Coffee Chat: intentional pairing with a low-pressure experience, no direct-message coordination required.</p>
           </div>
         </section>
 
-        <!-- 7 · Constraints -->
+        <!-- 6 · Goals and constraints -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Goals and constraints</p>
             <h2 class="s-title">Launching ahead of the rebrand</h2>
             <p class="s-body">The rebrand from a green identity to a blue one was still in progress, and we had two weeks to design and ship. That scoped the MVP to one meaningful chat per week, <span class="highlight">and anything that added friction had to go.</span></p>
-            <div class="callout">
-              <div><div class="co-num">2 weeks</div><div class="co-lbl">to design and ship the feature</div></div>
-              <div><div class="co-num">1 chat / week</div><div class="co-lbl">the focused MVP promise</div></div>
-              <div><div class="co-num">Mid-rebrand</div><div class="co-lbl">green → blue identity in flight</div></div>
+            <div class="cols push">
+              <div class="col"><div class="col-num">2 weeks</div><p>to design and ship the feature</p></div>
+              <div class="col"><div class="col-num">1 chat / week</div><p>the focused MVP promise</p></div>
+              <div class="col"><div class="col-num">Mid-rebrand</div><p>green → blue identity in flight</p></div>
             </div>
           </div>
         </section>
 
-        <!-- 8 · Exploration 1 -->
+        <!-- 7 · Meaningful pairings -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Meaningful pairings</p>
-            <h2 class="s-title">Explain the match, and people accept it</h2>
             <div class="split">
               <div class="plate"><img src="images/coffee-pairing-card-slide.jpg" alt="AI-generated pairing card showing match reasoning" decoding="async"></div>
-              <div class="note-list">
-                <div class="note"><h4>AI-generated intro</h4><p>A warm profile summary grounded in each person's background, so users understand who they're meeting beyond a static bio.</p></div>
-                <div class="note"><h4>Explainable match</h4><p>Transparent reasons for the pairing give users the confidence to accept, instead of dismissing a random match.</p></div>
-                <div class="note"><h4>Powered by GPT-3</h4><p>I championed using the GPT-3 API to infer connections from lightweight signals like profiles, onboarding inputs, and shared Slack channels, then generate a plain-language reason for each match.</p></div>
+              <div>
+                <h2 class="s-title s-title--compact" style="margin-top: 0; margin-bottom: 40px;">Explain the match, and people accept it</h2>
+                <div class="mini-list">
+                  <div class="mini"><h4>AI-generated intro</h4><p>A warm profile summary grounded in each person's background, so users understand who they're meeting beyond a static bio.</p></div>
+                  <div class="mini"><h4>Explainable match</h4><p>Transparent reasons for the pairing give users the confidence to accept, instead of dismissing a random match.</p></div>
+                  <div class="mini"><h4>Powered by GPT-3</h4><p>I championed using the GPT-3 API to infer connections from lightweight signals like profiles, onboarding inputs, and shared Slack channels, then generate a plain-language reason for each match.</p></div>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- 9 · Exploration 2 -->
+        <!-- 8 · The user flow -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">The user flow</p>
             <h2 class="s-title">Remove the messaging, remove the drop-off</h2>
             <p class="s-body">Existing tools rely on back-and-forth DMs that create friction and drop-offs. Coffee Chat removes messaging entirely, replacing it with default states, automated scheduling, and clear fallback paths.</p>
-            <div class="flowcards">
-              <div class="flowcard">
+            <div class="cols cols--2 push">
+              <div class="col">
                 <h4>Existing coffee-chat tools</h4>
                 <ul>
                   <li><span class="flow-ic flow-ic--bad">✕</span> Manual scheduling</li>
@@ -550,7 +677,7 @@
                   <li><span class="flow-ic flow-ic--bad">✕</span> High drop-off</li>
                 </ul>
               </div>
-              <div class="flowcard flowcard--good">
+              <div class="col">
                 <h4>Our Coffee Chat flow</h4>
                 <ul>
                   <li><span class="flow-ic flow-ic--good">✓</span> Automated pairing and scheduling</li>
@@ -562,12 +689,12 @@
           </div>
         </section>
 
-        <!-- 10 · Iteration 1 -->
+        <!-- 9 · What testing changed 1 -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">What testing changed</p>
             <h2 class="s-title">Simplifying the interface</h2>
-            <div class="ba">
+            <div class="ba push">
               <figure>
                 <div class="plate"><img src="images/onewidget.png" alt="Before: one multi-functional widget" decoding="async"></div>
                 <figcaption><span class="tag tag--bad">Before</span><span>One multi-functional widget. High cognitive load in user testing.</span></figcaption>
@@ -580,12 +707,12 @@
           </div>
         </section>
 
-        <!-- 11 · Iteration 2 -->
+        <!-- 10 · What testing changed 2 -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">What testing changed</p>
             <h2 class="s-title">Optimizing meeting-format selection</h2>
-            <div class="ba">
+            <div class="ba push">
               <figure>
                 <div class="plate"><img src="images/iteration2-before.png" alt="Before: virtual or in-person selection" decoding="async"></div>
                 <figcaption><span class="tag tag--bad">Before</span><span>Choosing virtual or in-person caused delays and confusion.</span></figcaption>
@@ -598,73 +725,85 @@
           </div>
         </section>
 
-        <!-- 12 · Final: seamless scheduling -->
-        <section class="slide">
+        <!-- 11 · Final: seamless scheduling -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final Design · 1 of 5</p>
-            <h2 class="s-title">Scheduling with contextual matchmaking</h2>
-            <p class="s-body">Coffee Chat auto-pairs users each week based on Google Calendar availability. Matches carry shared interests and suggested topics, and confirmation adds a Meet link to both calendars.</p>
+            <div class="media-head">
+              <h2 class="s-title">Scheduling with contextual matchmaking</h2>
+              <p>Coffee Chat auto-pairs users each week based on Google Calendar availability. Matches carry shared interests and suggested topics, and confirmation adds a Meet link to both calendars.</p>
+            </div>
             <div class="plate"><img src="images/coffeefinal1.png" alt="Seamless scheduling with contextual matchmaking" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 13 · Final: handling declines -->
-        <section class="slide">
+        <!-- 12 · Final: handling declines -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final Design · 2 of 5</p>
-            <h2 class="s-title">Handling chat declines without friction</h2>
-            <p class="s-body">If either person declines, both see a notification. No reason is required. Their next chat is simply scheduled for the following cycle.</p>
+            <div class="media-head">
+              <h2 class="s-title">Handling chat declines without friction</h2>
+              <p>If either person declines, both see a notification. No reason is required. Their next chat is simply scheduled for the following cycle.</p>
+            </div>
             <div class="plate"><img src="images/handling-declines.png" alt="Handling chat declines without friction" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 14 · Final: flexible scheduling -->
-        <section class="slide">
+        <!-- 13 · Final: flexible scheduling -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final Design · 3 of 5</p>
-            <h2 class="s-title">Rescheduling from recommended slots</h2>
-            <p class="s-body">To reschedule, users pick from alternative slots automatically recommended from both people's availability. Pre-selected options keep it quick.</p>
+            <div class="media-head">
+              <h2 class="s-title">Rescheduling from recommended slots</h2>
+              <p>To reschedule, users pick from alternative slots automatically recommended from both people's availability. Pre-selected options keep it quick.</p>
+            </div>
             <div class="plate"><img src="images/Flexible1.png" alt="Reschedule with recommended time slots" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 15 · Final: review proposed times -->
-        <section class="slide">
+        <!-- 14 · Final: review proposed times -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final Design · 4 of 5</p>
-            <h2 class="s-title">Reviewing the other person's proposed times</h2>
-            <p class="s-body">If the other person proposes new times, users pick the one that works for both. No DMs, no coordination thread.</p>
+            <div class="media-head">
+              <h2 class="s-title">Reviewing the other person's proposed times</h2>
+              <p>If the other person proposes new times, users pick the one that works for both. No DMs, no coordination thread.</p>
+            </div>
             <div class="plate"><img src="images/Flexible2.png" alt="Review and select proposed times" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 16 · Final: propose own availability -->
-        <section class="slide">
+        <!-- 15 · Final: propose own availability -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final Design · 5 of 5</p>
-            <h2 class="s-title">Proposing your own availability</h2>
-            <p class="s-body">If none of the suggested times work, users propose their own availability for the other person to review, so scheduling never hits a dead end.</p>
+            <div class="media-head">
+              <h2 class="s-title">Proposing your own availability</h2>
+              <p>If none of the suggested times work, users propose their own availability for the other person to review, so scheduling never hits a dead end.</p>
+            </div>
             <div class="plate"><img src="images/Flexible3.png" alt="Propose your own availability" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 17 · Design System -->
-        <section class="slide">
+        <!-- 16 · Design System -->
+        <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design System</p>
-            <h2 class="s-title">Building the atomic foundations of the rebrand</h2>
-            <p class="s-body">I partnered with another designer to build the atomic foundations of the new identity, defining color tokens and typography. I also created the molecule-level components on top of them: buttons, badges, alerts, and cards.</p>
+            <div class="media-head">
+              <h2 class="s-title">Building the atomic foundations of the rebrand</h2>
+              <p>I partnered with another designer to build the atomic foundations of the new identity, defining color tokens and typography. I also created the molecule-level components on top of them: buttons, badges, alerts, and cards.</p>
+            </div>
             <div class="plate"><img src="images/coffeedesignsystem.png" alt="New identity design system" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 18 · Reflection -->
-        <section class="slide">
+        <!-- 17 · Reflection (the one light slide) -->
+        <section class="slide slide--lav">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
             <h2 class="s-title">What I learned</h2>
-            <p class="s-body">Designing Coffee Chat mid-rebrand taught me to design for the identity that was coming, not the one being retired.</p>
             <p class="s-body">With only two weeks, I focused the MVP on one meaningful weekly pairing and removed anything that added friction. Working with early AI pairing logic showed me how contextual signals shape user trust.</p>
+            <p class="pull push">Designing Coffee Chat mid-rebrand taught me to design for the identity that was coming, not the one being retired.</p>
           </div>
         </section>
 
@@ -674,9 +813,9 @@
             <p class="s-label">Hello</p>
             <div class="split">
               <div>
-                <h2 class="s-title">I'm Chang Mou</h2>
-                <p class="s-body">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
-                <p class="s-body">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
+                <h2 class="s-title s-title--compact" style="margin-top: 0;">I'm Chang Mou</h2>
+                <p class="s-body" style="font-size: 20px;">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
+                <p class="s-body" style="font-size: 20px;">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
               </div>
               <div class="intro-grid">
                 <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
@@ -692,12 +831,14 @@
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
-            <h2 class="s-title">See it in full</h2>
-            <div class="cta-row">
-              <a class="cta cta--solid" href="coffee.html">View the full case study
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-              </a>
-              <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+            <div class="push">
+              <h2 class="end-big">See it in full</h2>
+              <div class="cta-row" style="margin-top: 56px;">
+                <a class="cta cta--solid" href="coffee.html">View the full case study
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </a>
+                <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+              </div>
             </div>
           </div>
         </section>
@@ -739,20 +880,26 @@
       const total = slides.length;
       const SLIDE_W = 1920, SLIDE_H = 1080;
       const progress = document.getElementById('progress');
-      const curEl = document.getElementById('cur');
-      const totalEl = document.getElementById('total');
       const prevBtn = document.getElementById('prev');
       const nextBtn = document.getElementById('next');
       const hint = document.getElementById('hint');
       const pad = (n) => String(n).padStart(2, '0');
 
-      totalEl.textContent = pad(total);
+      // The folio: every slide closes with a rule and its own page number,
+      // like a printed publication. Injected here so the markup stays clean;
+      // the numbers are static per slide, so render() never touches them.
+      slides.forEach((s, i) => {
+        const f = document.createElement('div');
+        f.className = 'page-foot';
+        f.innerHTML = '<span>A case study by Chang Mou</span><b>' + pad(i + 1) + ' / ' + pad(total) + '</b>';
+        s.appendChild(f);
+      });
 
       // Scale the fixed 1920×1080 stage to fit the viewport (letterboxed).
+      // The lane is 160px so the fixed chrome (brand top, nav circles bottom)
+      // never sits on top of the in-slide folio at any window size.
       function fit() {
-        // Reserve a 76px chrome lane (brand row top, nav circles bottom) so the
-        // fixed chrome never sits on top of stage content at any window size.
-        const s = Math.min(window.innerWidth / SLIDE_W, (window.innerHeight - 76) / SLIDE_H);
+        const s = Math.min(window.innerWidth / SLIDE_W, (window.innerHeight - 160) / SLIDE_H);
         stage.style.setProperty('--scale', s);
       }
       window.addEventListener('resize', fit, { passive: true });
@@ -765,7 +912,6 @@
       function render() {
         track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
         progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
-        curEl.textContent = pad(index + 1);
         prevBtn.disabled = index === 0;
         nextBtn.disabled = index === total - 1;
         slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
