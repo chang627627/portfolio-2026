@@ -4,7 +4,7 @@
     {
       "name": "portfolio",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["/tmp/portfolio/serve.py"],
+      "runtimeArgs": [".claude/serve.py"],
       "port": 8888,
       "autoPort": true
     }

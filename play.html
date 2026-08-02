@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=224">
+  <link rel="stylesheet" href="style.css?v=225">
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -356,6 +356,13 @@
       !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const bigTextEl = document.querySelector('.footer-big-text');
     let cursorX = null;
+
+    // The stylesheet eases .letter opacity over 0.3s. This loop writes that
+    // same property every frame, so the transition would retarget forever and
+    // render a ~150ms-lagged smear instead of the value computed — and since
+    // textShadow is NOT in the transition list, the bloom would run ahead of
+    // the glow it is paired with. Same fix, same reason, as the scroll-CTA.
+    letters.forEach((l) => { l.style.transition = 'none'; });
 
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
       footerEl.addEventListener('mousemove', (e) => {

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=224">
+  <link rel="stylesheet" href="style.css?v=225">
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -310,6 +310,13 @@
     const bigTextEl = document.querySelector('.footer-big-text');
     let cursorX = null;
 
+    // The stylesheet eases .letter opacity over 0.3s. This loop writes that
+    // same property every frame, so the transition would retarget forever and
+    // render a ~150ms-lagged smear instead of the value computed — and since
+    // textShadow is NOT in the transition list, the bloom would run ahead of
+    // the glow it is paired with. Same fix, same reason, as the scroll-CTA.
+    letters.forEach((l) => { l.style.transition = 'none'; });
+
     if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
       footerEl.addEventListener('mousemove', (e) => {
         // Only treat the cursor as a light source when it is actually over
@@ -500,6 +507,8 @@
     }
   }
 
+  const deckEl = document.querySelector('.deck') || track;
+
   function tick(now) {
     const dt = lastTime ? (now - lastTime) / 1000 : 0;
     lastTime = now;
@@ -523,7 +532,20 @@
 
     wrap();
     paintCards();
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
+  }
+
+  // Gate the loop to the deck being on screen. About is a long page — a
+  // visitor reading Testimonials 4000px below was paying for 60fps of
+  // scrollLeft writes and 24 getBoundingClientRect calls per frame. Every
+  // other rAF on the site is IntersectionObserver-gated; this was the one
+  // that never got it.
+  let rafId = null;
+  function deckStart() {
+    if (rafId === null) { lastTime = 0; rafId = requestAnimationFrame(tick); }
+  }
+  function deckStop() {
+    if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
   }
 
   // track the cursor globally for the per-frame hover tilt (fine pointers only)
@@ -597,7 +619,13 @@
     paintCards();
     track.classList.add('is-ready');
     if (reducedMotion) return; // static layout via CSS @media
-    requestAnimationFrame(tick);
+    new IntersectionObserver(
+      // Read the LAST entry, not es[0]: a fast scroll can batch several
+      // entries into one callback, and es[0] is the oldest — acting on it
+      // leaves the loop in the wrong state until the next crossing.
+      (es) => { es[es.length - 1].isIntersecting ? deckStart() : deckStop(); },
+      { rootMargin: '200px 0px' }
+    ).observe(deckEl);
   }
 
   // images need to be sized before measure() — wait one frame after load

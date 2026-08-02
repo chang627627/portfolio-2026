@@ -41,6 +41,14 @@ html {
   overflow-x: hidden;
 }
 
+/* Full-viewport animated scrolling is the largest motion on the site; a
+   reduced-motion visitor must not be flung through thousands of pixels.
+   NOTE: the case studies also pass behavior:'smooth' in JS, which overrides
+   this property — those call sites branch on the same query. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 body {
   font-family: 'Neue Montreal', -apple-system, sans-serif;
   background: var(--bg);
@@ -158,8 +166,10 @@ nav::before {
   transition-delay: var(--d, 0s);
 }
 
-.logo:hover span {
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .logo:hover span {
+    transform: translateY(-2px);
+  }
 }
 
 .nav-links {
@@ -650,8 +660,10 @@ nav::before {
   transition: transform var(--dur-base) var(--ease-out);
 }
 
-.status-tag:hover .arrow {
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .status-tag:hover .arrow {
+    transform: translate(2px, -2px);
+  }
 }
 
 .status-dot {
@@ -1198,7 +1210,9 @@ nav::before {
   border-radius: var(--radius);
   background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.06), transparent 60%);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  /* answers on the same clock as the card's border + shadow — one hover
+     should not resolve on two different timings */
+  transition: opacity var(--dur-base) var(--ease-out);
   pointer-events: none;
   z-index: 1;
 }
@@ -1807,8 +1821,10 @@ footer {
   transition: transform 0.2s;
 }
 
-.footer-links a:hover .arrow {
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .footer-links a:hover .arrow {
+    transform: translate(2px, -2px);
+  }
 }
 
 .footer-copy {
@@ -3937,8 +3953,10 @@ footer {
   transition: transform 0.2s;
 }
 
-.play-link:hover .arrow {
-  transform: translate(2px, -2px);
+@media (hover: hover) {
+  .play-link:hover .arrow {
+    transform: translate(2px, -2px);
+  }
 }
 
 /* Carousel */
