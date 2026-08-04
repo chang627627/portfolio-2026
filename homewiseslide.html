@@ -822,7 +822,7 @@
               <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, and that one scope goes out to every contractor, so everyone quotes the exact same job and you never repeat yourself on the phone.</p>
             </div>
             <div class="clip">
-              <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none"></video>
+              <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-scope-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
             </div>
           </div>
@@ -837,7 +837,7 @@
               <p>A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
             </div>
             <div class="clip">
-              <video src="images/homewise-match.mp4" data-clip loop muted playsinline preload="none"></video>
+              <video src="images/homewise-match.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-match-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
             </div>
           </div>
@@ -852,7 +852,7 @@
               <p>Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
             </div>
             <div class="clip">
-              <video src="images/homewise-compare.mp4" data-clip loop muted playsinline preload="none"></video>
+              <video src="images/homewise-compare.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-compare-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
             </div>
           </div>
@@ -867,7 +867,7 @@
               <p>Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
             </div>
             <div class="clip">
-              <video src="images/homewise-track.mp4" data-clip loop muted playsinline preload="none"></video>
+              <video src="images/homewise-track.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-track-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
             </div>
           </div>
@@ -899,7 +899,7 @@
               <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter.</p>
             </div>
             <div class="clip">
-              <video src="images/homewise-hearth.mp4" data-clip loop muted playsinline preload="none"></video>
+              <video src="images/homewise-hearth.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-hearth-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
             </div>
           </div>
@@ -1051,9 +1051,15 @@
             }
           });
         });
-        const nx = slides[index + 1];
-        if (nx) nx.querySelectorAll('video[data-clip]').forEach(v => {
-          if (v.preload === 'none') v.preload = 'auto';
+        // Warm the next TWO slides, not one. These clips are 6-24MB and only
+        // begin downloading when preload flips off 'none', so a single-slide
+        // lookahead left an arrival with nothing buffered. The poster covers
+        // the gap visually; this shortens it.
+        [1, 2].forEach(step => {
+          const nx = slides[index + step];
+          if (nx) nx.querySelectorAll('video[data-clip]').forEach(v => {
+            if (v.preload === 'none') v.preload = 'auto';
+          });
         });
       }
 
