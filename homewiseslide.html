@@ -1039,26 +1039,50 @@
       // NOTE: an IntersectionObserver would be wrong here for the same reason
       // loading="lazy" is wrong in a deck — slides move by transform, so they
       // never leave the scroll viewport.
+      // Start the active slide's clip and KEEP it started. A play() issued
+      // while the element is still at readyState 0 (which is where
+      // preload="none" leaves it) can be aborted by the element's own
+      // resource selection, and the old code swallowed that in .catch() —
+      // so the slide sat on its poster, paused, looking broken. Flip preload
+      // first, then retry once there is actually data to play.
+      function playClip(v) {
+        if (v.preload !== 'auto') v.preload = 'auto';
+        const attempt = () => { if (v.paused) v.play().catch(() => {}); };
+        attempt();
+        if (v.readyState < 3) {
+          const onReady = () => {
+            v.removeEventListener('canplay', onReady);
+            // bail if the deck moved on while the data was arriving
+            if (slides[index] && slides[index].contains(v)) attempt();
+          };
+          v.addEventListener('canplay', onReady);
+        }
+      }
+
       function syncMedia() {
         slides.forEach((s, i) => {
           s.querySelectorAll('video').forEach(v => {
             const isLoop = v.hasAttribute('data-clip');
             if (i === index) {
-              if (isLoop) v.play().catch(() => {});
+              if (isLoop) playClip(v);
             } else {
               v.pause();
               if (isLoop) { try { v.currentTime = 0; } catch (e) {} }
             }
           });
         });
-        // Warm the next TWO slides, not one. These clips are 6-24MB and only
-        // begin downloading when preload flips off 'none', so a single-slide
-        // lookahead left an arrival with nothing buffered. The poster covers
-        // the gap visually; this shortens it.
-        [1, 2].forEach(step => {
-          const nx = slides[index + step];
-          if (nx) nx.querySelectorAll('video[data-clip]').forEach(v => {
-            if (v.preload === 'none') v.preload = 'auto';
+        // Keep a SLIDING WINDOW of at most the current slide + the next two.
+        // These clips are 6-24MB. preload used to be flipped to 'auto' on the
+        // way past and never flipped back, so by the end of the deck every
+        // clip (~119MB) was still pulling in the background and starving
+        // whatever you were actually trying to watch — which is what made the
+        // late slides crawl. Warming two ahead only works if the far ones are
+        // released again.
+        slides.forEach((s, i) => {
+          const near = i >= index && i <= index + 2;
+          s.querySelectorAll('video[data-clip]').forEach(v => {
+            if (near) { if (v.preload === 'none') v.preload = 'auto'; }
+            else if (v.preload === 'auto' && v.readyState < 4) v.preload = 'none';
           });
         });
       }
