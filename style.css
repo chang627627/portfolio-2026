@@ -331,14 +331,35 @@ nav::before {
    0%, so the hand-tuned warm/blue seam under headline line 1 is untouched. */
 @property --g2-lift { syntax: '<percentage>'; initial-value: 0%; inherits: false; }
 
+/* Electric-blue sublayers (2026-08-04, per user "make the blue more AI and
+   more dynamic" — differentiation from Lovable via the blue's CHARACTER and
+   motion, not the palette; their gradient is a flat static royal blue). Two
+   extra pools inside the blue region only: an azure core and a cyan glint,
+   driven by their own blueFlow animation at 9s against irisFlow's 13s — a
+   beat period of ~39s, so the composed field never visibly repeats. Both
+   pools stay at y >= 66%, entirely below the warm/blue seam. Same
+   coexistence rule as g2Lift: separate animation, separate properties. */
+@property --g2-azure-x { syntax: '<percentage>'; initial-value: 58%; inherits: false; }
+@property --g2-azure-y { syntax: '<percentage>'; initial-value: 72%; inherits: false; }
+@property --g2-cyan-x { syntax: '<percentage>'; initial-value: 40%; inherits: false; }
+@property --g2-cyan-y { syntax: '<percentage>'; initial-value: 84%; inherits: false; }
+
 .hero-orbs--g2 {
+  /* Layer order matters: azure + cyan sit ABOVE the broad blue base (later
+     in source = painted under, so they come before it) and BELOW the warm
+     stack — but since both live at y >= 66% they never touch the warm zone
+     anyway. Alphas are deliberately glint-level (0.5 / 0.32): they electrify
+     the blue field without teal-washing it. Both carry --g2-lift so the
+     scroll lag moves the whole field as one. */
   background:
     radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
     radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.85), transparent 60%),
     radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(255, 48, 176, 0.82), transparent 60%),
+    radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
+    radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
     radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
   filter: blur(32px); /* was 56px — closes the hero-vividness open thread; matches the footer's crispness */
-  animation: irisFlow 13s ease-in-out infinite;
+  animation: irisFlow 13s ease-in-out infinite, blueFlow 9s ease-in-out infinite;
 }
 
 /* --- Light lags the scroll (desktop, motion-safe) ---------------------
@@ -353,13 +374,17 @@ nav::before {
 @supports (animation-timeline: scroll()) {
   @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
     .hero-orbs--g2 {
-      animation-name: irisFlow, g2Lift;
-      animation-duration: 13s, auto;
-      animation-timing-function: ease-in-out, linear;
-      animation-iteration-count: infinite, 1;
-      animation-fill-mode: none, both;
-      animation-timeline: auto, scroll(root block);
-      animation-range: normal, 0 100vh;
+      /* Three coexisting animations, each owning disjoint properties:
+         irisFlow (the 4 original pools + scale-breathe), blueFlow (the
+         azure/cyan sublayers), g2Lift (the scroll offset). All longhand
+         lists must stay index-aligned. */
+      animation-name: irisFlow, blueFlow, g2Lift;
+      animation-duration: 13s, 9s, auto;
+      animation-timing-function: ease-in-out, ease-in-out, linear;
+      animation-iteration-count: infinite, infinite, 1;
+      animation-fill-mode: none, none, both;
+      animation-timeline: auto, auto, scroll(root block);
+      animation-range: normal, normal, 0 100vh;
     }
   }
 }
@@ -368,6 +393,18 @@ nav::before {
   to {
     --g2-lift: 30%;
   }
+}
+
+/* The electric sublayers' own drift. 9s against irisFlow's 13s: the two
+   only re-align every ~39s, so the blue field reads as continuously alive
+   rather than looping. Travel is wider than irisFlow's (azure ±13%, cyan
+   ±14% horizontal) — the "more dynamic" half of the request — but Y stays
+   within 66–90% so the seam under headline line 1 never sees them. */
+@keyframes blueFlow {
+  0%, 100% { --g2-azure-x: 62%; --g2-azure-y: 70%; --g2-cyan-x: 34%; --g2-cyan-y: 86%; }
+  25%      { --g2-azure-x: 44%; --g2-azure-y: 76%; --g2-cyan-x: 55%; --g2-cyan-y: 78%; }
+  50%      { --g2-azure-x: 56%; --g2-azure-y: 82%; --g2-cyan-x: 62%; --g2-cyan-y: 88%; }
+  75%      { --g2-azure-x: 70%; --g2-azure-y: 74%; --g2-cyan-x: 40%; --g2-cyan-y: 80%; }
 }
 
 @keyframes irisFlow {
