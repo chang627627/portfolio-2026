@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=225">
+  <link rel="stylesheet" href="style.css?v=226">
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -379,6 +379,32 @@
     new IntersectionObserver((es) => { es[0].isIntersecting ? sweepStart() : sweepStop(); },
       { rootMargin: '80px' }).observe(footerEl);
   }
+</script>
+
+<!-- Bio scroll illumination: split the Background paragraphs into word spans
+     so each word can carry its own view() timeline (CSS in style.css,
+     .bio-word). Guards mirror the CSS gates exactly: no support or reduced
+     motion means the text is never touched and stays static --text-soft.
+     Element-children guard keeps this safe if the bio ever gains a link or
+     highlight span — such a paragraph is skipped whole rather than mangled. -->
+<script>
+(function () {
+  if (!(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'))) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.about-block p').forEach((p) => {
+    if (p.children.length) return;
+    const words = p.textContent.split(' ');
+    p.textContent = '';
+    words.forEach((w, i) => {
+      const s = document.createElement('span');
+      s.className = 'bio-word';
+      s.textContent = w;
+      p.appendChild(s);
+      // spaces stay bare text nodes so wrapping behaves as plain text
+      if (i < words.length - 1) p.appendChild(document.createTextNode(' '));
+    });
+  });
+})();
 </script>
 
 <script>

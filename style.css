@@ -4569,6 +4569,49 @@ footer {
   }
 }
 
+/* --- About bio scroll illumination (2026-08-04) ---
+   The Background paragraphs brighten from --text-soft toward --text as they
+   rise past the lower half of the viewport — the site's "move the light that
+   is already there" grammar applied to type, scrubbed and fully reversible.
+   ONE surface by design (like the deck's one light slide): bio only, never
+   case-study body copy, where dim-until-reached text is friction.
+   .bio-word spans are injected by about.html's script; if that JS never runs
+   the paragraphs simply keep their static --text-soft — same graceful
+   direction as card-rise. Each word carries its OWN anonymous view()
+   timeline: same-line words share identical progress, so the effect reads as
+   a line-by-line sweep without any per-word delay bookkeeping. inline-block
+   so the spans generate real boxes for view() (inline boxes don't reliably
+   carry view timelines) — spaces stay bare text nodes so wrapping behaves as
+   plain text, the hero-scramble precedent. Verified: no ancestor of
+   .about-block p sets non-visible overflow, so the anonymous view() binds to
+   the viewport (the --card-view trap does not apply here). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .bio-word {
+      display: inline-block;
+      animation-name: bio-illuminate;
+      animation-duration: auto; /* longhands, same trap as card-rise */
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      /* Ramp window 18%→45% of the word's viewport traversal: fully soft in
+         the lower fifth of the screen, fully lit by the ~55% reading line.
+         The narrow window is the point — a cover 0% start was measured
+         spreading each word's ramp over ~460px of scroll, which blurred the
+         whole bio into one near-invisible gradient (the documented "too
+         subliminal to earn its place" failure mode). At ~27% the ramp is
+         roughly the bio block's own height, so the sweep is visible: the
+         line being read is white while the paragraph's tail is still soft. */
+      animation-range: cover 18% cover 45%;
+    }
+  }
+}
+
+@keyframes bio-illuminate {
+  from { color: var(--text-soft); }
+  to   { color: var(--text); }
+}
+
 /* (Film grain over the gradients was tried here 2026-06-11 and removed —
    gray noise over near-black reads as glitch/static, not texture.) */
 
