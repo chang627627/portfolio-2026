@@ -2120,6 +2120,95 @@ footer {
   margin-bottom: 0;
 }
 
+/* --- How-I-use-AI staged flow (About only, 2026-08-04) ---
+   Three stage cards with arrow connectors: Research -> Brainstorm ->
+   Prototype, each listing its tools with a white monochrome mark. Cards
+   use the site's standard surface/hairline material; the marks stay
+   near-white so the chrome stays neutral (no brand colors). Descriptions
+   are .ai-stage-desc DIVs so the bio-word splitter (.about-block p)
+   never touches card copy. Mobile stacks the cards and turns the arrows
+   downward. */
+.ai-flow {
+  display: flex;
+  align-items: stretch;
+  /* System values, not ad hoc: 24px matches .impact-grid / .voc-quotes, and
+     32px is the canonical prose-to-component gap (.project-content sets it on
+     16 components). All prose sits ABOVE the diagram (merged 2026-08-04 per
+     user "put the text together"), so the flow is the block's last element:
+     no bottom margin, .about-block's own 96px takes over. */
+  gap: 24px;
+  margin: 32px 0 0;
+}
+
+.ai-stage {
+  flex: 1;
+  /* Exactly .problem-card / .impact-card / .testimonial-card: surface fill,
+     shared radius, 32px padding, and NO border — the content-card family on
+     this site is borderless; only chrome cards (.project-card) carry a stroke. */
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+
+.ai-stage-label {
+  display: block;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.ai-stage-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-muted);
+  /* 12px under the label mirrors .problem-card h3's margin-bottom */
+  margin: 12px 0 20px;
+}
+
+.ai-tools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 14px;
+  color: var(--text-soft);
+}
+
+.ai-tool img {
+  width: 16px;
+  height: 16px;
+  display: block;
+  opacity: 0.92;
+}
+
+.ai-arrow {
+  align-self: center;
+  color: var(--text-muted);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .ai-flow {
+    flex-direction: column;
+    /* 16px stacked, not the desktop 24px: the arrow rotates into the gap
+       here, so 24 + arrow + 24 would read as a break between sections
+       rather than a sequence. */
+    gap: 16px;
+  }
+  .ai-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+    margin: -2px 0;
+  }
+}
+
 /* Skills + Tools side by side on desktop (break the single-column wall) */
 .about-cols {
   display: grid;

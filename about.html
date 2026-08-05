@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=227">
+  <link rel="stylesheet" href="style.css?v=228">
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -95,6 +95,46 @@
       <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
       <p>I run my own research, reframe the problem when the obvious framing is wrong, and move fast through the messy middle. I work in Figma, and when a project calls for it, I build the prototype in code instead of mockups, so the team gets a working build to extend, not a spec to translate.</p>
       <p>Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. Good design starts with a good life.</p>
+    </div>
+    <!-- How I use AI: the direct answer to the question hiring forms ask,
+         staged Research -> Brainstorm -> Prototype per user (2026-08-04),
+         high level on purpose: no case-study names. Tool marks are white
+         monochrome: 4 LobeHub SVGs recolored #F0F0F0 + a Granola silhouette
+         extracted from their favicon glyph (no vector of it exists anywhere).
+         Stage descriptions are DIVs, not <p>, on purpose — the bio-word
+         illumination splitter targets .about-block p and card copy must stay
+         static. Mercor stays out (NDA). -->
+    <div class="about-block">
+      <div class="section-meta"><span class="section-label-text">How I use AI</span></div>
+      <p>AI's first pass drifts toward generic, so it never gets the last word. It runs the busywork; framing the problem, choosing the direction, and deciding what ships stay with me. The rule I work by is the one my products ship with: a human stays in the loop. AI accelerates everything and decides nothing. The judgment is the job.</p>
+      <div class="ai-flow">
+        <div class="ai-stage">
+          <span class="ai-stage-label">Research</span>
+          <div class="ai-stage-desc">Mapping the domain and synthesizing interviews</div>
+          <div class="ai-tools">
+            <span class="ai-tool"><img src="images/ai-perplexity.svg" alt="Perplexity">Perplexity</span>
+            <span class="ai-tool"><img src="images/ai-granola.png" alt="Granola">Granola</span>
+          </div>
+        </div>
+        <span class="ai-arrow" aria-hidden="true">&rarr;</span>
+        <div class="ai-stage">
+          <span class="ai-stage-label">Brainstorm</span>
+          <div class="ai-stage-desc">Widening directions and pressure-testing the framing</div>
+          <div class="ai-tools">
+            <span class="ai-tool"><img src="images/ai-openai.svg" alt="ChatGPT">ChatGPT</span>
+            <span class="ai-tool"><img src="images/ai-claude.svg" alt="Claude">Claude</span>
+          </div>
+        </div>
+        <span class="ai-arrow" aria-hidden="true">&rarr;</span>
+        <div class="ai-stage">
+          <span class="ai-stage-label">Prototype</span>
+          <div class="ai-stage-desc">Turning the strongest direction into a working build to validate it</div>
+          <div class="ai-tools">
+            <span class="ai-tool"><img src="images/ai-claude.svg" alt="Claude Code">Claude Code</span>
+            <span class="ai-tool"><img src="images/ai-figma.svg" alt="Figma Make">Figma Make</span>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Experience</span></div>

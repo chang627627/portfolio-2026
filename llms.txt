@@ -10,7 +10,7 @@ Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang
 
 - [Work](https://www.chang-mou.com/): selected work, eight projects
 - [Play](https://www.chang-mou.com/play.html): experiments, AI art, films, and UI explorations
-- [About](https://www.chang-mou.com/about.html): background, experience, education, recognition
+- [About](https://www.chang-mou.com/about.html): background, how I use AI, experience, education, recognition
 
 ## Selected Work
 
@@ -28,3 +28,4 @@ Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang
 - The portfolio site itself is a work sample: hand-coded static HTML/CSS/JS, dark mode, custom interactions, no framework.
 - Resume (PDF): https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view
 - An AI chat widget on the site answers questions about Chang's work in first person.
+- How Chang uses AI, by stage: Research with Perplexity and Granola (domain mapping, interview synthesis); Brainstorm with ChatGPT and Claude (widening directions, pressure-testing framing); Prototype with Claude Code and Figma Make (turning the strongest direction into a working build to validate it; this site is hand-built with Claude Code). AI's first pass drifts toward generic, so it never gets the last word: a human stays in the loop, and the judgment stays with Chang.

@@ -92,6 +92,10 @@ Education:
 - Designlab UX Academy, Certificate in UX Design, Vancouver, Canada (Mar 2022 - Oct 2022)
 - Simon Fraser University, Bachelor of Science in Interactive Arts and Technology, Vancouver, Canada (Jan 2017 - Feb 2021)
 
+--- HOW I USE AI (a common recruiter question; the About page answers it with a staged diagram) ---
+
+AI's first pass drifts toward generic, so it never gets the last word. It runs the busywork; framing the problem, choosing the direction, and deciding what ships stay with me. By stage: RESEARCH with Perplexity (mapping the domain) and Granola (capturing and synthesizing interviews). BRAINSTORM with ChatGPT and Claude (widening directions, pressure-testing the framing). PROTOTYPE with Claude Code and Figma Make (turning the strongest direction into a working build to validate it; this portfolio site is hand-built with Claude Code, and this chat widget runs on Claude). The rule I work by is the one my products ship with: a human stays in the loop. AI accelerates everything and decides nothing; the judgment is the job.
+
 --- PORTFOLIO PROJECTS (what visitors see on this site) ---
 
 - New Craft Society (2026, newest, in active development): a home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. For designers who still believe the work matters. Live at newcraftsociety.com. I am both a designer on it and one of the product engineers building it.
