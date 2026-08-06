@@ -414,6 +414,19 @@
       width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
       border-radius: 8px; border: 1px solid var(--line-2);
     }
+    /* Live prototype embed: the Vite build in /coffee-agent, upscaled 1.08×
+       so its 14px UI type holds up at deck scale (500×700 app → 540×756 on
+       the canvas). The app window carries its own border and radius, so the
+       frame stays bare — a second stroke 8px out would read as a mistake. */
+    .agent-frame { width: 540px; height: 756px; justify-self: center; }
+    .agent-frame iframe {
+      width: 500px; height: 700px; border: 0; display: block;
+      transform: scale(1.08); transform-origin: top left;
+      border-radius: 9px; background: #f6f8fa;
+    }
+    .demo-note { font-size: 17.5px; line-height: 1.55; color: var(--text-muted); margin-top: 40px; }
+    .demo-note a { color: var(--text); text-decoration: underline; text-underline-offset: 3px; }
+
     /* annotation list inside a .split, as compact rule-topped rows */
     .mini-list { display: flex; flex-direction: column; gap: 26px; }
     .mini { border-top: 1px solid var(--line-2); padding-top: 18px; }
@@ -1039,7 +1052,38 @@
           </div>
         </section>
 
-        <!-- 20 · Sign-off -->
+        <!-- 20 · What I'd do differently (live prototype) -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">What I'd do differently</p>
+            <div class="split">
+              <div>
+                <h2 class="s-title">This time, the agent goes first</h2>
+                <p class="s-body" style="font-size: 20px;">In 2023 the answer was structure: pairing cards, mutual calendars, defaults that spared people the first move. Rebuilding it today, I would give that structure a voice. Luna opens with a match already lined up, and typing what you would rather do works as well as any button.</p>
+                <div class="mini-list" style="margin-top: 44px;">
+                  <div class="mini">
+                    <h4>A decision, not a questionnaire</h4>
+                    <p>Luna proposes first. You book it, move it, or swap in someone else. Nobody has to go first, which was the whole problem.</p>
+                  </div>
+                  <div class="mini">
+                    <h4>The reasons stay one tap away</h4>
+                    <p>Explain the match and people accept it held true in 2023. Here the why sits pinned under every proposal.</p>
+                  </div>
+                  <div class="mini">
+                    <h4>Feedback closes the loop</h4>
+                    <p>How the chat went shapes who Luna proposes next week. The screens never closed that loop.</p>
+                  </div>
+                </div>
+                <p class="demo-note">This is a working build, embedded live. Click through it, or <a href="coffee-agent/index.html" target="_blank" rel="noopener">open it full size</a>.</p>
+              </div>
+              <div class="agent-frame">
+                <iframe data-src="coffee-agent/index.html" title="Luna, a conversational rebuild of Coffee Chat"></iframe>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 21 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
@@ -1097,6 +1141,12 @@
       const hint = document.getElementById('hint');
       const pad = (n) => String(n).padStart(2, '0');
 
+      // The live prototype (slide "What I'd do differently") loads on arrival,
+      // not at deck load: its React bundle stays off the first paint, and the
+      // agent's opening script plays right as the viewer lands on it.
+      const demo = track.querySelector('iframe[data-src]');
+      const demoAt = demo ? slides.indexOf(demo.closest('.slide')) : -1;
+
       // The folio: every slide closes with a rule and its own page number,
       // like a printed publication. Injected here so the markup stays clean;
       // the numbers are static per slide, so render() never touches them.
@@ -1122,6 +1172,7 @@
       if (!isNaN(fromHash) && fromHash >= 1 && fromHash <= total) index = fromHash - 1;
 
       function render() {
+        if (demo && !demo.src && index === demoAt) demo.src = demo.dataset.src;
         track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
         progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
         prevBtn.disabled = index === 0;
