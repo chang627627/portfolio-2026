@@ -28,7 +28,7 @@ function useTypewriter(text: string, enabled: boolean) {
       index += 2;
       setShown(text.slice(0, index));
       if (index >= text.length) window.clearInterval(interval);
-    }, 16);
+    }, 24);
     return () => window.clearInterval(interval);
   }, [text, enabled]);
 

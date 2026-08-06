@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=228">
+  <link rel="stylesheet" href="style.css?v=229">
   <link rel="canonical" href="https://www.chang-mou.com/coffee.html">
   <script type="application/ld+json">
   {
@@ -83,6 +83,7 @@
     <a href="#final-deliverables" class="side-nav-link">Final Design</a>
     <a href="#design-system" class="side-nav-link">Design System</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
+    <a href="#rebuild" class="side-nav-link">What I'd do differently</a>
   </nav>
 
   <!-- Project Content -->
@@ -520,6 +521,25 @@
       <p>Every decision that made Coffee Chat work was a removal. The match is explained so no one has to ask why they were paired. There is no message thread to negotiate, the default answer is Going so nobody has to be the first to say yes, and declining needs no reason. What looked like a matching problem was really about deleting each moment where someone had to expose themselves socially. Designing it mid-rebrand taught me the same lesson at the system level: build tokens and components, not finished screens, because those are what survive when the ground moves.</p>
     </div>
 
+    <!-- What I'd do differently: the 2026 rebuild, embedded live. Desktop-only
+         (per user): a 500px chat window has no honest phone form, so the whole
+         section is hidden on mobile like Countersign's card. -->
+    <div id="rebuild" class="project-section project-section--desktop-only">
+      <p class="section-label">What I'd do differently</p>
+      <h2>This time, the agent goes first</h2>
+      <p>Coffee Chat solved the social barrier with structure: pairing cards, mutual calendars, careful defaults. That was the right call in 2023, and it is not how I would build it now. So I rebuilt the flow as a personal exploration: Luna, a conversational agent that opens with a match already lined up and the reasons pinned beneath it. Booking is one tap, and the rest is a conversation.</p>
+      <div class="deliverable">
+        <h4>Try it. This is the working build, not a video</h4>
+        <p>Book the chat, move it, swap the match, or tell Luna what you would rather do. If it can't help, it says so.</p>
+      </div>
+      <div class="agent-embed">
+        <iframe data-src="coffee-agent/index.html" title="Luna, a conversational rebuild of Coffee Chat"></iframe>
+        <button class="agent-restart" aria-label="Restart the prototype" title="Restart">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+      </div>
+    </div>
+
   </section>
 
   <!-- Back to Top -->
@@ -791,6 +811,35 @@
       footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // Live Luna prototype: load on approach, so the React bundle never costs
+  // the initial page load and the agent's opening script types out as the
+  // reader arrives. On mobile the embed is display:none, so it has no box,
+  // the observer never fires, and phones never download the bundle.
+  (function () {
+    var frame = document.querySelector('.agent-embed iframe[data-src]');
+    if (!frame) return;
+
+    // Wired before the IO-support check so the restart still works in the
+    // eager-load fallback path.
+    var restart = document.querySelector('.agent-restart');
+    if (restart) restart.addEventListener('click', function () {
+      if (!frame.src) { frame.src = frame.dataset.src; return; }
+      try { frame.contentWindow.location.reload(); }
+      catch (err) { frame.src = frame.dataset.src; }
+    });
+
+    if (!('IntersectionObserver' in window)) { frame.src = frame.dataset.src; return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        frame.src = frame.dataset.src;
+        io.disconnect();
+      }
+    }, { rootMargin: '200px 0px' });
+    io.observe(frame);
+  })();
 </script>
 
 <!-- Chat Widget -->

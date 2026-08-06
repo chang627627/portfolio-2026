@@ -114,11 +114,12 @@ export function ChatWindow() {
 
       if (step.kind === 'say') {
         setIsTyping(true);
-        await sleep(400);
+        await sleep(650);
         setIsTyping(false);
         push({ type: 'ai', content: step.text, stream: true });
-        // Matches the reveal rate in ChatMessage (2 chars every 16ms)
-        await sleep(Math.min(step.text.length * 8 + 250, 2200));
+        // Matches the reveal rate in ChatMessage (2 chars every 24ms),
+        // plus a beat to finish reading before the next message lands
+        await sleep(Math.min(step.text.length * 12 + 400, 3000));
       } else if (step.kind === 'card') {
         push({ type: 'card', cardType: step.cardType, content: step.content, matchId: step.matchId });
         await sleep(400);
@@ -373,7 +374,7 @@ export function ChatWindow() {
     'bg-white h-[32px] px-[11px] py-[6px] rounded-[4px] border border-[#d5dbe1] flex items-center justify-center gap-[4px] hover:bg-[#f6f8fa] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#635bff] focus-visible:ring-offset-2';
 
   return (
-    <div className="relative w-[500px] h-[700px] bg-white rounded-[8px] border border-[#d5dbe1] flex flex-col">
+    <div className="relative w-[500px] max-w-full h-[min(700px,100svh)] bg-white rounded-[8px] border border-[#d5dbe1] flex flex-col">
       {/* Header - Fixed */}
       <div className="bg-[#f6f8fa] h-[69px] rounded-t-[8px] border-b border-[#d5dbe1] flex items-center px-[21px] flex-shrink-0">
         <div className="flex items-center gap-[12px]">
@@ -384,13 +385,13 @@ export function ChatWindow() {
           </div>
           <div>
             <p className="font-['Inter'] font-medium text-[16px] text-[#041c33] leading-normal">Luna</p>
-            <p className="font-['Inter'] font-normal text-[14px] text-[#304050] leading-normal">Your Coffee Chat Assistant</p>
+            <p className="font-['Inter'] font-normal text-[14px] text-[#304050] leading-normal">Your Coffee Chat assistant</p>
           </div>
         </div>
       </div>
 
       {/* Messages Area - Scrollable */}
-      <div ref={scrollerRef} className="flex-1 overflow-y-auto p-[21px] pb-0">
+      <div ref={scrollerRef} className="flex-1 overflow-y-auto overscroll-contain p-[21px]">
         <div className="flex flex-col gap-[24px]">
           {/* Past chats */}
           <PastChats chats={history} />
@@ -659,7 +660,7 @@ export function ChatWindow() {
                     : 'bg-[#d5dbe1] cursor-not-allowed'
                 }`}
               >
-                <p className="font-['Inter'] font-medium text-[14px] text-white leading-[20px]">Confirm Time</p>
+                <p className="font-['Inter'] font-medium text-[14px] text-white leading-[20px]">Confirm time</p>
               </button>
 
               <button onClick={() => setShowManualInput(true)} className={secondaryButton}>
@@ -730,7 +731,7 @@ export function ChatWindow() {
             <div className="flex flex-col gap-[20px]">
               <div>
                 <p className="font-['Inter'] font-medium text-[16px] text-[#041c33] leading-normal mb-1">
-                  Add Your Availability
+                  Add your availability
                 </p>
                 <p className="font-['Inter'] font-normal text-[12px] text-[#304050] leading-normal">
                   Enter a time that works for you
@@ -786,7 +787,7 @@ export function ChatWindow() {
                       : 'bg-[#d5dbe1] cursor-not-allowed'
                   }`}
                 >
-                  <p className="font-['Inter'] font-medium text-[14px] text-white leading-[20px]">Submit Availability</p>
+                  <p className="font-['Inter'] font-medium text-[14px] text-white leading-[20px]">Submit availability</p>
                 </button>
                 <button onClick={() => setShowManualInput(false)} className={secondaryButton}>
                   <p className="font-['Inter'] font-medium text-[14px] text-[#8792a2] leading-[20px]">Cancel</p>

@@ -418,7 +418,34 @@
        so its 14px UI type holds up at deck scale (500×700 app → 540×756 on
        the canvas). The app window carries its own border and radius, so the
        frame stays bare — a second stroke 8px out would read as a mistake. */
-    .agent-frame { width: 540px; height: 756px; justify-self: center; }
+    .agent-frame { width: 540px; height: 756px; justify-self: center; position: relative; }
+    /* Restart control: floats in the whitespace off the frame's bottom-right
+       corner (the deck frame has no plate margin to host it, unlike the page).
+       Ink-on-cream, sized for the scaled stage. */
+    .agent-restart {
+      position: absolute;
+      right: -64px;
+      bottom: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(26, 26, 23, 0.05);
+      border: 1px solid var(--line-2);
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
+    }
+    .agent-restart svg { width: 20px; height: 20px; }
+    .agent-restart:hover {
+      background: rgba(26, 26, 23, 0.1);
+      border-color: var(--text-muted);
+      color: var(--text);
+    }
+    .agent-restart:active { transform: scale(0.96); }
     .agent-frame iframe {
       width: 500px; height: 700px; border: 0; display: block;
       transform: scale(1.08); transform-origin: top left;
@@ -1059,7 +1086,7 @@
             <div class="split">
               <div>
                 <h2 class="s-title">This time, the agent goes first</h2>
-                <p class="s-body" style="font-size: 20px;">In 2023 the answer was structure: pairing cards, mutual calendars, defaults that spared people the first move. Rebuilding it today, I would give that structure a voice. Luna opens with a match already lined up, and typing what you would rather do works as well as any button.</p>
+                <p class="s-body" style="font-size: 20px;">In 2023 the answer was structure: pairing cards, mutual calendars, careful defaults. Rebuilding it today, I would give that structure a voice. Luna opens with a match already lined up, and the rest is a conversation.</p>
                 <div class="mini-list" style="margin-top: 44px;">
                   <div class="mini">
                     <h4>A decision, not a questionnaire</h4>
@@ -1071,13 +1098,15 @@
                   </div>
                   <div class="mini">
                     <h4>Feedback closes the loop</h4>
-                    <p>How the chat went shapes who Luna proposes next week. The screens never closed that loop.</p>
+                    <p>The reflection you leave tells Luna what to adjust next time, a loop the screens never closed.</p>
                   </div>
                 </div>
-                <p class="demo-note">This is a working build, embedded live. Click through it, or <a href="coffee-agent/index.html" target="_blank" rel="noopener">open it full size</a>.</p>
               </div>
               <div class="agent-frame">
                 <iframe data-src="coffee-agent/index.html" title="Luna, a conversational rebuild of Coffee Chat"></iframe>
+                <button class="agent-restart" id="demoRestart" aria-label="Restart the prototype" title="Restart">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+                </button>
               </div>
             </div>
           </div>
@@ -1146,6 +1175,12 @@
       // agent's opening script plays right as the viewer lands on it.
       const demo = track.querySelector('iframe[data-src]');
       const demoAt = demo ? slides.indexOf(demo.closest('.slide')) : -1;
+      const demoRestart = document.getElementById('demoRestart');
+      if (demoRestart) demoRestart.addEventListener('click', () => {
+        if (!demo.src) { demo.src = demo.dataset.src; return; }
+        try { demo.contentWindow.location.reload(); }
+        catch (err) { demo.src = demo.dataset.src; }
+      });
 
       // The folio: every slide closes with a rule and its own page number,
       // like a printed publication. Injected here so the markup stays clean;

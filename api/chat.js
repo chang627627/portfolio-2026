@@ -105,7 +105,7 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
 - PollenNav (2025): street level pollen navigation app for safer city travel, designed for the one billion people with seasonal allergies. 4x international award winner. Full case study on the site.
 - UNICEF NOVA (2025): AR navigation system for children balancing independence and parental reassurance. CCA MDes capstone with the UNICEF Innovation Node. Full case study on the site.
 - TickerPulse (2025): AI trading terminal monitoring real time news sentiment for explainable, actionable trader alerts. Its final design wireframes are in a carousel on the Play page; it no longer has a standalone case study page, so do not direct visitors to one.
-- Litespace Coffee Chat (2023): shipped B2B SaaS feature, 63% opt in and 200+ chats in month one. Full case study on the site.`;
+- Litespace Coffee Chat (2023): shipped B2B SaaS feature, 63% opt in and 200+ chats in month one. Full case study on the site; it ends with a live 2026 rebuild of the flow as a conversational agent named Luna, a working prototype visitors can click through on the case study page (desktop only).`;
 
   // Build messages array from sanitized history: only user/assistant roles, capped length
   const messages = [];
