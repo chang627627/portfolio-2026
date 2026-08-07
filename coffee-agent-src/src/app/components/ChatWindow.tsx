@@ -317,6 +317,17 @@ export function ChatWindow() {
     proposeMatch(matches[index], index, `On it. ${matches[index].firstName} from ${matches[index].team} is free next week.`);
   };
 
+  // Data transparency on demand: same surfaces-when-asked pattern as the
+  // mode switch. States only what the demo shows (source-cited reasons,
+  // private reflections) and the product fiction's opt-in.
+  const handlePrivacy = () => {
+    runSteps([
+      { kind: 'say', text: 'Fair question. I read your calendar free and busy times, your onboarding profile, shared Slack channels, the org chart, and team surveys. That is what the reasons under each proposal cite.' },
+      { kind: 'say', text: `Your reflections stay between us, ${currentMatch.firstName} never sees them. They see the same kind of source-cited reasons about you. And Coffee Chat is opt in, you can leave anytime from your Litespace settings.` },
+      { kind: 'prompt', prompt: currentPrompt ?? 'proposal' },
+    ]);
+  };
+
   // Typed messages drive the same transitions as the buttons
   const handleSendMessage = () => {
     const text = inputMessage.trim();
@@ -348,6 +359,8 @@ export function ChatWindow() {
         return handleModeChange('online');
       case 'about':
         return handleAbout();
+      case 'privacy':
+        return handlePrivacy();
       case 'history':
         return handleHistory();
       case 'decline':

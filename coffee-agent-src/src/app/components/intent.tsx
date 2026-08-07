@@ -9,6 +9,7 @@ export type IntentKind =
   | 'inPerson'
   | 'online'
   | 'about'
+  | 'privacy'
   | 'history'
   | 'unknown';
 
@@ -54,6 +55,9 @@ export function parseIntent(raw: string): Intent {
   }
   if (has(text, ['someone else', 'somebody else', 'another person', 'different person', 'not them', 'someone different', 'next person', 'anyone else'])) {
     return { kind: 'otherPerson' };
+  }
+  if (has(text, ['know about me', 'my data', 'my information', 'privacy', 'consent', 'what can you see', 'where did you get', 'data do you', 'tracking', 'creepy', 'spying'])) {
+    return { kind: 'privacy' };
   }
   if (has(text, ['who is', 'tell me more', 'more about', 'what do they do', 'what does', 'why them', 'why this', 'why did you', 'their role', 'background'])) {
     return { kind: 'about' };

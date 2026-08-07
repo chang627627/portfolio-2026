@@ -1,1 +1,3 @@
 .vercel
+coffee-agent-src/node_modules/
+coffee-agent-src/dist/
