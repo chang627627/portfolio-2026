@@ -446,6 +446,8 @@
       color: var(--text);
     }
     .agent-restart:active { transform: scale(0.96); }
+    /* Full-screen link: same circle family, stacked above restart */
+    a.agent-open { bottom: 60px; text-decoration: none; }
     .agent-frame iframe {
       width: 500px; height: 700px; border: 0; display: block;
       transform: scale(1.08); transform-origin: top left;
@@ -1094,6 +1096,9 @@
               </div>
               <div class="agent-frame">
                 <iframe data-src="coffee-agent/index.html" title="Luna, a conversational rebuild of Coffee Chat"></iframe>
+                <a class="agent-restart agent-open" href="coffee-agent/index.html" target="_blank" rel="noopener" aria-label="Open the prototype full screen" title="Open full screen">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7"/><path d="M7 7h10v10"/></svg>
+                </a>
                 <button class="agent-restart" id="demoRestart" aria-label="Restart the prototype" title="Restart">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
                 </button>
