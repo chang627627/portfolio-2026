@@ -23,12 +23,14 @@ type PromptType = 'proposal' | 'match' | 'timeSlot' | 'reflection' | 'idle' | nu
 
 interface Message {
   id: number;
-  type: 'ai' | 'user' | 'card' | 'suggestions' | 'divider';
+  type: 'ai' | 'user' | 'card' | 'suggestions' | 'divider' | 'trace';
   content: string;
   timestamp: Date;
   cardType?: 'profile' | 'success';
   matchId?: string;
   stream?: boolean;
+  /** True when the text came from the live model, not the script */
+  generated?: boolean;
 }
 
 type Step =
@@ -36,34 +38,68 @@ type Step =
   | { kind: 'card'; cardType: 'profile' | 'success'; content: string; matchId?: string }
   | { kind: 'reasons'; matchId: string }
   | { kind: 'divider'; text: string }
+  | { kind: 'trace'; text: string }
   | { kind: 'prompt'; prompt: PromptType }
   | { kind: 'wait'; ms: number };
 
+// Memory outlives the session (per browser). The privacy answer tells the
+// user exactly where this lives and how to clear it.
+const MEMORY_KEY = 'luna_memory_v1';
+interface LunaMemory {
+  history: PastChat[];
+  seenMatchIds: string[];
+  meetingPreference: 'online' | 'in-person';
+}
+function loadMemory(): LunaMemory | null {
+  try {
+    const raw = localStorage.getItem(MEMORY_KEY);
+    return raw ? (JSON.parse(raw) as LunaMemory) : null;
+  } catch {
+    return null;
+  }
+}
+
+// Notes promise only what the demo actually does: memory, and one real
+// state change (option 2 switches the stored meeting preference).
 const reflectionOptions = [
   {
     label: '😊 Great, we clicked',
-    note: "Noted. I'll keep looking for people in adjacent creative roles.",
+    note: 'Noted and remembered. Glad that one landed.',
   },
   {
     label: '💡 Useful, a bit formal',
-    note: "Noted. I'll suggest in-person spots next time. They tend to loosen things up.",
+    note: "Noted. I've set you to in person for next time, it tends to loosen things up.",
+    effect: 'inPerson' as const,
   },
   {
     label: '😐 It was fine',
-    note: "Noted. I'll look for someone with more overlap with your day-to-day work.",
+    note: 'Noted. That helps me calibrate.',
   },
   {
     label: "🙁 Didn't click",
-    note: "Sorry that one missed. I'll prioritize people outside Marketing's orbit next time.",
+    note: 'Sorry that one missed. Noted for future pairings.',
   },
 ];
+
+// Memory claims stay factual: probe once whether localStorage works here
+function memoryWorks(): boolean {
+  try {
+    localStorage.setItem('__luna_probe', '1');
+    localStorage.removeItem('__luna_probe');
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 export function ChatWindow() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [busy, setBusy] = useState(false);
   const [currentPrompt, setCurrentPrompt] = useState<PromptType>(null);
-  const [meetingPreference, setMeetingPreference] = useState<'online' | 'in-person'>('online');
+  const [meetingPreference, setMeetingPreference] = useState<'online' | 'in-person'>(
+    () => loadMemory()?.meetingPreference ?? 'online',
+  );
   const [matchIndex, setMatchIndex] = useState(0);
   const [proposedSlot, setProposedSlot] = useState<Slot>(matches[0].proposedSlot);
   const [selectedCalendarSlot, setSelectedCalendarSlot] = useState<Slot | null>(null);
@@ -71,8 +107,10 @@ export function ChatWindow() {
   const [showManualInput, setShowManualInput] = useState(false);
   const [manualDate, setManualDate] = useState('');
   const [manualTime, setManualTime] = useState('');
-  const [history, setHistory] = useState<PastChat[]>(seedPastChats);
-  const [seenMatchIds, setSeenMatchIds] = useState<string[]>([matches[0].id]);
+  const [history, setHistory] = useState<PastChat[]>(() => loadMemory()?.history ?? seedPastChats);
+  const [seenMatchIds, setSeenMatchIds] = useState<string[]>(
+    () => loadMemory()?.seenMatchIds ?? [matches[0].id],
+  );
 
   const scrollerRef = useRef<HTMLDivElement>(null);
   const timeoutsRef = useRef<number[]>([]);
@@ -86,6 +124,14 @@ export function ChatWindow() {
     const el = scrollerRef.current;
     if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' });
   }, [messages, isTyping, currentPrompt]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(MEMORY_KEY, JSON.stringify({ history, seenMatchIds, meetingPreference }));
+    } catch {
+      // private mode: memory stays session-scoped, everything else works
+    }
+  }, [history, seenMatchIds, meetingPreference]);
 
 
   const sleep = (ms: number) =>
@@ -129,6 +175,9 @@ export function ChatWindow() {
       } else if (step.kind === 'divider') {
         push({ type: 'divider', content: step.text });
         await sleep(400);
+      } else if (step.kind === 'trace') {
+        push({ type: 'trace', content: step.text });
+        await sleep(550);
       } else if (step.kind === 'prompt') {
         setCurrentPrompt(step.prompt);
       } else if (step.kind === 'wait') {
@@ -145,8 +194,37 @@ export function ChatWindow() {
   useEffect(() => {
     cancelledRef.current = false;
     setMessages([]);
+
+    // A visitor who left a reflection last time is greeted from memory
+    // instead of replaying the first-run script. Merely watching the intro
+    // does not count, so the trace's "reflections carried over" stays true.
+    const returning = history.length > seedPastChats.length;
+    if (returning && history.length > 0) {
+      const lastMet = history[0];
+      const nextIdx = matches.findIndex(m => !seenMatchIds.includes(m.id));
+      let idx = nextIdx;
+      if (nextIdx === -1) {
+        // Everyone has been met: start a fresh cycle, but never re-propose
+        // the person the greeting just said was met last
+        setSeenMatchIds([]);
+        idx = Math.max(0, matches.findIndex(m => m.id !== lastMet.id));
+      }
+      proposeMatch(
+        matches[idx],
+        idx,
+        `Welcome back, Kevin. Last time you met ${lastMet.name.split(' ')[0]}, and ${matches[idx].firstName} from ${matches[idx].team} is free next week.`,
+        [{ kind: 'trace', text: 'Memory loaded · your reflections carried over' }],
+      );
+      return () => {
+        cancelledRef.current = true;
+        timeoutsRef.current.forEach(id => window.clearTimeout(id));
+        timeoutsRef.current = [];
+      };
+    }
+
     const match = matches[0];
     runSteps([
+      { kind: 'trace', text: 'Scanned calendars · org graph · shared channels' },
       { kind: 'say', text: `Morning, Kevin. I lined up your coffee chat for next week.` },
       { kind: 'card', cardType: 'profile', content: match.name, matchId: match.id },
       {
@@ -165,7 +243,7 @@ export function ChatWindow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const proposeMatch = (match: Match, index: number, lead: string) => {
+  const proposeMatch = (match: Match, index: number, lead: string, preSteps: Step[] = []) => {
     setMatchIndex(index);
     matchIndexRef.current = index;
     setProposedSlot(match.proposedSlot);
@@ -173,7 +251,9 @@ export function ChatWindow() {
     setSeenMatchIds(prev => (prev.includes(match.id) ? prev : [...prev, match.id]));
 
     runSteps([
+      ...preSteps,
       { kind: 'say', text: lead },
+      { kind: 'trace', text: 'Scanned calendars · org graph · shared channels' },
       { kind: 'card', cardType: 'profile', content: match.name, matchId: match.id },
       {
         kind: 'say',
@@ -187,6 +267,7 @@ export function ChatWindow() {
   const book = (slot: Slot) => {
     const match = matches[matchIndexRef.current];
     runSteps([
+      { kind: 'trace', text: `Pinged ${match.firstName}'s assistant · confirmed on their side` },
       { kind: 'say', text: `Booked. ${formatSlot(slot)} with ${match.firstName}.` },
       { kind: 'card', cardType: 'success', content: 'Chat scheduled', matchId: match.id },
       { kind: 'wait', ms: 600 },
@@ -304,8 +385,13 @@ export function ChatWindow() {
       ...prev,
     ]);
 
+    if ('effect' in option && option.effect === 'inPerson') setMeetingPreference('in-person');
+
     runSteps([
       { kind: 'say', text: option.note },
+      ...(memoryWorks()
+        ? [{ kind: 'trace', text: 'Memory updated · saved in this browser' } as Step]
+        : []),
       { kind: 'prompt', prompt: 'idle' },
     ]);
   };
@@ -322,10 +408,71 @@ export function ChatWindow() {
   // private reflections) and the product fiction's opt-in.
   const handlePrivacy = () => {
     runSteps([
-      { kind: 'say', text: 'Fair question. I read your calendar free and busy times, your onboarding profile, shared Slack channels, the org chart, and team surveys. That is what the reasons under each proposal cite.' },
+      { kind: 'say', text: 'Fair question. I read your calendar including shared meetings, your onboarding profile and the directory, shared projects and docs, shared Slack channels, the org chart, and team surveys. That is what the reasons under each proposal cite.' },
       { kind: 'say', text: `Your reflections stay between us, ${currentMatch.firstName} never sees them. They see the same kind of source-cited reasons about you. And Coffee Chat is opt in, you can leave anytime from your Litespace settings.` },
+      { kind: 'say', text: 'And everything I remember in this demo lives in your own browser. Clearing site data wipes it completely.' },
       { kind: 'prompt', prompt: currentPrompt ?? 'proposal' },
     ]);
+  };
+
+  // Off-script questions go to a real model (api/luna.js, the same hardened
+  // serverless pattern as the site's chat widget). Scripted intents never
+  // touch the network, and any failure here falls back to the honest
+  // boundary line, so the core demo can never break on stage.
+  const handleGenerated = async (text: string) => {
+    const restore = currentPrompt ?? 'proposal';
+    setBusy(true);
+    setCurrentPrompt(null);
+    setIsTyping(true);
+    try {
+      const ctrl = new AbortController();
+      const timer = window.setTimeout(() => ctrl.abort(), 10000);
+      timeoutsRef.current.push(timer);
+      const recent = messages
+        .filter(m => m.type === 'ai' || m.type === 'user')
+        .slice(-8)
+        .map(m => ({ role: m.type === 'ai' ? ('assistant' as const) : ('user' as const), content: m.content }));
+      const resp = await fetch('/api/luna', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: text,
+          history: recent,
+          // Live state, so the model never contradicts what is on screen
+          context: {
+            metCount: history.length,
+            pastChats: history.slice(0, 6).map(c => ({ name: c.name, date: c.date, reaction: c.reaction })),
+            currentMatch: currentMatch.name,
+            proposedSlot: formatSlot(proposedSlot),
+            preference: meetingPreference,
+          },
+        }),
+        signal: ctrl.signal,
+      });
+      window.clearTimeout(timer);
+      if (!resp.ok) throw new Error(String(resp.status));
+      const data = await resp.json();
+      const reply = typeof data.reply === 'string' ? data.reply.trim() : '';
+      if (!reply) throw new Error('empty reply');
+      if (cancelledRef.current) return;
+      setIsTyping(false);
+      push({ type: 'ai', content: reply, stream: true, generated: true });
+      await sleep(Math.min(reply.length * 12 + 400, 3000));
+      if (cancelledRef.current) return;
+      setCurrentPrompt(restore);
+      setBusy(false);
+    } catch {
+      if (cancelledRef.current) return;
+      setIsTyping(false);
+      setBusy(false);
+      runSteps([
+        {
+          kind: 'say',
+          text: "I can't help with that one yet. I can book the chat, move it to another time, swap in someone else, switch to in person, or tell you more about your match.",
+        },
+        { kind: 'prompt', prompt: restore },
+      ]);
+    }
   };
 
   // Typed messages drive the same transitions as the buttons
@@ -366,14 +513,9 @@ export function ChatWindow() {
       case 'decline':
         return handleDecline();
       default:
-        // Be honest about the boundary instead of faking comprehension
-        return runSteps([
-          {
-            kind: 'say',
-            text: "I can't help with that one yet. I can book the chat, move it to another time, swap in someone else, switch to in person, or tell you more about your match.",
-          },
-          { kind: 'prompt', prompt: currentPrompt ?? 'proposal' },
-        ]);
+        // Off-script: a real model answers in character; on any failure the
+        // handler falls back to the honest boundary line
+        return handleGenerated(text);
     }
   };
 
@@ -414,7 +556,7 @@ export function ChatWindow() {
             <div className="w-[16px] h-[16px] flex-shrink-0">
               <ErrorWarningLine1 />
             </div>
-            <p className="font-['Inter'] font-normal text-[14px] text-[#041c33] leading-[18px]">Please schedule this chat by Sunday, July 19</p>
+            <p className="font-['Inter'] font-normal text-[14px] text-[#041c33] leading-[18px]">Please schedule this chat by Sunday, July 20</p>
           </div>
 
           {/* Messages */}
@@ -422,6 +564,20 @@ export function ChatWindow() {
             <AnimatePresence>
               {messages.map(message => {
                 const match = matches.find(m => m.id === message.matchId);
+
+                if (message.type === 'trace') {
+                  return (
+                    <motion.div
+                      key={message.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="flex items-center gap-[8px]"
+                    >
+                      <svg className="w-[12px] h-[12px] text-[#8792a2] flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                      <p className="font-['Inter'] font-normal text-[12px] text-[#8792a2] leading-[18px]">{message.content}</p>
+                    </motion.div>
+                  );
+                }
 
                 if (message.type === 'divider') {
                   return (

@@ -8,6 +8,7 @@ interface Message {
   content: string;
   timestamp: Date;
   stream?: boolean;
+  generated?: boolean;
 }
 
 interface ChatMessageProps {
@@ -65,6 +66,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
             />
           )}
         </p>
+        {isAI && message.generated && text.length >= message.content.length && (
+          <span
+            title="This reply was generated live by Claude Haiku. The flow around it is the scripted prototype."
+            className="block mt-[6px] font-['Inter'] font-normal text-[11px] leading-[14px] text-[#8792a2] cursor-help"
+          >
+            · generated
+          </span>
+        )}
       </div>
     </motion.div>
   );
