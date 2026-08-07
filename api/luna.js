@@ -100,7 +100,9 @@ Rules, in priority order:
     }
 
     const data = await response.json();
-    const reply = data.content[0].text;
+    // House rule enforced mechanically: the prompt forbids em dashes but
+    // models occasionally slip one; commas are the site's punctuation.
+    const reply = data.content[0].text.replace(/\s*[\u2014\u2013]\s*/g, ', ');
     return res.status(200).json({ reply });
   } catch (err) {
     console.error('Error:', err);
