@@ -1162,8 +1162,10 @@
   </script>
 
   <script>
-    // Comment mode — Figma-style pins. Notes are stored in the reviewer's own
-    // browser (localStorage); "Send notes" packages them into a prefilled email.
+    // Comment mode — Figma-style pins. Notes live in a SHARED store
+    // (/api/comments, Vercel Blob), so every visitor sees every pin; if the
+    // API is unreachable (local preview, offline) the engine falls back to
+    // this browser's localStorage. "Send notes" still packages an email.
     (function () {
       const KEY = 'homewiseslide_comments_v1';
       const NAME_KEY = 'homewiseslide_commenter';
@@ -1181,6 +1183,49 @@
       let comments = [];
       try { comments = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
       let pop = null; // currently-open popover node (draft: whole anchor, view: just the card)
+
+      // ===== Shared storage (/api/comments, Vercel Blob) =====
+      // When the API answers, everyone sees everyone's pins. When it does
+      // not (local preview, offline), the engine falls back to the original
+      // per-browser localStorage behavior, unchanged.
+      const DECK = KEY.split('_')[0];
+      const AUTHOR_KEY = KEY + '_author';
+      const MIGRATED_KEY = KEY + '_migrated';
+      let shared = false;
+      let myKey = 'anon';
+      try {
+        myKey = localStorage.getItem(AUTHOR_KEY) || '';
+        if (!myKey) {
+          myKey = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+          localStorage.setItem(AUTHOR_KEY, myKey);
+        }
+      } catch (e) { myKey = 'anon'; }
+
+      async function apiGet() {
+        const r = await fetch('/api/comments?deck=' + DECK + '&me=' + encodeURIComponent(myKey));
+        if (!r.ok) throw new Error(r.status);
+        return (await r.json()).comments || [];
+      }
+      async function apiPost(c) {
+        const r = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deck: DECK, authorKey: myKey, comment: c }),
+        });
+        if (!r.ok) throw new Error(r.status);
+        return (await r.json()).comment;
+      }
+      async function apiDelete(id) {
+        const r = await fetch('/api/comments', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deck: DECK, authorKey: myKey, id: id }),
+        });
+        if (!r.ok) throw new Error(r.status);
+      }
+      async function refresh() {
+        try { comments = await apiGet(); shared = true; render(); } catch (e) {}
+      }
 
       function save() { localStorage.setItem(KEY, JSON.stringify(comments)); }
       function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
@@ -1250,11 +1295,21 @@
             const text = textIn.value.trim();
             if (!text) { textIn.focus(); return; }
             localStorage.setItem(NAME_KEY, name);
-            comments.push({
-              id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
-              slide: slideIdx, x, y, name, text, ts: Date.now(),
-            });
-            save(); closePop(); render();
+            const draft = { slide: slideIdx, x: x, y: y, name: name, text: text };
+            const postLocal = () => {
+              comments.push(Object.assign({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+                ts: Date.now(), own: true,
+              }, draft));
+              save(); closePop(); render();
+            };
+            if (shared) {
+              apiPost(draft).then((posted) => {
+                comments.push(posted); closePop(); render();
+              }).catch(() => { shared = false; postLocal(); });
+            } else {
+              postLocal();
+            }
           }
         });
         textIn.addEventListener('keydown', (e) => {
@@ -1273,15 +1328,25 @@
             '<span class="cmt-ava">' + esc((c.name[0] || '?').toUpperCase()) + '</span>' +
             '<span class="cmt-name">' + esc(c.name) + '</span>' +
             '<span class="cmt-time">' + when + '</span>' +
-            '<button class="cmt-del" data-act="del">Delete</button>' +
+            ((c.own || !shared) ? '<button class="cmt-del" data-act="del">Delete</button>' : '') +
           '</div>' +
           '<div class="cmt-text">' + esc(c.text) + '</div>';
         placePop(el, c.x, c.y);
         el.addEventListener('click', (e) => {
           e.stopPropagation();
           if (e.target.dataset && e.target.dataset.act === 'del') {
-            comments = comments.filter(k => k.id !== c.id);
-            save(); closePop(); render();
+            const dropLocal = () => {
+              comments = comments.filter(k => k.id !== c.id);
+              save(); closePop(); render();
+            };
+            if (shared) {
+              apiDelete(c.id).then(() => {
+                comments = comments.filter(k => k.id !== c.id);
+                closePop(); render();
+              }).catch(() => {});
+            } else {
+              dropLocal();
+            }
           }
         });
         pinAnchor.appendChild(el);
@@ -1316,6 +1381,7 @@
 
       function setMode(on) {
         document.body.classList.toggle('commenting', on);
+        if (on && shared) refresh();
         toggle.classList.toggle('on', on);
         if (!on) closePop();
       }
@@ -1330,6 +1396,25 @@
       });
 
       render();
+      // Go shared: fetch the common store; on first success, lift any pins
+      // this browser made in the localStorage era into it (one shot).
+      (async function boot() {
+        try {
+          let remote = await apiGet();
+          shared = true;
+          let migrated = false;
+          try { migrated = !!localStorage.getItem(MIGRATED_KEY); } catch (e) {}
+          if (!migrated && comments.length) {
+            for (const c of comments) {
+              try { await apiPost({ slide: c.slide, x: c.x, y: c.y, name: c.name, text: c.text }); } catch (e) { break; }
+            }
+            remote = await apiGet();
+          }
+          try { localStorage.setItem(MIGRATED_KEY, '1'); } catch (e) {}
+          comments = remote;
+          render();
+        } catch (e) { /* offline or local preview: stay per-browser */ }
+      })();
     })();
   </script>
 </body>

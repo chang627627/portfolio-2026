@@ -1,0 +1,8 @@
+{
+  "name": "chang-mou-portfolio",
+  "private": true,
+  "description": "Static site + Vercel serverless functions. No build step: Vercel serves the repo root as-is and installs these dependencies for the api/ functions only.",
+  "dependencies": {
+    "@vercel/blob": "^2.0.0"
+  }
+}
