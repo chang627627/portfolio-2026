@@ -15,7 +15,10 @@ const MAX_COMMENTS = 800;
 async function readComments(deck) {
   try {
     const h = await head(`comments/${deck}.json`);
-    const r = await fetch(h.url, {
+    // ?ts= busts the blob CDN cache: without it, reads after an overwrite
+    // can serve the previous version for up to a minute, and a stale
+    // read-modify-write would silently drop freshly posted pins.
+    const r = await fetch(h.url + '?ts=' + Date.now(), {
       headers: { authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
     });
     if (!r.ok) return [];
@@ -32,6 +35,7 @@ async function writeComments(deck, arr) {
     addRandomSuffix: false,
     allowOverwrite: true,
     contentType: 'application/json',
+    cacheControlMaxAge: 0,
   });
 }
 
