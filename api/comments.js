@@ -1,42 +1,40 @@
 // Shared comments for the slide decks (coffeeslide, homewiseslide): the
 // Figma-style pins used to live in each reviewer's own localStorage; this
 // endpoint gives every deck one common store so everyone sees everyone's
-// pins. Backed by the PRIVATE `deck-comments` Vercel Blob store, one JSON
-// array per deck, readable only through this endpoint. Writes are
-// read-modify-write (last write wins), fine at portfolio traffic.
+// pins. Backed by the PRIVATE `deck-comments` Vercel Blob store with ONE
+// IMMUTABLE BLOB PER COMMENT (comments/<deck>/<id>.json). Nothing is ever
+// overwritten: posts create objects, deletes remove them — which sidesteps
+// Blob's overwrite cache/consistency window entirely (an aggregate-file
+// design served stale reads for minutes cross-region) and removes the
+// concurrent-post race.
 // GET    ?deck=coffeeslide&me=<authorKey>  -> { comments: [{id, slide, x, y, name, text, ts, own}] }
 // POST   { deck, authorKey, comment: { slide, x, y, name, text } }
 // DELETE { deck, id }  (anyone may delete: trusted-audience decision, per user)
-const { put, head } = require('@vercel/blob');
+const { put, del, list } = require('@vercel/blob');
 
 const DECKS = ['coffeeslide', 'homewiseslide'];
 const MAX_COMMENTS = 800;
 
 async function readComments(deck) {
-  try {
-    const h = await head(`comments/${deck}.json`);
-    // ?ts= busts the blob CDN cache: without it, reads after an overwrite
-    // can serve the previous version for up to a minute, and a stale
-    // read-modify-write would silently drop freshly posted pins.
-    const r = await fetch(h.url + '?ts=' + Date.now(), {
-      headers: { authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
-    });
-    if (!r.ok) return [];
-    const data = await r.json();
-    return Array.isArray(data) ? data : [];
-  } catch (e) {
-    return []; // no blob yet: first comment ever creates it
-  }
-}
-
-async function writeComments(deck, arr) {
-  await put(`comments/${deck}.json`, JSON.stringify(arr), {
-    access: 'private',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-    cacheControlMaxAge: 0,
-  });
+  const out = [];
+  let cursor;
+  do {
+    const page = await list({ prefix: `comments/${deck}/`, cursor, limit: 1000 });
+    const bodies = await Promise.all(page.blobs.map(async (b) => {
+      try {
+        const r = await fetch(b.url + '?ts=' + Date.now(), {
+          headers: { authorization: `Bearer ${process.env.BLOB_READ_WRITE_TOKEN}` },
+        });
+        return r.ok ? await r.json() : null;
+      } catch (e) {
+        return null;
+      }
+    }));
+    for (const c of bodies) if (c && c.id) out.push(c);
+    cursor = page.cursor;
+  } while (cursor);
+  out.sort((a, b) => a.ts - b.ts);
+  return out;
 }
 
 const publicView = (c, me) => ({
@@ -99,20 +97,24 @@ module.exports = async function handler(req, res) {
         text: comment.text.slice(0, 1000),
         authorKey: authorKey.slice(0, 64),
       };
-      const comments = await readComments(deck);
-      if (comments.length >= MAX_COMMENTS) return res.status(400).json({ error: 'Comment limit reached' });
-      comments.push(entry);
-      await writeComments(deck, comments);
+      const existing = await list({ prefix: `comments/${deck}/`, limit: MAX_COMMENTS });
+      if (existing.blobs.length >= MAX_COMMENTS) return res.status(400).json({ error: 'Comment limit reached' });
+      await put(`comments/${deck}/${entry.id}.json`, JSON.stringify(entry), {
+        access: 'private',
+        addRandomSuffix: false,
+        contentType: 'application/json',
+        cacheControlMaxAge: 0,
+      });
       return res.status(200).json({ comment: publicView(entry, entry.authorKey) });
     }
 
     if (req.method === 'DELETE') {
       const { deck, id } = req.body || {};
       if (!DECKS.includes(deck)) return res.status(400).json({ error: 'Unknown deck' });
-      const comments = await readComments(deck);
-      const target = comments.find((c) => c.id === id);
-      if (!target) return res.status(404).json({ error: 'Not found' });
-      await writeComments(deck, comments.filter((c) => c.id !== id));
+      if (typeof id !== 'string' || !/^[a-zA-Z0-9-]{8,64}$/.test(id)) {
+        return res.status(400).json({ error: 'Bad id' });
+      }
+      await del(`comments/${deck}/${id}.json`);
       return res.status(200).json({ ok: true });
     }
 
