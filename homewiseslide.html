@@ -1328,7 +1328,7 @@
             '<span class="cmt-ava">' + esc((c.name[0] || '?').toUpperCase()) + '</span>' +
             '<span class="cmt-name">' + esc(c.name) + '</span>' +
             '<span class="cmt-time">' + when + '</span>' +
-            ((c.own || !shared) ? '<button class="cmt-del" data-act="del">Delete</button>' : '') +
+            '<button class="cmt-del" data-act="del">Delete</button>' +
           '</div>' +
           '<div class="cmt-text">' + esc(c.text) + '</div>';
         placePop(el, c.x, c.y);

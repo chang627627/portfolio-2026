@@ -6,7 +6,7 @@
 // read-modify-write (last write wins), fine at portfolio traffic.
 // GET    ?deck=coffeeslide&me=<authorKey>  -> { comments: [{id, slide, x, y, name, text, ts, own}] }
 // POST   { deck, authorKey, comment: { slide, x, y, name, text } }
-// DELETE { deck, authorKey, id }  (only the pin's author may delete it)
+// DELETE { deck, id }  (anyone may delete: trusted-audience decision, per user)
 const { put, head } = require('@vercel/blob');
 
 const DECKS = ['coffeeslide', 'homewiseslide'];
@@ -107,12 +107,11 @@ module.exports = async function handler(req, res) {
     }
 
     if (req.method === 'DELETE') {
-      const { deck, authorKey, id } = req.body || {};
+      const { deck, id } = req.body || {};
       if (!DECKS.includes(deck)) return res.status(400).json({ error: 'Unknown deck' });
       const comments = await readComments(deck);
       const target = comments.find((c) => c.id === id);
       if (!target) return res.status(404).json({ error: 'Not found' });
-      if (!authorKey || target.authorKey !== authorKey) return res.status(403).json({ error: 'Not your note' });
       await writeComments(deck, comments.filter((c) => c.id !== id));
       return res.status(200).json({ ok: true });
     }
