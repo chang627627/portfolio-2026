@@ -385,6 +385,10 @@
     }
     .media-head .s-title { margin: 0; font-size: 46px; line-height: 1.12; letter-spacing: -0.025em; }
     .media-head p { font-size: 19px; font-weight: 400; line-height: 1.6; color: var(--ink-500); margin: 0; padding-top: 5px; }
+    .media-head p a {
+      color: var(--ink-700); white-space: nowrap;
+      text-decoration: underline; text-decoration-color: var(--ink-200); text-underline-offset: 3px;
+    }
 
     /* ===== Walkthrough clip =====
        Height-driven: flex hands the clip the remaining space and aspect-ratio
@@ -1067,7 +1071,7 @@
             <p class="s-label">Design system</p>
             <div class="media-head">
               <h2 class="s-title">Hearth, one warm system across every screen</h2>
-              <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter.</p>
+              <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. It is living code, and every new token ships behind a drift linter. <a href="https://homewise-rust.vercel.app/designsystem" target="_blank" rel="noopener">Explore Hearth live&nbsp;&#8599;</a></p>
             </div>
             <div class="clip">
               <video src="images/homewise-hearth.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-hearth-poster.jpg"></video>
