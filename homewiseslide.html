@@ -240,22 +240,27 @@
       padding-top: 8px;
     }
     .tm { display: flex; flex-direction: column; gap: 10px; }
+    /* ink on the sage field, not on-dark — the meta row now sits on the image.
+       Labels take ink-700, not the usual ink-500 eyebrow grey: on the sage
+       field ink-500 measures ~3.2:1, under the deck's own eyebrow contrast. */
     .tm-k {
       font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
-      color: var(--ink-on-dark-mute);
+      color: var(--ink-700);
     }
-    .tm-v { font-size: 17.5px; line-height: 1.5; color: var(--ink-on-dark-soft); }
+    .tm-v { font-size: 17.5px; line-height: 1.5; color: var(--ink-900); }
     .title-bottom {
       margin-top: auto;
       display: flex; align-items: flex-end; justify-content: space-between; gap: 70px;
     }
     .title-kicker {
       font-size: 14px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase;
-      color: var(--sage-300); margin-bottom: 30px;
+      color: var(--sage-300); margin-bottom: 18px;
     }
+    /* 180px, down from 280: the cover image owns the top 700px of the frame,
+       so the wordmark shares the 232px ink band with the kicker and sub */
     .title-h1 {
-      font-size: 280px; font-weight: 500; line-height: 0.92; letter-spacing: -0.05em;
-      margin: 0 0 0 -13px; color: #fff; white-space: nowrap;
+      font-size: 180px; font-weight: 500; line-height: 0.92; letter-spacing: -0.05em;
+      margin: 0 0 0 -9px; color: #fff; white-space: nowrap;
     }
     .title-sub {
       font-size: 18px; font-weight: 400; line-height: 1.65; color: var(--ink-on-dark-soft);
@@ -410,6 +415,59 @@
     .clip-bar i { display: block; height: 100%; width: 0; background: var(--sage-500); }
     /* the click-to-play shipped-build recording keeps native controls */
     .clip--play video { object-fit: contain; background: var(--ink-900); }
+
+    /* ===== Product cover on the title slide =====
+       The sage field IS the top of the slide: the cover image pins to the
+       top edge at exactly 1920 wide (2400 × 0.8 — no horizontal crop, and
+       the field is a uniform rgb(198,208,183) so nothing can seam) and runs
+       700px deep. The metadata row sits ON the field in ink, using the
+       asset's own empty top band; the ink zone below keeps the wordmark.
+       It lives OUTSIDE .slide-inner so the reveal transition never moves it —
+       the field holds still while the type wakes over it. */
+    .title-media {
+      position: absolute; top: 0; left: 0; right: 0; height: 700px;
+      overflow: hidden;
+    }
+    .title-media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+    /* the shared bookend wash paints ABOVE child divs (::after is the last
+       child) and would haze the field + the white UI — title drops it */
+    .slide--title::after { display: none; }
+
+    /* ===== Final design pairs =====
+       Each beat is a decision slide (claim + annotation + tradeoff row) and
+       a chromeless proof slide: the clip owns the whole frame at full height
+       (its real 1920×1204 ratio → 1722×1080), ink mats at the sides, no
+       header or folio — a film frame between framed pages. */
+    .trade-k {
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-300); margin-bottom: 22px;
+    }
+    /* Two rule-topped columns in the deck's .cols grammar, the tick standing
+       in for the numeral index: what the decision buys (sage) against what it
+       costs (ember), each with its receipt from the build. h4 sets weight
+       explicitly per the single-weight gotcha. */
+    .trade-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+    .trade-col { border-top: var(--hair); padding-top: 24px; }
+    .trade-col h4 {
+      display: flex; align-items: center; gap: 13px;
+      font-size: 22px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink-900);
+      margin: 0 0 14px;
+    }
+    .trade-col p { font-size: 18px; line-height: 1.6; color: var(--ink-500); margin: 0; }
+    .trade-col .tick { width: 27px; height: 27px; font-size: 12.5px; }
+    /* Evidence crops: the two builds' real UI, captured from the repo's own
+       git history (old = 6262fa8~1, shipped = HEAD). Pairs share one aspect
+       ratio per slide so the columns stay aligned. */
+    .trade-shot {
+      margin: 6px 0 16px; border: var(--hair); border-radius: 8px;
+      overflow: hidden; background: var(--card);
+    }
+    .trade-shot img { display: block; width: 100%; height: auto; }
+    .slide--full { padding: 0; background: var(--ink-900); }
+    /* margin reset is load-bearing: the shared clip rule adds margin-top 36,
+       which would shrink the flex height and drop the mats off symmetric */
+    .slide--full .slide-inner > .clip:last-child { margin: 0; border: 0; border-radius: 0; }
+    .slide--full .page-foot { display: none; }
 
     /* ===== CTAs ===== */
     .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -594,6 +652,9 @@
 
         <!-- 1 · Title -->
         <section class="slide slide--title is-active">
+          <div class="title-media">
+            <img src="images/homewise-cover.jpg" alt="Homewise comparing three contractor quotes against one scope" decoding="async">
+          </div>
           <div class="slide-inner">
             <div class="title-meta-row">
               <div class="tm"><span class="tm-k">Role</span><span class="tm-v">Lead Product Designer</span></div>
@@ -611,27 +672,7 @@
           </div>
         </section>
 
-        <!-- 2 · Hello -->
-        <section class="slide">
-          <div class="slide-inner">
-            <p class="s-label">Hello</p>
-            <div class="split">
-              <div>
-                <h2 class="s-title s-title--compact" style="margin-top: 0;">I'm Chang Mou</h2>
-                <p class="s-body" style="font-size: 20px;">A product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
-                <p class="s-body" style="font-size: 20px;">Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. <span class="highlight">Good design starts with a good life.</span></p>
-              </div>
-              <div class="intro-grid">
-                <img src="images/profile.jpg" alt="Chang Mou" decoding="async">
-                <img src="images/food.jpeg" alt="Cooking" decoding="async">
-                <img src="images/pier.jpeg" alt="Walking the city" decoding="async">
-                <img src="images/jenga.jpeg" alt="With friends" decoding="async">
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 3 · The bet -->
+        <!-- 2 · The bet -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">The bet</p>
@@ -646,7 +687,7 @@
           </div>
         </section>
 
-        <!-- 4 · Overview + my role -->
+        <!-- 3 · Overview + my role -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Overview · My role</p>
@@ -661,12 +702,12 @@
                   <div class="mini"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo. No Figma in between.</p></div>
                 </div>
               </div>
-              <div class="split-media"><img src="images/homewise-cover.jpg" alt="Homewise comparing three contractor quotes against one scope" decoding="async"></div>
+              <div class="split-media"><img src="images/homewise-track-poster.jpg" alt="The Homewise dashboard tracking a job from booking to done" decoding="async"></div>
             </div>
           </div>
         </section>
 
-        <!-- 5 · Evidence -->
+        <!-- 4 · Evidence -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Evidence · Eight interviews</p>
@@ -692,7 +733,7 @@
           </div>
         </section>
 
-        <!-- 6 · Insight -->
+        <!-- 5 · Insight -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Insight</p>
@@ -715,7 +756,7 @@
           </div>
         </section>
 
-        <!-- 7 · Why this is hard -->
+        <!-- 6 · Why this is hard -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Why this is hard</p>
@@ -729,7 +770,7 @@
           </div>
         </section>
 
-        <!-- 8 · Design statement -->
+        <!-- 7 · Design statement -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Design statement</p>
@@ -743,7 +784,7 @@
           </div>
         </section>
 
-        <!-- 9 · The workflow -->
+        <!-- 8 · The workflow -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Solution · The workflow</p>
@@ -767,13 +808,13 @@
               <div class="col">
                 <span class="col-idx">Stage 04</span>
                 <h3>Track</h3>
-                <p>The job stays in one place from booking to done, so it never slips back into scattered calls and texts.</p>
+                <p>The job stays in one place from booking to done, with every status change visible as it happens.</p>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- 10 · Process -->
+        <!-- 9 · Process -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Process</p>
@@ -833,14 +874,33 @@
           </div>
         </section>
 
-        <!-- 11 · Final design 1 -->
-        <section class="slide slide--media">
+        <!-- 10 · Final design 1 · the decision -->
+        <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 1 of 4</p>
-            <div class="media-head">
-              <h2 class="s-title">Define the scope, in plain language</h2>
-              <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, and that one scope goes out to every contractor, so everyone quotes the exact same job and you never repeat yourself on the phone.</p>
+            <p class="s-label">Final design · 1 of 5</p>
+            <h2 class="s-title">Define the scope, in plain language</h2>
+            <p class="s-body">You describe the problem in your own words. The agent drafts the scope, editable before it goes out, so every contractor quotes the exact same job and you never repeat yourself on the phone.</p>
+            <div class="push">
+              <p class="trade-k">The tradeoff</p>
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version I didn't ship</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-intake-old.jpg" alt="The old intake, three shots requested and a one-click upload that accepted anything" decoding="async"></div>
+                  <p>The first intake could not say no. It asked for three shots, one click flipped to "Photos uploaded", and the conversation moved on with no photo ever checked. Nothing pushed back, and it felt fake.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-intake-new.jpg" alt="The shipped intake, the agent rejecting a photo it cannot read with advice for the retake" decoding="async"></div>
+                  <p>The shipped chat is built to check the photo in front of you: a shot the agent cannot read gets rejected with advice for the retake, and the conversation moves only once it has what it needs. An agent that can say no is one you can believe.</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
+
+        <!-- 11 · Final design 1 · full frame -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
             <div class="clip">
               <video src="images/homewise-scope.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-scope-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
@@ -848,14 +908,67 @@
           </div>
         </section>
 
-        <!-- 12 · Final design 2 -->
-        <section class="slide slide--media">
+        <!-- 12 · Final design 2 · the decision -->
+        <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 2 of 4</p>
-            <div class="media-head">
-              <h2 class="s-title">A match you can trust, not a list to sort</h2>
-              <p>A verified match arrives with its reasoning: match confidence, checks on license, insurance, and real permit history, and how many Homewisers recommend them.</p>
+            <p class="s-label">Final design · 2 of 5</p>
+            <h2 class="s-title">One scope, every contractor</h2>
+            <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job.</p>
+            <div class="push">
+              <p class="trade-k">The tradeoff</p>
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version I didn't ship</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-scope-old.jpg" alt="The old diagnosis card, leading with 92% confidence and a one line source" decoding="async"></div>
+                  <p>The scope's diagnosis led with "92% confidence". Three of four testers asked what the number was based on, and every attempt to explain it, a one line source, then a step by step trail, just added chrome.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-scope-new.jpg" alt="The shipped diagnosis card, Most likely cause with the photos it read" decoding="async"></div>
+                  <p>The score became "Most likely cause", and the diagnosis with a local price benchmark does the trust work the number was not doing. A claim that can explain itself beats one that only sounds precise.</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
+
+        <!-- 13 · Final design 2 · full frame -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="clip">
+              <video src="images/homewise-contractors.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-contractors-poster.jpg"></video>
+              <div class="clip-bar"><i></i></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 14 · Final design 3 · the decision -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 3 of 5</p>
+            <h2 class="s-title">A match you can trust, not a list to sort</h2>
+            <p class="s-body">A verified match arrives with its reasoning: why it was picked, and how many Homewisers recommend them.</p>
+            <div class="push">
+              <p class="trade-k">The tradeoff</p>
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version I didn't ship</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-send-old.jpg" alt="The old page, reject, reroll and approve buttons sitting above the evidence" decoding="async"></div>
+                  <p>The actions sat at the top of the page: reject all three, show three different, approve and send. It asked for a commitment before you had read a single row, and the swap icon on every column was decorative, wired to nothing.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-send-new.jpg" alt="The shipped page, the Ready to proceed dock sitting below the evidence" decoding="async"></div>
+                  <p>Approve moved below the evidence into a "Ready to proceed" dock, so the decision comes after the read. Any column swaps for its next best match in one click, and an urgent job pulls bids back in 24 hours instead of five days.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 15 · Final design 3 · full frame -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
             <div class="clip">
               <video src="images/homewise-match.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-match-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
@@ -863,14 +976,33 @@
           </div>
         </section>
 
-        <!-- 13 · Final design 3 -->
-        <section class="slide slide--media">
+        <!-- 16 · Final design 4 · the decision -->
+        <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 3 of 4</p>
-            <div class="media-head">
-              <h2 class="s-title">Compare apples to apples, then you sign off</h2>
-              <p>Bids line up side by side with a plain language summary and outlier flags. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+            <p class="s-label">Final design · 4 of 5</p>
+            <h2 class="s-title">Compare apples to apples, then you sign off</h2>
+            <p class="s-body">Bids line up side by side with a plain language summary and outlier flags, and approving the hire is one deliberate click.</p>
+            <div class="push">
+              <p class="trade-k">The tradeoff</p>
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version I didn't ship</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-compare-old.jpg" alt="The old approve section, contact hidden as a small link below the Approve button" decoding="async"></div>
+                  <p>The first version topped the matrix with a "3 deviations flagged" headline and tucked contact under Approve as a small ghost link. The count didn't match the matrix, and four of four testers wanted the call first.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-compare-new.jpg" alt="The shipped page, Ask before booking sitting above the approve section" decoding="async"></div>
+                  <p>The count is gone, flags live in the cells they describe, and the summary names them: the $75 fee, the missing warranty language. "Ask before booking" became a full button above Approve, so the page reads ask first, then approve.</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
+
+        <!-- 17 · Final design 4 · full frame -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
             <div class="clip">
               <video src="images/homewise-compare.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-compare-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
@@ -878,14 +1010,33 @@
           </div>
         </section>
 
-        <!-- 14 · Final design 4 -->
-        <section class="slide slide--media">
+        <!-- 18 · Final design 5 · the decision -->
+        <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 4 of 4</p>
-            <div class="media-head">
-              <h2 class="s-title">One place, from booking to done</h2>
-              <p>Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+            <p class="s-label">Final design · 5 of 5</p>
+            <h2 class="s-title">One place, from booking to done</h2>
+            <p class="s-body">Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+            <div class="push">
+              <p class="trade-k">The tradeoff</p>
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version I didn't ship</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-track-old.jpg" alt="The old build, the live task card rendered a second time on the Conversations page" decoding="async"></div>
+                  <p>While a job was live it showed up in two places at once: the card on the overview, and the same live task rendered again under Conversations. Two surfaces both claiming to be where the job was.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
+                  <div class="trade-shot"><img src="images/homewise-trade-track-new.jpg" alt="The shipped Conversations page, empty while the job is live, pointing to the Overview" decoding="async"></div>
+                  <p>A live job has one home, the card on the overview. Conversations stays empty until close out, then holds the full thread, the AI's actions, and every artifact. The record arrives when the story is over.</p>
+                </div>
+              </div>
             </div>
+          </div>
+        </section>
+
+        <!-- 19 · Final design 5 · full frame -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
             <div class="clip">
               <video src="images/homewise-track.mp4" data-clip loop muted playsinline preload="none" poster="images/homewise-track-poster.jpg"></video>
               <div class="clip-bar"><i></i></div>
@@ -893,7 +1044,7 @@
           </div>
         </section>
 
-        <!-- 15 · Outcome -->
+        <!-- 20 · Outcome -->
         <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -910,7 +1061,7 @@
           </div>
         </section>
 
-        <!-- 16 · Design system -->
+        <!-- 21 · Design system -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system</p>
@@ -925,7 +1076,7 @@
           </div>
         </section>
 
-        <!-- 17 · Collaboration + shipped build -->
+        <!-- 22 · Collaboration + shipped build -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Collaboration</p>
@@ -939,7 +1090,7 @@
           </div>
         </section>
 
-        <!-- 18 · Reflection -->
+        <!-- 23 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -950,7 +1101,7 @@
           </div>
         </section>
 
-        <!-- 19 · Sign-off -->
+        <!-- 24 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>

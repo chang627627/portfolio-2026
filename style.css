@@ -5038,3 +5038,83 @@ body {
   background: rgba(240, 240, 240, 0.92);
   color: #0a0a0a;
 }
+
+/* ===== Homewise Final Design tradeoffs — the deck's decision-slide format
+   on the page: "The tradeoff" eyebrow, two rule-topped columns, tick +
+   constant header, evidence crop, receipt below. Ticks wear Hearth's
+   sage/ember pastels per the hw- artifacts-carry-Hearth convention;
+   hairlines stay the page's own white-alpha. ===== */
+.project-content .hw-trade {
+  margin-top: 40px;
+}
+
+.hw-trade-k {
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin: 0 0 16px;
+}
+
+.hw-trade-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.hw-trade-col {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 16px;
+}
+
+.hw-trade-col h4 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text);
+  margin: 0 0 12px;
+}
+
+.hw-tick {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+
+.hw-tick--bad { background: #F5E4CE; color: #8E601E; }
+.hw-tick--good { background: #E2E8DC; color: #4F6942; }
+
+.hw-trade-shot {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin: 0 0 12px;
+}
+
+.hw-trade-shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.hw-trade-col > p {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .hw-trade-cols {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}
