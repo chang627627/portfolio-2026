@@ -9,17 +9,17 @@
   <meta property="og:url" content="https://www.chang-mou.com/">
   <meta property="og:title" content="Chang Mou — Product Designer">
   <meta property="og:description" content="iF & Red Dot winner. Shaping AI products with taste.">
-  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=4">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Chang Mou — Product Designer">
   <meta name="twitter:description" content="iF & Red Dot winner. Shaping AI products with taste.">
-  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=4">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=230">
+  <link rel="stylesheet" href="style.css?v=232">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -96,8 +96,8 @@
     <div class="hero-orbs hero-orbs--g2"></div>
     <div class="hero-content">
       <h1>
-        <span class="line"><span class="line-inner" data-text="AI-first product designer."></span></span>
-        <span class="line"><span class="line-inner" data-text="Building what's next."></span></span>
+        <span class="line"><span class="line-inner" data-text="AI products people can trust."></span></span>
+        <span class="line"><span class="line-inner" data-text="I build what I design."></span></span>
       </h1>
       <p class="hero-sub">I design intuitive products across SaaS, emerging tech, and social impact, and I prototype in real code, this site included.</p>
       <a class="status-tag" href="mailto:changmou627627@gmail.com"><span class="status-dot"></span>Open to new opportunities <span class="arrow">↗</span></a>
@@ -121,19 +121,29 @@
       // widen the orb bleed off-screen so the larger drift never exposes a gradient edge (desktop only)
       heroOrbs.style.left = '-12%';
       heroOrbs.style.right = '-12%';
-      heroOrbs.style.transition = 'translate 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+      const EASE = 'cubic-bezier(0.22, 1, 0.36, 1)';
+      heroOrbs.style.transition = `translate 0.55s ${EASE}`;
 
-      let cx = 0, cy = 0, raf = null;
+      let cx = 0, cy = 0, raf = null, dragging = false;
 
       const apply = () => {
         raf = null;
         const rect = hero.getBoundingClientRect();
-        const nx = (cx - rect.left) / rect.width - 0.5;
-        const ny = (cy - rect.top) / rect.height - 0.5;
-        // existing magnetic tilt on the text block (unchanged)
-        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
-        // the light leans the same way, so tilt + light read as one motion
-        heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
+        // clamped so a drag tracked outside the hero (window-level move) can
+        // lean the field slightly past the edge but never fling it
+        const nx = Math.max(-0.6, Math.min(0.6, (cx - rect.left) / rect.width - 0.5));
+        const ny = Math.max(-0.6, Math.min(0.6, (cy - rect.top) / rect.height - 0.5));
+        // block tilt, halved from 6deg when the per-glyph magnetic displacement
+        // landed — two position responses at full strength fight each other
+        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -3}deg) rotateY(${nx * 3}deg)`;
+        // the light leans the same way, so tilt + light read as one motion.
+        // While dragging the grip amplifies: X stays inside the -12% bleed
+        // budget (0.6 * 180 * 1.8 = 194px < ~207px of hidden gradient at
+        // 1440); Y is allowed to move the seam — the displacement IS the drag,
+        // and release eases it home.
+        const ax = dragging ? ORB_X * 1.8 : ORB_X;
+        const ay = dragging ? ORB_Y * 2.5 : ORB_Y;
+        heroOrbs.style.translate = `${nx * ax}px ${ny * ay}px`;
         // per-glyph specular on the headline rides the same frame (defined by
         // the sweep script once the type has settled; no-op before that)
         if (window.__heroSpecular) window.__heroSpecular(cx, cy, rect);
@@ -144,7 +154,47 @@
         if (!raf) raf = requestAnimationFrame(apply);
       });
 
+      // Drag the light: press-and-hold grabs the field — amplified lean, a
+      // tighter grip ease, and a wider specular pool (the engine reads
+      // __heroDrag) — release eases home on a longer curve so it reads as
+      // momentum, not a snap. Links opt out; preventDefault suppresses text
+      // selection so a drag across the headline never highlights it.
+      hero.addEventListener('mousedown', (e) => {
+        if (e.button !== 0 || e.target.closest('a')) return;
+        e.preventDefault();
+        dragging = true; window.__heroDrag = true;
+        hero.classList.add('hero--dragging');
+        heroOrbs.style.transition = `translate 0.25s ${EASE}`;
+        cx = e.clientX; cy = e.clientY;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!dragging) return; // keeps a held grip tracking outside the hero
+        cx = e.clientX; cy = e.clientY;
+        if (!raf) raf = requestAnimationFrame(apply);
+      });
+      window.addEventListener('mouseup', () => {
+        if (!dragging) return;
+        dragging = false; window.__heroDrag = false;
+        hero.classList.remove('hero--dragging');
+        heroOrbs.style.transition = `translate 0.9s ${EASE}`;
+        const rect = hero.getBoundingClientRect();
+        const inside = cx >= rect.left && cx <= rect.right && cy >= rect.top && cy <= rect.bottom;
+        if (inside) {
+          if (!raf) raf = requestAnimationFrame(apply);
+        } else {
+          // released outside: the hero's mouseleave already fired mid-drag and
+          // was deliberately ignored, so the reset happens here, riding the
+          // slow release ease home
+          heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+          heroOrbs.style.translate = '0px 0px';
+          if (window.__heroSpecular) window.__heroSpecular(null);
+        }
+        setTimeout(() => { if (!dragging) heroOrbs.style.transition = `translate 0.55s ${EASE}`; }, 900);
+      });
+
       hero.addEventListener('mouseleave', () => {
+        if (dragging) return; // the grip survives leaving; mouseup owns the reset
         if (raf) { cancelAnimationFrame(raf); raf = null; }
         heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
         heroOrbs.style.translate = '0px 0px';
@@ -303,8 +353,13 @@
   // Afterward, the type stays lit: __heroSpecular gives glyphs near the cursor
   // a brightness lift + bloom with gaussian falloff. It is CALLED from the
   // same rAF handler that drives the tilt and Lightfall (Script A near the
-  // hero), so tilt + light field + glyph sheen move as one system; the CSS
-  // transition on .settled spans supplies the Lightfall-style trail.
+  // hero), so tilt + light field + glyph sheen move as one system. Three
+  // behaviors layer on that engine: an IGNITION pass (one scripted
+  // full-intensity beam crosses the settled headline — the landing beat), a
+  // WAKE (per-glyph asymmetric transition durations: light answers fast,
+  // lets go slowly, so cursor motion paints a trail), and MAGNETIC type
+  // (glyphs lean a few px toward the pointer with a JS spring — transform is
+  // not in the .settled transition list, so those writes land instantly).
   // Waits on document.fonts so positions are measured in Neue Montreal.
   const sweepReady = (document.fonts && document.fonts.ready)
     ? document.fonts.ready : Promise.resolve();
@@ -349,25 +404,48 @@
       if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
       const heroEl = document.querySelector('.hero');
       const orbsEl = heroEl.querySelector('.hero-orbs');
-      let centers = null, heroW = 1;
+      let centers = null, heroW = 1, ignFrom = 0, ignTo = 0;
       const cache = () => {
         const hr = heroEl.getBoundingClientRect();
         heroW = hr.width;
-        centers = glyphs.map(g => {
+        // subtract the engine's own magnetic offsets: a resize can re-measure
+        // while glyphs are still displaced, and trusting the box would bake
+        // that displacement into the "base" centers (review finding)
+        centers = glyphs.map((g, i) => {
           const r = g.getBoundingClientRect();
-          return { x: r.left + r.width / 2 - hr.left, y: r.top + r.height / 2 - hr.top };
+          return { x: r.left + r.width / 2 - hr.left - mx[i], y: r.top + r.height / 2 - hr.top - my[i] };
         });
+        // ignition beam travel: enter fully dark on the left, exit dark right
+        ignFrom = Math.min(...centers.map(c => c.x)) - 260;
+        ignTo = Math.max(...centers.map(c => c.x)) + 260;
       };
       window.addEventListener('resize', () => { centers = null; }, { passive: true });
 
       const last = new Float32Array(glyphs.length);
       const SX = 2 * 90 * 90;    // cursor: sigma 90px across, about two glyph widths
+      const SXD = 2 * 140 * 140; // while dragging the pool widens — light gathers under the grip
       const SY = 2 * 170 * 170;  // soft vertical falloff so hovering the sub barely lights the h1
       const AX = 2 * 230 * 230;  // ambient: broad sweep, not a spotlight
       const AMBIENT = 0.55;      // ceiling of the always-on shimmer (cursor peaks at 1).
                                  // 0.38 measured near-invisible (brightness 1.04,
                                  // shadow alpha 0.13) — the "too subliminal to earn
                                  // its place" failure mode. This is the one dial.
+      // Wake: rise must stay well under the 60ms tick so the light answers the
+      // pointer; decay is the trail length. These override the stylesheet's
+      // 0.45s per glyph, per direction of change.
+      const RISE = '0.12s', DECAY = '1.1s';
+      // Ignition: phase computes from an ABSOLUTE start time, so a hidden tab
+      // or an early scroll-away skips the beam (frames never render while the
+      // IO has the loop off) instead of replaying it stale later.
+      const IGN_DELAY = 180, IGN_DUR = 750, GX = 2 * 150 * 150;
+      const ignStart = performance.now() + IGN_DELAY;
+      // ignSeen: the pill only ignites if the beam actually rendered — a
+      // visitor who scrolled away and missed it gets no orphan pulse
+      let ignSeen = false, ignFired = false;
+      // Magnetic: forces read the CACHED base centers, never the displaced
+      // boxes, so displacement cannot feed back into itself.
+      const PULL = 3.2, MR = 2 * 110 * 110, LERP = 0.18;
+      const mx = new Float32Array(glyphs.length), my = new Float32Array(glyphs.length);
       let cur = null;            // latest cursor position in hero coords, or null
 
       // Script A still owns the cursor input — this only records it, so tilt,
@@ -386,33 +464,83 @@
       const frame = (t) => {
         if (!running) return;
         requestAnimationFrame(frame);
-        // ~16Hz is plenty: the .settled spans carry a 0.45s filter transition,
-        // so CSS interpolates every gap. Keeps the per-frame style read cheap.
-        if (t - lastT < 60) return;
-        lastT = t;
         if (!centers) cache();
-        const wx = parseFloat(getComputedStyle(orbsEl).getPropertyValue('--g2-warm-x'));
-        const lightX = (isNaN(wx) ? 50 : wx) / 100 * heroW;
-        for (let i = 0; i < glyphs.length; i++) {
-          const c = centers[i];
-          const adx = c.x - lightX;
-          let I = AMBIENT * Math.exp(-(adx * adx) / AX);
-          if (cur) {
-            const dx = c.x - cur.x, dy = c.y - cur.y;
-            const p = Math.exp(-(dx * dx) / SX - (dy * dy) / SY);
-            I = p + I * (1 - p);   // screen blend: cursor wins locally, ambient fills the rest
+
+        // Specular intensity, throttled to ~16Hz: the wake transitions
+        // interpolate every gap, so faster writes buy nothing — EXCEPT during
+        // the ignition pass, which renders every frame so the beam is crisp.
+        const ph = (t - ignStart) / IGN_DUR;
+        const igniting = ph >= 0 && ph <= 1;
+        if (igniting) ignSeen = true;
+        // pill ignition: as the beam exits the headline, the availability dot
+        // fires once — the entrance choreography lands on the hire CTA
+        if (ignSeen && !ignFired && ph > 1) {
+          ignFired = true;
+          const dot = document.querySelector('.status-dot');
+          if (dot) dot.classList.add('dot-ignite');
+        }
+        if (igniting || t - lastT >= 60) {
+          lastT = t;
+          const wx = parseFloat(getComputedStyle(orbsEl).getPropertyValue('--g2-warm-x'));
+          const lightX = (isNaN(wx) ? 50 : wx) / 100 * heroW;
+          let ignX = 0;
+          if (igniting) {
+            const e = 0.5 - 0.5 * Math.cos(Math.PI * ph);   // easeInOutSine
+            ignX = ignFrom + (ignTo - ignFrom) * e;
           }
-          if (I < 0.02) I = 0;
-          if (Math.abs(I - last[i]) < 0.015) continue;   // skip imperceptible writes
-          last[i] = I;
-          if (!I) {
-            glyphs[i].style.filter = '';
-            glyphs[i].style.textShadow = '';
-          } else {
-            glyphs[i].style.filter = 'brightness(' + (1 + 0.10 * I).toFixed(3) + ')';
-            glyphs[i].style.textShadow =
-              '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
-              '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')';
+          for (let i = 0; i < glyphs.length; i++) {
+            const c = centers[i];
+            const adx = c.x - lightX;
+            let I = AMBIENT * Math.exp(-(adx * adx) / AX);
+            if (cur) {
+              const dx = c.x - cur.x, dy = c.y - cur.y;
+              const p = Math.exp(-(dx * dx) / (window.__heroDrag ? SXD : SX) - (dy * dy) / SY);
+              I = p + I * (1 - p);   // screen blend: cursor wins locally, ambient fills the rest
+            }
+            if (igniting) {
+              const gdx = c.x - ignX;
+              I = 1 - (1 - I) * (1 - Math.exp(-(gdx * gdx) / GX));   // beam wins locally
+            }
+            if (I < 0.02) I = 0;
+            if (Math.abs(I - last[i]) < 0.015) continue;   // skip imperceptible writes
+            // wake: brightening answers fast, dimming trails off slowly
+            glyphs[i].style.transitionDuration = I > last[i] ? RISE : DECAY;
+            last[i] = I;
+            if (!I) {
+              glyphs[i].style.filter = '';
+              glyphs[i].style.textShadow = '';
+            } else {
+              glyphs[i].style.filter = 'brightness(' + (1 + 0.10 * I).toFixed(3) + ')';
+              glyphs[i].style.textShadow =
+                '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
+                '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')';
+            }
+          }
+        }
+
+        // Magnetic displacement, every frame: pure math + transform writes,
+        // no style reads, so it stays cheap at full rate. The force ramps
+        // down inside 24px so the glyph under the pointer rests instead of
+        // jittering around the direction singularity.
+        for (let i = 0; i < glyphs.length; i++) {
+          let tx = 0, ty = 0;
+          if (cur) {
+            const dx = cur.x - centers[i].x, dy = cur.y - centers[i].y;
+            const d2 = dx * dx + dy * dy;
+            const f = Math.exp(-d2 / MR);
+            if (f > 0.01) {
+              const d = Math.sqrt(d2) || 1;
+              const k = PULL * f * Math.min(d, 24) / (24 * d);
+              tx = dx * k; ty = dy * k;
+            }
+          }
+          mx[i] += (tx - mx[i]) * LERP;
+          my[i] += (ty - my[i]) * LERP;
+          if (Math.abs(mx[i]) > 0.02 || Math.abs(my[i]) > 0.02) {
+            glyphs[i].style.transform = 'translate(' + mx[i].toFixed(2) + 'px,' + my[i].toFixed(2) + 'px)';
+          } else if (glyphs[i].style.transform) {
+            glyphs[i].style.transform = '';
+            mx[i] = 0; my[i] = 0;
           }
         }
       };
@@ -423,6 +551,11 @@
           if (!running) { running = true; lastT = -1e4; requestAnimationFrame(frame); }
         } else {
           running = false;
+          // clear the recorded pointer: with the hero fully off-screen no
+          // pointer can be over it, but Firefox fires no boundary event when
+          // content scrolls under a stationary cursor — without this, a
+          // phantom cursor would keep glyphs bent and lit on return (review finding)
+          cur = null;
         }
       }).observe(heroEl);
     }
