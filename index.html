@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=232">
+  <link rel="stylesheet" href="style.css?v=233">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -101,6 +101,7 @@
       </h1>
       <p class="hero-sub">I design intuitive products across SaaS, emerging tech, and social impact, and I prototype in real code, this site included.</p>
       <a class="status-tag" href="mailto:changmou627627@gmail.com"><span class="status-dot"></span>Open to new opportunities <span class="arrow">↗</span></a>
+      <p class="hero-presence" id="heroPresence">San Francisco</p>
     </div>
   </section>
 
@@ -200,6 +201,17 @@
         heroOrbs.style.translate = '0px 0px';
         if (window.__heroSpecular) window.__heroSpecular(null);
       });
+    }
+
+    // Live presence: SF local time, ticking. Runs on every device (text only,
+    // no motion, so it sits outside the pointer/motion gate); if JS never
+    // runs, the line still reads just "San Francisco", which stays true.
+    const presence = document.getElementById('heroPresence');
+    if (presence) {
+      const presFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' });
+      const presTick = () => { presence.textContent = 'San Francisco · ' + presFmt.format(new Date()); };
+      presTick();
+      setInterval(presTick, 10000);
     }
 
   </script>
@@ -404,10 +416,11 @@
       if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
       const heroEl = document.querySelector('.hero');
       const orbsEl = heroEl.querySelector('.hero-orbs');
-      let centers = null, heroW = 1, ignFrom = 0, ignTo = 0;
+      let centers = null, heroW = 1, heroH = 1, ignFrom = 0, ignTo = 0;
       const cache = () => {
         const hr = heroEl.getBoundingClientRect();
         heroW = hr.width;
+        heroH = hr.height;
         // subtract the engine's own magnetic offsets: a resize can re-measure
         // while glyphs are still displaced, and trusting the box would bake
         // that displacement into the "base" centers (review finding)
@@ -466,6 +479,15 @@
         requestAnimationFrame(frame);
         if (!centers) cache();
 
+        // Light release on exit (Linear useScrollMask precedent — the one
+        // verified in-hero scroll-linked effect at the tier this site aims
+        // at): as the hero scrolls away, the type hands its light back to the
+        // field. Scrubbed off scrollY, fully reversible, and it completes at
+        // 70% of the hero's height — just before the gradient's own scroll
+        // lag (--g2-lift over 100vh) maxes, so the light leaves the type
+        // first and the field follows.
+        const rel = Math.max(0, 1 - window.scrollY / (heroH * 0.7));
+
         // Specular intensity, throttled to ~16Hz: the wake transitions
         // interpolate every gap, so faster writes buy nothing — EXCEPT during
         // the ignition pass, which renders every frame so the beam is crisp.
@@ -501,6 +523,7 @@
               const gdx = c.x - ignX;
               I = 1 - (1 - I) * (1 - Math.exp(-(gdx * gdx) / GX));   // beam wins locally
             }
+            I *= rel;   // the release damps every source at once
             if (I < 0.02) I = 0;
             if (Math.abs(I - last[i]) < 0.015) continue;   // skip imperceptible writes
             // wake: brightening answers fast, dimming trails off slowly
@@ -530,7 +553,8 @@
             const f = Math.exp(-d2 / MR);
             if (f > 0.01) {
               const d = Math.sqrt(d2) || 1;
-              const k = PULL * f * Math.min(d, 24) / (24 * d);
+              // rel: the magnetic grip relaxes with the light on scroll-out
+              const k = PULL * f * Math.min(d, 24) / (24 * d) * rel;
               tx = dx * k; ty = dy * k;
             }
           }
