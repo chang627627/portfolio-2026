@@ -681,7 +681,7 @@
           <div class="slide-inner">
             <p class="s-label">The bet</p>
             <h2 class="s-title">People will hand the hire to an agent they can trust</h2>
-            <p class="s-body">Hiring a contractor is one of the most stressful purchases a homeowner makes, and the market says the fear is earned. Homewise bets an agent can run the hire end to end, from problem to booked job. So the question that decides product-market fit is not whether the automation works. <span class="highlight">It is whether people will trust it.</span></p>
+            <p class="s-body">Hiring a contractor is one of the most stressful purchases a homeowner makes, and the market says the fear is earned. We bet an agent can run the hire end to end, from problem to booked job. So the question that decides product-market fit is not whether the automation works. <span class="highlight">It is whether people will trust it.</span></p>
             <div class="rows push">
               <div class="row"><span class="row-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
               <div class="row"><span class="row-num">41%</span><p>have been deceived by a service provider.</p></div>
@@ -701,9 +701,9 @@
                 <p class="s-body" style="font-size: 20px;">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
                 <div class="mini-grid">
                   <div class="mini"><h4>Voice of customer</h4><p>Eight interviews synthesized into six findings, including the reframe that set the direction.</p></div>
-                  <div class="mini"><h4>Hearth, the design system</h4><p>Built as living code, with a drift linter that caught drift before it shipped.</p></div>
+                  <div class="mini"><h4>Hearth, the design system</h4><p>Built as living code, so consistency is enforced by the repo, not by review.</p></div>
                   <div class="mini"><h4>Design review in the repo</h4><p>Merged the other two designers' pull requests so every contribution extended Hearth.</p></div>
-                  <div class="mini"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo. No Figma in between.</p></div>
+                  <div class="mini"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo and shipped by them in production. No Figma in between.</p></div>
                 </div>
               </div>
               <div class="split-media"><img src="images/homewise-track-poster.jpg" alt="The Homewise dashboard tracking a job from booking to done" decoding="async"></div>
@@ -742,9 +742,9 @@
           <div class="slide-inner">
             <p class="s-label">Insight</p>
             <h2 class="s-title">The price anxiety is really scope anxiety</h2>
-            <p class="s-body">When contractors propose different fixes for the same issue, their quotes describe different work, so there is nothing to compare. One homeowner was quoted $250 to $7,000 for the same siding repair, and the telling part is that he had already worked out the answer. <span class="highlight">He described Homewise before we built it.</span></p>
+            <p class="s-body">Reading the eight transcripts side by side, I kept seeing the same thing: when contractors propose different fixes for the same issue, their quotes describe different work, so there is nothing to compare. One homeowner was quoted $250 to $7,000 for the same siding repair, and the telling part is that he had already worked out the answer. <span class="highlight">He described Homewise before we built it.</span></p>
             <div class="spread push">
-              <p class="spread-label">Same siding repair · 5 contractors quoted</p>
+              <p class="spread-label">Interview 1 of 8 · same siding repair, 5 contractors quoted</p>
               <div class="spread-track">
                 <span class="spread-dot" style="left: 0%"></span>
                 <span class="spread-dot" style="left: 9%"></span>
@@ -764,12 +764,12 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Why this is hard</p>
-            <h2 class="s-title">A user problem and a data problem, at system level</h2>
+            <h2 class="s-title">A user problem, a data problem, an autonomy problem</h2>
             <p class="s-body">Three constraints shaped every call that follows.</p>
             <div class="cols push">
               <div class="col"><span class="col-idx">01</span><h3>A user problem</h3><p>Homeowners rarely know how to describe a repair, and they have no reason to trust the numbers that come back.</p></div>
               <div class="col"><span class="col-idx">02</span><h3>A data problem</h3><p>Trust is only credible on real license, insurance, and permit records. A model's best guess is not verification.</p></div>
-              <div class="col"><span class="col-idx">03</span><h3>One connected system</h3><p>A single change ripples through scope, matching, quotes, and tracking. No screen can be designed in isolation.</p></div>
+              <div class="col"><span class="col-idx">03</span><h3>An autonomy problem</h3><p>The more the agent does on its own, the less the homeowner sees. Every step it takes alone is a step trust has to survive.</p></div>
             </div>
           </div>
         </section>
@@ -779,7 +779,7 @@
           <div class="slide-inner">
             <p class="s-label">Design statement</p>
             <h2 class="s-title">An agent that scopes the job before it shops it</h2>
-            <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible. <span class="highlight">Three principles follow, one for each constraint.</span></p>
+            <p class="s-body">Homewise acts on the reframe: scope first, price second. Fix the scope, and the price becomes legible. <span class="highlight">I set three principles, one for each constraint.</span></p>
             <div class="cols push">
               <div class="col"><span class="col-idx">01</span><h3>Structured, not conversational</h3><p>A chatbot would leave people guessing at scope and price both. The workflow walks them through it instead.</p></div>
               <div class="col"><span class="col-idx">02</span><h3>Verified, not scraped</h3><p>Matching and flags run on license, insurance, and permit records, so every trust signal is a checkable fact.</p></div>
@@ -823,7 +823,7 @@
           <div class="slide-inner">
             <p class="s-label">Process</p>
             <h2 class="s-title s-title--compact">I flipped the process and designed by building</h2>
-            <p class="s-body" style="font-size: 20px; margin-top: 22px;">Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock. Each loop starts from the PM's PRD, our shared intent, and the prototype exposes gaps the document cannot.</p>
+            <p class="s-body" style="font-size: 20px; margin-top: 22px;">Engineering used to be the slow part, so design got front-loaded and the build came last. Now the team can stand up a working version faster than I can finish a static mock. Each loop starts from the PM's PRD, our shared intent, and the prototype exposes gaps the document cannot. Homewise demanded it: one connected system means a static mock can never show whether the whole flow holds.</p>
             <div class="flows">
               <div class="flow">
                 <div class="flow-head">
@@ -883,7 +883,7 @@
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 5</p>
             <h2 class="s-title">Define the scope, in plain language</h2>
-            <p class="s-body">You describe the problem in your own words. The agent drafts the scope, editable before it goes out, so every contractor quotes the exact same job and you never repeat yourself on the phone.</p>
+            <p class="s-body">You describe the problem in your own words and the agent drafts the scope. It stays editable before anything goes out, so what leaves the house is the job you meant, not the words you happened to have.</p>
             <div class="push">
               <p class="trade-k">The tradeoff</p>
               <div class="trade-cols">
@@ -895,7 +895,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
                   <div class="trade-shot"><img src="images/homewise-trade-intake-new.jpg" alt="The shipped intake, the agent rejecting a photo it cannot read with advice for the retake" decoding="async"></div>
-                  <p>The shipped chat is built to check the photo in front of you: a shot the agent cannot read gets rejected with advice for the retake, and the conversation moves only once it has what it needs. An agent that can say no is one you can believe.</p>
+                  <p>I rebuilt the intake to push back: the shipped chat is built to check the photo in front of you, a shot the agent cannot read gets rejected with advice for the retake, and the conversation moves only once it has what it needs. An agent that can say no is one you can believe.</p>
                 </div>
               </div>
             </div>
@@ -917,7 +917,7 @@
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5</p>
             <h2 class="s-title">One scope, every contractor</h2>
-            <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job.</p>
+            <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job. That only works if you believe the scope you are sending, which is where the first version failed.</p>
             <div class="push">
               <p class="trade-k">The tradeoff</p>
               <div class="trade-cols">
@@ -929,7 +929,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
                   <div class="trade-shot"><img src="images/homewise-trade-scope-new.jpg" alt="The shipped diagnosis card, Most likely cause with the photos it read" decoding="async"></div>
-                  <p>The score became "Most likely cause", and the diagnosis with a local price benchmark does the trust work the number was not doing. A claim that can explain itself beats one that only sounds precise.</p>
+                  <p>I replaced the score with "Most likely cause", and the diagnosis with a local price benchmark does the trust work the number was not doing. A claim that can explain itself beats one that only sounds precise.</p>
                 </div>
               </div>
             </div>
@@ -951,7 +951,7 @@
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5</p>
             <h2 class="s-title">A match you can trust, not a list to sort</h2>
-            <p class="s-body">A verified match arrives with its reasoning: why it was picked, and how many Homewisers recommend them.</p>
+            <p class="s-body">A verified match arrives with its reasoning: why it was picked, and how many Homewisers recommend them. The word of mouth people start with, rebuilt as data.</p>
             <div class="push">
               <p class="trade-k">The tradeoff</p>
               <div class="trade-cols">
@@ -963,7 +963,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
                   <div class="trade-shot"><img src="images/homewise-trade-send-new.jpg" alt="The shipped page, the Ready to proceed dock sitting below the evidence" decoding="async"></div>
-                  <p>Approve moved below the evidence into a "Ready to proceed" dock, so the decision comes after the read. Any column swaps for its next best match in one click, and an urgent job pulls bids back in 24 hours instead of five days.</p>
+                  <p>I moved Approve below the evidence into a "Ready to proceed" dock, so the decision comes after the read. Any column swaps for its next best match in one click, and an urgent job pulls bids back in 24 hours instead of five days. The page never asks for a yes it has not earned.</p>
                 </div>
               </div>
             </div>
@@ -997,7 +997,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
                   <div class="trade-shot"><img src="images/homewise-trade-compare-new.jpg" alt="The shipped page, Ask before booking sitting above the approve section" decoding="async"></div>
-                  <p>The count is gone, flags live in the cells they describe, and the summary names them: the $75 fee, the missing warranty language. "Ask before booking" became a full button above Approve, so the page reads ask first, then approve.</p>
+                  <p>I dropped the count and moved the flags into the cells they describe, and the summary names them: the $75 fee, the missing warranty language. "Ask before booking" became a full button above Approve, so the page reads ask first, then approve.</p>
                 </div>
               </div>
             </div>
@@ -1031,7 +1031,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it shipped this way</h4>
                   <div class="trade-shot"><img src="images/homewise-trade-thread-new.jpg" alt="The shipped thread's ending, visit complete, work confirmed, job closed out, Completed" decoding="async"></div>
-                  <p>The thread is where you track the job. The agent narrates each step as it happens, booking confirmed, visit complete, work confirmed, and files what it produces as cards. When the work ends the ending is written in, and the thread flips to Completed.</p>
+                  <p>I made the thread the tracker. The agent narrates each step as it happens, booking confirmed, visit complete, work confirmed, and files what it produces as cards. When the work ends the ending is written in, and the thread flips to Completed. The story gets its ending.</p>
                 </div>
               </div>
             </div>
@@ -1053,7 +1053,7 @@
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
             <h2 class="s-title">A working prototype, not a mockup</h2>
-            <p class="s-body">Homewise is live and interactive. The whole flow runs end to end, from the first plain language request to the moment you approve the hire. It is the artifact I handed the dev team, and the product they shipped was built straight onto it.</p>
+            <p class="s-body">Homewise is live and interactive. The whole flow runs end to end, from the first plain language request to the moment you approve the hire. Every trust call in the last five slides is in there, running for real. It is the artifact I handed the dev team, and the product they shipped was built straight onto it.</p>
             <div class="cta-row push">
               <a class="cta cta--solid" href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener">Explore the live prototype
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
@@ -1086,7 +1086,7 @@
             <p class="s-label">Collaboration</p>
             <div class="media-head">
               <h2 class="s-title">We skipped Figma and built the design in code</h2>
-              <p>We designed in the codebase from day one, a real React prototype on Hearth, then handed the dev team the repo itself. I built the front end and the data structures, the engineers wired live data and the backend onto them. Here is the shipped build, start to finish. Press play.</p>
+              <p>The deliverable was the repo itself. I built the front end and the data structures, the engineers wired live data and the backend onto them. Here is the shipped build, a four minute walkthrough. Press play.</p>
             </div>
             <div class="clip clip--play">
               <video src="images/homewise-live.mp4" controls preload="none" poster="images/homewise-live-poster.jpg" playsinline></video>
@@ -1099,8 +1099,8 @@
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
             <h2 class="s-title">Trust was the hard part, not the automation</h2>
-            <p class="s-body">People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. That is the answer to the opening bet: trust is not a promise, it is something the interface earns screen by screen.</p>
-            <p class="s-body">Building a front end prototype in Claude Code for the first time reframed the deliverable too.</p>
+            <p class="s-body">Every time testing pushed back, it pushed the same direction. Testers distrusted the score that could not explain itself, and four of four wanted a call before they would approve. People only let the agent run when they could see the scope it built, the contractors it verified, and knew the final yes was still theirs. That is the answer to the opening bet: trust is not a promise, it is something the interface earns screen by screen.</p>
+            <p class="s-body">And building the prototype in Claude Code, my first time designing a product entirely in code, changed what I think a designer hands over.</p>
             <p class="pull push">The design wasn't a picture of the product. It was the first version of it.</p>
           </div>
         </section>
