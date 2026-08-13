@@ -716,21 +716,6 @@ nav::before {
   }
 }
 
-/* Live presence line: the page knows what time it is where Chang is — the
-   "alive right now" signal the curated-portfolio research found most often
-   (a ticking local clock). JS upgrades the text to "San Francisco · 4:32 PM"
-   and ticks it; JS-fails leaves just the city, which stays true. */
-.hero-presence {
-  font-size: 13px;
-  letter-spacing: 0.02em;
-  color: rgba(255, 255, 255, 0.55);
-  margin-top: 14px;
-  position: relative;
-  z-index: 2;
-  opacity: 0;
-  animation: fadeUp 0.8s var(--ease-out) forwards 1.5s; /* closes the entrance sequence, after the pill */
-}
-
 .status-dot {
   width: 6px;
   height: 6px;

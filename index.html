@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=233">
+  <link rel="stylesheet" href="style.css?v=234">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -101,7 +101,6 @@
       </h1>
       <p class="hero-sub">I design intuitive products across SaaS, emerging tech, and social impact, and I prototype in real code, this site included.</p>
       <a class="status-tag" href="mailto:changmou627627@gmail.com"><span class="status-dot"></span>Open to new opportunities <span class="arrow">↗</span></a>
-      <p class="hero-presence" id="heroPresence">San Francisco</p>
     </div>
   </section>
 
@@ -201,17 +200,6 @@
         heroOrbs.style.translate = '0px 0px';
         if (window.__heroSpecular) window.__heroSpecular(null);
       });
-    }
-
-    // Live presence: SF local time, ticking. Runs on every device (text only,
-    // no motion, so it sits outside the pointer/motion gate); if JS never
-    // runs, the line still reads just "San Francisco", which stays true.
-    const presence = document.getElementById('heroPresence');
-    if (presence) {
-      const presFmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' });
-      const presTick = () => { presence.textContent = 'San Francisco · ' + presFmt.format(new Date()); };
-      presTick();
-      setInterval(presTick, 10000);
     }
 
   </script>
@@ -455,6 +443,7 @@
       // ignSeen: the pill only ignites if the beam actually rendered — a
       // visitor who scrolled away and missed it gets no orphan pulse
       let ignSeen = false, ignFired = false;
+      let lastRel = 1; // last release factor the intensity pass wrote at
       // Magnetic: forces read the CACHED base centers, never the displaced
       // boxes, so displacement cannot feed back into itself.
       const PULL = 3.2, MR = 2 * 110 * 110, LERP = 0.18;
@@ -510,6 +499,13 @@
             const e = 0.5 - 0.5 * Math.cos(Math.PI * ph);   // easeInOutSine
             ignX = ignFrom + (ignTo - ignFrom) * e;
           }
+          // dim-below-rest: the release does not just remove the ADDED light,
+          // it darkens the type's base toward 0.85 as the field abandons it —
+          // the visible half of the exit (the ambient delta alone measured
+          // near-invisible: the documented "too subliminal" failure mode)
+          const base = 1 - 0.15 * (1 - rel);
+          const relMoved = Math.abs(rel - lastRel) >= 0.01;
+          const relRising = rel > lastRel;
           for (let i = 0; i < glyphs.length; i++) {
             const c = centers[i];
             const adx = c.x - lightX;
@@ -525,20 +521,28 @@
             }
             I *= rel;   // the release damps every source at once
             if (I < 0.02) I = 0;
-            if (Math.abs(I - last[i]) < 0.015) continue;   // skip imperceptible writes
-            // wake: brightening answers fast, dimming trails off slowly
-            glyphs[i].style.transitionDuration = I > last[i] ? RISE : DECAY;
+            const dI = I - last[i];
+            // a rel change forces writes through the skip: at I=0 the base dim
+            // is the only thing moving, and it must still be written
+            if (Math.abs(dI) < 0.015 && !relMoved) continue;
+            // wake: brightening answers fast, dimming trails off slowly (a
+            // pure release change follows the scroll direction)
+            glyphs[i].style.transitionDuration =
+              (dI > 0.001 || (Math.abs(dI) <= 0.001 && relRising)) ? RISE : DECAY;
             last[i] = I;
-            if (!I) {
+            if (!I && rel >= 0.999) {
+              // pristine idle: clear back to the stylesheet state
               glyphs[i].style.filter = '';
               glyphs[i].style.textShadow = '';
             } else {
-              glyphs[i].style.filter = 'brightness(' + (1 + 0.10 * I).toFixed(3) + ')';
-              glyphs[i].style.textShadow =
-                '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
-                '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')';
+              glyphs[i].style.filter = 'brightness(' + (base + 0.10 * I).toFixed(3) + ')';
+              glyphs[i].style.textShadow = I
+                ? '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
+                  '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')'
+                : '';
             }
           }
+          if (relMoved) lastRel = rel;
         }
 
         // Magnetic displacement, every frame: pure math + transform writes,
