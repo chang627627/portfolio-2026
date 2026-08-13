@@ -194,7 +194,12 @@
           rgb = mix(rgb, COL[i] / 255.0, pa);
           a = pa + a * (1.0 - pa);
         }
-        gl_FragColor = vec4(rgb * a, a);  // premultiplied
+        // rgb is ALREADY premultiplied: the back-to-front mix chain
+        // (rgb = COL*pa + rgb*(1-pa)) is the premultiplied source-over
+        // recurrence. Multiplying by alpha again darkened the whole field
+        // by its own alpha -- the "too dark" bug. (No backticks in these
+        // comments: they live inside a JS template literal.)
+        gl_FragColor = vec4(rgb, a);
       }`
   };
 
