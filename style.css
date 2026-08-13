@@ -362,6 +362,14 @@ nav::before {
   animation: irisFlow 13s ease-in-out infinite, blueFlow 9s ease-in-out infinite;
 }
 
+/* The Living Gradient (hero-fluid.js): when the WebGL renderer is live, the
+   CSS layer hides but KEEPS ANIMATING — the shader reads its custom
+   properties every frame, so the fluid's composition can never drift from
+   this stylesheet's definition. Removing the class restores the CSS hero. */
+.hero--gl .hero-orbs {
+  opacity: 0;
+}
+
 /* --- Light lags the scroll (desktop, motion-safe) ---------------------
    As the hero scrolls away the whole light field drifts DOWN, so it appears
    to linger behind the page rather than travel with it — the field reads as
