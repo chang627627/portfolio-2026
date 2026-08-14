@@ -647,7 +647,8 @@
        z-index 0 it paints over the ::before wash up top while the wash
        still glows in the ink band below. */
     .title-media {
-      position: absolute; top: 0; left: 0; right: 0; height: 700px;
+      /* 672, not 700: buys the kicker its 48px of air below the image */
+      position: absolute; top: 0; left: 0; right: 0; height: 672px;
       overflow: hidden; z-index: 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     }
@@ -661,7 +662,7 @@
     }
     /* the wordmark shares the 380px ink band with the kicker and sub, so it
        steps down from the shared 280px (the homewise 700px-cover recipe) */
-    .slide--title .title-h1 { font-size: 190px; }
+    .slide--title .title-h1 { font-size: 180px; }
 
     /* Final Design screen cycles: the plate steps through the same screens
        the case study's carousels show. Shots stack absolutely inside the
