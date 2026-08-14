@@ -664,6 +664,11 @@
        steps down from the shared 280px (the homewise 700px-cover recipe) */
     .slide--title .title-h1 { font-size: 180px; }
 
+    /* Quote attribution on the testing slide: .col-cat normally sits ABOVE
+       the paragraph (coffee's competitive tiles), so when it follows a quote
+       it needs its own air or the two information types collide. */
+    .col > p + .col-cat { display: block; margin-top: 16px; }
+
     /* GUI exploration grid, ported from nova.html's .hud-grid: six AR text
        styles as titles + thumbs at deck scale; the chosen style carries the
        accent outline (the site's --selected treatment). */
