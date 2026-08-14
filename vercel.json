@@ -3,6 +3,7 @@
     { "source": "/nova", "destination": "/nova.html" },
     { "source": "/homewise", "destination": "/homewise.html" },
     { "source": "/coffeeslide", "destination": "/coffeeslide.html" },
+    { "source": "/novaslide", "destination": "/novaslide.html" },
     { "source": "/homewiseslide", "destination": "/homewiseslide.html" }
   ]
 }
