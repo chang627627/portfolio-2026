@@ -664,6 +664,20 @@
        steps down from the shared 280px (the homewise 700px-cover recipe) */
     .slide--title .title-h1 { font-size: 180px; }
 
+    /* GUI exploration grid, ported from nova.html's .hud-grid: six AR text
+       styles as titles + thumbs at deck scale; the chosen style carries the
+       accent outline (the site's --selected treatment). */
+    .hud-six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px 32px; }
+    .hud-six figure { margin: 0; display: flex; flex-direction: column; gap: 12px; }
+    .hud-six h3 { font-size: 20px; font-weight: 500; color: #1A1A17; margin: 0; }
+    .hud-six img {
+      /* 2/1, not the source 16/9: two rows of six must clear the canvas */
+      width: 100%; aspect-ratio: 2 / 1; object-fit: cover; display: block;
+      border-radius: 10px; border: 1px solid #E7E5DE;
+    }
+    .hud-six .sel img { outline: 3px solid #0070C8; outline-offset: -3px; border-color: transparent; }
+    .hud-six .sel h3 { color: #0070C8; }
+
     /* Solution system diagram, ported from nova.html's .solution-diagram:
        two abstract endpoints and a bidirectional connector = "a system with
        two parts that talk to each other". Ink glyphs on cream, connector in
@@ -851,7 +865,24 @@
                   <p>Lightweight wearables are entering everyday life, opening a window for AR that balances safety with freedom.</p>
                 </div>
               </div>
-              <p class="insight">We scored five mobility solutions against the same criteria. <span class="highlight">AR glasses won, and UNICEF should build the software layer, not the hardware,</span> so the product stays relevant as the device ecosystem evolves.</p>
+              <p class="insight">We scored five mobility solutions against the same criteria, GPS trackers to community escorts. <span class="highlight">AR glasses scored strongest,</span> a forward-looking direction as AR, language models, and hardware mature.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- · Competitive analysis -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Research · Competitive analysis</p>
+            <h2 class="s-title">Meta, Snap, and Apple are racing to the same device</h2>
+            <div class="push">
+              <div class="cols cols--4">
+                <div class="col"><span class="col-idx">01</span><h3>Meta Orion</h3><span class="col-cat">Full AR prototype</span><p>Floating display UI in the room. The AR endgame, years from consumer scale.</p><img class="col-shot" src="images/nova-comp-meta-orion.webp" alt="Meta Orion AR glasses with floating UI in a living room"></div>
+                <div class="col"><span class="col-idx">02</span><h3>Snap Spectacles</h3><span class="col-cat">Standalone AR</span><p>Hand input and translucent panels, in developers' hands today.</p><img class="col-shot" src="images/nova-comp-snap.jpg" alt="Snap Spectacles AR glasses with a translucent UI panel"></div>
+                <div class="col"><span class="col-idx">03</span><h3>Meta Ray-Ban</h3><span class="col-cat">Everyday smart glasses</span><p>Camera and audio people already wear. No display yet.</p><img class="col-shot" src="images/nova-comp-rayban.jpg" alt="Smart sunglasses worn outdoors"></div>
+                <div class="col"><span class="col-idx">04</span><h3>Apple Vision</h3><span class="col-cat">XR trajectory</span><p>XR and smart-glasses lines projected through 2028.</p><img class="col-shot" src="images/nova-comp-apple-roadmap.jpeg" alt="Apple Vision Series roadmap forecast"></div>
+              </div>
+              <p class="insight">The hardware race is funded and moving. <span class="highlight">UNICEF should build the software layer, not the hardware:</span> a device-agnostic layer stays relevant as the ecosystem evolves.</p>
             </div>
           </div>
         </section>
@@ -887,13 +918,29 @@
           </div>
         </section>
 
+        <!-- · GUI exploration -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">GUI exploration</p>
+            <h2 class="s-title">Six ways to put text in a child's view</h2>
+            <div class="hud-six push">
+              <figure class="sel"><h3>HUD Text</h3><img src="images/nova-hud-fixed.jpg" alt="HUD text, fixed peripheral readouts" decoding="async"></figure>
+              <figure><h3>Text for Long Reading</h3><img src="images/nova-hud-popup.jpg" alt="Long-form text on a contextual panel" decoding="async"></figure>
+              <figure><h3>Sticky Info Text</h3><img src="images/nova-hud-label.jpg" alt="Info anchored to an object" decoding="async"></figure>
+              <figure><h3>Signage Text</h3><img src="images/nova-hud-signage.jpg" alt="Billboard-style storefront overlay" decoding="async"></figure>
+              <figure><h3>Responsive Text</h3><img src="images/nova-hud-arrow.jpg" alt="Destination arrow at two scales" decoding="async"></figure>
+              <figure><h3>Ticker Text</h3><img src="images/nova-hud-ticker.jpg" alt="Message scrolling across the view" decoding="async"></figure>
+            </div>
+          </div>
+        </section>
+
         <!-- 8 · HUD text -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">HUD text</p>
             <div class="media-head">
               <h2 class="s-title">Information in fixed positions, never blocking the view</h2>
-              <p>Six AR text styles were explored with children's attention in mind. HUD text won: distance, time, and alerts hold stable positions, easy to read without losing the street.</p>
+              <p>The winning style in action. Alert on the left, time and distance on the right, mascot and path in the scene, all in fixed positions a child can read without losing the street.</p>
             </div>
             <div class="plate"><img src="images/nova-hud-text-example.jpg" alt="NOVA HUD text in action, annotated AR view" decoding="async"></div>
           </div>
