@@ -664,6 +664,30 @@
        steps down from the shared 280px (the homewise 700px-cover recipe) */
     .slide--title .title-h1 { font-size: 180px; }
 
+    /* Evaluation matrix, ported from nova.html's .eval-matrix as a light
+       hairline table: red/yellow/green dots, winner row tinted in the deck
+       accent with a left bar (the site's highlight treatment). */
+    .eval { width: 100%; border-collapse: collapse; }
+    .eval th {
+      font-size: 13px; font-weight: 500; letter-spacing: 0.14em; text-transform: uppercase;
+      color: #6B6B65; text-align: left; padding: 0 18px 16px 18px;
+    }
+    .eval td { font-size: 17px; font-weight: 400; color: #1A1A17; padding: 21px 18px; border-top: 1px solid #E7E5DE; }
+    .eval td:first-child { font-weight: 500; }
+    .eval .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; vertical-align: middle; }
+    .eval .g { background: #22C55E; }
+    .eval .y { background: #EAB308; }
+    .eval .r { background: #EF4444; }
+    .eval .win td { background: rgba(0, 112, 200, 0.06); }
+    .eval .win td:first-child { border-left: 3px solid #0070C8; }
+
+    /* Research image row, ported from nova.html's .research-image-row:
+       equal heights, widths following each image's own aspect, small
+       captions under each (the site's three-artifact layout). */
+    .tri { margin: 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+    .tri img { flex: 1 1 0; min-height: 0; width: auto; max-width: 100%; object-fit: contain; }
+    .tri figcaption { font-size: 14px; color: #6B6B65; text-align: center; }
+
     /* Quote attribution on the testing slide: .col-cat normally sits ABOVE
        the paragraph (coffee's competitive tiles), so when it follows a quote
        it needs its own air or the two information types collide. */
@@ -752,6 +776,11 @@
             <p class="s-label">The bet</p>
             <h2 class="s-title">A child will wear safety tech only if it feels like freedom</h2>
             <p class="s-body">A CCA capstone with the UNICEF Innovation Node, designing how children will move through cities in the next 3 to 10 years. The safest system on paper is worthless if the child takes it off, <span class="highlight">so every design call had to buy the parent reassurance without costing the child independence.</span></p>
+            <div style="display: flex; align-items: center; gap: 28px; margin-top: 34px;">
+              <span style="font-size: 13.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #6B6B65;">In collaboration with</span>
+              <img src="images/logo-cca-color.png" alt="California College of the Arts" decoding="async" style="height: 40px; width: auto;">
+              <img src="images/logo-unicef-color.png" alt="UNICEF" decoding="async" style="height: 40px; width: auto;">
+            </div>
             <div class="rows push">
               <div class="row"><span class="row-num">80%</span><p>Parents said the system made them more comfortable letting their child travel independently.</p></div>
               <div class="row"><span class="row-num">20+</span><p>Parents and children shaped the safety and interaction design through usability tests.</p></div>
@@ -843,7 +872,20 @@
               <h2 class="s-title">Grounding the design in real experiences</h2>
               <p>Expert events, family fieldwork at UC Berkeley and the SF Summer Resource Fair, five parent interviews, and co-creation workshops with families.</p>
             </div>
-            <div class="plate"><img src="images/nova-research-activities.png" alt="Field research collage from UC Berkeley and the SF Summer Resource Fair" decoding="async"></div>
+            <div class="plate" style="display: flex; gap: 40px; justify-content: center; align-items: stretch;">
+              <figure class="tri">
+                <img src="images/nova-research-activities.png" alt="Field research collage from UC Berkeley and the SF Summer Resource Fair" decoding="async">
+                <figcaption>Field research at UC Berkeley and the SF Summer Resource Fair</figcaption>
+              </figure>
+              <figure class="tri">
+                <img src="images/nova-research-interviews.png" alt="Synthesis grid of five parent interviews" decoding="async">
+                <figcaption>Synthesis of five parent interviews</figcaption>
+              </figure>
+              <figure class="tri">
+                <img src="images/nova-research-affinity.png" alt="Affinity map from co-creation workshops" decoding="async">
+                <figcaption>Affinity mapping from co-creation workshops</figcaption>
+              </figure>
+            </div>
           </div>
         </section>
 
@@ -871,6 +913,28 @@
                 </div>
               </div>
               <p class="insight">We scored five mobility solutions against the same criteria, GPS trackers to community escorts. <span class="highlight">AR glasses scored strongest,</span> a forward-looking direction as AR, language models, and hardware mature.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- · Evaluation matrix -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Research · Evaluation</p>
+            <h2 class="s-title">Five solutions, six criteria, one clear winner</h2>
+            <div class="push">
+              <table class="eval">
+                <thead>
+                  <tr><th>Solution</th><th>Real-time guidance</th><th>Builds independence</th><th>Engages children</th><th>Reassures parents</th><th>Futuristic potential</th><th>Feasibility</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>GPS Tracker Watch</td><td><span class="dot r"></span>No</td><td><span class="dot r"></span>Minimal</td><td><span class="dot y"></span>Low</td><td><span class="dot g"></span>Strong</td><td><span class="dot r"></span>Low</td><td><span class="dot g"></span>High</td></tr>
+                  <tr><td>Companion Mobile App</td><td><span class="dot y"></span>Limited</td><td><span class="dot y"></span>Some</td><td><span class="dot y"></span>Moderate</td><td><span class="dot y"></span>Moderate</td><td><span class="dot y"></span>Moderate</td><td><span class="dot g"></span>High</td></tr>
+                  <tr><td>Public Transit Training</td><td><span class="dot r"></span>None</td><td><span class="dot g"></span>Strong</td><td><span class="dot y"></span>Moderate</td><td><span class="dot y"></span>Moderate</td><td><span class="dot r"></span>Low</td><td><span class="dot y"></span>Limited</td></tr>
+                  <tr><td>Community Escort Program</td><td><span class="dot g"></span>Yes</td><td><span class="dot r"></span>None</td><td><span class="dot y"></span>Moderate</td><td><span class="dot g"></span>Strong</td><td><span class="dot r"></span>Low</td><td><span class="dot r"></span>Low</td></tr>
+                  <tr class="win"><td>Navigation AR Glasses</td><td><span class="dot g"></span>Yes</td><td><span class="dot g"></span>Strong</td><td><span class="dot g"></span>High</td><td><span class="dot g"></span>Strong</td><td><span class="dot g"></span>High</td><td><span class="dot y"></span>Moderate</td></tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -975,9 +1039,12 @@
               <h2 class="s-title">Nova makes it engaging without stealing attention</h2>
               <p>Minimal AR visuals reduced distraction but risked feeling plain. Nova, a friendly guide with strong contrast and a reassuring presence, adds warmth without crowding the view. Left: without. Right: with Nova.</p>
             </div>
-            <div class="plate" style="display: flex; gap: 40px; justify-content: center; align-items: stretch;">
-              <img src="images/nova-mascot-before.jpg" alt="AR view without the mascot" decoding="async" style="width: auto; min-width: 0;">
-              <img src="images/nova-mascot-after.jpg" alt="Same AR view with Nova the mascot" decoding="async" style="width: auto; min-width: 0;">
+            <div class="plate" style="display: flex; flex-direction: column; gap: 28px; align-items: center;">
+              <div style="display: flex; gap: 40px; justify-content: center; align-items: stretch; flex: 1 1 0; min-height: 0;">
+                <img src="images/nova-mascot-before.jpg" alt="AR view without the mascot" decoding="async" style="width: auto; min-width: 0; min-height: 0; object-fit: contain;">
+                <img src="images/nova-mascot-after.jpg" alt="Same AR view with Nova the mascot" decoding="async" style="width: auto; min-width: 0; min-height: 0; object-fit: contain;">
+              </div>
+              <img src="images/nova-mascot-exploration.png" alt="Nova character exploration, poses from waving to megaphone to hard hat" decoding="async" style="width: auto; max-width: 88%; flex: 1 1 0; min-height: 0; object-fit: contain;">
             </div>
           </div>
         </section>
