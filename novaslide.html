@@ -639,21 +639,29 @@
       .deck-track, .deck-progress { transition: none; }
       .slide-inner > * { transition: none; opacity: 1; transform: none; }
     }
-    /* Product cover on the title slide: the case-study hero fills the band
-       between the metadata row and the wordmark (homewiseslide's "product
-       visible before The bet" rule, in the contained variant — NOVA's cover
-       is a photograph, so the meta row stays on ink rather than on the
-       image). Lives inside .slide-inner: it rides the reveal stagger and
-       paints above the bookend wash (slide-inner is z-index 1). */
+    /* Product cover on the title slide: full-bleed, pinned to the top edge
+       at the full 1920 width (homewiseslide's title-media pattern) — the
+       metadata row sits ON the photograph, made legible by a top scrim
+       (per user: "full stretch the image, add overlay for information").
+       Lives OUTSIDE .slide-inner so the reveal never moves it, and at
+       z-index 0 it paints over the ::before wash up top while the wash
+       still glows in the ink band below. */
     .title-media {
-      flex: 1 1 0; min-height: 0; margin: 48px 0 56px;
-      border-radius: 12px; overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      position: absolute; top: 0; left: 0; right: 0; height: 700px;
+      overflow: hidden; z-index: 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
     }
     .title-media img {
       display: block; width: 100%; height: 100%;
-      object-fit: cover; object-position: 50% 28%; /* keeps the glasses centered in the band */
+      object-fit: cover; object-position: 50% 30%; /* keeps the glasses centered */
     }
+    .title-media::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(10, 10, 12, 0.62), rgba(10, 10, 12, 0.18) 34%, transparent 55%);
+    }
+    /* the wordmark shares the 380px ink band with the kicker and sub, so it
+       steps down from the shared 280px (the homewise 700px-cover recipe) */
+    .slide--title .title-h1 { font-size: 190px; }
 
     /* Final Design screen cycles: the plate steps through the same screens
        the case study's carousels show. Shots stack absolutely inside the
@@ -687,15 +695,15 @@
 
         <!-- 1 · Title -->
         <section class="slide slide--title is-active">
+          <div class="title-media">
+            <img src="images/nova-hero-unigirl.jpg" alt="A child wearing the NOVA AR glasses on a city street" decoding="async">
+          </div>
           <div class="slide-inner">
             <div class="title-meta-row">
               <div class="tm"><span class="tm-k">Role</span><span class="tm-v">Lead Designer</span></div>
               <div class="tm"><span class="tm-k">Partner</span><span class="tm-v">CCA × UNICEF Innovation</span></div>
               <div class="tm"><span class="tm-k">Timeline</span><span class="tm-v">Jan – Aug 2025</span></div>
               <div class="tm"><span class="tm-k">Type</span><span class="tm-v">Sponsored academic</span></div>
-            </div>
-            <div class="title-media">
-              <img src="images/nova-hero-unigirl.jpg" alt="A child wearing the NOVA AR glasses on a city street" decoding="async">
             </div>
             <div class="title-bottom">
               <div>
