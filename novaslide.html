@@ -664,6 +664,17 @@
        steps down from the shared 280px (the homewise 700px-cover recipe) */
     .slide--title .title-h1 { font-size: 180px; }
 
+    /* Solution system diagram, ported from nova.html's .solution-diagram:
+       two abstract endpoints and a bidirectional connector = "a system with
+       two parts that talk to each other". Ink glyphs on cream, connector in
+       the deck accent. */
+    .sol-diagram { display: flex; align-items: center; justify-content: center; gap: 110px; }
+    .sol-node { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .sol-glyph { color: #1A1A17; margin-bottom: 12px; }
+    .sol-name { font-size: 21px; font-weight: 500; color: #1A1A17; }
+    .sol-sub { font-size: 15px; font-weight: 400; color: #6B6B65; }
+    .sol-link { flex: 0 0 190px; color: #0070C8; padding-bottom: 54px; }
+
     /* Final Design screen cycles: the plate steps through the same screens
        the case study's carousels show. Shots stack absolutely inside the
        plate (object-fit contain, so mixed aspect ratios letterbox instead
@@ -761,7 +772,35 @@
             <p class="s-label">Solution</p>
             <h2 class="s-title">AR guidance for children, safety controls for parents</h2>
             <p class="s-body">Nova pairs AR glasses a child wears with a companion app the parent holds. The system supports safe, independent mobility while keeping families connected.</p>
-            <div class="cols push">
+            <div class="push">
+              <div class="sol-diagram">
+                <div class="sol-node">
+                  <svg class="sol-glyph" width="235" height="94" viewBox="0 0 140 56" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="4" y="10" width="56" height="40" rx="10"/>
+                    <rect x="80" y="10" width="56" height="40" rx="10"/>
+                    <line x1="60" y1="26" x2="80" y2="26" stroke-linecap="round"/>
+                  </svg>
+                  <div class="sol-name">AR Glasses</div>
+                  <div class="sol-sub">for children</div>
+                </div>
+                <div class="sol-link" aria-hidden="true">
+                  <svg viewBox="0 0 140 28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="16" y1="14" x2="124" y2="14" stroke-dasharray="3 7"/>
+                    <polyline points="118 8, 124 14, 118 20"/>
+                    <polyline points="22 8, 16 14, 22 20"/>
+                  </svg>
+                </div>
+                <div class="sol-node">
+                  <svg class="sol-glyph" width="59" height="98" viewBox="0 0 60 100" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="6" y="6" width="48" height="88" rx="10"/>
+                    <line x1="24" y1="86" x2="36" y2="86" stroke-linecap="round"/>
+                    <circle cx="44" cy="22" r="3" fill="#0070C8" stroke="none"/>
+                  </svg>
+                  <div class="sol-name">Companion App</div>
+                  <div class="sol-sub">for parents</div>
+                </div>
+              </div>
+              <div class="cols" style="margin-top: 72px; grid-template-columns: 1fr 1fr;">
               <div class="col">
                 <span class="col-idx">01</span>
                 <h3>For children</h3>
@@ -772,6 +811,7 @@
                 <h3>For parents</h3>
                 <p>The companion app sets up child profiles, safe zones, and emergency contacts. Alerts fire only when a boundary is crossed, reassurance without constant surveillance.</p>
               </div>
+            </div>
             </div>
           </div>
         </section>
