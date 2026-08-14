@@ -639,6 +639,22 @@
       .deck-track, .deck-progress { transition: none; }
       .slide-inner > * { transition: none; opacity: 1; transform: none; }
     }
+    /* Final Design screen cycles: the plate steps through the same screens
+       the case study's carousels show. Shots stack absolutely inside the
+       plate (object-fit contain, so mixed aspect ratios letterbox instead
+       of distorting); the plate must FILL, so width:fit-content from the
+       shrink-wrap rule is overridden at higher specificity. */
+    .slide-inner > .plate.plate--cycle:last-child { width: 100%; align-self: stretch; position: relative; }
+    .plate--cycle .shot {
+      position: absolute; inset: 56px 72px; margin: auto;
+      width: calc(100% - 144px); height: calc(100% - 112px);
+      object-fit: contain; opacity: 0; transition: opacity 0.45s ease;
+    }
+    .plate--cycle .shot.is-on { opacity: 1; }
+    .shot-dots { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; gap: 8px; justify-content: center; }
+    .shot-dots span { width: 6px; height: 6px; border-radius: 50%; background: rgba(26, 26, 23, 0.22); }
+    .shot-dots span.on { background: rgba(26, 26, 23, 0.65); }
+    @media (prefers-reduced-motion: reduce) { .plate--cycle .shot { transition: none; } }
   </style>
 </head>
 <body>
@@ -880,7 +896,11 @@
               <h2 class="s-title">Companion app onboarding</h2>
               <p>Parents connect the glasses, set up a child profile, add emergency contacts, and define safe zones like home or school. Alerts arrive only if the child leaves a safe area.</p>
             </div>
-            <div class="plate"><img src="images/nova-companion-dashboard.jpg" alt="NOVA companion app, setup confirmation, activity dashboard, and notifications" decoding="async"></div>
+            <div class="plate plate--cycle">
+              <img class="shot is-on" src="images/nova-7IX2TVYFhIMLqXTEK1HErhzOvU.jpg" alt="Companion app, sign in and pair the glasses" decoding="async">
+              <img class="shot" src="images/nova-rlCqFB6mmq5njbWp5bSsmUsBvY.jpg" alt="Child profile, emergency contacts, safe zones, and safety settings" decoding="async">
+              <img class="shot" src="images/nova-companion-dashboard.jpg" alt="All set confirmation, activity dashboard, and notifications" decoding="async">
+            </div>
           </div>
         </section>
 
@@ -892,7 +912,17 @@
               <h2 class="s-title">Navigation mode</h2>
               <p>Clear voice prompts and simple visual cues guide the trip to school turn by turn, with contextual alerts for construction and traffic lights, and small celebrations on arrival.</p>
             </div>
-            <div class="plate"><img src="images/nova-OXusPLRUF0MH6VJ5r8Vkklh4.jpg" alt="NOVA AR view, follow me to school with mascot guidance" decoding="async"></div>
+            <div class="plate plate--cycle">
+              <img class="shot is-on" src="images/nova-gh8Pt73ypnrQBnE9wxrL2Tq3dqY.jpg" alt="Where should I take you? Home, school, or other" decoding="async">
+              <img class="shot" src="images/nova-zJ6u1RkPpAmB6A9mwZk5Dq3DQt4.jpg" alt="School, please. Voice command in action" decoding="async">
+              <img class="shot" src="images/nova-OXusPLRUF0MH6VJ5r8Vkklh4.jpg" alt="Follow me to school, with mascot guidance" decoding="async">
+              <img class="shot" src="images/nova-nav-start.jpg" alt="Start your trip to school now" decoding="async">
+              <img class="shot" src="images/nova-mhBwtqyNxJEfbdQamBs7PFgfmA.jpg" alt="Keep going, 30 feet, with directional arrow" decoding="async">
+              <img class="shot" src="images/nova-HFrwfLOQa6suUBAEuull6rKo.jpg" alt="White light, it is time to go, with traffic awareness" decoding="async">
+              <img class="shot" src="images/nova-nav-turn-right.jpg" alt="Turn right, 10 feet, with blue path arrow" decoding="async">
+              <img class="shot" src="images/nova-nav-turn-left.jpg" alt="Turn left, construction area, with mascot and route overlay" decoding="async">
+              <img class="shot" src="images/nova-nav-arrived.jpg" alt="Amazing work, you are at school safe. Arrival celebration" decoding="async">
+            </div>
           </div>
         </section>
 
@@ -904,7 +934,14 @@
               <h2 class="s-title">Freedom mode</h2>
               <p>As children explore on their own, the glasses warn when they leave a safe area, discourage unsafe interactions, and guide them back to safety. Independence, with a quiet net under it.</p>
             </div>
-            <div class="plate"><img src="images/nova-Rvbl8bdfYQQCnQoz8gSggig3ot8.jpg" alt="NOVA AR view, warning that the child is leaving the safe area" decoding="async"></div>
+            <div class="plate plate--cycle">
+              <img class="shot is-on" src="images/nova-Rvbl8bdfYQQCnQoz8gSggig3ot8.jpg" alt="You are leaving the safe area" decoding="async">
+              <img class="shot" src="images/nova-JSmZUIYSXDmlIMIlkAaED6CqD18.jpg" alt="Do not talk to strangers, with safe zone awareness" decoding="async">
+              <img class="shot" src="images/nova-free-detect.jpg" alt="Wanna find a safe place? Yes please or wait a second" decoding="async">
+              <img class="shot" src="images/nova-free-respond.jpg" alt="Yes, please. Voice response in action" decoding="async">
+              <img class="shot" src="images/nova-free-guide.jpg" alt="Turn left right now, urgent guidance with mascot and route arrow" decoding="async">
+              <img class="shot" src="images/nova-free-recover.jpg" alt="Great job, back in the safe zone, with call my mum and take me home options" decoding="async">
+            </div>
           </div>
         </section>
 
@@ -1327,6 +1364,51 @@
           render();
         } catch (e) { /* offline or local preview: stay per-browser */ }
       })();
+    })();
+  </script>
+
+  <script>
+    // Final Design screen cycles: each mode's plate steps through the same
+    // screens the case study's carousels show. Auto-advances while its slide
+    // is active (the deck grammar: media plays on arrival), resets to the
+    // first screen on exit; clicking the plate steps manually and re-arms
+    // the timer. Arrow keys stay with the DECK, never the cycle. In comment
+    // mode the pin layer sits above the plate, so pins win over stepping.
+    (() => {
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const plates = [...document.querySelectorAll('.plate--cycle')];
+      if (!plates.length) return;
+      const CYCLE_MS = 2600;
+      const cycles = plates.map(p => {
+        const shots = [...p.querySelectorAll('.shot')];
+        const dotWrap = document.createElement('div');
+        dotWrap.className = 'shot-dots';
+        shots.forEach(() => dotWrap.appendChild(document.createElement('span')));
+        p.appendChild(dotWrap);
+        const c = { p, shots, dots: [...dotWrap.children], i: 0, timer: null };
+        c.show = (n) => {
+          c.i = (n + shots.length) % shots.length;
+          shots.forEach((s, k) => s.classList.toggle('is-on', k === c.i));
+          c.dots.forEach((d, k) => d.classList.toggle('on', k === c.i));
+        };
+        c.show(0);
+        p.addEventListener('click', () => {
+          c.show(c.i + 1);
+          if (c.timer) { clearInterval(c.timer); c.timer = setInterval(() => c.show(c.i + 1), CYCLE_MS); }
+        });
+        return c;
+      });
+      const stop = (c) => { if (c.timer) { clearInterval(c.timer); c.timer = null; } c.show(0); };
+      const start = (c) => { if (!c.timer && !reduce) c.timer = setInterval(() => c.show(c.i + 1), CYCLE_MS); };
+      // the engine moves is-active without firing any event (replaceState is
+      // silent), so a light poll keys the cycles off the active slide
+      let lastActive = null;
+      setInterval(() => {
+        const act = document.querySelector('.slide.is-active');
+        if (act === lastActive) return;
+        lastActive = act;
+        cycles.forEach(c => (act && act.contains(c.p)) ? start(c) : stop(c));
+      }, 250);
     })();
   </script>
 </body>
