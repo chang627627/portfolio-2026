@@ -16,7 +16,7 @@ Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang
 
 - [Homewise](https://www.chang-mou.com/homewise.html): AI command center for homeowners. Prototyped in code (React, no Figma), shipped by the dev team. Live prototype at https://homewise-rust.vercel.app
 - [PollenNav](https://www.chang-mou.com/pollen.html): street-level pollen navigation for the one billion people with seasonal allergies. 4x international award winner (iF, Red Dot, NY Product Design Awards, European Product Design Award)
-- [StoryBloom](https://www.storybloom.tech/app): personalized bedtime stories for kids ages 3 to 8. Red Dot Winner 2026, NY Product Design Awards Silver 2026. Live product
+- [StoryBloom](https://www.chang-mou.com/storybloom.html): personalized bedtime app that turns how today felt into tonight's story, for kids ages 3 to 8. Red Dot Winner 2026, NY Product Design Awards Silver 2026. Designed with Ziyu Ye. Full case study on the site; live at storybloom.tech/app
 - [Litespace Coffee Chat](https://www.chang-mou.com/coffee.html): shipped B2B SaaS feature; 63% opt-in and 200+ chats in month one. The case study ends with a live 2026 rebuild of the flow as a conversational agent (Luna), embedded as a working prototype; its off-script replies are generated live by Claude Haiku
 - [Countersign](https://credit-analysis-agent.vercel.app/): agentic credit-analysis prototype; the agent analyzes, a human countersigns. Live demo
 - [UNICEF NOVA](https://www.chang-mou.com/nova.html): AR navigation for children balancing independence and parental reassurance; usability tested with 20+ parents and kids. CCA MDes capstone with the UNICEF Innovation Node
