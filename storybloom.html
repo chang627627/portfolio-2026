@@ -80,6 +80,7 @@
     <a href="#design-language" class="side-nav-link">Design language</a>
     <a href="#principles" class="side-nav-link">Principles</a>
     <a href="#final-design" class="side-nav-link">Final Design</a>
+    <a href="#live" class="side-nav-link">Try it live</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
   </nav>
 
@@ -248,8 +249,21 @@
     </div>
     <img loading="lazy" decoding="async" src="images/storybloom-parents.jpg" alt="The parent settings sheet: little one, story, bedtime, and content preferences" class="project-img-full" style="border-radius: var(--radius);">
 
+    <!-- Try it live -->
+    <div id="live" class="project-section project-section--desktop-only">
+      <p class="section-label">Try it live</p>
+      <h2>Tonight's ritual, running right here</h2>
+      <p>This is the working build, not a video. Make the four picks, choose a dreamland, and read what arrives, about three minutes, same as a real bedtime.</p>
+      <div class="agent-embed" style="background: linear-gradient(180deg, #F2ECFA 0%, #FDF8EE 100%);">
+        <iframe data-src="https://www.storybloom.tech/app" title="StoryBloom, the live app" style="width: 520px; height: 960px;"></iframe>
+        <button class="agent-restart" aria-label="Restart the app" title="Restart">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+      </div>
+    </div>
+
     <div class="project-section hw-cta-row">
-      <a href="https://www.storybloom.tech/app" target="_blank" rel="noopener" class="hw-cta">Try StoryBloom live <span class="arrow">↗</span></a>
+      <a href="https://www.storybloom.tech/app" target="_blank" rel="noopener" class="hw-cta">Open it full size <span class="arrow">↗</span></a>
     </div>
 
     <!-- Reflection -->
@@ -524,6 +538,31 @@
       footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // Live StoryBloom embed: load on approach so the app never costs the initial
+  // page load. On mobile the section is display:none, so it has no box, the
+  // observer never fires, and phones never fetch the app. The restart's
+  // contentWindow reload throws cross-origin, so the catch resets src instead.
+  (function () {
+    var frame = document.querySelector('.agent-embed iframe[data-src]');
+    if (!frame) return;
+    var restart = document.querySelector('.agent-restart');
+    if (restart) restart.addEventListener('click', function () {
+      if (!frame.src) { frame.src = frame.dataset.src; return; }
+      try { frame.contentWindow.location.reload(); }
+      catch (err) { frame.src = frame.dataset.src; }
+    });
+    if (!('IntersectionObserver' in window)) { frame.src = frame.dataset.src; return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        frame.src = frame.dataset.src;
+        io.disconnect();
+      }
+    }, { rootMargin: '200px 0px' });
+    io.observe(frame);
+  })();
 </script>
 
 <!-- Chat Widget -->
