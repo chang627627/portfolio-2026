@@ -20,6 +20,68 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=235">
+  <!-- Work-card motion. Scoped to this page (.card-loop / .sb-phone exist only
+       here), so it stays inline rather than bumping style.css across nine pages.
+       Same reasoning as homewise.html's inline flow-chart block. -->
+  <style>
+    .card-loop {
+      position: absolute;
+      inset: 0;
+      margin: auto;
+      width: 65%;
+      height: fit-content;
+      display: block;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--dur-base) var(--ease-out);
+    }
+    /* full-bleed covers (StoryBloom, New Craft) fill the plate instead of
+       floating at 65% like the contained screenshots */
+    .card-loop--cover { width: 100%; height: 100%; object-fit: cover; }
+
+    /* StoryBloom cover, rebuilt as layers so the three phones can arrive
+       separately. Each phone is masked to its real rounded-rect silhouette
+       (radius 70 on the 1920px original), so there is no rectangular patch of
+       old background to glow against the reconstructed wash. The drop shadow
+       is CSS, so it travels with the phone instead of being baked in. */
+    .sb-phone {
+      position: absolute;
+      width: 20.365%;              /* 391 / 1920 */
+      top: 12.222%;                /* 132 / 1080 */
+      display: block;
+      filter: drop-shadow(0 18px 30px rgba(90, 60, 130, 0.22));
+    }
+    .sb-phone--1 { left: 16.302%; }
+    .sb-phone--2 { left: 39.896%; }
+    .sb-phone--3 { left: 63.438%; }
+
+    @media (prefers-reduced-motion: no-preference) {
+      /* plays ONCE when the card nears the fold, and again on a later return
+         (the observer drops `is-playing` on exit, which rearms it). Not a
+         cycle: a card that keeps re-animating competes with the reader. */
+      .project-card.is-playing .sb-phone {
+        animation: sbPhoneIn 820ms cubic-bezier(0.34, 1.4, 0.5, 1) backwards;
+      }
+      .project-card.is-playing .sb-phone--1 { animation-name: sbPhoneInL; animation-delay: 0ms; }
+      .project-card.is-playing .sb-phone--2 { animation-delay: 130ms; }
+      .project-card.is-playing .sb-phone--3 { animation-name: sbPhoneInR; animation-delay: 260ms; }
+    }
+    /* the outer two fan in from their own side, the centre rises straight */
+    @keyframes sbPhoneIn {
+      from { opacity: 0; transform: translateY(30%) scale(0.88); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes sbPhoneInL {
+      from { opacity: 0; transform: translate(-8%, 26%) rotate(-6deg) scale(0.88); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes sbPhoneInR {
+      from { opacity: 0; transform: translate(8%, 26%) rotate(6deg) scale(0.88); }
+      to   { opacity: 1; transform: none; }
+    }
+    .project-card.is-playing .card-loop { opacity: 1; }
+    @media (prefers-reduced-motion: reduce) { .card-loop { display: none; } }
+  </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -217,7 +279,7 @@
     <div class="project-grid">
 
       <a href="homewise.html" class="project-card" style="--plate-light: #D7DFC8; --plate-deep: #BAC6A9; --plate-base: #C8D2BA;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
@@ -242,7 +304,7 @@
       </a>
 
       <a href="https://credit-analysis-agent.vercel.app/" target="_blank" rel="noopener" class="project-card project-card--desktop-only" style="--plate-light: #DCEFE8; --plate-deep: #B9D6CB; --plate-base: #CDE3DA;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
@@ -255,7 +317,7 @@
       <a href="storybloom.html" class="project-card" style="--plate-light: #EEE3F0;">
         <div class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
           <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026.png" alt="NY Product Design Award Silver 2026"></div>
-          <img src="images/storybloom-card.png?v=4" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <img src="images/storybloom-bg.jpg" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="sb-phone sb-phone--1" src="images/storybloom-phone1.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="sb-phone sb-phone--2" src="images/storybloom-phone2.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="sb-phone sb-phone--3" src="images/storybloom-phone3.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
         </div>
         <div class="project-info">
           <div class="project-info-left">
@@ -300,7 +362,7 @@
       </a>
 
       <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #C2DBBC;">
-        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
+        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="card-loop card-loop--cover" data-loop="images/newcraft-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>New Craft Society</h3><span class="project-year">2026</span></div>
@@ -869,6 +931,46 @@
       footerGlow.style.height = (progress * maxHeight) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // Work-card motion, triggered by viewport entry rather than hover so a reader
+  // who never hovers still sees the work move. Deferred with an
+  // IntersectionObserver (the pattern the Play page already uses for its clips),
+  // so nothing is fetched until a card nears the fold, and the decode is dropped
+  // again on exit.
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // two kinds of card motion share one trigger: raster loops (.card-loop)
+    // and the CSS-only layered entrance (.sb-phone). Both key off `is-playing`.
+    var targets = [].concat(
+      [].slice.call(document.querySelectorAll('.card-loop')),
+      [].slice.call(document.querySelectorAll('.sb-phone--1'))
+    );
+    if (!targets.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      targets.forEach(function (t) {
+        var l = t.dataset.loop; if (l) t.src = l;
+        t.closest('.project-card').classList.add('is-playing');
+      });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var card = e.target.closest('.project-card');
+        var loop = e.target.classList.contains('card-loop') ? e.target : null;
+        if (e.isIntersecting) {
+          if (loop && !loop.getAttribute('src')) loop.src = loop.dataset.loop;
+          card.classList.add('is-playing');
+        } else {
+          card.classList.remove('is-playing');
+          if (loop) loop.removeAttribute('src');
+        }
+      });
+    }, { rootMargin: '100px 0px', threshold: 0.35 });
+    targets.forEach(function (t) { io.observe(t); });
+  })();
 </script>
 
 <!-- Chat Widget -->
