@@ -2101,80 +2101,14 @@ footer {
   outline-offset: -1px;
 }
 
-/* Photo-deck captions (2026-08-17). Hidden until hover, so the deck stays a
-   wall of images and the context arrives only when someone stops on one.
-   DESKTOP ONLY, per user. Note the caption inherits the card's own opacity ramp
-   (0.62 -> 1 with --focus), so a hovered edge card reads as ghosted while the
-   centred card's caption is fully lit. That is free hierarchy, not a bug.
-
-   The display:none default is LOAD-BEARING, not belt-and-braces. Everything
-   that hides this caption (position:absolute + opacity:0) lives inside the
-   @media block, so on touch — where the block never applies — the span falls
-   back to a static inline element at full opacity and dumps its text into the
-   card. The mobile deck is a static 4x2 grid with no overflow clipping, so that
-   text overflows the tiles and wrecks the whole grid. Verified at 375 before
-   the fix. Any future style here must keep the OFF state outside the query. */
-/* MUST be .deck-card img.deck-cap, not .deck-cap. The off state has to beat
-   .deck-card img's own `display: block` — (0,1,1) outranks (0,1,0), so the bare
-   class silently loses and the note renders on touch as a cover-fitted image
-   sprawled over the photo. Hit twice: once as position/opacity living inside the
-   @media block, once as this specificity slip. Screenshot the non-hover
-   breakpoint, do not trust a matchMedia probe alone. */
-.deck-card img.deck-cap {
-  display: none;
-}
-
-@media (hover: hover) {
-  /* Out-specifies .deck-card img (0,1,1), which owns the 100%/100% cover sizing,
-     the inherited radius and the hairline outline — all wrong for an annotation.
-     .deck-card img.deck-cap is (0,2,1), so it wins without !important. */
-  .deck-card img.deck-cap {
-    display: block;
-    position: absolute;
-    left: var(--cx, 8%);
-    top: var(--cy, 8%);
-    /* HEIGHT is the sizing lever, never width: every cap PNG is rendered on the
-       same 188px line box, so a fixed height gives identical text size on every
-       card while the width floats with the phrase. Sizing by width would make
-       "the crew" enormous and "bay bridge, blue hour" tiny. */
-    /* 82px of BOX, ~30px of actual glyph: every cap PNG is a uniform two-line
-       canvas (top-aligned), so one-liners leave the lower half transparent.
-       That uniformity is what makes a single height give identical glyph size
-       on all eight. --cy therefore positions the TOP of the note. */
-    height: 82px;
-    width: auto;
-    max-width: 96%;
-    object-fit: contain;
-    border-radius: 0;
-    outline: none;
-    transform: rotate(var(--cr, 0deg));
-    transform-origin: 0 50%;
-    /* White ink, tight shadow. Two alternatives were built and rejected on
-       looks: a soft black aura baked behind the glyphs (read as a smudge), and
-       the hero g2 ramp as the ink (the raw stops are tuned to glow on #0a0a0a
-       and sink into a photograph — red, pink and deep blue all land mid-dark).
-       Legibility is bought with SIZE instead, per user: ~30px glyphs, long
-       phrases wrapped to two lines. Shadows stay 1-2px; anything wider smudges. */
-    filter:
-      drop-shadow(0 1px 2px rgba(0, 0, 0, 0.9))
-      drop-shadow(0 0 4px rgba(0, 0, 0, 0.55));
-    opacity: 0;
-    transition: opacity var(--dur-base) var(--ease-out);
-    pointer-events: none; /* must never intercept the deck's drag-to-rotate */
-  }
-
-  .deck-card:hover img.deck-cap {
-    opacity: 1;
-  }
-
-  /* (A brightness(0.6) dim on the whole photo was tried here 2026-08-17 and
-     removed per user: "do not make the whole image darken, just the text part".
-     The legibility problem it solved is real — white ink over profile.jpg's
-     bright sky is unreadable on a plain shadow — but it is now solved inside
-     the PNG, by a blurred black aura keyed to the glyph mask. Same guarantee on
-     any photo, none of the collateral dimming. Do not reintroduce a photo-wide
-     filter here.) */
-}
+/* (Photo-deck hover captions lived here 2026-08-17 and were REMOVED the same
+   day, per user. Four versions shipped and were rejected in turn: bottom-scrim
+   text in Neue Montreal; a handwriting font (cut because a simulated hand keeps
+   the single-typeface rule-break without the payoff that would justify it, since
+   the user declined using his own); the hero g2 ramp as ink (its stops glow on
+   #0a0a0a but sink into a photograph); and finally plain 20px text placed on
+   each photo's measured darkest region. The deck is a wall of images again.
+   Recoverable from git if ever wanted, along with the placement-scan script. */
 
 /* prefers-reduced-motion: lock to static centered row (no drift, no tilt, no halo pulse) */
 @media (prefers-reduced-motion: reduce) {
