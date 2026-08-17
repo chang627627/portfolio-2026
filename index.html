@@ -96,6 +96,9 @@
     .card-still--swap { transition: opacity var(--dur-base) var(--ease-out); }
     .project-card.is-playing .card-still--swap { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { .card-loop { display: none; } }
+    /* belt and braces: an src-less loop img is invisible anyway, but this keeps
+       it out of the box model on phones entirely */
+    @media (max-width: 768px) { .card-loop { display: none; } }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
@@ -956,6 +959,10 @@
   // again on exit.
   (function () {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Phones keep the static thumbnails. Returning here means `is-playing` is
+    // never added, so the loops' src is never set (nothing is downloaded) and
+    // StoryBloom's CSS entrance never arms - it just renders at rest.
+    if (window.matchMedia('(max-width: 768px)').matches) return;
     // two kinds of card motion share one trigger: raster loops (.card-loop)
     // and the CSS-only layered entrance (.sb-phone). Both key off `is-playing`.
     var targets = [].concat(
