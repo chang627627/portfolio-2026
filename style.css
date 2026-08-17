@@ -2114,40 +2114,63 @@ footer {
    card. The mobile deck is a static 4x2 grid with no overflow clipping, so that
    text overflows the tiles and wrecks the whole grid. Verified at 375 before
    the fix. Any future style here must keep the OFF state outside the query. */
-.deck-cap {
+/* MUST be .deck-card img.deck-cap, not .deck-cap. The off state has to beat
+   .deck-card img's own `display: block` — (0,1,1) outranks (0,1,0), so the bare
+   class silently loses and the note renders on touch as a cover-fitted image
+   sprawled over the photo. Hit twice: once as position/opacity living inside the
+   @media block, once as this specificity slip. Screenshot the non-hover
+   breakpoint, do not trust a matchMedia probe alone. */
+.deck-card img.deck-cap {
   display: none;
 }
 
 @media (hover: hover) {
-  .deck-cap {
+  /* Out-specifies .deck-card img (0,1,1), which owns the 100%/100% cover sizing,
+     the inherited radius and the hairline outline — all wrong for an annotation.
+     .deck-card img.deck-cap is (0,2,1), so it wins without !important. */
+  .deck-card img.deck-cap {
     display: block;
     position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    /* deep top padding so the scrim ramps in well above the first baseline */
-    padding: 46px 16px 16px;
-    font-size: 14px;
-    line-height: 1.35;
-    color: var(--text);
-    /* The card sets border-radius but deliberately NOT overflow: hidden — that
-       would clip its ::before/::after halo and shadow — so the caption has to
-       carry the bottom corners itself. Keep in sync with .deck-card's 14px. */
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-    background: linear-gradient(
-      to top,
-      rgba(0, 0, 0, 0.88),
-      rgba(0, 0, 0, 0.62) 42%,
-      transparent
-    );
+    left: var(--cx, 8%);
+    top: var(--cy, 8%);
+    /* HEIGHT is the sizing lever, never width: every cap PNG is rendered on the
+       same 188px line box, so a fixed height gives identical text size on every
+       card while the width floats with the phrase. Sizing by width would make
+       "the crew" enormous and "bay bridge, blue hour" tiny. */
+    height: 30px;
+    width: auto;
+    max-width: 86%;
+    object-fit: contain;
+    border-radius: 0;
+    outline: none;
+    transform: rotate(var(--cr, 0deg));
+    transform-origin: 0 50%;
+    /* tight shadow for edge definition, wide one to lift it off busy photos —
+       the white ink has to hold over the Zoetrope gold and the red tablecloth */
+    filter:
+      drop-shadow(0 1px 3px rgba(0, 0, 0, 0.7))
+      drop-shadow(0 0 12px rgba(0, 0, 0, 0.45));
     opacity: 0;
     transition: opacity var(--dur-base) var(--ease-out);
     pointer-events: none; /* must never intercept the deck's drag-to-rotate */
   }
 
-  .deck-card:hover .deck-cap {
+  .deck-card:hover img.deck-cap {
     opacity: 1;
+  }
+
+  /* The photo dims under its own annotation. Shadow alone is not enough: white
+     ink over the bright sky on profile.jpg and the red cloth on food.jpeg was
+     measured illegible, and per-photo ink colours would mean eight special
+     cases that break the moment a photo is swapped. Dimming the ground works on
+     any image, and it doubles as the hover acknowledgement. :not(.deck-cap) so
+     the note itself is never dimmed. */
+  .deck-card img:not(.deck-cap) {
+    transition: filter var(--dur-base) var(--ease-out);
+  }
+
+  .deck-card:hover img:not(.deck-cap) {
+    filter: brightness(0.6);
   }
 }
 
