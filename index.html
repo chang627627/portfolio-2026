@@ -37,7 +37,17 @@
     }
     /* full-bleed covers (StoryBloom, New Craft) fill the plate instead of
        floating at 65% like the contained screenshots */
-    .card-loop--cover { width: 100%; height: 100%; object-fit: cover; }
+    /* .project-img > img in style.css is (0,1,1) and carries both the sizing
+       and the floating-screenshot drop shadow, so a full-bleed clip has to
+       out-specify it or it renders at 65% with a shadow around its rectangle. */
+    .project-img > img.card-loop--cover {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: none;
+    }
+
+
 
     /* StoryBloom cover, rebuilt as layers so the three phones can arrive
        separately. Each phone is masked to its real rounded-rect silhouette
@@ -80,6 +90,11 @@
       to   { opacity: 1; transform: none; }
     }
     .project-card.is-playing .card-loop { opacity: 1; }
+    /* A loop with real transparency (NOVA's keyed rotation) lets the still show
+       through its gaps, which reads as two objects. The still crossfades out as
+       the loop comes in. Opaque loops do not need this. */
+    .card-still--swap { transition: opacity var(--dur-base) var(--ease-out); }
+    .project-card.is-playing .card-still--swap { opacity: 0; }
     @media (prefers-reduced-motion: reduce) { .card-loop { display: none; } }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
@@ -340,7 +355,7 @@
       </a>
 
       <a href="nova.html" class="project-card" style="--plate-light: #FFFFFF;">
-        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img src="images/nova-card.png" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
+        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img class="card-still--swap" src="images/nova-card.png" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
