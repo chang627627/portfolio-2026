@@ -15,6 +15,10 @@ body.menu-open {
   --text: #f0f0f0;
   --text-muted: #888;
   --text-soft: #a0a0a0; /* mid-tier grey for long-read body text (bio, quotes); --text-muted stays for dates/metadata */
+  /* (A --text-read: #c8c8c8 fourth tier was added and removed 2026-08-17. The
+     brief was "normal like other pages", which means MATCHING the case studies'
+     --text-muted body copy, not inventing a more readable value. Site body text
+     is a three-tier ladder; keep it that way.) */
   --accent: #e0e0e0;
   --radius: 8px;
   --max-width: 960px;
@@ -2143,6 +2147,18 @@ footer {
 
 .about-block p {
   font-size: 16px;
+  /* --text-soft, i.e. the 2026-06-20 mid-tier-grey decision STANDS: long-read
+     prose is one step brighter than the --text-muted case-study body copy,
+     because the bio is three unbroken paragraphs with no artifacts to rest on
+     while case-study prose is skimmed in bursts between screenshots. 7.5:1 vs
+     5.6:1, AAA vs AA.
+     Colour churn on 2026-08-17, recorded so it is not repeated: #f0f0f0 (too
+     bright) -> #c8c8c8 (too bright) -> #888 (matched the case studies exactly,
+     but inverted the page's own hierarchy, leaving this prose DIMMER than the
+     .ai-stage-desc card copy nested below it) -> back to #a0a0a0. The real bug
+     was never the colour: it was the dim-until-scrolled-past bio illumination,
+     which is gone. Same value, readable now, because the animation is what made
+     it hard to read. */
   color: var(--text-soft);
   line-height: 1.6;
   margin: 0 0 8px 0;
@@ -2160,8 +2176,9 @@ footer {
    Prototype, each listing its tools with a white monochrome mark. Cards
    use the site's standard surface/hairline material; the marks stay
    near-white so the chrome stays neutral (no brand colors). Descriptions
-   are .ai-stage-desc DIVs so the bio-word splitter (.about-block p)
-   never touches card copy. Mobile stacks the cards and turns the arrows
+   are .ai-stage-desc DIVs, which originally kept the bio-word splitter
+   (.about-block p) off card copy; that splitter was removed 2026-08-17, so the
+   DIVs are now just inertia. Mobile stacks the cards and turns the arrows
    downward. */
 .ai-flow {
   display: flex;
@@ -2196,7 +2213,12 @@ footer {
 .ai-stage-desc {
   font-size: 14px;
   line-height: 1.5;
-  color: var(--text-muted);
+  /* --text-soft, matching .testimonial-quote — the card-copy precedent on this
+     site. Deliberately NOT the --text-muted used by page prose: this sits on a
+     --surface #1a1a1a card, where #888 drops to 4.6:1 and was the half of the
+     2026-08-17 "too hard to read" complaint that was a genuine contrast problem
+     rather than the bio illumination. Compare card copy to card copy. */
+  color: var(--text-soft);
   /* 12px under the label mirrors .problem-card h3's margin-bottom */
   margin: 12px 0 20px;
 }
@@ -2212,7 +2234,7 @@ footer {
   align-items: center;
   gap: 9px;
   font-size: 14px;
-  color: var(--text-soft);
+  color: var(--text-soft); /* card copy, same tier as .ai-stage-desc above */
 }
 
 .ai-tool img {
@@ -4793,48 +4815,13 @@ footer {
   }
 }
 
-/* --- About bio scroll illumination (2026-08-04) ---
-   The Background paragraphs brighten from --text-soft toward --text as they
-   rise past the lower half of the viewport — the site's "move the light that
-   is already there" grammar applied to type, scrubbed and fully reversible.
-   ONE surface by design (like the deck's one light slide): bio only, never
-   case-study body copy, where dim-until-reached text is friction.
-   .bio-word spans are injected by about.html's script; if that JS never runs
-   the paragraphs simply keep their static --text-soft — same graceful
-   direction as card-rise. Each word carries its OWN anonymous view()
-   timeline: same-line words share identical progress, so the effect reads as
-   a line-by-line sweep without any per-word delay bookkeeping. inline-block
-   so the spans generate real boxes for view() (inline boxes don't reliably
-   carry view timelines) — spaces stay bare text nodes so wrapping behaves as
-   plain text, the hero-scramble precedent. Verified: no ancestor of
-   .about-block p sets non-visible overflow, so the anonymous view() binds to
-   the viewport (the --card-view trap does not apply here). */
-@media (prefers-reduced-motion: no-preference) {
-  @supports (animation-timeline: view()) {
-    .bio-word {
-      display: inline-block;
-      animation-name: bio-illuminate;
-      animation-duration: auto; /* longhands, same trap as card-rise */
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      /* Ramp window 18%→45% of the word's viewport traversal: fully soft in
-         the lower fifth of the screen, fully lit by the ~55% reading line.
-         The narrow window is the point — a cover 0% start was measured
-         spreading each word's ramp over ~460px of scroll, which blurred the
-         whole bio into one near-invisible gradient (the documented "too
-         subliminal to earn its place" failure mode). At ~27% the ramp is
-         roughly the bio block's own height, so the sweep is visible: the
-         line being read is white while the paragraph's tail is still soft. */
-      animation-range: cover 18% cover 45%;
-    }
-  }
-}
-
-@keyframes bio-illuminate {
-  from { color: var(--text-soft); }
-  to   { color: var(--text); }
-}
+/* (About bio scroll illumination lived here 2026-08-04 → 2026-08-17. The
+   Background paragraphs brightened from --text-soft toward --text on a per-word
+   view() timeline as they rose past the reading line. REMOVED per user: the
+   dim-until-read resting state made the bio and the How-I-use-AI copy hard to
+   read, and since the dimming was the effect, there was no way to keep it and
+   fix the complaint. .about-block p now sits at full --text. The splitter IIFE
+   in about.html went with it; both are recoverable from git if ever wanted.) */
 
 /* (Film grain over the gradients was tried here 2026-06-11 and removed —
    gray noise over near-black reads as glitch/static, not texture.) */

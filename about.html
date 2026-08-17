@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=235">
+  <link rel="stylesheet" href="style.css?v=239">
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -101,9 +101,10 @@
          high level on purpose: no case-study names. Tool marks are white
          monochrome: 4 LobeHub SVGs recolored #F0F0F0 + a Granola silhouette
          extracted from their favicon glyph (no vector of it exists anywhere).
-         Stage descriptions are DIVs, not <p>, on purpose — the bio-word
-         illumination splitter targets .about-block p and card copy must stay
-         static. Mercor stays out (NDA). -->
+         Stage descriptions are DIVs, not <p>, which originally kept the
+         bio-word illumination splitter off card copy; that splitter was removed
+         2026-08-17, so the DIVs are now just harmless inertia. Mercor stays out
+         (NDA). -->
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">How I use AI</span></div>
       <p>AI's first pass drifts toward generic, so it never gets the last word. It runs the busywork; framing the problem, choosing the direction, and deciding what ships stay with me. The rule I work by is the one my products ship with: a human stays in the loop. AI accelerates everything and decides nothing. The judgment is the job.</p>
@@ -209,7 +210,7 @@
     <div class="section-meta"><span class="section-label-text">People I've worked with</span></div>
     <div class="testimonial-list">
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang impressed our team at Litespace with his ability to conceptualize and implement complex design solutions like the Payments Dashboard and team collaboration tools. His dedication and user-centered approach made a significant impact on our product."</p>
+        <p class="testimonial-quote">"Chang impressed our team at Litespace with his ability to <span style="color: var(--text)">conceptualize and implement complex design solutions</span> like the Payments Dashboard and team collaboration tools. His dedication and user-centered approach made a significant impact on our product."</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-zeeshan.jpg" alt="Zeeshan Shahid">
           <div>
@@ -219,7 +220,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang's strong work ethic and creativity stood out during his time at Asset Layer. He consistently adapted to team needs, delivered high-quality design work, and supported his colleagues with enthusiasm and collaboration."</p>
+        <p class="testimonial-quote">"Chang's strong work ethic and creativity stood out during his time at Asset Layer. He consistently adapted to team needs, delivered high-quality design work, and <span style="color: var(--text)">supported his colleagues</span> with enthusiasm and collaboration."</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-dylan.jpg" alt="Dylan Straffon">
           <div>
@@ -229,7 +230,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang is not just a phenomenal designer; he is a true leader and invaluable strategic partner. He consistently delivered top-tier designs ahead of schedule while mentoring junior designers and elevating the people around him."</p>
+        <p class="testimonial-quote">"Chang is not just a phenomenal designer; he is a true leader and invaluable strategic partner. He consistently delivered top-tier designs ahead of schedule while <span style="color: var(--text)">mentoring junior designers and elevating the people around him</span>."</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-isabel.jpg" alt="Isabel Wei">
           <div>
@@ -421,31 +422,13 @@
   }
 </script>
 
-<!-- Bio scroll illumination: split the Background paragraphs into word spans
-     so each word can carry its own view() timeline (CSS in style.css,
-     .bio-word). Guards mirror the CSS gates exactly: no support or reduced
-     motion means the text is never touched and stays static --text-soft.
-     Element-children guard keeps this safe if the bio ever gains a link or
-     highlight span — such a paragraph is skipped whole rather than mangled. -->
-<script>
-(function () {
-  if (!(window.CSS && CSS.supports && CSS.supports('animation-timeline: view()'))) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  document.querySelectorAll('.about-block p').forEach((p) => {
-    if (p.children.length) return;
-    const words = p.textContent.split(' ');
-    p.textContent = '';
-    words.forEach((w, i) => {
-      const s = document.createElement('span');
-      s.className = 'bio-word';
-      s.textContent = w;
-      p.appendChild(s);
-      // spaces stay bare text nodes so wrapping behaves as plain text
-      if (i < words.length - 1) p.appendChild(document.createTextNode(' '));
-    });
-  });
-})();
-</script>
+<!-- The bio scroll-illumination splitter lived here until 2026-08-17. Removed per
+     user: dim-until-read made the Background and How-I-use-AI copy hard to read,
+     and the dimming WAS the effect, so no colour change alone could have fixed
+     it. .about-block p keeps its original var(--text-soft) — brighter values
+     were tried across that session and all read as too bright, which is the
+     proof that the animation, not the colour, was the problem. Recoverable from
+     git along with the .bio-word CSS. -->
 
 <script>
   const footerGlow = document.querySelector('.footer-glow');
