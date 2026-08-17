@@ -2101,6 +2101,56 @@ footer {
   outline-offset: -1px;
 }
 
+/* Photo-deck captions (2026-08-17). Hidden until hover, so the deck stays a
+   wall of images and the context arrives only when someone stops on one.
+   DESKTOP ONLY, per user. Note the caption inherits the card's own opacity ramp
+   (0.62 -> 1 with --focus), so a hovered edge card reads as ghosted while the
+   centred card's caption is fully lit. That is free hierarchy, not a bug.
+
+   The display:none default is LOAD-BEARING, not belt-and-braces. Everything
+   that hides this caption (position:absolute + opacity:0) lives inside the
+   @media block, so on touch — where the block never applies — the span falls
+   back to a static inline element at full opacity and dumps its text into the
+   card. The mobile deck is a static 4x2 grid with no overflow clipping, so that
+   text overflows the tiles and wrecks the whole grid. Verified at 375 before
+   the fix. Any future style here must keep the OFF state outside the query. */
+.deck-cap {
+  display: none;
+}
+
+@media (hover: hover) {
+  .deck-cap {
+    display: block;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    /* deep top padding so the scrim ramps in well above the first baseline */
+    padding: 46px 16px 16px;
+    font-size: 14px;
+    line-height: 1.35;
+    color: var(--text);
+    /* The card sets border-radius but deliberately NOT overflow: hidden — that
+       would clip its ::before/::after halo and shadow — so the caption has to
+       carry the bottom corners itself. Keep in sync with .deck-card's 14px. */
+    border-bottom-left-radius: 14px;
+    border-bottom-right-radius: 14px;
+    background: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.88),
+      rgba(0, 0, 0, 0.62) 42%,
+      transparent
+    );
+    opacity: 0;
+    transition: opacity var(--dur-base) var(--ease-out);
+    pointer-events: none; /* must never intercept the deck's drag-to-rotate */
+  }
+
+  .deck-card:hover .deck-cap {
+    opacity: 1;
+  }
+}
+
 /* prefers-reduced-motion: lock to static centered row (no drift, no tilt, no halo pulse) */
 @media (prefers-reduced-motion: reduce) {
   .deck-track {
