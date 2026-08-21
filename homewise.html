@@ -46,6 +46,45 @@
   </script>
   <!-- Mobile: keep the Process flow-chart labels readable by letting each chart scroll horizontally instead of shrinking to ~3px. Scoped to homewise (#process) so the shared .flow-chart elsewhere (Coffee Chat) is untouched. -->
   <style>
+    /* Figma handoff artifact (2026-08-20). Homewise-only, so it stays inline
+       rather than forcing a style.css ?v= bump across ten pages, same reasoning
+       as the flow-chart rules below. */
+    .hw-cmd {
+      margin: 24px 0 0;
+    }
+
+    /* The install command shown verbatim, because it IS the "how" and a reader
+       who doubts it can paste it. Monospace here is not a second type tier: it
+       is a literal terminal string, the one context the single-face rule does
+       not govern. */
+    .hw-cmd code {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 10px 14px;
+      /* long enough to wrap badly on a phone; break it rather than let the page
+         overflow horizontally */
+      overflow-wrap: anywhere;
+    }
+
+    .hw-figma-shot {
+      margin-top: 24px; /* the page's caption-to-artifact gap */
+    }
+
+    .hw-figma-shot img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      /* hairline, matching the shared .play-card img / .deck-card img treatment */
+      outline: 1px solid rgba(255, 255, 255, 0.08);
+      outline-offset: -1px;
+    }
+
     @media (max-width: 768px) {
       #process ~ .flow-chart .flow-scroll {
         overflow-x: auto;
@@ -63,6 +102,30 @@
       }
       #process ~ .flow-chart .flow-scroll .flow-svg {
         min-width: 800px;
+      }
+
+      /* Same fix, same reason, for the Figma screenshot: the LAYER PANEL is the
+         whole point of that image, and scaled to a 327px column its text renders
+         at roughly 2px. The strip scrolls horizontally inside itself, so the page
+         never overflows and the cut right edge plus the thumb are the affordance.
+         overflow-y is explicitly hidden because overflow-x:auto would otherwise
+         force overflow-y to auto. */
+      .hw-figma-shot {
+        overflow-x: auto;
+        overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.25) transparent;
+      }
+      .hw-figma-shot::-webkit-scrollbar {
+        height: 4px;
+      }
+      .hw-figma-shot::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.22);
+        border-radius: 4px;
+      }
+      .hw-figma-shot img {
+        min-width: 900px;
       }
     }
   </style>
@@ -471,7 +534,28 @@
     <div id="collaboration" class="project-section">
       <p class="section-label">Collaboration</p>
       <h2>We skipped Figma and built the design in code</h2>
-      <p>Working closely with the PM and engineers, we made an unusual call: skip Figma and design in the codebase from day one, a real React prototype on Hearth. We handed the dev team the repo itself, and they built the real backend straight onto it. Skipping Figma did not close the door on it. If the team ever needs a traditional handoff, I can push the prototype from Claude Code into Figma through its MCP server, turning the running interface into editable frames. The code stays the source of truth, and Figma is a step we reach for only when it earns its place.</p>
+      <p>Working closely with the PM and engineers, we made an unusual call: skip Figma and design in the codebase from day one, a real React prototype on Hearth. We handed the dev team the repo itself, and they built the real backend straight onto it. Skipping Figma did not close the door on it. The code stays the source of truth, and Figma is a step we reach for only when it earns its place.</p>
+    </div>
+
+    <!-- Figma handoff, added 2026-08-20 per user: recruiters read "designed in
+         code" as "not fluent in Figma", so the question this answers is really
+         "will my team get a file they can use". Framed as HANDOFF for that
+         reason; an "AI draws my screens" framing would confirm the worry rather
+         than dispel it. Mechanism claims are from Figma's own docs (the
+         help.figma.com Claude Code MCP setup article and the code-to-Figma blog
+         post). The NAMED LAYER TREE is claimed only on the strength of the
+         screenshot, because Figma's docs stop at "editable layers" and never
+         promise auto layout, components or variables. Do not upgrade the claim
+         past that evidence. Lives inside Collaboration on purpose: the 10-section
+         spine is settled and this is not a new argument, it is the proof for a
+         sentence that was already there. -->
+    <div class="deliverable">
+      <h4>The handoff, when the team wants one</h4>
+      <p>Figma ships an official Claude Code plugin, installed with one command, that connects the two over MCP. Going in, it reads a file's components, variables and layout data. Coming out, it writes native Figma content straight onto the canvas, capturing the running interface as editable layers, a multi screen flow in a single pass with its sequence intact. The layer panel below is the part that matters. Body, App, Sidebar, Main Content, Header, each one selectable and editable, not a flat screenshot pasted onto a board.</p>
+    </div>
+    <p class="hw-cmd"><code>claude plugin install figma@claude-plugins-official</code></p>
+    <div class="hw-figma-shot project-img-full">
+      <img src="images/figma-handoff.jpg" alt="A Homewise contractor compare screen sent from a running local build onto the Figma canvas, with a nested layer tree in the left panel" loading="lazy" decoding="async">
     </div>
 
     <div class="deliverable">
