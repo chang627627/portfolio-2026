@@ -5,6 +5,7 @@
     { "source": "/coffeeslide", "destination": "/coffeeslide.html" },
     { "source": "/novaslide", "destination": "/novaslide.html" },
     { "source": "/homewiseslide", "destination": "/homewiseslide.html" },
-    { "source": "/storybloom", "destination": "/storybloom.html" }
+    { "source": "/storybloom", "destination": "/storybloom.html" },
+    { "source": "/countersign", "destination": "/countersign.html" }
   ]
 }

@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countersign — Chang Mou</title>
+  <meta name="description" content="The agent analyzes, a human countersigns. A watchable agent loop for credit analysis that extracts deal financials, tests covenants, and pauses at the approval gate.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.chang-mou.com/countersign.html">
+  <meta property="og:title" content="Countersign — Chang Mou">
+  <meta property="og:description" content="The agent analyzes, a human countersigns. A watchable agent loop for credit analysis that extracts deal financials, tests covenants, and pauses at the approval gate.">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Countersign — Chang Mou">
+  <meta name="twitter:description" content="The agent analyzes, a human countersigns. A watchable agent loop for credit analysis.">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=249">
+  <link rel="canonical" href="https://www.chang-mou.com/countersign.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "Countersign",
+    "genre": "Design case study",
+    "url": "https://www.chang-mou.com/countersign.html",
+    "description": "The agent analyzes, a human countersigns. A watchable agent loop for credit analysis that extracts deal financials, tests covenants, and pauses at the approval gate.",
+    "author": {
+      "@type": "Person",
+      "name": "Chang Mou",
+      "url": "https://www.chang-mou.com/"
+    }
+  }
+  </script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+  <!-- Page-scoped styles, inline per the homewise precedent so style.css needs no
+       version bump. .cs-rule is the decision-rule artifact: monospace here is a
+       literal code string from the repo, the one context the single-face rule
+       does not govern (the .hw-cmd precedent). -->
+  <style>
+    .cs-rule {
+      margin: 32px 0 0;
+      background: var(--surface);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+    }
+    .cs-rule code {
+      display: block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 15px;
+      color: var(--text);
+      overflow-wrap: anywhere;
+    }
+    .cs-flow { margin-top: 20px; }
+    .cs-flow svg { display: block; width: 100%; height: auto; }
+    @media (max-width: 768px) {
+      /* at 327px the tree's 15px viewBox text renders ~5px, so the chart
+         scrolls inside its own strip instead of shrinking (the documented
+         flow-scroll pattern; explicit overflow-y so -x cannot force it) */
+      .cs-flow { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.25) transparent; }
+      .cs-flow::-webkit-scrollbar { height: 4px; }
+      .cs-flow::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.22); border-radius: 4px; }
+      .cs-flow svg { min-width: 720px; }
+    }
+    .cs-rule .cs-rule-note {
+      margin: 14px 0 0;
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo">Chang Mou</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="index.html">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view?usp=sharing" target="_blank">Resume</a>
+    </div>
+  </nav>
+
+  <img src="images/countersign-cover.jpg" alt="Countersign approval gate, the agent's escalation waiting on a human signature" class="case-cover">
+
+  <!-- Project Hero -->
+  <section class="project-hero">
+    <h1>Countersign</h1>
+    <p class="project-hero-sub">The agent analyzes, a human countersigns. A personal prototype of agentic credit analysis where every step of the loop is watchable, and the consequential call is never the machine's to make.</p>
+  </section>
+
+  <!-- Side Nav -->
+  <nav class="side-nav">
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#insight" class="side-nav-link">Insight</a>
+    <a href="#complexity" class="side-nav-link">Why this is hard</a>
+    <a href="#solution" class="side-nav-link">Solution</a>
+    <a href="#process" class="side-nav-link">Process</a>
+    <a href="#final-design" class="side-nav-link">Final Design</a>
+    <a href="#system" class="side-nav-link">Design System</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+  </nav>
+
+  <!-- Project Content -->
+  <section class="project-content">
+    <div class="project-details">
+      <div class="project-detail-item">
+        <h3>Project Type</h3>
+        <p>Personal</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Timeline</h3>
+        <p>2026</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Team</h3>
+        <p>Solo, design and build</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Tools</h3>
+        <p>React + TypeScript<br>Claude Code</p>
+      </div>
+    </div>
+
+    <!-- What I Did -->
+    <div class="project-section">
+      <h2>What I did</h2>
+      <ul class="project-list">
+        <li>Designed and built the whole prototype solo in real code, five workspace views on one agent loop, with a mocked backend so the behavior itself is the design.</li>
+        <li>Made the loop watchable. The plan, each tool call, its evidence, and its confidence stream in as work products, not as a spinner.</li>
+        <li>Designed the approval gate the product is named for. The agent suspends at the consequential call and cannot sign off on its own.</li>
+        <li>Built Graphite and Teal, the token-driven design system, so light and dark are one attribute apart.</li>
+      </ul>
+    </div>
+
+    <!-- Problem -->
+    <div id="problem" class="project-section">
+      <p class="section-label">Problem</p>
+      <h2>Credit moves at the speed of trust, not analysis</h2>
+    </div>
+
+    <div class="hw-stats">
+      <p class="hw-stats-label">Banks are fast when a file is simple, and slow when it needs judgment</p>
+      <div class="hw-stats-row">
+        <div class="hw-stat"><span class="hw-stat-fig">1 day</span><span class="hw-stat-cap">is enough for three in ten banks to clear a small and simple loan</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">10 days</span><span class="hw-stat-cap">is what three in four banks take to approve their typical small business loan</span></div>
+        <div class="hw-stat"><span class="hw-stat-fig">28.4%</span><span class="hw-stat-cap">of financial institutions call AI explainability their most acute regulatory concern</span></div>
+      </div>
+      <p class="hw-stats-source">FDIC Small Business Lending Survey, 2024. Wolters Kluwer Banking Compliance AI Trend Report, 2026.</p>
+    </div>
+
+    <div class="project-section" style="margin-top: 40px;">
+      <p>The gap between one day and ten is the analysis. Someone has to pull the figures out of a deal document, spread them, test each covenant, rate the risk, and write the memo that defends the call. Most of that work is mechanical. None of the accountability is, because at the end a person signs, and the signature is what a regulator, a committee, or a court will ask about. That is why the obvious fix, letting a model write the memo, stalls in exactly this industry: the institutions most interested in AI are also the ones that rank explainability as their top regulatory worry. An answer nobody can inspect is not an answer anyone can sign.</p>
+    </div>
+
+    <!-- Insight -->
+    <div id="insight" class="project-section">
+      <p class="section-label">Insight</p>
+      <h2>The signature is the product</h2>
+      <p>On a clean deal, the agent's own recommendation is approve. The loop still stops. Every run, whatever the numbers say, parks at the same gate and waits for a person. That is the name: a countersignature is the second signature that makes a document binding, and the agent's memo is only ever the first. So the design goal was never to automate the decision. It was to make the agent's work so inspectable that a human can put their name under it without redoing it.</p>
+    </div>
+
+    <div class="cs-rule">
+      <code>breaches === 0 ? 'approve' : riskScore >= 75 ? 'decline' : 'escalate'</code>
+      <p class="cs-rule-note">The entire decision rule, verbatim from the repo. One line, and no branch ends the run.</p>
+      <!-- The tree below IS that line: two questions, three exits, and every
+           exit converges on the gate. Drawn in the site's flow-chart grammar
+           (self-contained inline attributes, per the homewise/coffee SVGs);
+           the three status dots reuse the documented eval-dot trio. -->
+      <div class="cs-flow" aria-label="The decision rule as a tree: every branch ends at the human gate">
+        <svg class="cs-flow-svg" viewBox="0 0 960 392" xmlns="http://www.w3.org/2000/svg" role="img">
+          <defs>
+            <marker id="csArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.6"/>
+            </marker>
+          </defs>
+
+          <!-- question 1 -->
+          <rect x="20" y="24" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <text x="135" y="58" text-anchor="middle" font-size="15" fill="#e8e8e8">Any covenant breached?</text>
+
+          <!-- no -> approve -->
+          <line x1="135" y1="82" x2="135" y2="158" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <text x="145" y="126" font-size="12.5" fill="#888">no</text>
+
+          <!-- yes -> question 2 -->
+          <line x1="250" y1="53" x2="357" y2="53" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <text x="303" y="43" text-anchor="middle" font-size="12.5" fill="#888">yes</text>
+
+          <!-- question 2 -->
+          <rect x="365" y="24" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <text x="480" y="58" text-anchor="middle" font-size="15" fill="#e8e8e8">Risk score 75 or higher?</text>
+
+          <!-- yes -> decline -->
+          <line x1="480" y1="82" x2="480" y2="158" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <text x="490" y="126" font-size="12.5" fill="#888">yes</text>
+
+          <!-- no -> escalate (elbow) -->
+          <path d="M 595 53 H 825 V 158" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <text x="700" y="43" text-anchor="middle" font-size="12.5" fill="#888">no</text>
+
+          <!-- approve leaf -->
+          <rect x="20" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <circle cx="44" cy="193" r="4.5" fill="#22C55E"/>
+          <text x="58" y="189" font-size="15" fill="#e8e8e8">Approve</text>
+          <text x="58" y="208" font-size="12.5" fill="#888">a recommendation</text>
+
+          <!-- decline leaf -->
+          <rect x="365" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <circle cx="389" cy="193" r="4.5" fill="#EF4444"/>
+          <text x="403" y="189" font-size="15" fill="#e8e8e8">Decline</text>
+          <text x="403" y="208" font-size="12.5" fill="#888">a recommendation</text>
+
+          <!-- escalate leaf -->
+          <rect x="710" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <circle cx="734" cy="193" r="4.5" fill="#EAB308"/>
+          <text x="748" y="189" font-size="15" fill="#e8e8e8">Escalate</text>
+          <text x="748" y="208" font-size="12.5" fill="#888">a handoff</text>
+
+          <!-- convergence -->
+          <line x1="135" y1="222" x2="135" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <line x1="480" y1="222" x2="480" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <line x1="825" y1="222" x2="825" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+
+          <!-- the gate -->
+          <rect x="20" y="302" width="920" height="66" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.24)"/>
+          <text x="480" y="330" text-anchor="middle" font-size="15.5" fill="#f0f0f0">The human gate</text>
+          <text x="480" y="350" text-anchor="middle" font-size="12.5" fill="#888">every run parks here until a person countersigns or rejects</text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Why this is hard -->
+    <div id="complexity" class="project-section">
+      <p class="section-label">Why this is hard</p>
+      <h2>A right answer is not enough</h2>
+    </div>
+
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>A provenance problem</h3>
+        <p>In regulated finance, a mostly-right answer with no working is a liability. Every extracted figure has to point back to the page it came from, and every step has to leave a trail an auditor can replay.</p>
+      </div>
+      <div class="problem-card">
+        <h3>An uncertainty problem</h3>
+        <p>Extraction is never uniformly confident, and the edge cases are where the risk lives. Confidence has to ride on every figure, and a critical flag has to change the agent's behavior, not just its color.</p>
+      </div>
+      <div class="problem-card">
+        <h3>A gate problem</h3>
+        <p>If approval is a dialog bolted on at the end, people click through it. The pause has to be structural. The loop itself stops, and the product cannot proceed until a person acts.</p>
+      </div>
+    </div>
+
+    <!-- Solution -->
+    <div id="solution" class="project-section">
+      <p class="section-label">Solution</p>
+      <h2>An agent loop you can watch, ending in a signature</h2>
+      <p>Countersign runs one visible loop over a deal document: plan, act, observe, decide, and then stop. Every tool call shows its arguments going in and its data coming out. Results render as work products rather than raw output, so reading the run feels like reviewing an analyst's file, not tailing a log. <span style="color: var(--text)">The gate is not a confirmation dialog. The loop suspends itself at the consequential call, and nothing proceeds until a person acts.</span></p>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th style="width: 160px;">Stage</th>
+          <th>Why the stage exists</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1. Plan</td>
+          <td style="color: var(--text-muted);">The agent announces its steps before touching a number, so you know what it intends, not just what it did.</td>
+        </tr>
+        <tr>
+          <td>2. Act</td>
+          <td style="color: var(--text-muted);">Each tool call runs in the open, arguments in, data out, with a live timer. Nothing happens off screen.</td>
+        </tr>
+        <tr>
+          <td>3. Observe</td>
+          <td style="color: var(--text-muted);">Results come back as artifacts, metric cards with per-figure confidence, a risk gauge, a covenant pass and fail table.</td>
+        </tr>
+        <tr>
+          <td>4. Decide</td>
+          <td style="color: var(--text-muted);">Flags derive from the evidence. A covenant breach cannot be auto-approved, so it flips the recommendation to escalate.</td>
+        </tr>
+        <tr>
+          <td>5. Countersign</td>
+          <td style="color: var(--text-muted);">The loop parks at the gate. Approve or reject belongs to a human, and either way it lands in the audit trail.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Process -->
+    <div id="process" class="project-section">
+      <p class="section-label">Process</p>
+      <h2>Behavior cannot be mocked, so I built it</h2>
+      <p>An agent's feel lives in its pacing: how reasoning streams, when a flag interrupts, what it is like to be asked for a decision mid-flow. None of that survives a static mockup, so I designed this by building it, solo, in Claude Code. The backend is deliberately mocked and deterministic. Every number is fictional, the extraction is simulated and labeled as such in the UI, and the same run replays identically, which turned every design question into something I could test by watching rather than argue by intuition.</p>
+    </div>
+
+    <!-- Final Design. Opens on the gate: an animated run-loop WebP was the
+         original opener ("Press run, watch it think") and was CUT per user, the
+         frame read as a half-empty screen mid-run and the 900px card asset was
+         soft at content width. The gate is the thesis screen and opens the
+         section instead, per the homewise pattern where the first deliverable's
+         caption is the section h2. -->
+    <div id="final-design" class="project-section">
+      <p class="section-label">Final Design</p>
+      <h2>The gate the product is named for</h2>
+      <p>The agent runs its plan in the open, extracting financials with a citation back to the page they came from, then scoring risk and testing covenants. A covenant breach cannot be auto-approved, so its own decision is to escalate. It assembles the memo, states its recommendation, and parks. The button says exactly what the human is doing: countersign.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-gate.jpg" alt="The approval gate: agent decision escalate, needs-human flag, countersign and approve" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>What would change this decision?</h4>
+      <p>The agent's call on the filed figures is fixed. The stress panel lets an analyst drag EBITDA, debt, rate, or liquidity and watch covenants, risk, and the recommendation recompute through the same decision rule the agent uses, so the what-if can never contradict the agent.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-whatif.jpg" alt="What-if stress test: draggable drivers, live covenant tests, outcome versus base case" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>The always-on half</h4>
+      <p>Approval is a moment, but credit risk is a subscription. A monitoring agent sweeps the book, re-tests every covenant against drifting figures, and raises escalations when a deal breaches or headroom runs thin. Each one waits for a person to acknowledge it.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-portfolio.jpg" alt="Portfolio monitor: covenant sweeps, breach rows, escalations needing a human" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Every step, on the record</h4>
+      <p>Every event in the run, tool arguments, results, flags, and the human's decision, lands in a timestamped audit trail that exports as JSON. In this domain the trail is not a debug view. It is the compliance artifact a fund would archive.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-audit.jpg" alt="Audit log: timestamped events for every tool call, flag, and decision" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>A working prototype, not a mockup</h4>
+      <p>The loop, the gate, the stress panel, and the monitor all run in the browser with no backend and no API keys. Press run and watch it work.</p>
+    </div>
+
+    <div class="hw-cta-row">
+      <a href="https://credit-analysis-agent.vercel.app/" target="_blank" rel="noopener" class="hw-cta">Try it live <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <!-- Design System -->
+    <div id="system" class="project-section">
+      <p class="section-label">Design System</p>
+      <h2>Graphite and Teal, one attribute from light to dark</h2>
+      <p>Graphite and Teal is Countersign's own token system: one deep teal accent, graphite-navy ink on cool neutral surfaces, hairline borders, and soft elevation instead of hard shadows. The status colors are the domain itself. Pass, warn, and breach live as first-class tokens, so a covenant table reads at a glance before you read a word.</p>
+    </div>
+    <!-- The board is RENDERED FROM THE APP'S OWN TOKENS, not drawn by hand: a
+         scratch board.html inlines the :root and [data-theme=dark] blocks
+         extracted verbatim from the built stylesheet, lays out swatches that
+         only ever reference var(--token), and fills each hex label via
+         getComputedStyle at render time. Captured once per theme, stacked.
+         Regenerate by re-extracting the token blocks if the repo's palette
+         ever changes. -->
+    <img loading="lazy" decoding="async" src="images/countersign-system.jpg" alt="The Graphite and Teal token board in light and dark: accent, ink ramp, surface ladder, status colors, type, and the reserved gate glow" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>The same screens, one attribute apart</h4>
+      <p>Because every color resolves through a variable, the entire theme swaps on one data attribute with zero component changes.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-theme.jpg" alt="The same interface in light and dark, swapped by a single data attribute" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="hw-cta-row">
+      <a href="https://github.com/chang627627/credit-analysis-agent" target="_blank" rel="noopener" class="hw-cta">View the repository <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <!-- Reflection -->
+    <div id="reflection" class="project-section">
+      <p class="section-label">Reflection</p>
+      <h2>Designing an agent is designing when it stops</h2>
+      <p>Most agent design effort goes into making the thing act. What earned trust here was the opposite work: where it pauses, what it refuses to decide, and how completely it shows its work while getting there. The gate, the flags, and the audit trail are the product. The analysis is just what they are wrapped around. And the only way to design any of that was to build it, because an agent's judgment calls live in its timing, and timing does not exist on an artboard.</p>
+    </div>
+
+  </section>
+
+  <button class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
+  <div class="page-end">
+    <div class="footer-glow"></div>
+    <canvas class="px-dissolve" data-edge="top" data-stop=".footer-big" aria-hidden="true"></canvas>
+
+    <!-- Say hello -->
+    <section class="say-hello">
+      <div class="footer-big">
+        <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-bottom">
+        <p class="footer-copy">© 2026 Chang Mou · Built with Claude Code</p>
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+          <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+          <a href="https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view?usp=sharing" target="_blank">Resume <span class="arrow">↗</span></a>
+          <a href="https://x.com/changmou627" target="_blank" rel="noopener">X <span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+<script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
+  document.querySelector('.hamburger').addEventListener('click', function() {
+    this.classList.toggle('active');
+    document.querySelector('.nav-links').classList.toggle('open');
+    document.body.classList.toggle('menu-open');
+  });
+
+  // Footer scroll reveal
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Letter light on "Say hello" — ambient sweep + cursor spotlight.
+  // Same grammar as the headline specular: the ambient sweep runs on its own
+  // so a visitor who never hovers still sees the word lit (the old hover-only
+  // spotlight was an easter egg), and the cursor layers on top via screen
+  // blend — the mousemove handler only RECORDS the pointer; all painting
+  // happens in one rAF loop that is IntersectionObserver-gated to the footer
+  // being on-screen. Reduced motion gets a fully static word (no sweep, no
+  // spotlight — same gating call as Lightfall/tilt).
+  const footerEl = document.querySelector('.say-hello');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const bigTextEl = document.querySelector('.footer-big-text');
+    let cursorX = null;
+
+    // The stylesheet eases .letter opacity over 0.3s. This loop writes that
+    // same property every frame, so the transition would retarget forever and
+    // render a ~150ms-lagged smear instead of the value computed — and since
+    // textShadow is NOT in the transition list, the bloom would run ahead of
+    // the glow it is paired with. Same fix, same reason, as the scroll-CTA.
+    letters.forEach((l) => { l.style.transition = 'none'; });
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      footerEl.addEventListener('mousemove', (e) => {
+        // Only treat the cursor as a light source when it is actually over
+        // the word (where the hand cursor shows), not the whole tall padded
+        // band above it.
+        const first = letters[0].getBoundingClientRect();
+        const last = letters[letters.length - 1].getBoundingClientRect();
+        const pad = 16;
+        cursorX = (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
+                   e.clientX < first.left - pad || e.clientX > last.right + pad)
+          ? null : e.clientX;
+      });
+      footerEl.addEventListener('mouseleave', () => { cursorX = null; });
+    }
+
+    const BASE = 0.35;     // unlit letter opacity
+    const AMB = 0.28;      // ambient peak — idle tops out ~0.53, half the
+                           // cursor's 1.0, so the word rests as a quiet
+                           // watermark and hovering is a real step up
+                           // (0.6 then 0.35 both judged too bright by user)
+    const SIG_A = 220;     // ambient pool width (px)
+    const SIG_C = 150;     // cursor pool width (px)
+    const PERIOD = 7000;   // one full sweep bounce (ms)
+    let sweepRaf = 0, sweepRunning = false;
+    const sweepT0 = performance.now();
+
+    const sweepFrame = (now) => {
+      const first = letters[0].getBoundingClientRect();
+      const last = letters[letters.length - 1].getBoundingClientRect();
+      const left = first.left;
+      const width = Math.max(1, last.right - left);
+      // The ambient light drifts back and forth across the word.
+      const ambX = left + width * (0.5 + 0.45 * Math.sin((now - sweepT0) / PERIOD * Math.PI * 2));
+      letters.forEach((letter) => {
+        const r = letter.getBoundingClientRect();
+        if (!r.width) return;                              // the space span
+        const cx = r.left + r.width / 2;
+        const da = ambX - cx;
+        const a = AMB * Math.exp(-(da * da) / (2 * SIG_A * SIG_A));
+        let I = a;
+        if (cursorX !== null) {
+          const dc = cursorX - cx;
+          const c = Math.exp(-(dc * dc) / (2 * SIG_C * SIG_C));
+          I = c + a * (1 - c);                             // screen blend, cursor on top
+        }
+        letter.style.opacity = (BASE + (1 - BASE) * I).toFixed(3);
+        letter.style.textShadow = I > 0.04
+          ? '0 0 32px rgba(255, 255, 255, ' + (0.3 * I).toFixed(3) + ')'
+          : 'none';
+      });
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStart = () => {
+      // bigTextEl is display:none on mobile — no point painting hidden glyphs
+      if (sweepRunning || getComputedStyle(bigTextEl).display === 'none') return;
+      sweepRunning = true;
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStop = () => { sweepRunning = false; cancelAnimationFrame(sweepRaf); };
+    new IntersectionObserver((es) => { es[0].isIntersecting ? sweepStart() : sweepStop(); },
+      { rootMargin: '80px' }).observe(footerEl);
+  }
+
+  // Side nav scroll tracking
+  const sideNav = document.querySelector('.side-nav');
+  // Reduced motion: jump instead of animating the whole viewport.
+  const smoothOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scrollBehavior = () => (smoothOK ? 'smooth' : 'auto');
+
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  let locked = false;
+  let userScrolled = false;
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: scrollBehavior() });
+      }
+    });
+  });
+
+  // Back to top button
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    });
+  }
+</script>
+
+<script>
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('.page-end');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<script>
+  // Walkthrough clips: drive a bottom progress bar + defer play to viewport
+  (function() {
+    const vids = document.querySelectorAll('video[preload="metadata"]');
+
+    // Progress bar — rAF while playing so it's smooth and resets cleanly on loop
+    vids.forEach(v => {
+      const bar = v.closest('.hw-clip')?.querySelector('.hw-clip-progress-bar');
+      if (!bar) return;
+      let raf;
+      const tick = () => {
+        if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+        raf = requestAnimationFrame(tick);
+      };
+      v.addEventListener('play', () => { cancelAnimationFrame(raf); tick(); });
+      v.addEventListener('pause', () => cancelAnimationFrame(raf));
+    });
+
+    // Play only when scrolled into view, pause when out
+    if (!('IntersectionObserver' in window)) { vids.forEach(v => v.play().catch(() => {})); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.play().catch(() => {}); }
+        else { e.target.pause(); }
+      });
+    }, { rootMargin: '200px' });
+    vids.forEach(v => io.observe(v));
+  })();
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
+  }
+</script>
+
+
+<script>
+  // Pixel dissolve — twinkling square mask over the static gradient edge (footer top).
+  (function () {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const CELL = 20;
+    const hash = (x, y) => { const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return n - Math.floor(n); };
+    const smooth = t => t * t * (3 - 2 * t);
+    document.querySelectorAll('.px-dissolve').forEach(cv => {
+      if (getComputedStyle(cv).display === 'none') return;
+      const parent = cv.parentElement;
+      const edge = cv.dataset.edge || 'bottom';
+      const stopSel = cv.dataset.stop || '';
+      const ctx = cv.getContext('2d');
+      let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0;
+      function layout() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        W = parent.clientWidth; H = parent.clientHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        let b0 = 0, b1 = 0.34;
+        if (cv.dataset.band) { const p = cv.dataset.band.split(',').map(Number); b0 = p[0]; b1 = p[1]; }
+        const el = stopSel && document.querySelector(stopSel);
+        if (el) { b0 = 0; b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04); }
+        bTop = H * b0; bBot = H * b1;
+      }
+      function draw(t) {
+        if (cv.offsetParent === null) return;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#0a0a0a';
+        const span = bBot - bTop;
+        for (let y = bTop; y < bBot; y += CELL) {
+          let vy = (y - bTop) / span;
+          if (edge === 'top') vy = 1 - vy;
+          const gap = smooth(vy);
+          const amp = reduce ? 0 : 0.16 * 4 * vy * (1 - vy);
+          for (let x = 0; x < W; x += CELL) {
+            const ph = hash(x, y) * 6.283;
+            const rank = hash(x * 1.3 + 5, y * 0.7 + 9);
+            if (rank < gap + amp * Math.sin(t * 1.3 + ph)) ctx.fillRect(Math.round(x), Math.round(y), CELL, CELL);
+          }
+        }
+      }
+      function loop(ts) { draw(ts / 1000); raf = requestAnimationFrame(loop); }
+      function start() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); }
+      function stop() { running = false; cancelAnimationFrame(raf); }
+      layout();
+      draw(0);
+      window.addEventListener('resize', () => { layout(); draw(0); }, { passive: true });
+      if (reduce) return;
+      new IntersectionObserver(es => { es[0].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
+    });
+  })();
+</script>
+</body>
+</html>
