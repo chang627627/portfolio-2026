@@ -304,6 +304,17 @@
     }
     .col h3 { font-size: 29px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 14px; color: var(--ink-900); }
     .col p { font-size: 18.5px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
+    /* Uniform frame for third-party page captures on the ecosystem slide —
+       the coffee deck's competitive-analysis .col-shot grammar. */
+    .col-shot {
+      display: block; width: 100%; aspect-ratio: 3 / 2;
+      object-fit: cover; object-position: top left;
+      border: var(--hair); border-radius: 8px; margin-bottom: 18px;
+    }
+    /* With a shot directly under each index label, the text-col 40px gap
+       reads as a hole and overflows the canvas — tuck the artifact to its
+       label on this slide only. */
+    .slide--eco .col-idx { margin-bottom: 22px; }
     .col .voc { font-style: italic; }
 
     /* ===== Quote spread graphic (the $250 → $7,000 reframe) — open
@@ -1317,6 +1328,44 @@
               <div class="term-row"><span>2 · Em dashes in user-facing copy</span><span class="ok">✓ none</span></div>
               <div class="term-row"><span>3 · Banned shadow utilities (no shadows in this design system)</span><span class="ok">✓ none</span></div>
               <div class="term-row"><b>OK, no drift detected</b><b>Violations: 0</b></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Collaboration · the ecosystem (2026-08-30, per user "I really want
+             to talk [mobbin mcp settings / awesome-design-md / ui-skills],
+             you can have one more slide"). The harness slide's spoken support
+             promoted to its own slide: third-party page captures ARE allowed
+             here on the coffee-deck competitive-analysis precedent. Tiles:
+             homewise-eco-mobbin.jpg is Chang's OWN logged-in Mobbin MCP
+             settings (his Claude Code/Codex agents connected — captured via
+             the Chrome extension's gif export, the one path that saves that
+             page's pixels to disk); eco-designmd is VoltAgent/awesome-design-md
+             at 111k stars; eco-uiskills is ui-skills.com. Claims verified at
+             capture time — restate stars only from a fresh screenshot. -->
+        <section class="slide slide--eco">
+          <div class="slide-inner">
+            <p class="s-label">Collaboration · The ecosystem</p>
+            <h2 class="s-title">Not my invention. The industry is building the same harness</h2>
+            <div class="cols push">
+              <div class="col">
+                <span class="col-idx">01 · Research in</span>
+                <img class="col-shot" src="images/homewise-eco-mobbin.jpg" alt="My Mobbin MCP settings page, with Claude Code and Codex agents connected to the pattern library">
+                <h3>Mobbin MCP</h3>
+                <p>My agents are connected to Mobbin's library of real product patterns and search it mid-build, so reference lands in the loop, not in a moodboard.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">02 · The spec pattern</span>
+                <img class="col-shot" src="images/homewise-eco-designmd.jpg" alt="The awesome-design-md repository on GitHub, a 111k-star collection of DESIGN.md files for coding agents">
+                <h3>DESIGN.md</h3>
+                <p>A 111k-star ecosystem treats DESIGN.md as a drop-in contract agents read before they draw. Hearth's spec speaks the industry's format.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">03 · The craft layer</span>
+                <img class="col-shot" src="images/homewise-eco-uiskills.jpg" alt="ui-skills.com, a catalog of design-engineering skills for humans and agents, reachable by CLI and MCP">
+                <h3>ui-skills</h3>
+                <p>A public catalog of design-engineering skills for agents. The router is checked into this portfolio's own repo and runs before any UI pass.</p>
+              </div>
             </div>
           </div>
         </section>
