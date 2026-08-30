@@ -1212,6 +1212,30 @@
           </div>
         </section>
 
+        <!-- Collaboration · canvas vs conversation. ITS OWN slide per user
+             ("extra page", "do not do it on existed page") after two wrong
+             placements (Process body, then inside the handoff slide). Arrives
+             at the problem-and-solution-shaped-together idea in Chang's own
+             vocabulary; the Figma column stays positive per the standing rule. -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Collaboration · Canvas and conversation</p>
+            <h2 class="s-title">The canvas shows decisions. The conversation is where I make them</h2>
+            <div class="cols push" style="grid-template-columns: 1fr 1fr;">
+              <div class="col">
+                <span class="col-idx">In Figma · the canvas</span>
+                <h3>I compose what I have decided</h3>
+                <p>The canvas renders decisions after they are made, which is exactly what a handoff needs.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">In Claude Code · the conversation</span>
+                <h3>I decide out loud</h3>
+                <p>The agent argues each exploration's tradeoffs back, and weak directions die before anyone builds them.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- 23 · Collaboration · the Figma handoff. Answers the doubt that
              "designed in code" creates for a design-hiring reader: not "is he
              fluent in Figma" but "will my team get a file they can use". Framed
@@ -1225,18 +1249,6 @@
             <div class="media-head">
               <h2 class="s-title">Skipping Figma did not skip the handoff</h2>
               <p>Figma's official Claude Code plugin connects the two over MCP. The running interface goes onto the canvas as native, editable layers, a whole flow in a single pass. What the team opens is a named layer tree, not a flat screenshot.</p>
-            </div>
-            <div class="cols" style="grid-template-columns: 1fr 1fr; margin-top: 34px;">
-              <div class="col">
-                <span class="col-idx">In Figma · the canvas</span>
-                <h3>I compose what I have decided</h3>
-                <p>The canvas renders decisions after they are made, which is exactly what a handoff needs.</p>
-              </div>
-              <div class="col">
-                <span class="col-idx">In Claude Code · the conversation</span>
-                <h3>I decide out loud</h3>
-                <p>The agent argues each exploration's tradeoffs back, and weak directions die before anyone builds them.</p>
-              </div>
             </div>
             <p class="cmd">claude plugin install figma@claude-plugins-official</p>
             <div class="shot">
