@@ -80,6 +80,27 @@
       line-height: 1.5;
       color: var(--text-muted);
     }
+    /* Design-system pager: labeled switches over one visible board.
+       Chips follow the site's pill grammar; active = filled, hover gated,
+       press scale per the interaction-state conventions; motion tokens. */
+    .cs-ds { margin-top: 32px; }
+    .cs-tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+    .cs-tab {
+      font-family: inherit; font-size: 13px; letter-spacing: 0.03em;
+      padding: 9px 18px; border-radius: 999px; cursor: pointer;
+      background: transparent; border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text-muted);
+      transition: color var(--dur-base) var(--ease-out),
+                  border-color var(--dur-base) var(--ease-out),
+                  background var(--dur-base) var(--ease-out);
+    }
+    @media (hover: hover) { .cs-tab:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.3); } }
+    .cs-tab:active { transform: scale(0.96); }
+    .cs-tab.is-on { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.16); color: var(--text); }
+    .cs-panel { display: none; margin-top: 20px; }
+    .cs-panel.is-on { display: block; }
+    .cs-panel img { display: block; width: 100%; border-radius: var(--radius); }
+    .cs-panel-cap { margin: 14px 0 0; font-size: 14px; line-height: 1.6; color: var(--text-muted); }
   </style>
 </head>
 <body>
@@ -456,24 +477,57 @@
     <div id="system" class="project-section">
       <p class="section-label">Design System</p>
       <h2>Graphite and Teal, one attribute from light to dark</h2>
-      <p>Graphite and Teal is Countersign's own token system: one deep teal accent, graphite-navy ink on cool neutral surfaces, hairline borders, and soft elevation instead of hard shadows. The status colors are the domain itself. Pass, warn, and breach live as first-class tokens, so a covenant table reads at a glance before you read a word.</p>
+      <p>Graphite and Teal is Countersign's own token system: one deep teal accent, graphite-navy ink on cool neutral surfaces, hairline borders, and soft elevation instead of hard shadows. <span style="color: var(--text)">Teal is scarce and means live, active, or yours. Green, amber, and red carry pass, warn, and breach, and the two vocabularies never mix.</span> The whole system ships in the repo as DESIGN.md, a machine-readable spec with a do-not-resurrect list of everything tried and rejected, and the boards below are its own preview page, one per concern.</p>
     </div>
-    <!-- The board is RENDERED FROM THE APP'S OWN TOKENS, not drawn by hand: a
-         scratch board.html inlines the :root and [data-theme=dark] blocks
-         extracted verbatim from the built stylesheet, lays out swatches that
-         only ever reference var(--token), and fills each hex label via
-         getComputedStyle at render time. Captured once per theme, stacked.
-         Regenerate by re-extracting the token blocks if the repo's palette
-         ever changes. -->
-    <img loading="lazy" decoding="async" src="images/countersign-system.jpg" alt="The Graphite and Teal token board in light and dark: accent, ink ramp, surface ladder, status colors, type, and the reserved gate glow" class="project-img-full" style="border-radius: var(--radius);">
-
-    <div class="deliverable">
-      <h4>The same screens, one attribute apart</h4>
-      <p>Because every color resolves through a variable, the entire theme swaps on one data attribute with zero component changes.</p>
+    <!-- Design-system pager (per user: the stacked boards made the case study
+         read as a design-system page). The boards are the REPO'S OWN
+         design-preview.html, captured at 1920 and cropped per section, so
+         every swatch, hex, and specimen is the system rendering itself in its
+         own Inter + Geist Mono. Recapture from the repo if tokens change.
+         One panel visible; buttons use aria-pressed (the filter-chip
+         semantics), first panel is the JS-fails fallback. -->
+    <div class="cs-ds">
+      <div class="cs-tabs" aria-label="Design system boards">
+        <button class="cs-tab is-on" aria-pressed="true">Color</button>
+        <button class="cs-tab" aria-pressed="false">Type</button>
+        <button class="cs-tab" aria-pressed="false">Components</button>
+        <button class="cs-tab" aria-pressed="false">Theming</button>
+      </div>
+      <div class="cs-panel is-on">
+        <img loading="lazy" decoding="async" src="images/countersign-ds-color.jpg" alt="The token board in both engines: signature teal, surface ladder, ink ramp, and the functional pass, warn, breach colors">
+        <p class="cs-panel-cap">The palette in both engines: the signature teal, the surface ladder, ink, and the functional trio, every value a token.</p>
+      </div>
+      <div class="cs-panel">
+        <img loading="lazy" decoding="async" src="images/countersign-ds-type.jpg" alt="The type ladder: Inter roles from page title to body, and the mono tier for eyebrows, figures, and badges">
+        <p class="cs-panel-cap">Inter is the voice, Geist Mono is the record: every number, eyebrow, and audit token is mono with tabular figures, a ledger rather than a sentence.</p>
+      </div>
+      <div class="cs-panel">
+        <img loading="lazy" decoding="async" src="images/countersign-ds-components.jpg" alt="Component specimens in light and dark: metric tiles, plan chips, headroom bars, the gate composite, and both signature blocks">
+        <p class="cs-panel-cap">Specimens with real product data. A dashed hairline marks a sandbox, and one glow token in the whole system is reserved for the gate alone.</p>
+      </div>
+      <div class="cs-panel">
+        <!-- the two aligned rev-2 gate captures alternating; a static 2-up
+             stands in under prefers-reduced-motion via the picture source -->
+        <picture>
+          <source media="(prefers-reduced-motion: reduce)" srcset="images/countersign-theme.jpg?v=2">
+          <img loading="lazy" decoding="async" src="images/countersign-flip.webp" alt="The same revision gate in the light and dark engines, swapped by a single data attribute">
+        </picture>
+        <p class="cs-panel-cap">The same gate, flipped by one data attribute with zero component changes. Elements announce themselves once, then go still. The only thing allowed to keep moving is a genuinely live state, like the seam of a gate still waiting for you.</p>
+      </div>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-theme.jpg?v=2" alt="The same interface in light and dark, swapped by a single data attribute" class="project-img-full" style="border-radius: var(--radius);">
+    <script>
+      (function () {
+        const tabs = Array.from(document.querySelectorAll('.cs-tab'));
+        const panels = Array.from(document.querySelectorAll('.cs-panel'));
+        tabs.forEach((t, i) => t.addEventListener('click', () => {
+          tabs.forEach((x, j) => { x.classList.toggle('is-on', j === i); x.setAttribute('aria-pressed', String(j === i)); });
+          panels.forEach((p, j) => p.classList.toggle('is-on', j === i));
+        }));
+      })();
+    </script>
 
     <div class="hw-cta-row">
+      <a href="https://github.com/chang627627/credit-analysis-agent/blob/main/DESIGN.md" target="_blank" rel="noopener" class="hw-cta">Read the design spec <span aria-hidden="true">↗</span></a>
       <a href="https://github.com/chang627627/credit-analysis-agent" target="_blank" rel="noopener" class="hw-cta">View the repository <span aria-hidden="true">↗</span></a>
     </div>
 
