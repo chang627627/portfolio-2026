@@ -12,7 +12,7 @@
 // DELETE { deck, id }  (anyone may delete: trusted-audience decision, per user)
 const { put, del, list } = require('@vercel/blob');
 
-const DECKS = ['coffeeslide', 'homewiseslide', 'novaslide'];
+const DECKS = ['coffeeslide', 'homewiseslide', 'novaslide', 'countersignslide'];
 const MAX_COMMENTS = 800;
 
 async function readComments(deck) {

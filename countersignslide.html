@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countersign — Slides — Chang Mou</title>
+  <meta name="description" content="A slide-deck walkthrough of the Countersign case study: the agent analyzes, a human countersigns.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.chang-mou.com/countersignslide">
+  <meta property="og:title" content="Countersign — Slides — Chang Mou">
+  <meta property="og:description" content="A slide-deck walkthrough of the Countersign case study.">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://www.chang-mou.com/countersignslide">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+  <style>
+    /* ===== Hearth tokens — the Homewise design system, lifted from its own
+       /designsystem page. Deliberately NOT the portfolio's dark chrome or its
+       warm-to-blue hero gradient: this deck wears the case study's identity.
+       Hearth rules honored here: warm canvas, near-black ink, tri-role accents
+       (sage = trust, ember = caution, sky = info), hairlines instead of
+       shadows (shadows are banned), and sentence-case headings.
+
+       The LAYOUT grammar is editorial print, not boxed cards: every slide is
+       framed by an in-slide header rule and a folio footer rule, stats run as
+       full-width hairline rows with oversized numerals, triads are rule-topped
+       columns, and content blocks anchor to the bottom of the frame so the
+       composition reads top / bottom, never "small cards floating in cream". ===== */
+    :root {
+      --canvas: #F6F4EF;         /* tier 0 · page */
+      --canvas-soft: #FAF8F3;    /* tier 1 · sidebar, hover */
+      --card: #FFFFFF;           /* tier 2 · content tiles */
+      --canvas-deep: #EEEAE1;    /* tier 3 · inset wells */
+      --ink-900: #1A1A17;        /* tier 4 · CTAs, inverted */
+      --ink-700: #3C3C38;
+      --ink-500: #6B6B65;
+      --ink-300: #A8A8A1;
+      --ink-200: #CFCEC7;
+      --ink-100: #E7E5DE;
+
+      --sage-50: #F1F4EF;  --sage-100: #E2E8DC; --sage-300: #9AAE8C;
+      --sage-400: #738A63; --sage-500: #4F6942; --sage-700: #2F4027;
+
+      --ember-50: #FBF3EA; --ember-100: #F5E4CE; --ember-300: #D9A461;
+      --ember-400: #B98132; --ember-500: #8E601E;
+
+      --sky-50: #EEF3F5;  --sky-100: #D9E4E9; --sky-300: #8FAAB3;
+      --sky-500: #4E6F7A; --sky-700: #2E4850;
+
+      --accent: #0F7D8C;        /* Countersign teal, the app's light accent */
+      --accent-dark: #2BB8CC;   /* its dark-engine sibling, for ink surfaces */
+      --radius: 14px;
+      --hair: 1px solid var(--ink-200);
+      --hair-soft: 1px solid var(--ink-100);
+      /* on ink-900 surfaces */
+      --hair-dark: 1px solid rgba(255,255,255,0.12);
+      --ink-on-dark: rgba(255,255,255,0.92);
+      --ink-on-dark-soft: rgba(255,255,255,0.66);
+      --ink-on-dark-mute: rgba(255,255,255,0.45);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;                /* the deck owns the viewport */
+      background: var(--ink-900);      /* letterbox around the cream stage */
+      color: var(--ink-900);
+      font-family: 'Neue Montreal', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: inherit; }
+
+    /* ===== Deck shell: a fixed 1920×1080 stage, scaled to fit (letterboxed) ===== */
+    .deck {
+      position: fixed; inset: 0; overflow: hidden;
+      background: var(--ink-900);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .stage {
+      position: relative;
+      width: 1920px; height: 1080px;
+      flex: 0 0 auto;
+      overflow: hidden;
+      transform: scale(var(--scale, 1));
+      transform-origin: center center;
+    }
+    .deck-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.62s cubic-bezier(0.76, 0, 0.24, 1);
+      will-change: transform;
+    }
+    .slide {
+      flex: 0 0 1920px;
+      width: 1920px; height: 1080px;
+      overflow: hidden;
+      position: relative;               /* pin-layer + folio anchor */
+      display: flex; align-items: stretch;
+      padding: 72px 110px 148px;
+      background: var(--canvas);
+    }
+    .slide-inner {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column; justify-content: flex-start;
+    }
+
+    /* ===== In-slide document chrome (the print frame) =====
+       Header rule at the top of every slide, folio rule at the bottom. The
+       folio is injected once by JS (it carries each slide's own number), so
+       the markup stays clean. Together they close the composition: even a
+       sparse slide reads as a designed page, not a floating fragment. */
+    .page-foot {
+      position: absolute; left: 110px; right: 110px; bottom: 54px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-top: var(--hair); padding-top: 18px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--ink-300);
+      pointer-events: none; z-index: 2;
+    }
+    .page-foot b { font-weight: 500; color: var(--ink-500); font-variant-numeric: tabular-nums; }
+    .slide--title .page-foot, .slide--end .page-foot, .slide--ink .page-foot {
+      border-top: 1px solid rgba(255,255,255,0.16);
+      color: var(--ink-on-dark-mute);
+    }
+    .slide--title .page-foot b, .slide--end .page-foot b, .slide--ink .page-foot b { color: var(--ink-on-dark-soft); }
+
+    /* ===== Reveal on active slide ===== */
+    .slide-inner > * {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .slide.is-active .slide-inner > * { opacity: 1; transform: none; }
+    .slide.is-active .slide-inner > *:nth-child(1) { transition-delay: 0.06s; }
+    .slide.is-active .slide-inner > *:nth-child(2) { transition-delay: 0.13s; }
+    .slide.is-active .slide-inner > *:nth-child(3) { transition-delay: 0.20s; }
+    .slide.is-active .slide-inner > *:nth-child(4) { transition-delay: 0.27s; }
+    .slide.is-active .slide-inner > *:nth-child(5) { transition-delay: 0.34s; }
+    .slide.is-active .slide-inner > *:nth-child(6) { transition-delay: 0.41s; }
+
+    /* ===== Typography (fixed px on the 1920×1080 canvas) =====
+       The site loads Neue Montreal at 400/500 only, so EVERY heading sets
+       font-weight explicitly. Left to UA defaults an h1/h2 asks for 700 and
+       the browser synthesizes a fake bold. */
+
+    /* Header rule: section label left, deck name right, hairline under.
+       This is the slide's top frame, anchored at one canvas y everywhere. */
+    .s-label {
+      display: flex; justify-content: space-between; align-items: baseline; gap: 40px;
+      width: 100%;
+      border-bottom: var(--hair); padding-bottom: 20px;
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-500); margin: 0;
+    }
+    .s-label::after {
+      content: "Countersign · Case study";
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.18em;
+      color: var(--ink-300); white-space: nowrap;
+    }
+    .slide--title .s-label, .slide--end .s-label, .slide--ink .s-label {
+      border-bottom: 1px solid rgba(255,255,255,0.16);
+      color: var(--accent-dark);
+    }
+    .slide--title .s-label::after, .slide--end .s-label::after, .slide--ink .s-label::after { color: var(--ink-on-dark-mute); }
+
+    .s-title {
+      text-wrap: balance;
+      font-size: 76px; font-weight: 500; line-height: 1.04; letter-spacing: -0.035em;
+      margin: 46px 0 0; color: var(--ink-900); max-width: 1620px;
+    }
+    .s-title--compact { font-size: 54px; line-height: 1.1; letter-spacing: -0.03em; }
+    .s-body {
+      font-size: 22px; font-weight: 400; line-height: 1.6; color: var(--ink-500);
+      max-width: 1240px; margin-top: 28px;
+    }
+    .highlight { color: var(--ink-900); }
+    .s-foot { font-size: 16px; line-height: 1.5; color: var(--ink-300); margin-top: 26px; }
+    .s-foot a { color: var(--ink-500); text-decoration: underline; text-decoration-color: var(--ink-200); text-underline-offset: 3px; }
+
+    /* Bottom-anchored artifact zone: whatever carries this class is pushed to
+       the lower band of the frame, just above the folio. The padding-top is
+       the guaranteed minimum gap to the prose above. */
+    .push { margin-top: auto; padding-top: 44px; }
+
+    /* ===== Dark bookends (title + sign-off) — Hearth tier 4 with the
+       .dot-grid brand texture. No blurred colour blobs: this deck does not
+       borrow the site's hero gradient. ===== */
+    .slide--title, .slide--end {
+      background: linear-gradient(180deg, #23231F 0%, var(--ink-900) 62%);
+      color: var(--ink-on-dark);
+    }
+    .slide--title::before, .slide--end::before {
+      content: ""; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.075) 1px, transparent 1px);
+      background-size: 18px 18px;
+      z-index: 0;
+    }
+    /* a quiet sage wash so the dark slides still read as Homewise, not generic black */
+    .slide--title::after, .slide--end::after {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(ellipse 70% 60% at 88% 92%, rgba(43,184,204,0.10), transparent 62%),
+        radial-gradient(ellipse 60% 55% at 4% 6%, rgba(217,164,97,0.10), transparent 60%);
+    }
+    .slide--title .slide-inner, .slide--end .slide-inner { position: relative; z-index: 1; }
+
+    /* Mid-deck ink statement slide (the outcome peak): flat tier 4, no dot
+       grid — the texture stays reserved for the two bookends. */
+    .slide--ink {
+      background: var(--ink-900);
+      color: var(--ink-on-dark);
+    }
+    .slide--ink::after {
+      content: ""; position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse 64% 58% at 92% 88%, rgba(43,184,204,0.09), transparent 62%);
+    }
+    .slide--ink .slide-inner { position: relative; z-index: 1; }
+    .slide--ink .s-title { color: #fff; font-size: 96px; letter-spacing: -0.04em; max-width: 1560px; }
+    .slide--ink .s-body { color: var(--ink-on-dark-soft); }
+    .slide--ink .highlight { color: #fff; }
+
+    /* ===== Title slide: metadata columns up top, giant wordmark at the
+       bottom, description bottom-right. ===== */
+    .title-meta-row {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px;
+      padding-top: 8px;
+    }
+    .tm { display: flex; flex-direction: column; gap: 10px; }
+    /* ink on the sage field, not on-dark — the meta row now sits on the image.
+       Labels take ink-700, not the usual ink-500 eyebrow grey: on the sage
+       field ink-500 measures ~3.2:1, under the deck's own eyebrow contrast. */
+    .tm-k {
+      font-size: 12px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-700);
+    }
+    .tm-v { font-size: 17.5px; line-height: 1.5; color: var(--ink-900); }
+    .title-bottom {
+      margin-top: auto;
+      display: flex; align-items: flex-end; justify-content: space-between; gap: 70px;
+    }
+    .title-kicker {
+      font-size: 14px; font-weight: 500; letter-spacing: 0.24em; text-transform: uppercase;
+      color: var(--accent-dark); margin-bottom: 18px;
+    }
+    /* 180px, down from 280: the cover image owns the top 700px of the frame,
+       so the wordmark shares the 232px ink band with the kicker and sub */
+    .title-h1 {
+      font-size: 180px; font-weight: 500; line-height: 0.92; letter-spacing: -0.05em;
+      margin: 0 0 0 -9px; color: #fff; white-space: nowrap;
+    }
+    .title-sub {
+      font-size: 18px; font-weight: 400; line-height: 1.65; color: var(--ink-on-dark-soft);
+      max-width: 430px; margin-bottom: 14px; flex: 0 1 auto;
+    }
+
+    /* ===== Sign-off ===== */
+    .end-big {
+      font-size: 170px; font-weight: 500; line-height: 0.95; letter-spacing: -0.05em;
+      color: #fff; margin: 0 0 0 -8px;
+    }
+
+    /* ===== Stat rows (the Geist table): numeral left, annotation pinned to a
+       right column, full-width hairlines between. ===== */
+    .rows { width: 100%; }
+    .row {
+      display: grid; grid-template-columns: 560px 1fr; align-items: center;
+      border-top: var(--hair); padding: 24px 0;
+    }
+    .rows .row:last-of-type { border-bottom: var(--hair); }
+    .row-num {
+      font-size: 112px; font-weight: 500; line-height: 0.92; letter-spacing: -0.045em;
+      color: var(--ink-900); font-variant-numeric: tabular-nums;
+    }
+    .row p {
+      font-size: 20px; font-weight: 400; line-height: 1.5; color: var(--ink-500);
+      max-width: 620px; justify-self: end; width: 100%;
+    }
+    .src { font-size: 15px; letter-spacing: 0.02em; color: var(--ink-300); margin-top: 20px; }
+
+    /* ===== Editorial columns (triads and the four workflow stages): each
+       column opens with its own rule and an index, no boxes. ===== */
+    .cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 56px; width: 100%; }
+    .cols--4 { grid-template-columns: repeat(4, 1fr); gap: 48px; }
+    .col { border-top: 1px solid var(--ink-300); padding-top: 26px; }
+    .col-idx {
+      display: block;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 40px;
+      font-variant-numeric: tabular-nums;
+    }
+    .col h3 { font-size: 29px; font-weight: 500; letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 14px; color: var(--ink-900); }
+    .col p { font-size: 18.5px; font-weight: 400; line-height: 1.55; color: var(--ink-500); }
+    /* Uniform frame for third-party page captures on the ecosystem slide —
+       the coffee deck's competitive-analysis .col-shot grammar. */
+    .col-shot {
+      display: block; width: 100%; aspect-ratio: 3 / 2;
+      object-fit: cover; object-position: top left;
+      border: var(--hair); border-radius: 8px; margin-bottom: 18px;
+    }
+    /* With a shot directly under each index label, the text-col 40px gap
+       reads as a hole and overflows the canvas — tuck the artifact to its
+       label on this slide only. */
+    .slide--eco .col-idx { margin-bottom: 22px; }
+    .col .voc { font-style: italic; }
+
+    /* ===== Quote spread graphic (the $250 → $7,000 reframe) — open
+       composition, no box: label, dot track, two oversized figures. ===== */
+    .spread { width: 100%; }
+    .spread-label {
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
+      color: var(--ink-500); margin-bottom: 44px;
+    }
+    .spread-track { position: relative; height: 2px; background: var(--ink-200); border-radius: 2px; }
+    .spread-dot {
+      position: absolute; top: 50%; width: 15px; height: 15px; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--canvas); border: 2px solid var(--ink-300);
+    }
+    .spread-dot--hi { border-color: var(--ember-400); background: var(--ember-100); }
+    .spread-scale { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px; }
+    .spread-fig {
+      display: flex; flex-direction: column; gap: 12px;
+      font-size: 128px; font-weight: 500; line-height: 0.9; letter-spacing: -0.045em; color: var(--ink-900);
+      font-variant-numeric: tabular-nums;
+    }
+    .spread-fig small { font-size: 15px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-500); }
+    .spread-fig--hi { color: var(--ember-500); text-align: right; }
+    .spread-fig--hi small { color: var(--ember-400); }
+
+    /* ===== Split layout (overview, hello) ===== */
+    .split { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 72px; align-items: center; margin-top: 24px; }
+    /* the split fills the frame between header and folio, so its content
+       centers vertically instead of pooling a void at the bottom */
+    .slide-inner > .split { flex: 1 1 0; min-height: 0; }
+    .split-media img {
+      display: block; width: 100%; border-radius: 8px; border: var(--hair);
+    }
+    /* Ownership list inside a .split, as compact rule-topped rows. h4 sets
+       font-weight explicitly: left to the UA default it asks for 700 and the
+       browser synthesizes a fake bold, since only 400/500 are loaded. */
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; margin-top: 40px; }
+    .mini { border-top: var(--hair); padding-top: 16px; }
+    .mini h4 {
+      font-size: 25px; font-weight: 500; letter-spacing: -0.015em;
+      color: var(--ink-900); margin-bottom: 9px;
+    }
+    .mini p { font-size: 19px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
+    .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .intro-grid img {
+      width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
+      border-radius: 8px; border: var(--hair);
+    }
+
+    /* ===== Reflection pull line ===== */
+    .pull {
+      font-size: 46px; font-weight: 500; line-height: 1.25; letter-spacing: -0.025em;
+      color: var(--ink-900); max-width: 1420px;
+    }
+
+    /* ===== Process flow charts (Hearth-toned rebuild of the case study SVGs) ===== */
+    .flows { margin-top: 40px; display: flex; flex-direction: column; gap: 26px; }
+    .flow { max-width: 1240px; }
+    .flow-head { display: flex; align-items: baseline; gap: 28px; flex-wrap: wrap; margin-bottom: 14px; }
+    .flow-head h3 { font-size: 22px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink-900); }
+    .flow-tags { list-style: none; display: flex; gap: 22px; flex-wrap: wrap; }
+    .flow-tags li { font-size: 16px; color: var(--ink-500); display: inline-flex; align-items: center; gap: 8px; }
+    .tick {
+      flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center; font-size: 11px;
+    }
+    .tick--bad { background: var(--ember-100); color: var(--ember-500); }
+    .tick--good { background: var(--sage-100); color: var(--sage-500); }
+    .flow svg { display: block; width: 100%; height: auto; }
+    .flow-box rect { fill: var(--card); stroke: var(--ink-200); stroke-width: 1; }
+    .flow-box text { fill: var(--ink-700); font-size: 19px; font-family: inherit; }
+
+    /* ===== Media slides: title left, annotation right, artifact filling the
+       rest of the frame. ===== */
+    .media-head {
+      display: grid; grid-template-columns: minmax(0, 1fr) 620px; gap: 80px;
+      align-items: start; margin-top: 40px;
+    }
+    .media-head .s-title { margin: 0; font-size: 46px; line-height: 1.12; letter-spacing: -0.025em; }
+    .media-head p { font-size: 19px; font-weight: 400; line-height: 1.6; color: var(--ink-500); margin: 0; padding-top: 5px; }
+    .media-head p a {
+      color: var(--ink-700); white-space: nowrap;
+      text-decoration: underline; text-decoration-color: var(--ink-200); text-underline-offset: 3px;
+    }
+
+    /* ===== Walkthrough clip =====
+       Height-driven: flex hands the clip the remaining space and aspect-ratio
+       derives the width from it, so the frame is always exactly the clip's
+       ratio and never overflows the slide. Hairline, no shadow. */
+    .clip {
+      position: relative; overflow: hidden;
+      border-radius: 8px; border: var(--hair);
+      background: var(--canvas-deep);
+    }
+    /* flex-basis MUST be 0, not auto. With `auto` the aspect-ratio's own
+       content size (width 100% → 1680 → height 945) feeds into the basis and
+       survives shrinking, so the frame overran the slide by ~18px and got
+       clipped. A zero basis makes the height purely the leftover free space.
+       The ratio is the clips' REAL size (1920×1204 screen recordings, not 16:9)
+       so object-fit has nothing to crop and nothing to letterbox. */
+    .slide-inner > .clip:last-child {
+      flex: 1 1 0; min-height: 0; margin-top: 36px;
+      align-self: center; aspect-ratio: 1920 / 1204; max-width: 100%;
+    }
+    .slide-inner > .clip--play:last-child { aspect-ratio: 1920 / 994; }
+    /* Media slides trim the bottom padding to hand the artifact more room.
+       Only padding-BOTTOM moves, so the header stays anchored at the same
+       canvas y as every other content slide. */
+    .slide--media { padding-bottom: 128px; }
+
+    /* Image artifact that fills the leftover height, the still-image sibling of
+       .clip. Centring the IMG inside a flex box (rather than object-fit on a
+       bordered box) makes the hairline hug the artwork exactly, with no
+       letterbox gap inside the border. flex-basis 0 for the same reason .clip
+       documents above: an auto basis would feed the intrinsic size back in and
+       overrun the slide. */
+    .slide-inner > .shot:last-child {
+      flex: 1 1 0; min-height: 0; margin-top: 28px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .shot img {
+      display: block; max-width: 100%; max-height: 100%;
+      width: auto; height: auto;
+      border-radius: 8px; border: var(--hair);
+    }
+    /* Full-width cropped variant (FD claim slides): the screen stretches to the
+       content column and its lower half is cut by the frame — a window onto the
+       top of the screen, not a shrunken whole. The border moves to the frame
+       since the img overflows it. object-position is per-image (the intake
+       shot anchors bottom: its payoff, the drafted scope, sits at the tail). */
+    .slide-inner > .shot--crop:last-child {
+      display: block; overflow: hidden;
+      border-radius: 8px; border: var(--hair);
+      background: var(--canvas-deep);
+    }
+    .shot--crop img {
+      width: 100%; height: 100%; max-width: none; max-height: none;
+      object-fit: cover; object-position: 50% 0;
+      border: 0; border-radius: 0;
+    }
+    /* The install command verbatim. Monospace is not a second type tier here,
+       it is a literal terminal string. */
+    .cmd {
+      margin: 18px 0 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 20px; color: var(--ink-900);
+      background: var(--card); border: var(--hair); border-radius: 8px;
+      padding: 12px 18px; align-self: flex-start;
+    }
+    /* The harness slide's receipt: a real `npm run design-check` run on the
+       product repo at HEAD, same literal-terminal material family as .cmd. */
+    .term {
+      margin-top: 44px; padding: 24px 32px;
+      background: var(--card); border: var(--hair); border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 16.5px; line-height: 1.5; color: var(--ink-500);
+    }
+    .term-row { display: flex; justify-content: space-between; gap: 24px; padding: 5px 0; }
+    .term-row b { font-weight: 500; color: var(--ink-900); }
+    .term-row .ok { color: var(--sage-500); white-space: nowrap; }
+    .clip video { display: block; width: 100%; height: 100%; object-fit: cover; background: var(--canvas-deep); }
+    .clip-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(26,26,23,0.10); }
+    .clip-bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+    /* the click-to-play shipped-build recording keeps native controls */
+    .clip--play video { object-fit: contain; background: var(--ink-900); }
+
+    /* ===== Product cover on the title slide =====
+       The sage field IS the top of the slide: the cover image pins to the
+       top edge at exactly 1920 wide (2400 × 0.8 — no horizontal crop, and
+       the field is a uniform rgb(198,208,183) so nothing can seam) and runs
+       700px deep. The metadata row sits ON the field in ink, using the
+       asset's own empty top band; the ink zone below keeps the wordmark.
+       It lives OUTSIDE .slide-inner so the reveal transition never moves it —
+       the field holds still while the type wakes over it. */
+    .title-media {
+      position: absolute; top: 0; left: 0; right: 0; height: 700px;
+      overflow: hidden;
+    }
+    .title-media img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+    /* the shared bookend wash paints ABOVE child divs (::after is the last
+       child) and would haze the field + the white UI — title drops it */
+    .slide--title::after { display: none; }
+
+    /* ===== Final design pairs =====
+       Each beat is a decision slide (claim + annotation + tradeoff row) and
+       a chromeless proof slide: the clip owns the whole frame at full height
+       (its real 1920×1204 ratio → 1722×1080), ink mats at the sides, no
+       header or folio — a film frame between framed pages. */
+    .trade-k {
+      font-size: 13.5px; font-weight: 500; letter-spacing: 0.22em; text-transform: uppercase;
+      color: var(--ink-300); margin-bottom: 22px;
+    }
+    /* Two rule-topped columns in the deck's .cols grammar, the tick standing
+       in for the numeral index: what the decision buys (sage) against what it
+       costs (ember), each with its receipt from the build. h4 sets weight
+       explicitly per the single-weight gotcha. */
+    .trade-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+    .trade-col { border-top: var(--hair); padding-top: 24px; }
+    .trade-col h4 {
+      display: flex; align-items: center; gap: 13px;
+      font-size: 22px; font-weight: 500; letter-spacing: -0.015em; color: var(--ink-900);
+      margin: 0 0 14px;
+    }
+    .trade-col p { font-size: 18px; line-height: 1.6; color: var(--ink-500); margin: 0; }
+    .trade-col .tick { width: 27px; height: 27px; font-size: 12.5px; }
+    /* Evidence crops: the two builds' real UI, captured from the repo's own
+       git history (old = 6262fa8~1, shipped = HEAD). Pairs share one aspect
+       ratio per slide so the columns stay aligned. */
+    /* Breadcrumb agenda across the Final Design run (reference deck p77-91):
+       current stage ink, the rest quiet, so a 16-slide walkthrough stays
+       oriented and visibly promises its own end. Sits as the middle item of
+       the .s-label flex row. */
+    .s-label .crumb { letter-spacing: 0.18em; color: var(--ink-300); white-space: nowrap; }
+    .s-label .crumb b { font-weight: 500; color: var(--ink-900); }
+
+    /* Pains-to-stage derivation rows (reference p74): research on the left,
+       the stage it produced on the right. */
+    .derive { margin-top: 8px; }
+    .derive-row { display: flex; align-items: baseline; gap: 32px; padding: 26px 0; border-top: var(--hair); }
+    .derive-row:first-child { border-top: 0; }
+    .derive-pain { flex: 1; font-size: 22px; color: var(--ink-700); margin: 0; }
+    .derive-pain em { font-style: normal; color: var(--ink-400); font-size: 15px; display: block; margin-top: 6px; }
+    .derive-arrow { color: var(--ink-300); font-size: 20px; flex-shrink: 0; }
+    .derive-stage { width: 320px; text-align: right; font-size: 30px; font-weight: 500; color: var(--ink-900); margin: 0; }
+
+    /* Synthesis map (reference p92): the five walkthrough screens re-shown
+       small and wired into one flow, with the two human gates on the arrows. */
+    .sm-row { display: flex; align-items: center; gap: 12px; }
+    .sm-node { flex: 1; min-width: 0; }
+    .sm-node img { display: block; width: 100%; border: var(--hair); border-radius: 8px; }
+    .sm-node p { margin: 12px 0 0; font-size: 15px; font-weight: 500; color: var(--ink-700); text-align: center; }
+    .sm-link { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+    .sm-link--gate { width: 128px; }
+    .sm-gate { font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+      background: var(--ink-900); color: #ffffff; border-radius: 999px; padding: 7px 12px; text-align: center; line-height: 1.35; }
+    .sm-arrow { color: var(--ink-300); font-size: 22px; }
+
+    .trade-shot {
+      margin: 6px 0 16px; border: var(--hair); border-radius: 8px;
+      overflow: hidden; background: var(--card);
+    }
+    .trade-shot img { display: block; width: 100%; height: auto; }
+    .slide--full { padding: 0; background: var(--ink-900); }
+    /* margin reset is load-bearing: the shared clip rule adds margin-top 36,
+       which would shrink the flex height and drop the mats off symmetric */
+    .slide--full .slide-inner > .clip:last-child { margin: 0; border: 0; border-radius: 0; }
+    .slide--full .page-foot { display: none; }
+
+    /* ===== CTAs ===== */
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .cta {
+      display: inline-flex; align-items: center; gap: 11px;
+      padding: 17px 28px; border-radius: 999px; font-size: 19px;
+      border: var(--hair); text-decoration: none; color: var(--ink-700);
+      background: transparent;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+    }
+    .cta:hover { background: var(--canvas-soft); border-color: var(--ink-300); color: var(--ink-900); }
+    .cta--solid { background: var(--ink-900); color: var(--canvas); border-color: var(--ink-900); }
+    .cta--solid:hover { background: #000; color: #fff; border-color: #000; }
+    .cta svg { width: 19px; height: 19px; }
+    .slide--end .cta, .slide--ink .cta { background: rgba(255,255,255,0.06); border: var(--hair-dark); color: var(--ink-on-dark); }
+    .slide--end .cta:hover, .slide--ink .cta:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); color: #fff; }
+    .slide--end .cta--solid, .slide--ink .cta--solid { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
+    .slide--end .cta--solid:hover, .slide--ink .cta--solid:hover { background: #fff; color: var(--ink-900); }
+
+    /* ===== Chrome: viewport-fixed overlay (NOT scaled), sits in the letterbox ===== */
+    .deck-progress {
+      position: fixed; top: 0; left: 0; height: 3px; z-index: 40; width: 100%;
+      background: var(--accent);
+      clip-path: inset(0 100% 0 0);
+      transition: clip-path 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+    .deck-brand {
+      position: fixed; top: 26px; left: 34px; z-index: 30;
+      display: inline-flex; align-items: center; gap: 9px;
+      font-size: 16px; color: var(--ink-on-dark-mute); text-decoration: none; transition: color 0.2s ease;
+    }
+    .deck-brand:hover { color: var(--ink-on-dark); }
+
+    .navbtn {
+      position: fixed; bottom: 24px; z-index: 30;
+      width: 46px; height: 46px; border-radius: 50%;
+      background: rgba(255,255,255,0.07); border: var(--hair-dark);
+      color: var(--ink-on-dark); cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+    }
+    .navbtn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.3); }
+    .navbtn:disabled { opacity: 0.26; cursor: default; }
+    .navbtn svg { width: 20px; height: 20px; }
+    .navbtn--prev { right: 90px; }
+    .navbtn--next { right: 34px; }
+
+    .deck-hint {
+      position: fixed; bottom: 33px; left: 34px; z-index: 30;
+      font-size: 14px; color: var(--ink-on-dark-mute);
+      display: inline-flex; align-items: center; gap: 8px; transition: opacity 0.5s ease;
+    }
+    .deck-hint kbd { font-family: inherit; font-size: 12px; padding: 2px 7px; border: var(--hair-dark); border-radius: 5px; color: var(--ink-on-dark-soft); }
+    .deck-hint.hidden { opacity: 0; pointer-events: none; }
+
+    /* ===== Comment mode (Figma-style pins) =====
+       Pins live INSIDE each .slide (so they ride the track transform) and are
+       anchored at % coordinates of the 1920x1080 stage. A 0x0 .pin-anchor sits
+       at the exact point; the pin/popover scale by 1/--scale about that point
+       so they render at constant screen size at any viewport. */
+    .pin-layer { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+    body.commenting .pin-layer {
+      pointer-events: auto;
+      cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='30' height='30'><path d='M4 26 V10 a6 6 0 0 1 6-6 h10 a6 6 0 0 1 6 6 v4 a6 6 0 0 1-6 6 H10 Z' fill='%231a1a17' stroke='%23f6f4ef' stroke-width='2'/><path d='M11 12 h8 M15 8 v8' stroke='%23f6f4ef' stroke-width='2' stroke-linecap='round'/></svg>") 4 26, crosshair;
+    }
+    .pin-anchor { position: absolute; width: 0; height: 0; }
+    .pin {
+      position: absolute; left: 0; bottom: 0;
+      width: 34px; height: 34px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      transform-origin: bottom left;
+      border-radius: 17px 17px 17px 3px;      /* Figma teardrop, tail at the point */
+      background: var(--ink-900);
+      border: 1.5px solid var(--canvas);
+      color: var(--canvas); font-size: 14px; font-family: inherit; padding: 0;
+      display: none; align-items: center; justify-content: center;
+      cursor: pointer; pointer-events: auto;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    body.commenting .pin { display: flex; }
+    .pin:hover, .pin.open { background: #0B5E6B; border-color: #BFE7ED; }
+    .cmt-pop {
+      position: absolute;
+      width: 340px;
+      transform: scale(calc(1 / var(--scale, 1)));
+      background: var(--card);
+      border: var(--hair);
+      border-radius: 12px;
+      padding: 16px;
+      display: none; flex-direction: column; gap: 10px;
+      pointer-events: auto; cursor: default;
+      font-size: 14px; line-height: 1.5; text-align: left; color: var(--ink-900);
+    }
+    body.commenting .cmt-pop { display: flex; }
+    .cmt-pop input, .cmt-pop textarea {
+      font-family: inherit; font-size: 14px; color: var(--ink-900);
+      background: var(--canvas-soft);
+      border: var(--hair); border-radius: 7px;
+      padding: 8px 10px; outline: none; resize: none;
+    }
+    .cmt-pop input:focus, .cmt-pop textarea:focus { border-color: #7FC4CF; }
+    .cmt-pop textarea { min-height: 64px; }
+    .cmt-pop-row { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+    .cmt-btn {
+      font-family: inherit; font-size: 13px; cursor: pointer;
+      padding: 7px 14px; border-radius: 999px;
+      background: transparent; border: var(--hair); color: var(--ink-500);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .cmt-btn:hover { background: var(--canvas-soft); color: var(--ink-900); }
+    .cmt-btn--solid { background: var(--ink-900); border-color: var(--ink-900); color: var(--canvas); }
+    .cmt-btn--solid:hover { background: #000; color: #fff; }
+    .cmt-meta { display: flex; align-items: center; gap: 10px; }
+    .cmt-ava {
+      width: 26px; height: 26px; border-radius: 50%; flex: 0 0 auto;
+      background: #EAF4F6; border: 1px solid #D3E8EC;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 12px; color: var(--accent);
+    }
+    .cmt-name { color: var(--ink-900); }
+    .cmt-time { color: var(--ink-300); font-size: 12px; }
+    .cmt-text { color: var(--ink-500); white-space: pre-wrap; word-break: break-word; }
+    .cmt-del {
+      background: none; border: none; padding: 0; margin-left: auto;
+      font-family: inherit; font-size: 12px; color: var(--ink-300); cursor: pointer;
+    }
+    .cmt-del:hover { color: var(--ember-500); }
+
+    /* Comment chrome (viewport-fixed, unscaled) */
+    .navbtn--comment { right: 146px; }
+    .navbtn--comment.on { background: var(--canvas); color: var(--ink-900); border-color: var(--canvas); }
+    .cmt-count {
+      position: absolute; top: -5px; right: -5px;
+      min-width: 18px; height: 18px; padding: 0 4px; border-radius: 999px;
+      background: var(--canvas); color: var(--ink-900);
+      font-size: 11px; line-height: 18px; text-align: center;
+      display: none;
+    }
+    .cmt-count.show { display: block; }
+    .navbtn--comment.on .cmt-count { background: var(--ink-900); color: var(--canvas); }
+    .cmt-bar {
+      position: fixed; top: 22px; left: 50%; transform: translateX(-50%);
+      z-index: 35;
+      display: none; align-items: center; gap: 14px;
+      padding: 10px 18px; border-radius: 999px;
+      background: rgba(255,255,255,0.08); border: var(--hair-dark);
+      backdrop-filter: blur(10px);
+      font-size: 13.5px; color: var(--ink-on-dark-soft); white-space: nowrap;
+    }
+    body.commenting .cmt-bar { display: inline-flex; }
+    .cmt-bar kbd {
+      font-family: inherit; font-size: 11px; padding: 1px 6px;
+      border: var(--hair-dark); border-radius: 4px; color: var(--ink-on-dark-soft);
+    }
+    .cmt-bar a { color: var(--ink-on-dark); text-decoration: none; }
+    .cmt-bar a:hover { text-decoration: underline; }
+
+    @media (max-width: 640px) {
+      .deck-hint { display: none; }
+      .navbtn--comment, .cmt-bar { display: none !important; }
+      .deck-brand { font-size: 13px; top: 18px; left: 20px; }
+      .navbtn { bottom: 18px; } .navbtn--next { right: 20px; } .navbtn--prev { right: 74px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .deck-track, .deck-progress { transition: none; }
+      .slide-inner > * { transition: none; opacity: 1; transform: none; }
+    }
+
+    /* ===== Countersign deck overrides =====
+       The title field is the app itself in its dark engine, so the meta row
+       reads on-dark, and a two-ended scrim keeps the row legible up top while
+       the field sinks into the ink band below (the novaslide scrim pattern). */
+    .title-media::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(180deg,
+        rgba(10,11,13,0.94) 0%, rgba(10,11,13,0.62) 24%, rgba(10,11,13,0) 50%,
+        rgba(26,26,23,0.22) 78%, rgba(26,26,23,0.94) 100%);
+    }
+    .title-media { border-bottom: 1px solid rgba(255,255,255,0.10); }
+    .tm-k { color: var(--ink-on-dark-mute); }
+    .tm-v { color: var(--ink-on-dark); }
+    /* the decision-rule line, verbatim from the repo (the .cmd material) */
+    .rule-line { font-size: 24px; padding: 20px 28px; }
+  </style>
+</head>
+<body>
+
+  <div class="deck-progress" id="progress"></div>
+  <a class="deck-brand" href="index.html" aria-label="Back to portfolio">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Chang Mou
+  </a>
+
+  <div class="deck" id="deck">
+    <div class="stage" id="stage">
+      <div class="deck-track" id="track">
+
+        <!-- 1 · Title -->
+        <section class="slide slide--title is-active">
+          <div class="title-media">
+            <img src="images/countersign-dark.jpg" alt="Countersign in its dark engine, the revision gate awaiting a countersignature" decoding="async">
+          </div>
+          <div class="slide-inner">
+            <div class="title-meta-row">
+              <div class="tm"><span class="tm-k">Role</span><span class="tm-v">Design and build, solo</span></div>
+              <div class="tm"><span class="tm-k">Type</span><span class="tm-v">Personal prototype · mocked backend</span></div>
+              <div class="tm"><span class="tm-k">Timeline</span><span class="tm-v">2026</span></div>
+              <div class="tm"><span class="tm-k">Built with</span><span class="tm-v">React + TypeScript · Claude Code</span></div>
+            </div>
+            <div class="title-bottom">
+              <div>
+                <p class="title-kicker">Case study · 2026</p>
+                <h1 class="title-h1">Countersign</h1>
+              </div>
+              <p class="title-sub">The agent analyzes, a human countersigns. A credit-analysis agent whose every step is watchable, and whose consequential call is a signature, never a default.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2 · The bet -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">The bet</p>
+            <h2 class="s-title">An answer nobody can inspect is not an answer anyone can sign</h2>
+            <p class="s-body">The gap between a fast approval and a slow one is the analysis: pull the figures, spread them, test each covenant, write the memo that defends the call. Most of that work is mechanical. None of the accountability is, because at the end a person signs. <span class="highlight">So the bet is not that a model can write the memo. It is that a person will sign what an agent prepared.</span></p>
+            <div class="rows push">
+              <div class="row"><span class="row-num">1 day</span><p>is enough for three in ten banks to clear a small and simple loan.</p></div>
+              <div class="row"><span class="row-num">10 days</span><p>is what three in four banks take to approve their typical small business loan.</p></div>
+              <div class="row"><span class="row-num">28.4%</span><p>of financial institutions call AI explainability their most acute regulatory concern.</p></div>
+              <p class="src">FDIC Small Business Lending Survey, 2024. Wolters Kluwer Banking Compliance AI Trend Report, 2026.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3 · Overview -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Overview · My role</p>
+            <div class="split" style="grid-template-columns: 1fr;">
+              <div>
+                <h2 class="s-title s-title--compact" style="margin-top: 0;">A credit agent you can watch think, ending in a signature</h2>
+                <p class="s-body" style="font-size: 25px; max-width: 1240px;">Countersign runs one visible loop over a deal document: plan, act, observe, decide, stop. Every tool call shows its arguments and its evidence, and the loop suspends at the gate the product is named for. Designed and built solo, in real code, with a deliberately mocked backend, so the behavior itself is the design.</p>
+                <div class="mini-grid">
+                  <div class="mini"><h4>The agent loop</h4><p>An async generator streaming typed events. The UI is a pure reduction of that stream, so a real model could sit behind the same components.</p></div>
+                  <div class="mini"><h4>The approval gate</h4><p>The loop suspends at the consequential call and cannot proceed until a person acts.</p></div>
+                  <div class="mini"><h4>Five workspace views</h4><p>Analysis, deals pipeline, portfolio monitor, agent roster, and audit log, all reduced from the same events.</p></div>
+                  <div class="mini"><h4>Graphite and Teal</h4><p>The token-driven design system. Light and dark are one attribute apart.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4 · Insight -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Insight</p>
+            <h2 class="s-title">The signature is the product</h2>
+            <p class="s-body">On a clean deal the agent's own recommendation is approve. The loop still stops. Every run, whatever the numbers say, parks at the same gate and waits for a person, because a countersignature is the second signature that makes a document binding, and the agent's memo is only ever the first. <span class="highlight">The goal was never to automate the decision. It was to make the work so inspectable that a person can sign it without redoing it.</span></p>
+            <div class="push">
+              <p class="cmd rule-line">breaches === 0 ? 'approve' : riskScore &gt;= 75 ? 'decline' : 'escalate'</p>
+              <p class="s-foot">The entire decision rule, verbatim from the repo. One line, shared by the agent, the stress panel, and the restructure search, and no branch ends the run.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5 · The rule as a tree -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Insight · The decision rule</p>
+            <h2 class="s-title s-title--compact">Two questions, three exits, one gate</h2>
+            <div style="flex: 1 1 0; min-height: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 1560 440" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="The decision rule as a tree: every branch ends at the human gate" style="width: 100%; height: auto; max-height: 100%;">
+                <defs>
+                  <marker id="csArrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F7D8C"/></marker>
+                </defs>
+                <g class="flow-box"><rect x="1" y="16" width="300" height="74" rx="10"/><text x="151" y="53" text-anchor="middle" dominant-baseline="middle">Any covenant breached?</text></g>
+                <g class="flow-box"><rect x="500" y="16" width="300" height="74" rx="10"/><text x="650" y="53" text-anchor="middle" dominant-baseline="middle">Risk score 75 or higher?</text></g>
+                <line x1="303" y1="53" x2="494" y2="53" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <text x="398" y="41" text-anchor="middle" font-size="15" fill="#A8A8A1">yes</text>
+                <line x1="151" y1="92" x2="151" y2="182" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <text x="166" y="141" font-size="15" fill="#A8A8A1">no</text>
+                <line x1="650" y1="92" x2="650" y2="182" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <text x="665" y="141" font-size="15" fill="#A8A8A1">yes</text>
+                <path d="M 802 53 H 1150 V 182" fill="none" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <text x="975" y="41" text-anchor="middle" font-size="15" fill="#A8A8A1">no</text>
+                <g class="flow-box"><rect x="1" y="188" width="300" height="76" rx="10"/></g>
+                <circle cx="34" cy="226" r="6" fill="#16a34a"/>
+                <text x="54" y="221" font-size="19" fill="#3C3C38">Approve</text>
+                <text x="54" y="245" font-size="14" fill="#A8A8A1">a recommendation</text>
+                <g class="flow-box"><rect x="500" y="188" width="300" height="76" rx="10"/></g>
+                <circle cx="533" cy="226" r="6" fill="#e03131"/>
+                <text x="553" y="221" font-size="19" fill="#3C3C38">Decline</text>
+                <text x="553" y="245" font-size="14" fill="#A8A8A1">a recommendation</text>
+                <g class="flow-box"><rect x="1000" y="188" width="300" height="76" rx="10"/></g>
+                <circle cx="1033" cy="226" r="6" fill="#d9930a"/>
+                <text x="1053" y="221" font-size="19" fill="#3C3C38">Escalate</text>
+                <text x="1053" y="245" font-size="14" fill="#A8A8A1">a handoff</text>
+                <line x1="151" y1="266" x2="151" y2="336" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <line x1="650" y1="266" x2="650" y2="336" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <line x1="1150" y1="266" x2="1150" y2="336" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrow)"/>
+                <g class="flow-box"><rect x="1" y="342" width="1558" height="86" rx="10"/></g>
+                <text x="780" y="380" text-anchor="middle" font-size="22" fill="#1A1A17">The human gate</text>
+                <text x="780" y="408" text-anchor="middle" font-size="15" fill="#6B6B65">every run parks here until a person acts: countersign, amend, send back, or reject</text>
+              </svg>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6 · Why this is hard -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Why this is hard</p>
+            <h2 class="s-title">A right answer is not enough</h2>
+            <p class="s-body">Three constraints shaped every call that follows.</p>
+            <div class="cols push">
+              <div class="col"><span class="col-idx">01</span><h3>A provenance problem</h3><p>A mostly right answer with no working is a liability. Every figure has to point back to the page it came from, and every step has to leave a trail an auditor can replay.</p></div>
+              <div class="col"><span class="col-idx">02</span><h3>An uncertainty problem</h3><p>Extraction is never uniformly confident, and the edge cases are where the risk lives. A critical flag has to change the agent's behavior, not just its color.</p></div>
+              <div class="col"><span class="col-idx">03</span><h3>A gate problem</h3><p>If approval is a dialog bolted on at the end, people click through it. The pause has to be structural: the loop itself stops, and nothing proceeds until a person acts.</p></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7 · The loop -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Solution · The loop</p>
+            <h2 class="s-title s-title--compact">Five stages, each with a reason to exist</h2>
+            <div class="derive push">
+              <div class="derive-row" style="padding: 21px 0;">
+                <p class="derive-pain">You approve the plan<em>optional steps can be excluded, and the approved composition goes on the record</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Plan</p>
+              </div>
+              <div class="derive-row" style="padding: 21px 0;">
+                <p class="derive-pain">Nothing happens off screen<em>each tool call runs in the open, arguments in, data out, with a live timer</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Act</p>
+              </div>
+              <div class="derive-row" style="padding: 21px 0;">
+                <p class="derive-pain">Evidence, not output<em>metric cards, a risk gauge, covenant tests, each figure carrying its own confidence</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Observe</p>
+              </div>
+              <div class="derive-row" style="padding: 21px 0;">
+                <p class="derive-pain">Flags change behavior<em>a covenant breach cannot be auto-approved, so the recommendation flips to escalate</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Decide</p>
+              </div>
+              <div class="derive-row" style="padding: 21px 0;">
+                <p class="derive-pain">The verb belongs to a person<em>countersign, amend, send back, or reject, every one of them on the record</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Countersign</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8 · Process -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Process</p>
+            <h2 class="s-title">Behavior cannot be mocked, so I built it</h2>
+            <p class="s-body">An agent's feel lives in its pacing: how reasoning streams, when a flag interrupts, what it is like to be asked for a decision mid flow. None of that survives a static mockup, so I designed by building, solo, in Claude Code. The backend is deliberately mocked and deterministic. Every number is fictional, the extraction is labeled simulated in the UI, and the same run replays identically. <span class="highlight">Every design question became something I could test by watching rather than argue by intuition.</span></p>
+          </div>
+        </section>
+
+        <!-- 9 · FD1 Plan · media -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
+            <div class="media-head">
+              <h2 class="s-title">Approve the plan, not just the memo</h2>
+              <p>Picking a deal no longer starts the run. It proposes the plan: required steps locked, optional steps yours to exclude, and a cancellable countdown for the unattended case. The composition you approve is stamped into the audit trail before the first tool fires.</p>
+            </div>
+            <div class="shot shot--crop"><img src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 10 · FD1 Plan · tradeoff -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
+            <h2 class="s-title">The tradeoff · The plan became a proposal</h2>
+            <div class="push">
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-plan-old.jpg" alt="The June build mid-run seconds after picking a deal, plan bar filling itself, no review step" decoding="async"></div>
+                  <p>In the June build the run began the moment you picked a deal. The plan bar announced steps as they ran, but you could not touch it. The agent's first act was a fait accompli, and the human's first appearance came only at the end.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it changed</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-plan-new.jpg" alt="The plan-review checklist: required steps locked, the optional step toggleable, approve plan and run" decoding="async"></div>
+                  <p>Now nothing runs until a person approves the plan as edited. Optional steps can be excluded, required steps are locked, and the unattended countdown logs itself as auto-started, so the trail never claims a human decision that did not happen.</p>
+                </div>
+              </div>
+              <p class="src">Both columns are real builds: the left captured from the repo's own git history, the right from today's.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 11 · FD2 Gate · media -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
+            <div class="media-head">
+              <h2 class="s-title">A gate with four verbs, and a reason on the record</h2>
+              <p>The agent's decision is fixed on the filed figures. The human's is more than a binary: countersign, amend the terms first, send it back, or reject. The reviewer note rides the decision into the memo, the banner, and the audit trail, optional to approve, required to refuse.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-gate.jpg" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 12 · FD2 Gate · tradeoff -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
+            <h2 class="s-title">The tradeoff · The reviewer goes on the record</h2>
+            <div class="push">
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-gate-old.jpg" alt="The old gate: approve or reject, no note field anywhere" decoding="async"></div>
+                  <p>The gate had two buttons and no memory. Approve or reject, and either way the reviewer left nothing behind. The human was the least documented actor in a product whose whole argument is documentation.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it changed</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-gate-new.jpg" alt="The shipped gate: amend terms, a reviewer note that goes on the record, three verbs" decoding="async"></div>
+                  <p>Every refusal now requires a reason: the note goes on the record, so a rejection cannot be blind. And amendments preview through the same decision rule before signing, so a waiver is a calculated act, not a hopeful one.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 13 · FD3 Rework · media -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
+            <div class="media-head">
+              <h2 class="s-title">Send it back, and the agent earns the signature</h2>
+              <p>A send-back is authorization to try again within policy. The note becomes a tracked flag, a structuring engine searches for the smallest sponsor-equity cure that clears every covenant, and the loop re-parks on the revised figures as revision two. On Atlas the cure lands leverage on exactly 4.00x. On Cobalt no cure exists inside policy, it says so, and the decline stands.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 33%;" src="images/countersign-rework.jpg" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 14 · FD3 Rework · tradeoff -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
+            <h2 class="s-title">The tradeoff · A no that produces a better yes</h2>
+            <div class="push">
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-rework-old.jpg" alt="The old gate's only refusal: a terminal reject button" decoding="async"></div>
+                  <p>Reject was the only way to say no, and reject is terminal. A memo with a fixable flaw met the same fate as a genuinely bad deal: kill it, run again from zero, and lose the reviewer's reasoning along the way.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it changed</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-rework-new.jpg" alt="Revision two on the proposed revised structure, the reviewer thread carried as evidence" decoding="async"></div>
+                  <p>The third verb re-enters the loop instead of ending it. The work carries forward, the objection becomes an input, and the revision must pass the same one-line decide rule as the original analysis, so a cure can never be a special case.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 15 · FD4 What-if · media -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
+            <div class="media-head">
+              <h2 class="s-title">What would change this decision?</h2>
+              <p>Drag EBITDA, debt, rate, or liquidity and the covenants, risk, and recommendation recompute live through the same decide rule the agent runs, so the sandbox can never contradict the memo. Here Atlas flips from escalate to approve at plus $2.6M of EBITDA, and the scenario attaches to the audit trail.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 85%;" src="images/countersign-whatif-flip.jpg" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 16 · FD4 What-if · tradeoff -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
+            <h2 class="s-title">The tradeoff · The boundary is painted on the control</h2>
+            <div class="push">
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-whatif-old.jpg" alt="The first stress panel: plain slider tracks, pass and breach pills, nothing kept" decoding="async"></div>
+                  <p>The first panel recomputed live, but the tracks were blank. You dragged blind, hunting for the flip point, and whatever you found evaporated when you left the screen. Sensitivity analysis with no memory.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it changed</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-whatif-new.jpg" alt="The shipped panel: decision zones painted under every slider, headroom bars, attach scenario to audit trail" decoding="async"></div>
+                  <p>The track under each slider is painted with the decision at every value, so the boundary is visible before you touch it. Covenant rows grew headroom bars, and a scenario worth keeping attaches to the audit trail as a first-class entry.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 17 · FD5 Autonomy · media -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
+            <div class="media-head">
+              <h2 class="s-title">Autonomy is a policy, not a promise</h2>
+              <p>A header dial decides what the agent may resolve without a click: gate all, the default, or auto-clean, which covers only a spotless first pass. Recommendation approve, zero flags, every confidence at ninety percent or higher. The countdown is visible, any engagement holds it, and breaches always hard-gate.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 18 · FD5 Autonomy · tradeoff -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
+            <h2 class="s-title">The tradeoff · Autonomy is granted, never assumed</h2>
+            <div class="push">
+              <div class="trade-cols">
+                <div class="trade-col">
+                  <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-auto-old.jpg" alt="A spotless approval in the June build, every covenant passing, still demanding the click" decoding="async"></div>
+                  <p>Every run gated identically, so a spotless first pass cost the same ceremony as a covenant breach. That is how gates die: when the hundredth clean click feels like ritual, people stop reading before they sign.</p>
+                </div>
+                <div class="trade-col">
+                  <h4><span class="tick tick--good">✓</span>Why it changed</h4>
+                  <div class="trade-shot"><img src="images/countersign-t-auto-new.jpg" alt="The auto-countersign countdown with its policy trace, and the decision it covers" decoding="async"></div>
+                  <p>Autonomy became something a person grants, scoped to the runs where the gate had nothing to say. The signature reads auto, under policy, distinct from human ink, and one touch of any control takes the pen back.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 19 · The signature block -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · The record</p>
+            <div class="media-head">
+              <h2 class="s-title">One memo, two signatures</h2>
+              <p>The memo closes with a signature block: prepared by the agent, countersigned by the human, with the revision and the structure change on the line between them. Approval draws real ink. An auto-countersigned run signs as /auto/ under policy instead, so the trail never confuses machine policy with a human hand.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 23%;" src="images/countersign-signature.jpg" alt="The signature block: prepared by Countersign, countersigned by the human reviewer with an ink flourish, rev 2 committed" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 20 · Portfolio -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">The always-on half</p>
+            <div class="media-head">
+              <h2 class="s-title">Approval is a moment. Credit risk is a subscription</h2>
+              <p>A monitoring agent sweeps the book on a cadence, re-tests every covenant against drifting figures, and raises escalations when a deal breaches or headroom runs thin. Each one waits for a person to acknowledge it, and a countersigned escalation routes here instead of evaporating.</p>
+            </div>
+            <div class="shot shot--crop"><img src="images/countersign-portfolio.jpg" alt="The portfolio monitor: sweep cadence, breach rows, and an escalation queue that needs a human" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 21 · Audit -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">The record</p>
+            <div class="media-head">
+              <h2 class="s-title">The audit trail is the product, not the debug view</h2>
+              <p>Every event lands timestamped: tool arguments and results, flags, the approved plan, reviewer notes, attached what-if scenarios, and the decision itself, exportable as JSON. In this domain, it is the compliance artifact a fund would archive.</p>
+            </div>
+            <div class="shot shot--crop"><img src="images/countersign-audit.jpg" alt="The audit log: the send-back, the restructure, the attached scenario, and the countersignature, all on one timeline" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 22 · Outcome (ink) -->
+        <section class="slide slide--ink">
+          <div class="slide-inner">
+            <p class="s-label">Outcome</p>
+            <h2 class="s-title">A working prototype, not a mockup</h2>
+            <p class="s-body">The loop, the gate, the rework cure, the stress panel, and the monitor all run in the browser, no backend, no API keys. Every trust call in this deck is in there, running for real. Pick a deal, press run, and refuse to sign.</p>
+            <div class="cta-row push">
+              <a class="cta cta--solid" href="https://credit-analysis-agent.vercel.app/" target="_blank" rel="noopener">Try it live
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+              </a>
+              <a class="cta" href="https://github.com/chang627627/credit-analysis-agent" target="_blank" rel="noopener">View the repository
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- 23 · Design system -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Design system</p>
+            <div class="media-head">
+              <h2 class="s-title">Graphite and Teal, read by role</h2>
+              <p>An original token system: one deep teal accent over graphite-navy ink and cool neutral surfaces, hairlines and soft elevation instead of hard shadows. Pass, warn, and breach are first-class tokens, so a covenant table reads at a glance before you read a word.</p>
+            </div>
+            <div class="shot shot--crop"><img src="images/countersign-system-light.jpg" alt="The Graphite and Teal token board: accent, ink ramp, surface ladder, status colors, type, and the reserved gate glow" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 24 · Theming -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Design system · Theming</p>
+            <div class="media-head">
+              <h2 class="s-title">The same screen, one attribute apart</h2>
+              <p>Every color resolves through a variable. The root is light, a single data attribute flips the whole product to graphite, and no component changes. The same revision gate, both engines.</p>
+            </div>
+            <div class="shot"><img src="images/countersign-theme.jpg" alt="The revision gate rendered twice: light engine beside dark engine, swapped by one data attribute" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 25 · Reflection -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Reflection</p>
+            <h2 class="s-title">Designing an agent is designing when it stops</h2>
+            <p class="s-body">Most agent design effort goes into making the thing act. What earned trust here was the opposite work: where it pauses, what it refuses to decide, how completely it shows its working, and now, when it may act alone. Timing does not exist on an artboard, so the only way to design any of it was to build it.</p>
+            <p class="pull push">The gate, the flags, and the audit trail are the product. The analysis is what they are wrapped around.</p>
+          </div>
+        </section>
+
+        <!-- 26 · Sign-off -->
+        <section class="slide slide--end">
+          <div class="slide-inner">
+            <p class="s-label">Thank you</p>
+            <div class="push">
+              <h2 class="end-big">See it in full</h2>
+              <div class="cta-row" style="margin-top: 56px;">
+                <a class="cta cta--solid" href="countersign.html">View the full case study
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+                </a>
+                <a class="cta" href="https://credit-analysis-agent.vercel.app/" target="_blank" rel="noopener">Try it live</a>
+                <a class="cta" href="mailto:changmou627627@gmail.com">Say hello</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+      </div>
+    </div>
+  </div>
+
+  <button class="navbtn navbtn--comment" id="cmtToggle" aria-label="Comment mode (C)" title="Comment mode (C)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    <span class="cmt-count" id="cmtCount"></span>
+  </button>
+  <div class="cmt-bar" id="cmtBar">
+    <span>Comment mode · click anywhere on a slide to leave a note</span>
+    <a href="#" id="cmtSend" hidden>Send notes to Chang ↗</a>
+    <span><kbd>Esc</kbd> to exit</span>
+  </div>
+
+  <button class="navbtn navbtn--prev" id="prev" aria-label="Previous slide" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+  </button>
+  <button class="navbtn navbtn--next" id="next" aria-label="Next slide">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+
+  <div class="deck-hint" id="hint"><kbd>←</kbd><kbd>→</kbd> or swipe to navigate · <kbd>C</kbd> to comment</div>
+
+  <noscript>
+    <div style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;background:#F6F4EF;">
+      <p style="max-width:40ch;line-height:1.6;color:#6B6B65;">This slide deck needs JavaScript. View the <a href="countersign.html" style="color:#1A1A17;">full Countersign case study</a> instead.</p>
+    </div>
+  </noscript>
+
+  <script>
+    (function () {
+      const stage = document.getElementById('stage');
+      const track = document.getElementById('track');
+      const slides = Array.from(track.children);
+      const total = slides.length;
+      const SLIDE_W = 1920, SLIDE_H = 1080;
+      const progress = document.getElementById('progress');
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const hint = document.getElementById('hint');
+      const pad = (n) => String(n).padStart(2, '0');
+
+      // The folio: every slide closes with a rule and its own page number,
+      // like a printed publication. Injected here so the markup stays clean;
+      // the numbers are static per slide, so render() never touches them.
+      slides.forEach((s, i) => {
+        const f = document.createElement('div');
+        f.className = 'page-foot';
+        f.innerHTML = '<span>A case study by Chang Mou</span><b>' + pad(i + 1) + ' / ' + pad(total) + '</b>';
+        s.appendChild(f);
+      });
+
+      // Scale the fixed 1920×1080 stage to fit the viewport (letterboxed).
+      // The lane is 160px, not coffeeslide's 76px: the stage is CREAM here, so
+      // the light chrome must stay fully inside the ink-900 letterbox or it
+      // lands on the slide and disappears.
+      function fit() {
+        const s = Math.min(window.innerWidth / SLIDE_W, (window.innerHeight - 160) / SLIDE_H);
+        stage.style.setProperty('--scale', s);
+      }
+      window.addEventListener('resize', fit, { passive: true });
+      fit();
+
+      let index = 0;
+      const fromHash = parseInt((location.hash || '').replace('#', ''), 10);
+      if (!isNaN(fromHash) && fromHash >= 1 && fromHash <= total) index = fromHash - 1;
+
+      // Videos: nothing preloads (the six clips total ~100MB). The active
+      // slide's looping clip is played on arrival, which is what triggers its
+      // load, and the next slide's clip is warmed so the hand-off is seamless.
+      // NOTE: an IntersectionObserver would be wrong here for the same reason
+      // loading="lazy" is wrong in a deck — slides move by transform, so they
+      // never leave the scroll viewport.
+      // Start the active slide's clip and KEEP it started. A play() issued
+      // while the element is still at readyState 0 (which is where
+      // preload="none" leaves it) can be aborted by the element's own
+      // resource selection, and the old code swallowed that in .catch() —
+      // so the slide sat on its poster, paused, looking broken. Flip preload
+      // first, then retry once there is actually data to play.
+      function playClip(v) {
+        if (v.preload !== 'auto') v.preload = 'auto';
+        const attempt = () => { if (v.paused) v.play().catch(() => {}); };
+        attempt();
+        if (v.readyState < 3) {
+          const onReady = () => {
+            v.removeEventListener('canplay', onReady);
+            // bail if the deck moved on while the data was arriving
+            if (slides[index] && slides[index].contains(v)) attempt();
+          };
+          v.addEventListener('canplay', onReady);
+        }
+      }
+
+      function syncMedia() {
+        slides.forEach((s, i) => {
+          s.querySelectorAll('video').forEach(v => {
+            const isLoop = v.hasAttribute('data-clip');
+            if (i === index) {
+              if (isLoop) playClip(v);
+            } else {
+              v.pause();
+              if (isLoop) { try { v.currentTime = 0; } catch (e) {} }
+            }
+          });
+        });
+        // Keep a SLIDING WINDOW of at most the current slide + the next two.
+        // These clips are 6-24MB. preload used to be flipped to 'auto' on the
+        // way past and never flipped back, so by the end of the deck every
+        // clip (~119MB) was still pulling in the background and starving
+        // whatever you were actually trying to watch — which is what made the
+        // late slides crawl. Warming two ahead only works if the far ones are
+        // released again.
+        slides.forEach((s, i) => {
+          const near = i >= index && i <= index + 2;
+          s.querySelectorAll('video[data-clip]').forEach(v => {
+            if (near) { if (v.preload === 'none') v.preload = 'auto'; }
+            else if (v.preload === 'auto' && v.readyState < 4) v.preload = 'none';
+          });
+        });
+      }
+
+      function render() {
+        track.style.transform = 'translateX(' + (-index * SLIDE_W) + 'px)';
+        progress.style.clipPath = 'inset(0 ' + (100 - ((index + 1) / total * 100)) + '% 0 0)';
+        prevBtn.disabled = index === 0;
+        nextBtn.disabled = index === total - 1;
+        slides.forEach((s, i) => s.classList.toggle('is-active', i === index));
+        syncMedia();
+        const h = '#' + (index + 1);
+        if (location.hash !== h) history.replaceState(null, '', h);
+      }
+
+      function go(n) {
+        const next = Math.max(0, Math.min(total - 1, n));
+        if (next === index) return;
+        index = next;
+        render();
+      }
+
+      prevBtn.addEventListener('click', () => go(index - 1));
+      nextBtn.addEventListener('click', () => go(index + 1));
+
+      let hintDismissed = false;
+      function dismissHint() {
+        if (hintDismissed) return;
+        hintDismissed = true;
+        hint.classList.add('hidden');
+      }
+
+      document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) return; // typing a comment
+        if (e.key === 'ArrowRight' || e.key === 'PageDown') { go(index + 1); dismissHint(); }
+        else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { go(index - 1); dismissHint(); }
+        else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); go(index + 1); dismissHint(); }
+        else if (e.key === ' ' && e.shiftKey) { e.preventDefault(); go(index - 1); dismissHint(); }
+        else if (e.key === 'Home') { go(0); dismissHint(); }
+        else if (e.key === 'End') { go(total - 1); dismissHint(); }
+      });
+
+      // Touch swipe (thresholds in viewport px; fine for intent detection).
+      let sx = 0, sy = 0, tracking = false;
+      const deck = document.getElementById('deck');
+      deck.addEventListener('touchstart', (e) => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; tracking = true; }, { passive: true });
+      deck.addEventListener('touchend', (e) => {
+        if (!tracking) return;
+        if (document.body.classList.contains('commenting')) { tracking = false; return; }
+        tracking = false;
+        const dx = e.changedTouches[0].clientX - sx;
+        const dy = e.changedTouches[0].clientY - sy;
+        if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.4) { go(index + (dx < 0 ? 1 : -1)); dismissHint(); }
+      }, { passive: true });
+
+      window.addEventListener('hashchange', () => {
+        const n = parseInt((location.hash || '').replace('#', ''), 10);
+        if (!isNaN(n) && n >= 1 && n <= total) go(n - 1);
+      });
+
+      // Per-clip playback progress bar (mirrors the case study's hw-clip bar).
+      document.querySelectorAll('.clip video[data-clip]').forEach(v => {
+        const bar = v.closest('.clip').querySelector('.clip-bar i');
+        if (!bar) return;
+        let raf;
+        const tick = () => {
+          if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+          raf = requestAnimationFrame(tick);
+        };
+        v.addEventListener('play', () => { cancelAnimationFrame(raf); tick(); });
+        v.addEventListener('pause', () => cancelAnimationFrame(raf));
+      });
+
+      render();
+      setTimeout(dismissHint, 6000);
+    })();
+  </script>
+
+  <script>
+    // Comment mode — Figma-style pins. Notes live in a SHARED store
+    // (/api/comments, Vercel Blob), so every visitor sees every pin; if the
+    // API is unreachable (local preview, offline) the engine falls back to
+    // this browser's localStorage. "Send notes" still packages an email.
+    (function () {
+      const KEY = 'countersignslide_comments_v1';
+      const NAME_KEY = 'countersignslide_commenter';
+      const EMAIL = 'changmou627627@gmail.com';
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const layers = slides.map((s) => {
+        const l = document.createElement('div');
+        l.className = 'pin-layer';
+        s.appendChild(l);
+        return l;
+      });
+      const toggle = document.getElementById('cmtToggle');
+      const countEl = document.getElementById('cmtCount');
+      const sendEl = document.getElementById('cmtSend');
+      let comments = [];
+      try { comments = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+      let pop = null; // currently-open popover node (draft: whole anchor, view: just the card)
+
+      // ===== Shared storage (/api/comments, Vercel Blob) =====
+      // When the API answers, everyone sees everyone's pins. When it does
+      // not (local preview, offline), the engine falls back to the original
+      // per-browser localStorage behavior, unchanged.
+      const DECK = KEY.split('_')[0];
+      const AUTHOR_KEY = KEY + '_author';
+      const MIGRATED_KEY = KEY + '_migrated';
+      let shared = false;
+      let myKey = 'anon';
+      try {
+        myKey = localStorage.getItem(AUTHOR_KEY) || '';
+        if (!myKey) {
+          myKey = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, '0')).join('');
+          localStorage.setItem(AUTHOR_KEY, myKey);
+        }
+      } catch (e) { myKey = 'anon'; }
+
+      async function apiGet() {
+        const r = await fetch('/api/comments?deck=' + DECK + '&me=' + encodeURIComponent(myKey));
+        if (!r.ok) throw new Error(r.status);
+        return (await r.json()).comments || [];
+      }
+      async function apiPost(c) {
+        const r = await fetch('/api/comments', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deck: DECK, authorKey: myKey, comment: c }),
+        });
+        if (!r.ok) throw new Error(r.status);
+        return (await r.json()).comment;
+      }
+      async function apiDelete(id) {
+        const r = await fetch('/api/comments', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ deck: DECK, authorKey: myKey, id: id }),
+        });
+        if (!r.ok) throw new Error(r.status);
+      }
+      async function refresh() {
+        try { comments = await apiGet(); shared = true; render(); } catch (e) {}
+      }
+
+      function save() { localStorage.setItem(KEY, JSON.stringify(comments)); }
+      function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+      function closePop() {
+        if (pop) { pop.remove(); pop = null; }
+        document.querySelectorAll('.pin.open').forEach(p => p.classList.remove('open'));
+      }
+
+      function updateChrome() {
+        const n = comments.length;
+        countEl.textContent = n;
+        countEl.classList.toggle('show', n > 0);
+        sendEl.hidden = n === 0;
+        sendEl.textContent = 'Send ' + n + (n === 1 ? ' note' : ' notes') + ' to Chang ↗';
+        const lines = ['Hi Chang,', '', 'Notes on your Homewise deck:', ''];
+        comments.slice().sort((a, b) => a.slide - b.slide || a.ts - b.ts)
+          .forEach(c => lines.push('Slide ' + (c.slide + 1) + ' · ' + c.name + ': ' + c.text));
+        sendEl.href = 'mailto:' + EMAIL +
+          '?subject=' + encodeURIComponent('Feedback on your Homewise deck') +
+          '&body=' + encodeURIComponent(lines.join('\n'));
+      }
+
+      function anchorAt(layer, x, y) {
+        const a = document.createElement('div');
+        a.className = 'pin-anchor';
+        a.style.left = (x * 100) + '%';
+        a.style.top = (y * 100) + '%';
+        layer.appendChild(a);
+        return a;
+      }
+
+      // Open the card away from the nearest slide edges, scaling from the
+      // corner closest to the anchor so it grows away from the pin.
+      function placePop(el, x, y) {
+        const h = x > 0.62 ? 'right' : 'left';
+        const v = y > 0.55 ? 'bottom' : 'top';
+        el.style[h] = '10px';
+        el.style[v] = (v === 'bottom') ? '46px' : '10px';
+        el.style.transformOrigin = v + ' ' + h;
+      }
+
+      function openDraft(slideIdx, x, y) {
+        closePop();
+        const a = anchorAt(layers[slideIdx], x, y);
+        const savedName = localStorage.getItem(NAME_KEY) || '';
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        el.innerHTML =
+          '<input type="text" class="cmt-in-name" placeholder="Your name" maxlength="40" value="' + esc(savedName) + '">' +
+          '<textarea class="cmt-in-text" placeholder="Leave a note on this slide" maxlength="600"></textarea>' +
+          '<div class="cmt-pop-row">' +
+            '<button class="cmt-btn" data-act="cancel">Cancel</button>' +
+            '<button class="cmt-btn cmt-btn--solid" data-act="post">Post</button>' +
+          '</div>';
+        placePop(el, x, y);
+        a.appendChild(el);
+        pop = a;
+        const nameIn = el.querySelector('.cmt-in-name');
+        const textIn = el.querySelector('.cmt-in-text');
+        (savedName ? textIn : nameIn).focus();
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const act = e.target.dataset && e.target.dataset.act;
+          if (act === 'cancel') closePop();
+          if (act === 'post') {
+            const name = nameIn.value.trim() || 'Anonymous';
+            const text = textIn.value.trim();
+            if (!text) { textIn.focus(); return; }
+            localStorage.setItem(NAME_KEY, name);
+            const draft = { slide: slideIdx, x: x, y: y, name: name, text: text };
+            const postLocal = () => {
+              comments.push(Object.assign({
+                id: Date.now() + '-' + Math.random().toString(36).slice(2, 7),
+                ts: Date.now(), own: true,
+              }, draft));
+              save(); closePop(); render();
+            };
+            if (shared) {
+              apiPost(draft).then((posted) => {
+                comments.push(posted); closePop(); render();
+              }).catch(() => { shared = false; postLocal(); });
+            } else {
+              postLocal();
+            }
+          }
+        });
+        textIn.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) el.querySelector('[data-act="post"]').click();
+        });
+      }
+
+      function openView(c, pinAnchor, pinEl) {
+        closePop();
+        pinEl.classList.add('open');
+        const el = document.createElement('div');
+        el.className = 'cmt-pop';
+        const when = new Date(c.ts).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        el.innerHTML =
+          '<div class="cmt-meta">' +
+            '<span class="cmt-ava">' + esc((c.name[0] || '?').toUpperCase()) + '</span>' +
+            '<span class="cmt-name">' + esc(c.name) + '</span>' +
+            '<span class="cmt-time">' + when + '</span>' +
+            '<button class="cmt-del" data-act="del">Delete</button>' +
+          '</div>' +
+          '<div class="cmt-text">' + esc(c.text) + '</div>';
+        placePop(el, c.x, c.y);
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (e.target.dataset && e.target.dataset.act === 'del') {
+            const dropLocal = () => {
+              comments = comments.filter(k => k.id !== c.id);
+              save(); closePop(); render();
+            };
+            if (shared) {
+              apiDelete(c.id).then(() => {
+                comments = comments.filter(k => k.id !== c.id);
+                closePop(); render();
+              }).catch(() => {});
+            } else {
+              dropLocal();
+            }
+          }
+        });
+        pinAnchor.appendChild(el);
+        pop = el;
+      }
+
+      function render() {
+        layers.forEach(l => { l.innerHTML = ''; });
+        pop = null;
+        comments.slice().sort((a, b) => a.ts - b.ts).forEach((c, i) => {
+          const layer = layers[c.slide];
+          if (!layer) return;
+          const a = anchorAt(layer, c.x, c.y);
+          const p = document.createElement('button');
+          p.className = 'pin';
+          p.type = 'button';
+          p.textContent = i + 1;
+          p.setAttribute('aria-label', 'Note ' + (i + 1) + ' by ' + c.name);
+          p.addEventListener('click', (e) => { e.stopPropagation(); openView(c, a, p); });
+          a.appendChild(p);
+        });
+        updateChrome();
+      }
+
+      layers.forEach((l, idx) => {
+        l.addEventListener('click', (e) => {
+          if (e.target !== l) return; // pins/popovers handle their own clicks
+          const r = l.getBoundingClientRect();
+          openDraft(idx, (e.clientX - r.left) / r.width, (e.clientY - r.top) / r.height);
+        });
+      });
+
+      function setMode(on) {
+        document.body.classList.toggle('commenting', on);
+        if (on && shared) refresh();
+        toggle.classList.toggle('on', on);
+        if (!on) closePop();
+      }
+      toggle.addEventListener('click', () => setMode(!document.body.classList.contains('commenting')));
+      document.addEventListener('keydown', (e) => {
+        if (e.target.closest('input, textarea, [contenteditable]')) {
+          if (e.key === 'Escape') closePop();
+          return;
+        }
+        if (e.key === 'c' || e.key === 'C') setMode(!document.body.classList.contains('commenting'));
+        if (e.key === 'Escape') { if (pop) closePop(); else setMode(false); }
+      });
+
+      render();
+      // Go shared: fetch the common store; on first success, lift any pins
+      // this browser made in the localStorage era into it (one shot).
+      (async function boot() {
+        try {
+          let remote = await apiGet();
+          shared = true;
+          let migrated = false;
+          try { migrated = !!localStorage.getItem(MIGRATED_KEY); } catch (e) {}
+          if (!migrated && comments.length) {
+            for (const c of comments) {
+              try { await apiPost({ slide: c.slide, x: c.x, y: c.y, name: c.name, text: c.text }); } catch (e) { break; }
+            }
+            remote = await apiGet();
+          }
+          try { localStorage.setItem(MIGRATED_KEY, '1'); } catch (e) {}
+          comments = remote;
+          render();
+        } catch (e) { /* offline or local preview: stay per-browser */ }
+      })();
+    })();
+  </script>
+</body>
+</html>

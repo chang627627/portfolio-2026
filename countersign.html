@@ -99,7 +99,7 @@
     </div>
   </nav>
 
-  <img src="images/countersign-cover.jpg" alt="Countersign approval gate, the agent's escalation waiting on a human signature" class="case-cover">
+  <img src="images/countersign-cover.jpg?v=2" alt="Countersign approval gate, the agent's escalation waiting on a human signature" class="case-cover">
 
   <!-- Project Hero -->
   <section class="project-hero">
@@ -146,7 +146,7 @@
       <ul class="project-list">
         <li>Designed and built the whole prototype solo in real code, five workspace views on one agent loop, with a mocked backend so the behavior itself is the design.</li>
         <li>Made the loop watchable. The plan, each tool call, its evidence, and its confidence stream in as work products, not as a spinner.</li>
-        <li>Designed the approval gate the product is named for. The agent suspends at the consequential call and cannot sign off on its own.</li>
+        <li>Designed the approval gate the product is named for. The agent suspends at the consequential call, and autonomy is a policy a person grants, never a default.</li>
         <li>Built Graphite and Teal, the token-driven design system, so light and dark are one attribute apart.</li>
       </ul>
     </div>
@@ -175,7 +175,7 @@
     <div id="insight" class="project-section">
       <p class="section-label">Insight</p>
       <h2>The signature is the product</h2>
-      <p>On a clean deal, the agent's own recommendation is approve. The loop still stops. Every run, whatever the numbers say, parks at the same gate and waits for a person. That is the name: a countersignature is the second signature that makes a document binding, and the agent's memo is only ever the first. So the design goal was never to automate the decision. It was to make the agent's work so inspectable that a human can put their name under it without redoing it.</p>
+      <p>On a clean deal, the agent's own recommendation is approve. The loop still stops. Every run, whatever the numbers say, parks at the same gate and waits for a person. That is the name: a countersignature is the second signature that makes a document binding, and the agent's memo is only ever the first. So the design goal was never to automate the decision. It was to make the agent's work so inspectable that a human can put their name under it without redoing it. Even the one exception proves the rule: a person can grant a policy that lets a spotless first-pass approval sign itself after a visible countdown, autonomy countersigned in advance, never a default.</p>
     </div>
 
     <div class="cs-rule">
@@ -243,7 +243,7 @@
           <!-- the gate -->
           <rect x="20" y="302" width="920" height="66" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.24)"/>
           <text x="480" y="330" text-anchor="middle" font-size="15.5" fill="#f0f0f0">The human gate</text>
-          <text x="480" y="350" text-anchor="middle" font-size="12.5" fill="#888">every run parks here until a person countersigns or rejects</text>
+          <text x="480" y="350" text-anchor="middle" font-size="12.5" fill="#888">every run parks here until a person acts: countersign, amend, send back, or reject</text>
         </svg>
       </div>
     </div>
@@ -286,7 +286,7 @@
       <tbody>
         <tr>
           <td>1. Plan</td>
-          <td style="color: var(--text-muted);">The agent announces its steps before touching a number, so you know what it intends, not just what it did.</td>
+          <td style="color: var(--text-muted);">The agent proposes its steps and waits. Nothing runs until a person approves the plan, and the approved composition goes on the audit trail.</td>
         </tr>
         <tr>
           <td>2. Act</td>
@@ -302,7 +302,7 @@
         </tr>
         <tr>
           <td>5. Countersign</td>
-          <td style="color: var(--text-muted);">The loop parks at the gate. Approve or reject belongs to a human, and either way it lands in the audit trail.</td>
+          <td style="color: var(--text-muted);">The loop parks at the gate. The decision belongs to a human: countersign, amend the terms, send it back, or reject, and every verb lands in the audit trail.</td>
         </tr>
       </tbody>
     </table>
@@ -323,27 +323,125 @@
     <div id="final-design" class="project-section">
       <p class="section-label">Final Design</p>
       <h2>The gate the product is named for</h2>
-      <p>The agent runs its plan in the open, extracting financials with a citation back to the page they came from, then scoring risk and testing covenants. A covenant breach cannot be auto-approved, so its own decision is to escalate. It assembles the memo, states its recommendation, and parks. The button says exactly what the human is doing: countersign.</p>
+      <p>The agent runs its plan in the open, extracting financials with a citation back to the page they came from, then scoring risk and testing covenants. A covenant breach cannot be auto-approved, so its own decision is to escalate. It assembles the memo, states its recommendation, and parks. The human's call is more than a binary: countersign, amend the terms first, send it back, or reject, and the reviewer's note goes on the record, optional to approve but required to refuse.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-gate.jpg" alt="The approval gate: agent decision escalate, needs-human flag, countersign and approve" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" src="images/countersign-gate.jpg?v=2" alt="The approval gate: agent decision escalate, needs-human flags, amend terms, reviewer note, and three verbs including countersign and approve" class="project-img-full" style="border-radius: var(--radius);">
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version that shipped first</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-gate-old.jpg" alt="The old gate: approve or reject, no note field anywhere"></div>
+          <p>The June build's gate, captured from the repo's own history, had two buttons and no memory. Approve or reject, and either way the reviewer left nothing behind: the human was the least documented actor in a product whose whole argument is documentation.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it changed</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-gate-new.jpg" alt="The shipped gate: amend terms, a reviewer note that goes on the record, three verbs"></div>
+          <p>A refusal cannot be blind: without a reason, the gate will not let go. And amending the terms previews the outcome through the same decision rule before anything is signed, so a waiver is a calculated act, not a hopeful one.</p>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="deliverable">
+      <h4>The third verb: send it back</h4>
+      <p>Rejecting kills a deal, but most flawed memos are fixable, so the gate's third verb re-enters the loop instead of ending it. The reviewer's note becomes a tracked flag, the agent searches for the smallest structure change that clears every covenant, and it parks again on the revised figures as revision two, with the reviewer thread pinned above the numbers. When no cure exists within policy, it says so, and the decline stands.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-rework.jpg" alt="The revision gate: reviewer send-back, proposed restructure at exactly 4.00x leverage, and the reviewer thread above the revised figures" class="project-img-full" style="border-radius: var(--radius);">
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version that shipped first</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-rework-old.jpg" alt="The old gate's only refusal: a terminal reject button"></div>
+          <p>Reject was the only way to say no, and reject is terminal. A memo with a fixable flaw met the same fate as a genuinely bad deal: kill it, run again from zero, and lose the reviewer's reasoning along the way.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it changed</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-rework-new.jpg" alt="Revision two on the proposed revised structure, the reviewer thread carried as evidence"></div>
+          <p>The objection became an input. The note rides into the revision as a tracked flag, the work carries forward instead of restarting, and the revised structure must pass the same one-line decide rule as the original analysis, so a cure can never be a special case.</p>
+        </div>
+      </div>
+    </div>
+
 
     <div class="deliverable">
       <h4>What would change this decision?</h4>
-      <p>The agent's call on the filed figures is fixed. The stress panel lets an analyst drag EBITDA, debt, rate, or liquidity and watch covenants, risk, and the recommendation recompute through the same decision rule the agent uses, so the what-if can never contradict the agent.</p>
+      <p>The agent's call on the filed figures is fixed. The stress panel lets an analyst drag EBITDA, debt, rate, or liquidity and watch covenants, risk, and the recommendation recompute through the same decision rule the agent uses, so the what-if can never contradict the agent. The track under each slider is shaded with the decision at that value, every covenant test shows its distance to the threshold, and a scenario worth keeping attaches to the audit trail.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-whatif.jpg" alt="What-if stress test: draggable drivers, live covenant tests, outcome versus base case" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" src="images/countersign-whatif.jpg?v=2" alt="What-if stress test: flip-zone slider tracks shaded by decision, live covenant tests with headroom bars, attach scenario to audit trail" class="project-img-full" style="border-radius: var(--radius);">
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version that shipped first</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-whatif-old.jpg" alt="The first stress panel: plain slider tracks, pass and breach pills, nothing kept"></div>
+          <p>The first stress panel recomputed live, but its tracks were blank. You dragged blind, hunting for the flip point, and whatever you found evaporated when you left the screen. Sensitivity analysis with no memory.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it changed</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-whatif-new.jpg" alt="The shipped panel: decision zones painted under every slider, headroom bars, attach scenario to audit trail"></div>
+          <p>Painting the decision onto the control turns hunting into reading: the flip point is visible before you touch a slider. And an attached scenario gives the sensitivity test the same standing as every other event on the record.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>Nothing runs until you approve the plan</h4>
+      <p>The countersign gate has a twin at the other end of the run. Picking a deal proposes a plan instead of starting one: required steps locked, optional steps yours to exclude, and a cancellable countdown for the unattended case.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version that shipped first</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-plan-old.jpg" alt="The June build mid-run seconds after picking a deal, plan bar filling itself, no review step"></div>
+          <p>The June build started the run the moment you picked a deal. The plan bar announced steps as they ran, but you could not touch it. The agent's first act was a fait accompli, and the human's first appearance came only at the end.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it changed</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-plan-new.jpg" alt="The plan-review checklist: required steps locked, the optional step toggleable, approve plan and run"></div>
+          <p>Now the plan is a proposal. Optional steps can be excluded, required steps are locked, and the unattended countdown logs itself as auto-started, so the trail never claims a human decision that did not happen.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>Autonomy is a policy, not a promise</h4>
+      <p>A header dial decides what the agent may resolve without a click: gate all, the default, or auto-clean, which covers only a spotless first pass. Recommendation approve, zero flags, every confidence at ninety percent or higher. The countdown is visible, any engagement holds it, and breaches always hard-gate.</p>
+    </div>
+    <img loading="lazy" decoding="async" src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version that shipped first</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-auto-old.jpg" alt="A spotless approval in the June build, every covenant passing, still demanding the click"></div>
+          <p>Every run gated identically, so a spotless first pass cost the same ceremony as a covenant breach. That is how gates die: when the hundredth clean click feels like ritual, people stop reading before they sign.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it changed</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/countersign-t-auto-new.jpg" alt="The auto-countersign countdown with its policy trace, and the decision it covers"></div>
+          <p>Autonomy became something a person grants, scoped to the runs where the gate had nothing to say. The signature reads auto, under policy, distinct from human ink, and one touch of any control takes the pen back.</p>
+        </div>
+      </div>
+    </div>
+
 
     <div class="deliverable">
       <h4>The always-on half</h4>
       <p>Approval is a moment, but credit risk is a subscription. A monitoring agent sweeps the book, re-tests every covenant against drifting figures, and raises escalations when a deal breaches or headroom runs thin. Each one waits for a person to acknowledge it.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-portfolio.jpg" alt="Portfolio monitor: covenant sweeps, breach rows, escalations needing a human" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" src="images/countersign-portfolio.jpg?v=2" alt="Portfolio monitor: covenant sweeps, breach rows, escalations needing a human" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Every step, on the record</h4>
-      <p>Every event in the run, tool arguments, results, flags, and the human's decision, lands in a timestamped audit trail that exports as JSON. In this domain the trail is not a debug view. It is the compliance artifact a fund would archive.</p>
+      <p>Every event in the run, tool arguments, results, flags, the approved plan, the reviewer's notes, and attached what-if scenarios, lands in a timestamped audit trail that exports as JSON. In this domain the trail is not a debug view. It is the compliance artifact a fund would archive.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-audit.jpg" alt="Audit log: timestamped events for every tool call, flag, and decision" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" src="images/countersign-audit.jpg?v=2" alt="Audit log: timestamped events for every tool call, flag, reviewer note, and decision" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>A working prototype, not a mockup</h4>
@@ -373,7 +471,7 @@
       <h4>The same screens, one attribute apart</h4>
       <p>Because every color resolves through a variable, the entire theme swaps on one data attribute with zero component changes.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/countersign-theme.jpg" alt="The same interface in light and dark, swapped by a single data attribute" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" src="images/countersign-theme.jpg?v=2" alt="The same interface in light and dark, swapped by a single data attribute" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="hw-cta-row">
       <a href="https://github.com/chang627627/credit-analysis-agent" target="_blank" rel="noopener" class="hw-cta">View the repository <span aria-hidden="true">↗</span></a>
