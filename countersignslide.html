@@ -564,6 +564,10 @@
        which would shrink the flex height and drop the mats off symmetric */
     .slide--full .slide-inner > .clip:last-child { margin: 0; border: 0; border-radius: 0; }
     .slide--full .page-foot { display: none; }
+    /* full-bleed STILL proof slides (this deck has no clips): same film-frame
+       treatment, the shot centers the img at full height between ink mats */
+    .slide--full .slide-inner > .shot:last-child { margin: 0; }
+    .slide--full .shot img { border: 0; border-radius: 0; }
 
     /* ===== CTAs ===== */
     .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
@@ -940,19 +944,24 @@
           </div>
         </section>
 
-        <!-- 9 · FD1 Plan · media -->
+        <!-- 9 · FD1 Plan · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
-            <div class="media-head">
-              <h2 class="s-title">Approve the plan, not just the memo</h2>
-              <p>Picking a deal no longer starts the run. It proposes the plan: required steps locked, optional steps yours to exclude, and a cancellable countdown for the unattended case. The composition you approve is stamped into the audit trail before the first tool fires.</p>
-            </div>
+            <h2 class="s-title">Approve the plan, not just the memo</h2>
+            <p class="s-body">Picking a deal no longer starts the run. It proposes the plan: required steps locked, optional steps yours to exclude, and a cancellable countdown for the unattended case. The composition you approve is stamped into the audit trail before the first tool fires.</p>
             <div class="shot shot--crop"><img src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 10 · FD1 Plan · tradeoff -->
+        <!-- 10 · FD1 Plan · full screen -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="shot"><img src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 11 · FD1 Plan · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
@@ -962,7 +971,7 @@
                 <div class="trade-col">
                   <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
                   <div class="trade-shot"><img src="images/countersign-t-plan-old.jpg" alt="The June build mid-run seconds after picking a deal, plan bar filling itself, no review step" decoding="async"></div>
-                  <p>In the June build the run began the moment you picked a deal. The plan bar announced steps as they ran, but you could not touch it. The agent's first act was a fait accompli, and the human's first appearance came only at the end.</p>
+                  <p>In the June build the run began the moment you picked a deal. The plan bar announced steps as they ran, but you could not touch it. The agent’s first act was a fait accompli, and the human’s first appearance came only at the end.</p>
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
@@ -970,24 +979,29 @@
                   <p>Now nothing runs until a person approves the plan as edited. Optional steps can be excluded, required steps are locked, and the unattended countdown logs itself as auto-started, so the trail never claims a human decision that did not happen.</p>
                 </div>
               </div>
-              <p class="src">Both columns are real builds: the left captured from the repo's own git history, the right from today's.</p>
+              <p class="src">Both columns are real builds: the left captured from the repo’s own git history, the right from today’s.</p>
             </div>
           </div>
         </section>
 
-        <!-- 11 · FD2 Gate · media -->
+        <!-- 12 · FD2 Gate · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
-            <div class="media-head">
-              <h2 class="s-title">A gate with four verbs, and a reason on the record</h2>
-              <p>The agent's decision is fixed on the filed figures. The human's is more than a binary: countersign, amend the terms first, send it back, or reject. The reviewer note rides the decision into the memo, the banner, and the audit trail, optional to approve, required to refuse.</p>
-            </div>
+            <h2 class="s-title">A gate with four verbs, and a reason on the record</h2>
+            <p class="s-body">The agent’s decision is fixed on the filed figures. The human’s is more than a binary: countersign, amend the terms first, send it back, or reject. The reviewer note rides the decision into the memo, the banner, and the audit trail, optional to approve, required to refuse.</p>
             <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-gate.jpg" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 12 · FD2 Gate · tradeoff -->
+        <!-- 13 · FD2 Gate · full screen -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="shot"><img src="images/countersign-gate.jpg" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 14 · FD2 Gate · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
@@ -1009,19 +1023,24 @@
           </div>
         </section>
 
-        <!-- 13 · FD3 Rework · media -->
+        <!-- 15 · FD3 Rework · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
-            <div class="media-head">
-              <h2 class="s-title">Send it back, and the agent earns the signature</h2>
-              <p>A send-back is authorization to try again within policy. The note becomes a tracked flag, a structuring engine searches for the smallest sponsor-equity cure that clears every covenant, and the loop re-parks on the revised figures as revision two. On Atlas the cure lands leverage on exactly 4.00x. On Cobalt no cure exists inside policy, it says so, and the decline stands.</p>
-            </div>
+            <h2 class="s-title">Send it back, and the agent earns the signature</h2>
+            <p class="s-body">A send-back is authorization to try again within policy. The note becomes a tracked flag, a structuring engine searches for the smallest sponsor-equity cure that clears every covenant, and the loop re-parks on the revised figures as revision two, reviewer thread pinned above the numbers. On Atlas the cure lands leverage on exactly 4.00x. On Cobalt no cure exists inside policy, it says so, and the decline stands.</p>
             <div class="shot shot--crop"><img style="object-position: 50% 33%;" src="images/countersign-rework.jpg" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 14 · FD3 Rework · tradeoff -->
+        <!-- 16 · FD3 Rework · full screen -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="shot"><img src="images/countersign-rework.jpg" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 17 · FD3 Rework · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
@@ -1030,8 +1049,8 @@
               <div class="trade-cols">
                 <div class="trade-col">
                   <h4><span class="tick tick--bad">✕</span>The version that shipped first</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-rework-old.jpg" alt="The old gate's only refusal: a terminal reject button" decoding="async"></div>
-                  <p>Reject was the only way to say no, and reject is terminal. A memo with a fixable flaw met the same fate as a genuinely bad deal: kill it, run again from zero, and lose the reviewer's reasoning along the way.</p>
+                  <div class="trade-shot"><img src="images/countersign-t-rework-old.jpg" alt="The old gate’s only refusal: a terminal reject button" decoding="async"></div>
+                  <p>Reject was the only way to say no, and reject is terminal. A memo with a fixable flaw met the same fate as a genuinely bad deal: kill it, run again from zero, and lose the reviewer’s reasoning along the way.</p>
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
@@ -1043,19 +1062,24 @@
           </div>
         </section>
 
-        <!-- 15 · FD4 What-if · media -->
+        <!-- 18 · FD4 What-if · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
-            <div class="media-head">
-              <h2 class="s-title">What would change this decision?</h2>
-              <p>Drag EBITDA, debt, rate, or liquidity and the covenants, risk, and recommendation recompute live through the same decide rule the agent runs, so the sandbox can never contradict the memo. Here Atlas flips from escalate to approve at plus $2.6M of EBITDA, and the scenario attaches to the audit trail.</p>
-            </div>
+            <h2 class="s-title">What would change this decision?</h2>
+            <p class="s-body">Drag EBITDA, debt, rate, or liquidity and the covenants, risk, and recommendation recompute live through the same decide rule the agent runs, so the sandbox can never contradict the memo. Here Atlas flips from escalate to approve at plus $2.6M of EBITDA, and the scenario attaches to the audit trail.</p>
             <div class="shot shot--crop"><img style="object-position: 50% 85%;" src="images/countersign-whatif-flip.jpg" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 16 · FD4 What-if · tradeoff -->
+        <!-- 19 · FD4 What-if · full screen -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="shot"><img src="images/countersign-whatif-flip.jpg" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 20 · FD4 What-if · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
@@ -1077,19 +1101,24 @@
           </div>
         </section>
 
-        <!-- 17 · FD5 Autonomy · media -->
+        <!-- 21 · FD5 Autonomy · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
-            <div class="media-head">
-              <h2 class="s-title">Autonomy is a policy, not a promise</h2>
-              <p>A header dial decides what the agent may resolve without a click: gate all, the default, or auto-clean, which covers only a spotless first pass. Recommendation approve, zero flags, every confidence at ninety percent or higher. The countdown is visible, any engagement holds it, and breaches always hard-gate.</p>
-            </div>
+            <h2 class="s-title">Autonomy is a policy, not a promise</h2>
+            <p class="s-body">A header dial decides what the agent may resolve without a click: gate all, the default, or auto-clean, which covers only a spotless first pass. Recommendation approve, zero flags, every confidence at ninety percent or higher. The countdown is visible, any engagement holds it, and breaches always hard-gate.</p>
             <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 18 · FD5 Autonomy · tradeoff -->
+        <!-- 22 · FD5 Autonomy · full screen -->
+        <section class="slide slide--full">
+          <div class="slide-inner">
+            <div class="shot"><img src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 23 · FD5 Autonomy · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
@@ -1111,7 +1140,7 @@
           </div>
         </section>
 
-        <!-- 19 · The signature block -->
+        <!-- 24 · The signature block -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · The record</p>
@@ -1123,7 +1152,7 @@
           </div>
         </section>
 
-        <!-- 20 · Portfolio -->
+        <!-- 25 · Portfolio -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The always-on half</p>
@@ -1135,7 +1164,7 @@
           </div>
         </section>
 
-        <!-- 21 · Audit -->
+        <!-- 26 · Audit -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The record</p>
@@ -1147,7 +1176,7 @@
           </div>
         </section>
 
-        <!-- 22 · Outcome (ink) -->
+        <!-- 27 · Outcome (ink) -->
         <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -1164,7 +1193,7 @@
           </div>
         </section>
 
-        <!-- 23 · Design system · Color. The boards on these four slides are the
+        <!-- 28 · Design system · Color. The boards on these four slides are the
              product repo's OWN design-preview.html (shipped beside DESIGN.md),
              captured at 2x and cropped per section. -->
         <section class="slide slide--media">
@@ -1178,7 +1207,7 @@
           </div>
         </section>
 
-        <!-- 24 · Design system · Type -->
+        <!-- 29 · Design system · Type -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Type</p>
@@ -1190,7 +1219,7 @@
           </div>
         </section>
 
-        <!-- 25 · Design system · Components -->
+        <!-- 30 · Design system · Components -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Components</p>
@@ -1202,7 +1231,7 @@
           </div>
         </section>
 
-        <!-- 26 · Design system · Theming. The flip is the two aligned rev-2
+        <!-- 31 · Design system · Theming. The flip is the two aligned rev-2
              gate captures alternating; reduced motion gets the static 2-up. -->
         <section class="slide slide--media">
           <div class="slide-inner">
@@ -1218,7 +1247,7 @@
           </div>
         </section>
 
-        <!-- 27 · Reflection -->
+        <!-- 32 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -1228,7 +1257,7 @@
           </div>
         </section>
 
-        <!-- 28 · Sign-off -->
+        <!-- 33 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
