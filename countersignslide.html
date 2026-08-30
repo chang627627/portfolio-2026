@@ -744,6 +744,8 @@
         rgba(26,26,23,0.22) 78%, rgba(26,26,23,0.94) 100%);
     }
     .title-media { border-bottom: 1px solid rgba(255,255,255,0.10); }
+    /* a <picture> inside .shot must be transparent to the flex sizing */
+    .shot picture { display: contents; }
     .tm-k { color: var(--ink-on-dark-mute); }
     .tm-v { color: var(--ink-on-dark); }
     /* the decision-rule line, verbatim from the repo (the .cmd material) */
@@ -1156,31 +1158,61 @@
           </div>
         </section>
 
-        <!-- 23 · Design system -->
+        <!-- 23 · Design system · Color. The boards on these four slides are the
+             product repo's OWN design-preview.html (shipped beside DESIGN.md),
+             captured at 2x and cropped per section. -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system</p>
             <div class="media-head">
               <h2 class="s-title">Graphite and Teal, read by role</h2>
-              <p>An original token system: one deep teal accent over graphite-navy ink and cool neutral surfaces, hairlines and soft elevation instead of hard shadows. Pass, warn, and breach are first-class tokens, so a covenant table reads at a glance before you read a word.</p>
+              <p>One deep teal accent over graphite-navy ink and cool neutral surfaces, hairlines and soft elevation instead of hard shadows. Teal is scarce and means live, active, or yours. Green, amber, and red carry pass, warn, and breach, and the two vocabularies never mix. The whole system ships as a machine-readable spec. <a href="https://github.com/chang627627/credit-analysis-agent/blob/main/DESIGN.md" target="_blank" rel="noopener">Read DESIGN.md&nbsp;&#8599;</a></p>
             </div>
-            <div class="shot shot--crop"><img src="images/countersign-system-light.jpg" alt="The Graphite and Teal token board: accent, ink ramp, surface ladder, status colors, type, and the reserved gate glow" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-ds-color.jpg" alt="The token board in both engines: signature teal, surface ladder, ink ramp, and the functional pass, warn, breach colors" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 24 · Theming -->
+        <!-- 24 · Design system · Type -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Design system · Type</p>
+            <div class="media-head">
+              <h2 class="s-title">Inter is the voice, Geist Mono is the record</h2>
+              <p>Every number, eyebrow, and audit token renders in mono with tabular figures, so a leverage ratio, a confidence, and a memo ID line up like entries in a ledger, not words in a sentence. The board is the repo's own preview page, the system rendering itself in its own type.</p>
+            </div>
+            <div class="shot"><img src="images/countersign-ds-type.jpg" alt="The type ladder: Inter roles from page title to body, and the mono tier for eyebrows, figures, and badges" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 25 · Design system · Components -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Design system · Components</p>
+            <div class="media-head">
+              <h2 class="s-title">The tokens doing their job</h2>
+              <p>Specimens with real product data, in both engines: metric tiles, plan chips, covenant headroom bars, the gate, and both signature blocks. A dashed hairline marks a sandbox, and one glow token in the whole system is reserved for the gate alone.</p>
+            </div>
+            <div class="shot"><img src="images/countersign-ds-components.jpg" alt="Component specimens in light and dark: metric tiles, plan chips, headroom bars, the gate composite, and both signature blocks" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 26 · Design system · Theming. The flip is the two aligned rev-2
+             gate captures alternating; reduced motion gets the static 2-up. -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Theming</p>
             <div class="media-head">
               <h2 class="s-title">The same screen, one attribute apart</h2>
-              <p>Every color resolves through a variable. The root is light, a single data attribute flips the whole product to graphite, and no component changes. The same revision gate, both engines.</p>
+              <p>Every color resolves through a variable, so the whole product flips engines on one data attribute with zero component changes. Elements announce themselves once, then go still. The only thing allowed to keep moving is a genuinely live state, like the seam of a gate still waiting for you.</p>
             </div>
-            <div class="shot"><img src="images/countersign-theme.jpg" alt="The revision gate rendered twice: light engine beside dark engine, swapped by one data attribute" decoding="async"></div>
+            <div class="shot"><picture>
+              <source media="(prefers-reduced-motion: reduce)" srcset="images/countersign-theme.jpg">
+              <img src="images/countersign-flip.webp" alt="The same revision gate in the light and dark engines, swapped by a single data attribute" decoding="async">
+            </picture></div>
           </div>
         </section>
 
-        <!-- 25 · Reflection -->
+        <!-- 27 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -1190,7 +1222,7 @@
           </div>
         </section>
 
-        <!-- 26 · Sign-off -->
+        <!-- 28 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
