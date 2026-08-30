@@ -201,13 +201,13 @@
 
     <div class="cs-rule">
       <code>breaches === 0 ? 'approve' : riskScore >= 75 ? 'decline' : 'escalate'</code>
-      <p class="cs-rule-note">The entire decision rule, verbatim from the repo. One line, and no branch ends the run.</p>
+      <p class="cs-rule-note">The entire decision rule, verbatim from the repo. One line, and no branch ends the run. A breach blocks approval, and risk decides which kind of no: at 75 or higher the agent recommends against the deal, below that it is flawed but maybe fixable, so the judgment goes to a person.</p>
       <!-- The tree below IS that line: two questions, three exits, and every
            exit converges on the gate. Drawn in the site's flow-chart grammar
            (self-contained inline attributes, per the homewise/coffee SVGs);
            the three status dots reuse the documented eval-dot trio. -->
       <div class="cs-flow" aria-label="The decision rule as a tree: every branch ends at the human gate">
-        <svg class="cs-flow-svg" viewBox="0 0 960 392" xmlns="http://www.w3.org/2000/svg" role="img">
+        <svg class="cs-flow-svg" viewBox="0 0 960 416" xmlns="http://www.w3.org/2000/svg" role="img">
           <defs>
             <marker id="csArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M 0 1 L 8 5 L 0 9" fill="none" stroke="rgba(255,255,255,0.45)" stroke-width="1.6"/>
@@ -239,32 +239,35 @@
           <text x="700" y="43" text-anchor="middle" font-size="12.5" fill="#888">no</text>
 
           <!-- approve leaf -->
-          <rect x="20" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <rect x="20" y="164" width="230" height="82" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
           <circle cx="44" cy="193" r="4.5" fill="#22C55E"/>
           <text x="58" y="189" font-size="15" fill="#e8e8e8">Approve</text>
           <text x="58" y="208" font-size="12.5" fill="#888">recommend signing the deal</text>
+          <text x="58" y="230" font-size="12" fill="#777">Meridian · all covenants pass</text>
 
           <!-- decline leaf -->
-          <rect x="365" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <rect x="365" y="164" width="230" height="82" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
           <circle cx="389" cy="193" r="4.5" fill="#EF4444"/>
           <text x="403" y="189" font-size="15" fill="#e8e8e8">Decline</text>
           <text x="403" y="208" font-size="12.5" fill="#888">recommend killing the deal</text>
+          <text x="403" y="230" font-size="12" fill="#777">Cobalt · breach, risk 81</text>
 
           <!-- escalate leaf -->
-          <rect x="710" y="164" width="230" height="58" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
+          <rect x="710" y="164" width="230" height="82" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.16)"/>
           <circle cx="734" cy="193" r="4.5" fill="#EAB308"/>
           <text x="748" y="189" font-size="15" fill="#e8e8e8">Escalate</text>
           <text x="748" y="208" font-size="12.5" fill="#888">hand it to human judgment</text>
+          <text x="748" y="230" font-size="12" fill="#777">Atlas · breach, risk 57</text>
 
           <!-- convergence -->
-          <line x1="135" y1="222" x2="135" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
-          <line x1="480" y1="222" x2="480" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
-          <line x1="825" y1="222" x2="825" y2="296" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <line x1="135" y1="246" x2="135" y2="320" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <line x1="480" y1="246" x2="480" y2="320" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
+          <line x1="825" y1="246" x2="825" y2="320" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" marker-end="url(#csArrow)"/>
 
           <!-- the gate -->
-          <rect x="20" y="302" width="920" height="66" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.24)"/>
-          <text x="480" y="330" text-anchor="middle" font-size="15.5" fill="#f0f0f0">The human gate</text>
-          <text x="480" y="350" text-anchor="middle" font-size="12.5" fill="#888">every run parks here until a person acts: countersign, amend, send back, or reject</text>
+          <rect x="20" y="326" width="920" height="66" rx="8" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.24)"/>
+          <text x="480" y="354" text-anchor="middle" font-size="15.5" fill="#f0f0f0">The human gate</text>
+          <text x="480" y="374" text-anchor="middle" font-size="12.5" fill="#888">every run parks here until a person acts: countersign, amend, send back, or reject</text>
         </svg>
       </div>
     </div>
@@ -319,7 +322,7 @@
         </tr>
         <tr>
           <td>4. Decide</td>
-          <td style="color: var(--text-muted);">Flags derive from the evidence. A covenant breach cannot be auto-approved, so it flips the recommendation to escalate.</td>
+          <td style="color: var(--text-muted);">Flags derive from the evidence. A covenant breach cannot be auto-approved, so the recommendation flips to escalate, or to decline when risk runs high.</td>
         </tr>
         <tr>
           <td>5. Countersign</td>
