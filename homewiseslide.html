@@ -344,10 +344,10 @@
     .mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 26px 40px; margin-top: 40px; }
     .mini { border-top: var(--hair); padding-top: 16px; }
     .mini h4 {
-      font-size: 20px; font-weight: 500; letter-spacing: -0.015em;
-      color: var(--ink-900); margin-bottom: 7px;
+      font-size: 25px; font-weight: 500; letter-spacing: -0.015em;
+      color: var(--ink-900); margin-bottom: 9px;
     }
-    .mini p { font-size: 16.5px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
+    .mini p { font-size: 19px; font-weight: 400; line-height: 1.5; color: var(--ink-500); }
     .intro-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
     .intro-grid img {
       width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block;
@@ -486,6 +486,35 @@
     /* Evidence crops: the two builds' real UI, captured from the repo's own
        git history (old = 6262fa8~1, shipped = HEAD). Pairs share one aspect
        ratio per slide so the columns stay aligned. */
+    /* Breadcrumb agenda across the Final Design run (reference deck p77-91):
+       current stage ink, the rest quiet, so a 16-slide walkthrough stays
+       oriented and visibly promises its own end. Sits as the middle item of
+       the .s-label flex row. */
+    .s-label .crumb { letter-spacing: 0.18em; color: var(--ink-300); white-space: nowrap; }
+    .s-label .crumb b { font-weight: 500; color: var(--ink-900); }
+
+    /* Pains-to-stage derivation rows (reference p74): research on the left,
+       the stage it produced on the right. */
+    .derive { margin-top: 8px; }
+    .derive-row { display: flex; align-items: baseline; gap: 32px; padding: 26px 0; border-top: var(--hair); }
+    .derive-row:first-child { border-top: 0; }
+    .derive-pain { flex: 1; font-size: 22px; color: var(--ink-700); margin: 0; }
+    .derive-pain em { font-style: normal; color: var(--ink-400); font-size: 15px; display: block; margin-top: 6px; }
+    .derive-arrow { color: var(--ink-300); font-size: 20px; flex-shrink: 0; }
+    .derive-stage { width: 320px; text-align: right; font-size: 30px; font-weight: 500; color: var(--ink-900); margin: 0; }
+
+    /* Synthesis map (reference p92): the five walkthrough screens re-shown
+       small and wired into one flow, with the two human gates on the arrows. */
+    .sm-row { display: flex; align-items: center; gap: 12px; }
+    .sm-node { flex: 1; min-width: 0; }
+    .sm-node img { display: block; width: 100%; border: var(--hair); border-radius: 8px; }
+    .sm-node p { margin: 12px 0 0; font-size: 15px; font-weight: 500; color: var(--ink-700); text-align: center; }
+    .sm-link { display: flex; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0; }
+    .sm-link--gate { width: 128px; }
+    .sm-gate { font-size: 11.5px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+      background: var(--ink-900); color: #ffffff; border-radius: 999px; padding: 7px 12px; text-align: center; line-height: 1.35; }
+    .sm-arrow { color: var(--ink-300); font-size: 22px; }
+
     .trade-shot {
       margin: 6px 0 16px; border: var(--hair); border-radius: 8px;
       overflow: hidden; background: var(--card);
@@ -709,7 +738,7 @@
             <div class="rows push">
               <div class="row"><span class="row-num">70%</span><p>worry about hiring an unreliable contractor.</p></div>
               <div class="row"><span class="row-num">41%</span><p>have been deceived by a service provider.</p></div>
-              <div class="row"><span class="row-num">33%</span><p>delay repairs to avoid the stress of finding someone.</p></div>
+              <div class="row"><span class="row-num">33%</span><p>delay repairs to avoid the stress of finding someone. A third of repairs never become jobs: deferred demand for the homeowner, unrealized pipeline for the business.</p></div>
               <p class="src">Leaf Home / Morning Consult, 2025. HomeServe, 2025.</p>
             </div>
           </div>
@@ -719,10 +748,10 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Overview · My role</p>
-            <div class="split">
+            <div class="split" style="grid-template-columns: 1fr;">
               <div>
                 <h2 class="s-title s-title--compact" style="margin-top: 0;">A home command center, not another marketplace</h2>
-                <p class="s-body" style="font-size: 20px;">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
+                <p class="s-body" style="font-size: 25px; max-width: 1240px;">Homewise turns a plain language problem into a defined scope of work, sends that one scope to every vetted contractor, and brings the bids back on identical terms. As lead product designer on a 13 person team, I owned:</p>
                 <div class="mini-grid">
                   <div class="mini"><h4>Voice of customer</h4><p>Eight interviews synthesized into six findings, including the reframe that set the direction.</p></div>
                   <div class="mini"><h4>Hearth, the design system</h4><p>Built as living code, so consistency is enforced by the repo, not by review.</p></div>
@@ -730,7 +759,6 @@
                   <div class="mini"><h4>The front end prototype</h4><p>The full agent flow in Claude Code, handed to the dev team as the repo and shipped by them in production. No Figma in between.</p></div>
                 </div>
               </div>
-              <div class="split-media"><img src="images/homewise-track-poster.jpg" alt="The Homewise dashboard tracking a job from booking to done" decoding="async"></div>
             </div>
           </div>
         </section>
@@ -816,27 +844,27 @@
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Solution · The workflow</p>
-            <h2 class="s-title">Four stages, one scope</h2>
-            <div class="cols cols--4 push">
-              <div class="col">
-                <span class="col-idx">Stage 01</span>
-                <h3>Scope</h3>
-                <p>A short intake conversation and a photo become a structured, editable scope of work, so you never have to know the right words.</p>
+            <h2 class="s-title">Each stage answers an interview finding</h2>
+            <div class="derive push">
+              <div class="derive-row">
+                <p class="derive-pain">"No way to know who to trust"<em>so the agent vets license, insurance, and permit history</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Match</p>
               </div>
-              <div class="col">
-                <span class="col-idx">Stage 02</span>
-                <h3>Match</h3>
-                <p>It finds and vets contractors, surfacing verified pros and the ones other Homewisers recommend.</p>
+              <div class="derive-row">
+                <p class="derive-pain">"Comparing quotes is exhausting"<em>so one scope goes to every contractor, and the phone calls go away</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Scope, then Send</p>
               </div>
-              <div class="col">
-                <span class="col-idx">Stage 03</span>
-                <h3>Compare</h3>
-                <p>One scope means comparable bids. Outliers and gaps get flagged, and you approve the right contractor.</p>
+              <div class="derive-row">
+                <p class="derive-pain">"No benchmark for a fair price"<em>so every bid answers the same scope, and outliers get flagged</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Compare</p>
               </div>
-              <div class="col">
-                <span class="col-idx">Stage 04</span>
-                <h3>Track</h3>
-                <p>The job stays in one place from booking to done, with every status change visible as it happens.</p>
+              <div class="derive-row">
+                <p class="derive-pain">Jobs slip back into scattered calls<em>the failure the interviews kept circling, so the whole hire lives in one place</em></p>
+                <span class="derive-arrow">&#8594;</span>
+                <p class="derive-stage">Track</p>
               </div>
             </div>
           </div>
@@ -905,7 +933,7 @@
         <!-- 10 · Final design 1 · the decision -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 1 of 5</p>
+            <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Scope</b> · Send · Match · Compare · Track</span></p>
             <h2 class="s-title">Define the scope, in plain language</h2>
             <p class="s-body">You describe the problem in your own words and the agent drafts the scope. It stays editable before anything goes out, so what leaves the house is the job you meant, not the words you happened to have.</p>
           </div>
@@ -926,7 +954,7 @@
              had seen the design) -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 1 of 5</p>
+            <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Scope</b> · Send · Match · Compare · Track</span></p>
             <h2 class="s-title">The tradeoff</h2>
             <div class="push">
               <div class="trade-cols">
@@ -948,7 +976,7 @@
         <!-- 12 · Final design 2 · the decision -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 2 of 5</p>
+            <p class="s-label">Final design · 2 of 5<span class="crumb">Scope · <b>Send</b> · Match · Compare · Track</span></p>
             <h2 class="s-title">One scope, every contractor</h2>
             <p class="s-body">The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job. That only works if you believe the scope you are sending, which is where the first version failed.</p>
           </div>
@@ -969,7 +997,7 @@
              had seen the design) -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 2 of 5</p>
+            <p class="s-label">Final design · 2 of 5<span class="crumb">Scope · <b>Send</b> · Match · Compare · Track</span></p>
             <h2 class="s-title">The tradeoff</h2>
             <div class="push">
               <div class="trade-cols">
@@ -991,7 +1019,7 @@
         <!-- 14 · Final design 3 · the decision -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 3 of 5</p>
+            <p class="s-label">Final design · 3 of 5<span class="crumb">Scope · Send · <b>Match</b> · Compare · Track</span></p>
             <h2 class="s-title">A match you can trust, not a list to sort</h2>
             <p class="s-body">A verified match arrives with its reasoning: why it was picked, and how many Homewisers recommend them. The word of mouth people start with, rebuilt as data.</p>
           </div>
@@ -1012,7 +1040,7 @@
              had seen the design) -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 3 of 5</p>
+            <p class="s-label">Final design · 3 of 5<span class="crumb">Scope · Send · <b>Match</b> · Compare · Track</span></p>
             <h2 class="s-title">The tradeoff</h2>
             <div class="push">
               <div class="trade-cols">
@@ -1034,7 +1062,7 @@
         <!-- 16 · Final design 4 · the decision -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 4 of 5</p>
+            <p class="s-label">Final design · 4 of 5<span class="crumb">Scope · Send · Match · <b>Compare</b> · Track</span></p>
             <h2 class="s-title">Compare apples to apples, then you sign off</h2>
             <p class="s-body">Bids line up side by side with a plain language summary and outlier flags, and approving the hire is one deliberate click.</p>
           </div>
@@ -1055,7 +1083,7 @@
              had seen the design) -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 4 of 5</p>
+            <p class="s-label">Final design · 4 of 5<span class="crumb">Scope · Send · Match · <b>Compare</b> · Track</span></p>
             <h2 class="s-title">The tradeoff</h2>
             <div class="push">
               <div class="trade-cols">
@@ -1077,7 +1105,7 @@
         <!-- 18 · Final design 5 · the decision -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 5 of 5</p>
+            <p class="s-label">Final design · 5 of 5<span class="crumb">Scope · Send · Match · Compare · <b>Track</b></span></p>
             <h2 class="s-title">One place, from booking to done</h2>
             <p class="s-body">Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
           </div>
@@ -1098,7 +1126,7 @@
              had seen the design) -->
         <section class="slide">
           <div class="slide-inner">
-            <p class="s-label">Final design · 5 of 5</p>
+            <p class="s-label">Final design · 5 of 5<span class="crumb">Scope · Send · Match · Compare · <b>Track</b></span></p>
             <h2 class="s-title">The tradeoff</h2>
             <div class="push">
               <div class="trade-cols">
@@ -1118,6 +1146,27 @@
         </section>
 
         <!-- 20 · Outcome -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Final design · The system</p>
+            <div class="media-head">
+              <h2 class="s-title">Five screens, one system</h2>
+              <p>The prototype is one state machine. Every screen advances the same job, and it cannot pass either gate without a person.</p>
+            </div>
+            <div class="sm-row push">
+              <div class="sm-node"><img src="images/homewise-scope-poster.jpg" alt="Scope"><p>Scope</p></div>
+              <div class="sm-link sm-link--gate"><span class="sm-gate">You approve the scope</span><span class="sm-arrow">&#8594;</span></div>
+              <div class="sm-node"><img src="images/homewise-contractors-poster.jpg" alt="Send"><p>Send</p></div>
+              <div class="sm-link"><span class="sm-arrow">&#8594;</span></div>
+              <div class="sm-node"><img src="images/homewise-match-poster.jpg" alt="Match"><p>Match</p></div>
+              <div class="sm-link"><span class="sm-arrow">&#8594;</span></div>
+              <div class="sm-node"><img src="images/homewise-compare-poster.jpg" alt="Compare"><p>Compare</p></div>
+              <div class="sm-link sm-link--gate"><span class="sm-gate">You approve the hire</span><span class="sm-arrow">&#8594;</span></div>
+              <div class="sm-node"><img src="images/homewise-track-poster.jpg" alt="Track"><p>Track</p></div>
+            </div>
+          </div>
+        </section>
+
         <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -1176,6 +1225,18 @@
             <div class="media-head">
               <h2 class="s-title">Skipping Figma did not skip the handoff</h2>
               <p>Figma's official Claude Code plugin connects the two over MCP. The running interface goes onto the canvas as native, editable layers, a whole flow in a single pass. What the team opens is a named layer tree, not a flat screenshot.</p>
+            </div>
+            <div class="cols" style="grid-template-columns: 1fr 1fr; margin-top: 34px;">
+              <div class="col">
+                <span class="col-idx">In Figma · the canvas</span>
+                <h3>I compose what I have decided</h3>
+                <p>The canvas renders decisions after they are made, which is exactly what a handoff needs.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">In Claude Code · the conversation</span>
+                <h3>I decide out loud</h3>
+                <p>The agent argues each exploration's tradeoffs back, and weak directions die before anyone builds them.</p>
+              </div>
             </div>
             <p class="cmd">claude plugin install figma@claude-plugins-official</p>
             <div class="shot">
