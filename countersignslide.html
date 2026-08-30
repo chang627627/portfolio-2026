@@ -1247,7 +1247,120 @@
           </div>
         </section>
 
-        <!-- 32 · Reflection -->
+
+        <!-- 32 · Process · Canvas and conversation — ported from the homewise
+             deck (its slide 28) per user "sometimes I just present one study
+             case": the method block travels with every deck. Label is Process,
+             not Collaboration, because Countersign is solo. The five-versions
+             line is adapted: here the old versions SHIPPED first, then lost
+             the argument to a rebuild. -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Process · Canvas and conversation</p>
+            <h2 class="s-title">The canvas shows decisions. The conversation is where I make them</h2>
+            <div style="flex: 1 1 0; min-height: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 1560 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Describe an exploration, the agent argues the tradeoffs, decide, build it live, repeat, then hand off to the canvas" style="width: 100%; height: auto; max-height: 100%;">
+                <defs>
+                  <marker id="csArrowConv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F7D8C"/></marker>
+                </defs>
+                <g class="flow-box"><rect x="1" y="60" width="270" height="74" rx="10"/><text x="136" y="97" text-anchor="middle" dominant-baseline="middle">Describe an exploration</text></g>
+                <g class="flow-box"><rect x="331" y="60" width="290" height="74" rx="10"/><text x="476" y="88" text-anchor="middle" dominant-baseline="middle">The agent argues</text><text x="476" y="112" text-anchor="middle" dominant-baseline="middle">the tradeoffs back</text></g>
+                <g class="flow-box"><rect x="681" y="60" width="200" height="74" rx="10"/><text x="781" y="97" text-anchor="middle" dominant-baseline="middle">I decide</text></g>
+                <g class="flow-box"><rect x="941" y="60" width="220" height="74" rx="10"/><text x="1051" y="97" text-anchor="middle" dominant-baseline="middle">It builds, live</text></g>
+                <g class="flow-box"><rect x="1281" y="60" width="278" height="74" rx="10" stroke-dasharray="6 5"/><text x="1420" y="88" text-anchor="middle" dominant-baseline="middle">The canvas</text><text x="1420" y="112" text-anchor="middle" dominant-baseline="middle">when a team wants it</text></g>
+                <line x1="273" y1="97" x2="327" y2="97" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowConv)"/>
+                <line x1="623" y1="97" x2="677" y2="97" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowConv)"/>
+                <line x1="883" y1="97" x2="937" y2="97" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowConv)"/>
+                <line x1="1163" y1="97" x2="1277" y2="97" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowConv)"/>
+                <path d="M 1051 136 L 1051 196 L 136 196 L 136 138" fill="none" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowConv)"/>
+                <text x="593" y="222" text-anchor="middle" font-size="16" fill="#0F7D8C">the next exploration, until it is right</text>
+              </svg>
+            </div>
+            <div class="cols push" style="grid-template-columns: 1fr 1fr;">
+              <div class="col">
+                <span class="col-idx">In Figma · the canvas</span>
+                <h3>I compose what I have decided</h3>
+                <p>The canvas renders decisions after they are made, which is exactly what a handoff needs.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">In Claude Code · the conversation</span>
+                <h3>I decide out loud</h3>
+                <p>The agent argues each exploration's tradeoffs back, and weak directions die in the loop. The five tradeoffs earlier in this deck are those arguments, each won one rebuild at a time.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 33 · Process · The harness — ported from the homewise deck (its
+             slide 29). Countersign has no design-check linter, so the gate
+             column is the REAL one here: tsc --noEmit runs strict before every
+             build and the AgentEvent union is the typed contract. The .term is
+             a real `npm run build` run at HEAD (36 source files, 0 errors,
+             vite ✓ built in 669ms) — re-run before restating numbers. -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Process · The harness</p>
+            <h2 class="s-title">Speed comes from the agent. Quality comes from the harness</h2>
+            <div class="cols push">
+              <div class="col">
+                <span class="col-idx">01 · The spec</span>
+                <h3>DESIGN.md</h3>
+                <p>Graphite and Teal as a machine-readable file: every token carries its role and the rule for using it, plus a do-not-resurrect list of everything tried and rejected. The agent reads how it should look before it draws.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">02 · The memory</span>
+                <h3>CLAUDE.md</h3>
+                <p>Decisions, rejections, and gotchas live next to the code. The glass composer and the serif document voice were tried, rejected, and recorded, so the agent cannot re-propose what was already killed.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">03 · The gate</span>
+                <h3>tsc --noEmit</h3>
+                <p>Strict types run before every build, and the agent's event stream is a typed contract, so a drifting component fails the compile instead of shipping. Nothing signs off red.</p>
+              </div>
+            </div>
+            <div class="term">
+              <div class="term-row"><b>$ npm run build</b></div>
+              <div class="term-row"><span>1 · tsc --noEmit · strict mode over 36 source files</span><span class="ok">✓ 0 errors</span></div>
+              <div class="term-row"><span>2 · vite build · production bundle</span><span class="ok">✓ built in 669ms</span></div>
+              <div class="term-row"><b>OK, the build is green</b><b>Errors: 0</b></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 34 · Process · The ecosystem — ported from the homewise deck (its
+             slide 30); the three tiles are Chang's own tooling + the industry,
+             not homewise-specific, so the images are shared. Countersign's
+             DESIGN.md literally follows the awesome-design-md format, which
+             makes col 02 even more on-point here. Star counts verified at
+             capture time — restate only from a fresh screenshot. -->
+        <section class="slide slide--eco">
+          <div class="slide-inner">
+            <p class="s-label">Process · The ecosystem</p>
+            <h2 class="s-title">Not my invention. The industry is building the same harness</h2>
+            <div class="cols push">
+              <div class="col">
+                <span class="col-idx">01 · Research in</span>
+                <img class="col-shot" src="images/homewise-eco-mobbin.jpg" alt="My Mobbin MCP settings page, with Claude Code and Codex agents connected to the pattern library">
+                <h3>Mobbin MCP</h3>
+                <p>My agents are connected to Mobbin's library of real product patterns and search it mid-build, so reference lands in the loop, not in a moodboard.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">02 · The spec pattern</span>
+                <img class="col-shot" src="images/homewise-eco-designmd.jpg" alt="The awesome-design-md repository on GitHub, a 111k-star collection of DESIGN.md files for coding agents">
+                <h3>DESIGN.md</h3>
+                <p>A 111k-star ecosystem treats DESIGN.md as a drop-in contract agents read before they draw. Countersign's spec is written in the industry's format.</p>
+              </div>
+              <div class="col">
+                <span class="col-idx">03 · The craft layer</span>
+                <img class="col-shot" src="images/homewise-eco-uiskills.jpg" alt="ui-skills.com, a catalog of design-engineering skills for humans and agents, reachable by CLI and MCP">
+                <h3>ui-skills</h3>
+                <p>A public catalog of design-engineering skills for agents. The router is checked into this portfolio's own repo and runs before any UI pass.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 35 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -1257,7 +1370,7 @@
           </div>
         </section>
 
-        <!-- 33 · Sign-off -->
+        <!-- 36 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
