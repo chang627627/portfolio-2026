@@ -1221,6 +1221,27 @@
           <div class="slide-inner">
             <p class="s-label">Collaboration · Canvas and conversation</p>
             <h2 class="s-title">The canvas shows decisions. The conversation is where I make them</h2>
+            <!-- the loop, in the deck's own flow grammar (sage arrows, right-angle
+                 loop-back per the Process charts). The exit box is the bridge to
+                 the handoff slide that follows. -->
+            <div style="flex: 1 1 0; min-height: 0; display: flex; align-items: center;">
+              <svg viewBox="0 0 1560 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Describe an exploration, the agent argues the tradeoffs, decide, build it live, repeat, then hand off to the canvas" style="width: 100%; height: auto; max-height: 100%;">
+                <defs>
+                  <marker id="hwsArrowConv" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#738A63"/></marker>
+                </defs>
+                <g class="flow-box"><rect x="1" y="60" width="270" height="74" rx="10"/><text x="136" y="97" text-anchor="middle" dominant-baseline="middle">Describe an exploration</text></g>
+                <g class="flow-box"><rect x="331" y="60" width="290" height="74" rx="10"/><text x="476" y="88" text-anchor="middle" dominant-baseline="middle">The agent argues</text><text x="476" y="112" text-anchor="middle" dominant-baseline="middle">the tradeoffs back</text></g>
+                <g class="flow-box"><rect x="681" y="60" width="200" height="74" rx="10"/><text x="781" y="97" text-anchor="middle" dominant-baseline="middle">I decide</text></g>
+                <g class="flow-box"><rect x="941" y="60" width="220" height="74" rx="10"/><text x="1051" y="97" text-anchor="middle" dominant-baseline="middle">It builds, live</text></g>
+                <g class="flow-box"><rect x="1281" y="60" width="278" height="74" rx="10" stroke-dasharray="6 5"/><text x="1420" y="88" text-anchor="middle" dominant-baseline="middle">The canvas</text><text x="1420" y="112" text-anchor="middle" dominant-baseline="middle">when the team wants it</text></g>
+                <line x1="273" y1="97" x2="327" y2="97" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowConv)"/>
+                <line x1="623" y1="97" x2="677" y2="97" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowConv)"/>
+                <line x1="883" y1="97" x2="937" y2="97" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowConv)"/>
+                <line x1="1163" y1="97" x2="1277" y2="97" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowConv)"/>
+                <path d="M 1051 136 L 1051 196 L 136 196 L 136 138" fill="none" stroke="#738A63" stroke-width="1.5" marker-end="url(#hwsArrowConv)"/>
+                <text x="593" y="222" text-anchor="middle" font-size="16" fill="#738A63">the next exploration, until it is right</text>
+              </svg>
+            </div>
             <div class="cols push" style="grid-template-columns: 1fr 1fr;">
               <div class="col">
                 <span class="col-idx">In Figma · the canvas</span>
