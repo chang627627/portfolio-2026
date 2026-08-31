@@ -771,7 +771,7 @@
         <!-- 1 · Title -->
         <section class="slide slide--title is-active">
           <div class="title-media">
-            <img src="images/countersign-dark.jpg" alt="Countersign in its dark engine, the revision gate awaiting a countersignature" decoding="async">
+            <img src="images/countersign-dark.jpg?v=3" alt="Countersign in its dark engine, the revision gate awaiting a countersignature" decoding="async">
           </div>
           <div class="slide-inner">
             <div class="title-meta-row">
@@ -950,14 +950,14 @@
             <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
             <h2 class="s-title">Approve the plan, not just the memo</h2>
             <p class="s-body">Picking a deal no longer starts the run. It proposes the plan: required steps locked, optional steps yours to exclude, and a cancellable countdown for the unattended case. The composition you approve is stamped into the audit trail before the first tool fires.</p>
-            <div class="shot shot--crop"><img src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
+            <div class="shot shot--crop"><img src="images/countersign-plan-review.jpg?v=3" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
           </div>
         </section>
 
         <!-- 10 · FD1 Plan · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
-            <div class="shot"><img src="images/countersign-plan-review.jpg" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-plan-review.jpg?v=3" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
           </div>
         </section>
 
@@ -975,7 +975,7 @@
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-plan-new.jpg" alt="The plan-review checklist: required steps locked, the optional step toggleable, approve plan and run" decoding="async"></div>
+                  <div class="trade-shot"><img src="images/countersign-t-plan-new.jpg?v=3" alt="The plan-review checklist: required steps locked, the optional step toggleable, approve plan and run" decoding="async"></div>
                   <p>Now nothing runs until a person approves the plan as edited. Optional steps can be excluded, required steps are locked, and the unattended countdown logs itself as auto-started, so the trail never claims a human decision that did not happen.</p>
                 </div>
               </div>
@@ -989,15 +989,15 @@
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
             <h2 class="s-title">A gate with four verbs, and a reason on the record</h2>
-            <p class="s-body">The agent’s decision is fixed on the filed figures. The human’s is more than a binary: countersign, amend the terms first, send it back, or reject. The reviewer note rides the decision into the memo, the banner, and the audit trail, optional to approve, required to refuse.</p>
-            <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-gate.jpg" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
+            <p class="s-body">The agent’s decision is fixed on the filed figures. The human’s is more than a binary: countersign, amend the terms first, send it back, or reject. The reviewer note rides the decision into the memo, the banner, and the audit trail, optional to approve, required to reject or send it back.</p>
+            <div class="shot shot--crop"><img style="object-position: 50% 86%;" src="images/countersign-gate.jpg?v=3" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
           </div>
         </section>
 
         <!-- 13 · FD2 Gate · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
-            <div class="shot"><img src="images/countersign-gate.jpg" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-gate.jpg?v=3" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
           </div>
         </section>
 
@@ -1015,7 +1015,7 @@
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-gate-new.jpg" alt="The shipped gate: amend terms, a reviewer note that goes on the record, three verbs" decoding="async"></div>
+                  <div class="trade-shot"><img src="images/countersign-t-gate-new.jpg?v=3" alt="The shipped gate: amend terms, a reviewer note that goes on the record, three verbs" decoding="async"></div>
                   <p>Every refusal now requires a reason: the note goes on the record, so a rejection cannot be blind. And amendments preview through the same decision rule before signing, so a waiver is a calculated act, not a hopeful one.</p>
                 </div>
               </div>
@@ -1023,24 +1023,38 @@
           </div>
         </section>
 
-        <!-- 15 · FD3 Rework · claim -->
+        <!-- 15 · FD2 Gate · the drafted note. A fourth slide inside the Gate
+             stage: the newest decision in the product, and the one that is
+             about the HUMAN's accountability rather than the agent's. -->
+        <section class="slide slide--media">
+          <div class="slide-inner">
+            <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
+            <div class="media-head">
+              <h2 class="s-title">The note it drafts, and never signs</h2>
+              <p>A note field that fills itself turns the gate into a rubber stamp, so this one stays empty until asked. Draft from flags composes a summary of what is already on the record and inserts it as editable text. The decision then carries the note's provenance, written, drafted and edited, or drafted and accepted as written, everywhere the note goes.</p>
+            </div>
+            <div class="shot shot--crop"><img style="object-position: 50% 86%;" src="images/countersign-note.jpg" alt="The gate with an agent-drafted reviewer note inserted, and an agent-drafted, unedited provenance chip beside the draft control" decoding="async"></div>
+          </div>
+        </section>
+
+        <!-- 16 · FD3 Rework · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
             <h2 class="s-title">Send it back, and the agent earns the signature</h2>
             <p class="s-body">A send-back is authorization to try again within policy. The note becomes a tracked flag, a structuring engine searches for the smallest sponsor-equity cure that clears every covenant, and the loop re-parks on the revised figures as revision two, reviewer thread pinned above the numbers. On Atlas the cure lands leverage on exactly 4.00x. On Cobalt no cure exists inside policy, it says so, and the decline stands.</p>
-            <div class="shot shot--crop"><img style="object-position: 50% 33%;" src="images/countersign-rework.jpg" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
+            <div class="shot shot--crop"><img style="object-position: 50% 55%;" src="images/countersign-rework.jpg?v=3" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 16 · FD3 Rework · full screen -->
+        <!-- 17 · FD3 Rework · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
-            <div class="shot"><img src="images/countersign-rework.jpg" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-rework.jpg?v=3" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 17 · FD3 Rework · tradeoff -->
+        <!-- 18 · FD3 Rework · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
@@ -1054,7 +1068,7 @@
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-rework-new.jpg" alt="Revision two on the proposed revised structure, the reviewer thread carried as evidence" decoding="async"></div>
+                  <div class="trade-shot"><img src="images/countersign-t-rework-new.jpg?v=3" alt="Revision two on the proposed revised structure, the reviewer thread carried as evidence" decoding="async"></div>
                   <p>The third verb re-enters the loop instead of ending it. The work carries forward, the objection becomes an input, and the revision must pass the same one-line decide rule as the original analysis, so a cure can never be a special case.</p>
                 </div>
               </div>
@@ -1062,24 +1076,24 @@
           </div>
         </section>
 
-        <!-- 18 · FD4 What-if · claim -->
+        <!-- 19 · FD4 What-if · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
             <h2 class="s-title">What would change this decision?</h2>
             <p class="s-body">Drag EBITDA, debt, rate, or liquidity and the covenants, risk, and recommendation recompute live through the same decide rule the agent runs, so the sandbox can never contradict the memo. Here Atlas flips from escalate to approve at plus $2.6M of EBITDA, and the scenario attaches to the audit trail.</p>
-            <div class="shot shot--crop"><img style="object-position: 50% 85%;" src="images/countersign-whatif-flip.jpg" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
+            <div class="shot shot--crop"><img style="object-position: 50% 85%;" src="images/countersign-whatif-flip.jpg?v=3" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 19 · FD4 What-if · full screen -->
+        <!-- 20 · FD4 What-if · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
-            <div class="shot"><img src="images/countersign-whatif-flip.jpg" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-whatif-flip.jpg?v=3" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 20 · FD4 What-if · tradeoff -->
+        <!-- 21 · FD4 What-if · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
@@ -1093,7 +1107,7 @@
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-whatif-new.jpg" alt="The shipped panel: decision zones painted under every slider, headroom bars, attach scenario to audit trail" decoding="async"></div>
+                  <div class="trade-shot"><img src="images/countersign-t-whatif-new.jpg?v=3" alt="The shipped panel: decision zones painted under every slider, headroom bars, attach scenario to audit trail" decoding="async"></div>
                   <p>The track under each slider is painted with the decision at every value, so the boundary is visible before you touch it. Covenant rows grew headroom bars, and a scenario worth keeping attaches to the audit trail as a first-class entry.</p>
                 </div>
               </div>
@@ -1101,24 +1115,24 @@
           </div>
         </section>
 
-        <!-- 21 · FD5 Autonomy · claim -->
+        <!-- 22 · FD5 Autonomy · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
             <h2 class="s-title">Autonomy is a policy, not a promise</h2>
             <p class="s-body">A header dial decides what the agent may resolve without a click: gate all, the default, or auto-clean, which covers only a spotless first pass. Recommendation approve, zero flags, every confidence at ninety percent or higher. The countdown is visible, any engagement holds it, and breaches always hard-gate.</p>
-            <div class="shot shot--crop"><img style="object-position: 50% 74%;" src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
+            <div class="shot shot--crop"><img style="object-position: 50% 40%;" src="images/countersign-autonomy.jpg?v=3" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 22 · FD5 Autonomy · full screen -->
+        <!-- 23 · FD5 Autonomy · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
-            <div class="shot"><img src="images/countersign-autonomy.jpg" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-autonomy.jpg?v=3" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 23 · FD5 Autonomy · tradeoff -->
+        <!-- 24 · FD5 Autonomy · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
@@ -1132,7 +1146,7 @@
                 </div>
                 <div class="trade-col">
                   <h4><span class="tick tick--good">✓</span>Why it changed</h4>
-                  <div class="trade-shot"><img src="images/countersign-t-auto-new.jpg" alt="The auto-countersign countdown with its policy trace, and the decision it covers" decoding="async"></div>
+                  <div class="trade-shot"><img src="images/countersign-t-auto-new.jpg?v=3" alt="The auto-countersign countdown with its policy trace, and the decision it covers" decoding="async"></div>
                   <p>Autonomy became something a person grants, scoped to the runs where the gate had nothing to say. The signature reads auto, under policy, distinct from human ink, and one touch of any control takes the pen back.</p>
                 </div>
               </div>
@@ -1140,43 +1154,43 @@
           </div>
         </section>
 
-        <!-- 24 · The signature block -->
+        <!-- 25 · The signature block -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · The record</p>
             <div class="media-head">
               <h2 class="s-title">One memo, two signatures</h2>
-              <p>The memo closes with a signature block: prepared by the agent, countersigned by the human, with the revision and the structure change on the line between them. Approval draws real ink. An auto-countersigned run signs as /auto/ under policy instead, so the trail never confuses machine policy with a human hand.</p>
+              <p>The memo closes with a signature block: prepared by the agent, countersigned by the human, with the revision and the structure change on the line between them. Approval draws real ink. An auto-countersigned run signs as /auto/ under policy instead, and a note that began as an agent draft says so on its own line, so the trail never confuses machine work with a human hand.</p>
             </div>
-            <div class="shot shot--crop"><img style="object-position: 50% 23%;" src="images/countersign-signature.jpg" alt="The signature block: prepared by Countersign, countersigned by the human reviewer with an ink flourish, rev 2 committed" decoding="async"></div>
+            <div class="shot shot--crop"><img style="object-position: 50% 23%;" src="images/countersign-signature.jpg?v=3" alt="The signature block: prepared by Countersign, countersigned by the human reviewer with an ink flourish, rev 2 committed" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 25 · Portfolio -->
+        <!-- 26 · Portfolio -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The always-on half</p>
             <div class="media-head">
               <h2 class="s-title">Approval is a moment. Credit risk is a subscription</h2>
-              <p>A monitoring agent sweeps the book on a cadence, re-tests every covenant against drifting figures, and raises escalations when a deal breaches or headroom runs thin. Each one waits for a person to acknowledge it, and a countersigned escalation routes here instead of evaporating.</p>
+              <p>A monitoring agent sweeps the book on a cadence, re-tests every covenant against drifting figures, and raises escalations when a deal breaches or headroom runs thin. Each one waits for a person to acknowledge it, and a countersigned escalation routes here instead of evaporating. The header names which pass you are reading and when the next lands, every figure carries its move since the last sweep, and four covenant tests read as a strip of segments per deal.</p>
             </div>
-            <div class="shot shot--crop"><img src="images/countersign-portfolio.jpg" alt="The portfolio monitor: sweep cadence, breach rows, and an escalation queue that needs a human" decoding="async"></div>
+            <div class="shot shot--crop"><img src="images/countersign-portfolio.jpg?v=3" alt="The portfolio monitor: sweep cadence, breach rows, and an escalation queue that needs a human" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 26 · Audit -->
+        <!-- 27 · Audit -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The record</p>
             <div class="media-head">
               <h2 class="s-title">The audit trail is the product, not the debug view</h2>
-              <p>Every event lands timestamped: tool arguments and results, flags, the approved plan, reviewer notes, attached what-if scenarios, and the decision itself, exportable as JSON. In this domain, it is the compliance artifact a fund would archive.</p>
+              <p>Every event lands timestamped: tool arguments and results, flags, the approved plan, reviewer notes and whether each was written or drafted, attached what-if scenarios, and the decision itself, exportable as JSON. In this domain, it is the compliance artifact a fund would archive.</p>
             </div>
-            <div class="shot shot--crop"><img src="images/countersign-audit.jpg" alt="The audit log: the send-back, the restructure, the attached scenario, and the countersignature, all on one timeline" decoding="async"></div>
+            <div class="shot shot--crop"><img src="images/countersign-audit.jpg?v=3" alt="The audit log: the send-back, the restructure, the attached scenario, and the countersignature, all on one timeline" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 27 · Outcome (ink) -->
+        <!-- 28 · Outcome (ink) -->
         <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -1193,7 +1207,7 @@
           </div>
         </section>
 
-        <!-- 28 · Design system · Color. The boards on these four slides are the
+        <!-- 29 · Design system · Color. The boards on these four slides are the
              product repo's OWN design-preview.html (shipped beside DESIGN.md),
              captured at 2x and cropped per section. -->
         <section class="slide slide--media">
@@ -1201,25 +1215,25 @@
             <p class="s-label">Design system</p>
             <div class="media-head">
               <h2 class="s-title">Graphite and Teal, read by role</h2>
-              <p>One deep teal accent over graphite-navy ink and cool neutral surfaces, hairlines and soft elevation instead of hard shadows. Teal is scarce and means live, active, or yours. Green, amber, and red carry pass, warn, and breach, and the two vocabularies never mix. The whole system ships as a machine-readable spec. <a href="https://github.com/chang627627/credit-analysis-agent/blob/main/DESIGN.md" target="_blank" rel="noopener">Read DESIGN.md&nbsp;&#8599;</a></p>
+              <p>One deep teal accent over graphite-navy ink and cool neutral surfaces, hairlines and a surface ladder instead of drop shadows. Teal is scarce and means live, active, or yours. Green, amber, and red carry pass, warn, and breach, and the two vocabularies never mix. The whole system ships as a machine-readable spec. <a href="https://github.com/chang627627/credit-analysis-agent/blob/main/DESIGN.md" target="_blank" rel="noopener">Read DESIGN.md&nbsp;&#8599;</a></p>
             </div>
-            <div class="shot"><img src="images/countersign-ds-color.jpg" alt="The token board in both engines: signature teal, surface ladder, ink ramp, and the functional pass, warn, breach colors" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-ds-color.jpg?v=3" alt="The token board in both engines: signature teal, surface ladder, ink ramp, and the functional pass, warn, breach colors" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 29 · Design system · Type -->
+        <!-- 30 · Design system · Type -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Type</p>
             <div class="media-head">
               <h2 class="s-title">Inter is the voice, Geist Mono is the record</h2>
-              <p>Every number, eyebrow, and audit token renders in mono with tabular figures, so a leverage ratio, a confidence, and a memo ID line up like entries in a ledger, not words in a sentence. The board is the repo's own preview page, the system rendering itself in its own type.</p>
+              <p>Every number, eyebrow, and audit token renders in mono with tabular figures, so a leverage ratio, a confidence, and a memo ID line up like entries in a ledger, not words in a sentence. Six sizes, three weights, nothing at 700 and no half-pixels. The board is the repo's own preview page, the system rendering itself in its own type.</p>
             </div>
-            <div class="shot"><img src="images/countersign-ds-type.jpg" alt="The type ladder: Inter roles from page title to body, and the mono tier for eyebrows, figures, and badges" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-ds-type.jpg?v=3" alt="The type ladder: Inter roles from page title to body, and the mono tier for eyebrows, figures, and badges" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 30 · Design system · Components -->
+        <!-- 31 · Design system · Components -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Components</p>
@@ -1227,11 +1241,11 @@
               <h2 class="s-title">The tokens doing their job</h2>
               <p>Specimens with real product data, in both engines: metric tiles, plan chips, covenant headroom bars, the gate, and both signature blocks. A dashed hairline marks a sandbox, and one glow token in the whole system is reserved for the gate alone.</p>
             </div>
-            <div class="shot"><img src="images/countersign-ds-components.jpg" alt="Component specimens in light and dark: metric tiles, plan chips, headroom bars, the gate composite, and both signature blocks" decoding="async"></div>
+            <div class="shot"><img src="images/countersign-ds-components.jpg?v=3" alt="Component specimens in light and dark: metric tiles, plan chips, headroom bars, the gate composite, and both signature blocks" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 31 · Design system · Theming. The flip is the two aligned rev-2
+        <!-- 32 · Design system · Theming. The flip is the two aligned rev-2
              gate captures alternating; reduced motion gets the static 2-up. -->
         <section class="slide slide--media">
           <div class="slide-inner">
@@ -1241,14 +1255,14 @@
               <p>Every color resolves through a variable, so the whole product flips engines on one data attribute with zero component changes. Elements announce themselves once, then go still. The only thing allowed to keep moving is a genuinely live state, like the seam of a gate still waiting for you.</p>
             </div>
             <div class="shot"><picture>
-              <source media="(prefers-reduced-motion: reduce)" srcset="images/countersign-theme.jpg">
-              <img src="images/countersign-flip.webp" alt="The same revision gate in the light and dark engines, swapped by a single data attribute" decoding="async">
+              <source media="(prefers-reduced-motion: reduce)" srcset="images/countersign-theme.jpg?v=3">
+              <img src="images/countersign-flip.webp?v=3" alt="The same revision gate in the light and dark engines, swapped by a single data attribute" decoding="async">
             </picture></div>
           </div>
         </section>
 
 
-        <!-- 32 · Process · Canvas and conversation — ported from the homewise
+        <!-- 33 · Process · Canvas and conversation — ported from the homewise
              deck (its slide 28) per user "sometimes I just present one study
              case": the method block travels with every deck. Label is Process,
              not Collaboration, because Countersign is solo. The five-versions
@@ -1291,7 +1305,7 @@
           </div>
         </section>
 
-        <!-- 33 · Process · The harness — ported from the homewise deck (its
+        <!-- 34 · Process · The harness — ported from the homewise deck (its
              slide 29). Countersign has no design-check linter, so the gate
              column is the REAL one here: tsc --noEmit runs strict before every
              build and the AgentEvent union is the typed contract. The .term is
@@ -1327,7 +1341,7 @@
           </div>
         </section>
 
-        <!-- 34 · Process · The ecosystem — ported from the homewise deck (its
+        <!-- 35 · Process · The ecosystem — ported from the homewise deck (its
              slide 30); the three tiles are Chang's own tooling + the industry,
              not homewise-specific, so the images are shared. Countersign's
              DESIGN.md literally follows the awesome-design-md format, which
@@ -1360,7 +1374,7 @@
           </div>
         </section>
 
-        <!-- 35 · Reflection -->
+        <!-- 36 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -1370,7 +1384,7 @@
           </div>
         </section>
 
-        <!-- 36 · Sign-off -->
+        <!-- 37 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
