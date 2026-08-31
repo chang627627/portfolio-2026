@@ -976,7 +976,75 @@
           </div>
         </section>
 
-        <!-- 11 · FD1 Plan · claim -->
+        <!-- 11 · Process · the flipped loop. Ported from homewiseslide slide 9
+             (per user "add homewise slide's page 9 ... to countersign because I
+             may present them separately" — same motive as the method block).
+             Adapted for a solo project: "Align with PM" -> "Set the intent",
+             the team-feedback tag -> feedback from real runs, and the sage
+             arrows/Build-box tint repointed to this deck's teal per the
+             accent rule. Sits AFTER "Behavior cannot be mocked" on purpose:
+             that slide is why building was necessary, this one is how the
+             build-first loop runs. -->
+        <section class="slide">
+          <div class="slide-inner">
+            <p class="s-label">Process</p>
+            <h2 class="s-title s-title--compact">I flipped the process and designed by building</h2>
+            <p class="s-body" style="font-size: 20px; margin-top: 22px;">Engineering used to be the slow part, so design got front-loaded and the build came last. Now I can stand up a working version faster than I could draw it. Each loop starts from a written intent, the repo's own backlog, and the running build exposes gaps the plan cannot.</p>
+            <div class="flows">
+              <div class="flow">
+                <div class="flow-head">
+                  <h3>The traditional process</h3>
+                  <ul class="flow-tags">
+                    <li><span class="tick tick--bad">✕</span> Design upfront, build last</li>
+                    <li><span class="tick tick--bad">✕</span> A spec thrown over the wall</li>
+                    <li><span class="tick tick--bad">✕</span> Slow to a working version</li>
+                  </ul>
+                </div>
+                <svg viewBox="0 0 960 110" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Discovery to Research to Mockups to Handoff to Build, a one way line">
+                  <defs>
+                    <marker id="csArrowOldP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#A8A8A1"/></marker>
+                  </defs>
+                  <g class="flow-box"><rect x="1" y="25" width="158" height="60" rx="8"/><text x="80" y="60" text-anchor="middle" dominant-baseline="middle">Discovery</text></g>
+                  <g class="flow-box"><rect x="201" y="25" width="158" height="60" rx="8"/><text x="280" y="60" text-anchor="middle" dominant-baseline="middle">Research</text></g>
+                  <g class="flow-box"><rect x="401" y="25" width="158" height="60" rx="8"/><text x="480" y="60" text-anchor="middle" dominant-baseline="middle">Mockups</text></g>
+                  <g class="flow-box"><rect x="601" y="25" width="158" height="60" rx="8"/><text x="680" y="60" text-anchor="middle" dominant-baseline="middle">Handoff</text></g>
+                  <g class="flow-box"><rect x="801" y="25" width="158" height="60" rx="8"/><text x="880" y="60" text-anchor="middle" dominant-baseline="middle">Build</text></g>
+                  <line x1="161" y1="55" x2="199" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#csArrowOldP)"/>
+                  <line x1="361" y1="55" x2="399" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#csArrowOldP)"/>
+                  <line x1="561" y1="55" x2="599" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#csArrowOldP)"/>
+                  <line x1="761" y1="55" x2="799" y2="55" stroke="#A8A8A1" stroke-width="1.5" marker-end="url(#csArrowOldP)"/>
+                </svg>
+              </div>
+              <div class="flow">
+                <div class="flow-head">
+                  <h3>How I work now</h3>
+                  <ul class="flow-tags">
+                    <li><span class="tick tick--good">✓</span> A working version first</li>
+                    <li><span class="tick tick--good">✓</span> Feedback from every real run</li>
+                    <li><span class="tick tick--good">✓</span> Claude Code weighs each option</li>
+                  </ul>
+                </div>
+                <svg viewBox="0 0 960 170" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Set the intent to Build to Feedback to Iterate, looping back to Build">
+                  <defs>
+                    <marker id="csArrowNewP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#0F7D8C"/></marker>
+                  </defs>
+                  <g class="flow-box"><rect x="87" y="35" width="186" height="60" rx="8"/><text x="180" y="70" text-anchor="middle" dominant-baseline="middle">Set the intent</text></g>
+                  <line x1="275" y1="65" x2="313" y2="65" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowNewP)"/>
+                  <g class="flow-box"><rect x="315" y="35" width="158" height="60" rx="8" style="fill: #E4EEF0; stroke: #9FC4CB;"/><text x="394" y="70" text-anchor="middle" dominant-baseline="middle" style="fill: #0A4A54;">Build</text></g>
+                  <line x1="475" y1="65" x2="513" y2="65" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowNewP)"/>
+                  <g class="flow-box"><rect x="515" y="35" width="158" height="60" rx="8"/><text x="594" y="70" text-anchor="middle" dominant-baseline="middle">Feedback</text></g>
+                  <line x1="675" y1="65" x2="713" y2="65" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowNewP)"/>
+                  <g class="flow-box"><rect x="715" y="35" width="158" height="60" rx="8"/><text x="794" y="70" text-anchor="middle" dominant-baseline="middle">Iterate</text></g>
+                  <path d="M 794 97 L 794 138 L 394 138 L 394 99" fill="none" stroke="#0F7D8C" stroke-width="1.5" marker-end="url(#csArrowNewP)"/>
+                  <text x="594" y="130" text-anchor="middle" fill="#6B6B65" font-size="15" font-family="'Neue Montreal', sans-serif">repeat until it is right</text>
+                </svg>
+              </div>
+            </div>
+            <p class="s-foot">Less time on mockups, more time on the calls only a person can make. I took this from <a href="https://www.lennysnewsletter.com/p/the-design-process-is-dead" target="_blank" rel="noopener">Jenny Wen</a>, Head of Design for Claude, who argues the design process is dead.</p>
+          </div>
+        </section>
+
+        <!-- 12 · FD1 Plan · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
@@ -986,14 +1054,14 @@
           </div>
         </section>
 
-        <!-- 12 · FD1 Plan · full screen -->
+        <!-- 13 · FD1 Plan · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
             <div class="shot"><img src="images/countersign-plan-review.jpg?v=5" alt="The intent gate: a plan-review checklist with locked required steps, an optional peer-benchmark step, and an auto-start countdown" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 13 · FD1 Plan · tradeoff -->
+        <!-- 14 · FD1 Plan · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 1 of 5<span class="crumb"><b>Plan</b> · Gate · Rework · What-if · Autonomy</span></p>
@@ -1016,7 +1084,7 @@
           </div>
         </section>
 
-        <!-- 14 · FD2 Gate · claim -->
+        <!-- 15 · FD2 Gate · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
@@ -1026,14 +1094,14 @@
           </div>
         </section>
 
-        <!-- 15 · FD2 Gate · full screen -->
+        <!-- 16 · FD2 Gate · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
             <div class="shot"><img src="images/countersign-gate.jpg?v=5" alt="The countersign gate: agent decision escalate, needs-human flags, amend terms, reviewer note, three verbs" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 16 · FD2 Gate · tradeoff -->
+        <!-- 17 · FD2 Gate · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 2 of 5<span class="crumb">Plan · <b>Gate</b> · Rework · What-if · Autonomy</span></p>
@@ -1055,7 +1123,7 @@
           </div>
         </section>
 
-        <!-- 17 · FD2 Gate · the drafted note. A fourth slide inside the Gate
+        <!-- 18 · FD2 Gate · the drafted note. A fourth slide inside the Gate
              stage: the newest decision in the product, and the one that is
              about the HUMAN's accountability rather than the agent's. -->
         <section class="slide slide--media">
@@ -1069,7 +1137,7 @@
           </div>
         </section>
 
-        <!-- 18 · FD3 Rework · claim -->
+        <!-- 19 · FD3 Rework · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
@@ -1079,14 +1147,14 @@
           </div>
         </section>
 
-        <!-- 19 · FD3 Rework · full screen -->
+        <!-- 20 · FD3 Rework · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
             <div class="shot"><img src="images/countersign-rework.jpg?v=5" alt="Revision two: the proposed restructure, the reviewer thread pinned above the revised figures, agent decision approve" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 20 · FD3 Rework · tradeoff -->
+        <!-- 21 · FD3 Rework · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 3 of 5<span class="crumb">Plan · Gate · <b>Rework</b> · What-if · Autonomy</span></p>
@@ -1108,7 +1176,7 @@
           </div>
         </section>
 
-        <!-- 21 · FD4 What-if · claim -->
+        <!-- 22 · FD4 What-if · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
@@ -1118,14 +1186,14 @@
           </div>
         </section>
 
-        <!-- 22 · FD4 What-if · full screen -->
+        <!-- 23 · FD4 What-if · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
             <div class="shot"><img src="images/countersign-whatif-flip.jpg?v=5" alt="The stress panel mid-flip: zone-shaded sliders, escalate flips to approve, covenant tests with headroom bars" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 23 · FD4 What-if · tradeoff -->
+        <!-- 24 · FD4 What-if · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 4 of 5<span class="crumb">Plan · Gate · Rework · <b>What-if</b> · Autonomy</span></p>
@@ -1147,7 +1215,7 @@
           </div>
         </section>
 
-        <!-- 24 · FD5 Autonomy · claim -->
+        <!-- 25 · FD5 Autonomy · claim -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
@@ -1157,14 +1225,14 @@
           </div>
         </section>
 
-        <!-- 25 · FD5 Autonomy · full screen -->
+        <!-- 26 · FD5 Autonomy · full screen -->
         <section class="slide slide--full">
           <div class="slide-inner">
             <div class="shot"><img src="images/countersign-autonomy.jpg?v=5" alt="Auto-countersign countdown on a clean approval, the policy trace spelled out, review manually to hold" decoding="async"></div>
           </div>
         </section>
 
-        <!-- 26 · FD5 Autonomy · tradeoff -->
+        <!-- 27 · FD5 Autonomy · tradeoff -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Final design · 5 of 5<span class="crumb">Plan · Gate · Rework · What-if · <b>Autonomy</b></span></p>
@@ -1186,7 +1254,7 @@
           </div>
         </section>
 
-        <!-- 27 · The signature block -->
+        <!-- 28 · The signature block -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Final design · The record</p>
@@ -1198,7 +1266,7 @@
           </div>
         </section>
 
-        <!-- 28 · Portfolio -->
+        <!-- 29 · Portfolio -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The always-on half</p>
@@ -1210,7 +1278,7 @@
           </div>
         </section>
 
-        <!-- 29 · Audit -->
+        <!-- 30 · Audit -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">The record</p>
@@ -1222,7 +1290,7 @@
           </div>
         </section>
 
-        <!-- 30 · Outcome (ink) -->
+        <!-- 31 · Outcome (ink) -->
         <section class="slide slide--ink">
           <div class="slide-inner">
             <p class="s-label">Outcome</p>
@@ -1239,7 +1307,7 @@
           </div>
         </section>
 
-        <!-- 31 · Design system · Color. The boards on these four slides are the
+        <!-- 32 · Design system · Color. The boards on these four slides are the
              product repo's OWN design-preview.html (shipped beside DESIGN.md),
              captured at 2x and cropped per section. -->
         <section class="slide slide--media">
@@ -1253,7 +1321,7 @@
           </div>
         </section>
 
-        <!-- 32 · Design system · Type -->
+        <!-- 33 · Design system · Type -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Type</p>
@@ -1265,7 +1333,7 @@
           </div>
         </section>
 
-        <!-- 33 · Design system · Components -->
+        <!-- 34 · Design system · Components -->
         <section class="slide slide--media">
           <div class="slide-inner">
             <p class="s-label">Design system · Components</p>
@@ -1277,7 +1345,7 @@
           </div>
         </section>
 
-        <!-- 34 · Design system · Theming. The flip is the two aligned rev-2
+        <!-- 35 · Design system · Theming. The flip is the two aligned rev-2
              gate captures alternating; reduced motion gets the static 2-up. -->
         <section class="slide slide--media">
           <div class="slide-inner">
@@ -1294,7 +1362,7 @@
         </section>
 
 
-        <!-- 35 · Process · Canvas and conversation — ported from the homewise
+        <!-- 36 · Process · Canvas and conversation — ported from the homewise
              deck (its slide 28) per user "sometimes I just present one study
              case": the method block travels with every deck. Label is Process,
              not Collaboration, because Countersign is solo. The five-versions
@@ -1337,7 +1405,7 @@
           </div>
         </section>
 
-        <!-- 36 · Process · The harness — ported from the homewise deck (its
+        <!-- 37 · Process · The harness — ported from the homewise deck (its
              slide 29). Countersign has no design-check linter, so the gate
              column is the REAL one here: tsc --noEmit runs strict before every
              build and the AgentEvent union is the typed contract. The .term is
@@ -1373,7 +1441,7 @@
           </div>
         </section>
 
-        <!-- 37 · Process · The ecosystem — ported from the homewise deck (its
+        <!-- 38 · Process · The ecosystem — ported from the homewise deck (its
              slide 30); the three tiles are Chang's own tooling + the industry,
              not homewise-specific, so the images are shared. Countersign's
              DESIGN.md literally follows the awesome-design-md format, which
@@ -1406,7 +1474,7 @@
           </div>
         </section>
 
-        <!-- 38 · Reflection -->
+        <!-- 39 · Reflection -->
         <section class="slide">
           <div class="slide-inner">
             <p class="s-label">Reflection</p>
@@ -1416,7 +1484,7 @@
           </div>
         </section>
 
-        <!-- 39 · Sign-off -->
+        <!-- 40 · Sign-off -->
         <section class="slide slide--end">
           <div class="slide-inner">
             <p class="s-label">Thank you</p>
