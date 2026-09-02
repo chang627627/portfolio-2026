@@ -152,35 +152,6 @@
     /* The site's one italic: the role line. Single family, single weight,
        one flourish, in the one place it earns it. */
     .hero h1 .line:nth-child(2) .line-inner { font-style: italic; }
-
-    /* The light gets a source. Same six pools, same animated positions, same
-       palette, new geometry: a compact yellow sun above the first line, its
-       red corona, a tight pink bridge, then a real horizon under line one
-       (--g2-horizon, measured against the orbs box: the two headline lines
-       split at 57% on desktop and 45.5% on phones) and a flat blue ground
-       below it. The band sits under the azure/cyan glints so blueFlow still
-       shows, and it fades out before the box edge so the clipped-edge line
-       never returns on mobile. Everything that reads or moves these pools
-       (Lightfall, drag, the beam, g2Lift, blueFlow, the specular engine)
-       is untouched because the variables are the same. */
-    .hero-orbs--g2 {
-      --g2-horizon: 57%;
-      background:
-        radial-gradient(ellipse 26% 22% at var(--g2-yellow-x) calc(var(--g2-warm-y) + var(--g2-lift) - 4%), rgba(255, 236, 120, 0.98), rgba(255, 214, 0, 0.85) 38%, rgba(255, 214, 0, 0) 100%),
-        radial-gradient(ellipse 72% 40% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.90), transparent 72%),
-        radial-gradient(ellipse 96% 18% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift) - 3%), rgba(255, 48, 176, 0.82), transparent 70%),
-        radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
-        radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
-        linear-gradient(to bottom,
-          transparent calc(var(--g2-horizon) + var(--g2-lift) - 1.5%),
-          rgba(22, 120, 255, 0.85) calc(var(--g2-horizon) + var(--g2-lift) + 1%),
-          rgba(22, 120, 255, 0.90) calc(var(--g2-horizon) + var(--g2-lift) + 9%),
-          rgba(22, 120, 255, 0.55) calc(var(--g2-horizon) + var(--g2-lift) + 17%),
-          rgba(22, 120, 255, 0.22) 82%,
-          rgba(22, 120, 255, 0) 94%),
-        radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
-    }
-    @media (max-width: 768px) { .hero-orbs--g2 { --g2-horizon: 45.5%; } }
     /* descriptions in the long-read tier (#a0a0a0), the same step About uses */
     .project-grid .project-info p { color: var(--text-soft); }
 
