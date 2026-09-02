@@ -174,16 +174,16 @@
        Lassie fold was built on these rows and given up the same night. */
     .feature { display: flex; flex-direction: column; gap: 112px; }
     .feature-card {
-      display: flex;
-      flex-direction: column; /* top down: the plate, then its caption (per user) */
+      display: grid;
+      grid-template-columns: minmax(0, 840px) minmax(280px, 1fr); /* image left, text right (per user); plate capped at 840 per user "image can be smaller", the caption takes the rest of the row */
+      column-gap: 48px;
+      align-items: center;
       width: 100%;
-      max-width: 960px; /* "smaller, too big": the site's content measure, centred */
-      margin: 0 auto;
       background: transparent; border: 0; overflow: visible;
       view-timeline-name: --row; /* the pieces below animate against the ROW's entry, not their own */
     }
     .feature-card::before { display: none; }
-    .feature-card .project-img { width: 100%; border-radius: 12px; }
+    .feature-card .project-img { grid-column: 1; grid-row: 1; width: 100%; border-radius: 12px; }
     /* The light passes over each plate as the row crosses the viewport: the
        same two pools the cursor leans (--plate-dx/dy) get a scroll term,
        --plate-sy, added in a feature-row copy of the lit-plate recipe so the
@@ -199,12 +199,12 @@
     }
     /* no hover glow around the row (the base .project-card:hover rule paints one) */
     @media (hover: hover) { .feature .feature-card:hover { box-shadow: none; border-color: transparent; } }
-    .feature-card .project-info { padding: 20px 0 0; }
-    .feature-card .project-info-top { margin-bottom: 10px; }
-    .feature-card .project-info h3 { font-size: 36px; letter-spacing: -0.025em; line-height: 1.1; }
-    .feature-card .project-year { font-size: 14px; }
-    .feature-card .project-info p { font-size: 16px; line-height: 1.5; color: var(--text-soft); min-height: 0; max-width: 720px; }
-    .feature-card .card-meta { padding-top: 16px; }
+    .feature-card .project-info { grid-column: 2; grid-row: 1; padding: 0; display: block; }
+    .feature-card .project-info-top { display: block; margin-bottom: 12px; }
+    .feature-card .project-info h3 { font-size: 26px; letter-spacing: -0.02em; line-height: 1.15; }
+    .feature-card .project-year { display: none; } /* no year in the row caption (per user "maybe no time"); the phone grid keeps its year */
+    .feature-card .project-info p { font-size: 15px; line-height: 1.55; color: var(--text-soft); min-height: 0; }
+    .feature-card .card-meta { padding-top: 14px; gap: 6px; }
     @property --plate-sy { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
     @keyframes plate-sweep { from { --plate-sy: -18%; } to { --plate-sy: 18%; } }
     @keyframes piece-arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
