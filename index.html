@@ -255,6 +255,7 @@
        cards to a timed entrance. Top padding is the stylesheet's own again,
        since the header supplies the space the 148px override used to fake. */
     .work { padding-bottom: 200px; } /* 200 again: the scroll-CTA that used to supply the grid-to-footer gap is gone */
+    .work .section-meta { margin-bottom: 64px; } /* 48 was the two-column-grid value; next to a 473px plate it read as touching (per user) */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
         .project-grid .project-card:nth-child(-n+2) {
