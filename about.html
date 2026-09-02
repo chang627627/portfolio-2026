@@ -20,6 +20,93 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=249">
+  <style>
+    /* One real session, in the content-card family (surface, radius, 32px, no
+       border) so it sits like the testimonial cards below it. */
+    .ai-session {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-top: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .ai-session-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .ai-turn, .ai-session-foot { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 20px; }
+    .ai-who {
+      font-size: 13px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding-top: 3px;
+    }
+    .ai-turn p, .ai-session-foot p { grid-column: 2; font-size: 16px; line-height: 1.6; color: var(--text-soft); margin: 0 0 10px; }
+    @media (max-width: 768px) { .ai-turn p, .ai-session-foot p { grid-column: 1; } }
+    .ai-turn p:last-child, .ai-session-foot p:last-child { margin-bottom: 0; }
+    .ai-turn--me p { color: var(--text); }
+    .ai-turn .ai-trim { color: var(--text-muted); font-size: 14px; }
+    .ai-session-foot { padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+    /* Progressive disclosure: closed, the card reads question, verdict,
+       shipped; the five turns in between open on demand. Native <details>
+       so it works without JS; the height transition is the modern
+       ::details-content path and simply snaps where unsupported. */
+    .ai-fold { interpolate-size: allow-keywords; }
+    .ai-fold summary { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 20px; cursor: pointer; list-style: none; }
+    .ai-fold summary::-webkit-details-marker { display: none; }
+    .ai-fold-label { grid-column: 2; font-size: 14px; color: var(--text-soft); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.3); text-underline-offset: 3px; transition: color var(--dur-base) var(--ease-out), text-decoration-color var(--dur-base) var(--ease-out); }
+    @media (hover: hover) { .ai-fold summary:hover .ai-fold-label { color: var(--text); text-decoration-color: rgba(255,255,255,0.7); } }
+    .ai-fold-hide { display: none; }
+    .ai-fold[open] .ai-fold-show { display: none; }
+    .ai-fold[open] .ai-fold-hide { display: inline; }
+    .ai-fold::details-content { height: 0; overflow: clip; transition: height var(--dur-slow) var(--ease-out), content-visibility var(--dur-slow) allow-discrete; }
+    .ai-fold[open]::details-content { height: auto; }
+    .ai-fold-body { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; }
+    /* Books: one line per cover, revealed on hover as a scrim over the
+       cover's foot (per user: always-on lines were too much to read). The
+       shelf reads as five covers until you point at one. */
+    .media-figure { flex: 1; min-width: 0; margin: 0; position: relative; }
+    .media-figure img { transition: filter var(--dur-base) var(--ease-out); }
+    .media-note {
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      padding: 40px 14px 14px;
+      border-radius: 0 0 var(--radius) var(--radius);
+      background: linear-gradient(to top, rgba(10,10,10,0.94) 0%, rgba(10,10,10,0.82) 55%, rgba(10,10,10,0) 100%);
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.5;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+      pointer-events: none;
+    }
+    @media (hover: hover) {
+      .media-figure:hover .media-note { opacity: 1; transform: none; }
+      .media-figure:hover img { filter: brightness(0.7); }
+    }
+    @media (prefers-reduced-motion: reduce) { .media-note { transition: none; transform: none; } }
+    .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
+    @media (max-width: 768px) {
+      .ai-session { padding: 24px 20px; gap: 18px; }
+      .ai-session-head { flex-direction: column; gap: 6px; }
+      .ai-turn, .ai-session-foot { grid-template-columns: 1fr; gap: 6px; }
+      .ai-fold summary { grid-template-columns: 1fr; }
+      .ai-fold summary .ai-who { display: none; }
+      .ai-fold-label { grid-column: 1; }
+      .ai-fold-body { gap: 18px; padding-top: 18px; }
+    }
+  </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -51,7 +138,7 @@
   <section class="page-hero">
     <h1 class="page-title">
       <span class="line" style="--d:0"><span class="line-inner">I'm Chang Mou, a product designer</span></span>
-      <span class="line" style="--d:1"><span class="line-inner">shaping AI products with taste.</span></span>
+      <span class="line" style="--d:1"><span class="line-inner">working on what AI can't design yet.</span></span>
     </h1>
   </section>
 
@@ -93,47 +180,69 @@
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Background</span></div>
       <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design. I design AI products, focused on the parts of design that AI can't do for you yet: framing the right problem, shaping intent, and making complex things feel simple.</p>
-      <p>I run my own research, reframe the problem when the obvious framing is wrong, and move fast through the messy middle. I work in Figma, and when a project calls for it, I build the prototype in code instead of mockups, so the team gets a working build to extend, not a spec to translate.</p>
+      <p>One call I would make again: three of four testers asked what a "92% confidence" badge was based on, and every explanation only added chrome, so I killed the number and shipped a screen that looked less sure of itself. The honest version over the impressive one. I work in Figma, and when a project calls for it, I build the prototype in code instead of mockups, so the team gets a working build to extend, not a spec to translate.</p>
       <p>Outside of work, I cook, walk the city on foot, read widely, and spend time with friends. Good design starts with a good life.</p>
     </div>
-    <!-- How I use AI: the direct answer to the question hiring forms ask,
-         staged Research -> Brainstorm -> Prototype per user (2026-08-04),
-         high level on purpose: no case-study names. Tool marks are white
-         monochrome: 4 LobeHub SVGs recolored #F0F0F0 + a Granola silhouette
-         extracted from their favicon glyph (no vector of it exists anywhere).
-         Stage descriptions are DIVs, not <p>, which originally kept the
-         bio-word illumination splitter off card copy; that splitter was removed
-         2026-08-17, so the DIVs are now just harmless inertia. Mercor stays out
-         (NDA). -->
+    <!-- How I use AI: the direct answer to the question hiring forms ask.
+         The paragraph is the claim; the block under it is one real session
+         (2026-09-02, replacing the Research/Brainstorm/Prototype tool cards,
+         whose .ai-flow CSS and images/ai-*.svg marks are now unused). Mercor
+         stays out (NDA). -->
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">How I use AI</span></div>
       <p>AI's first pass drifts toward generic, so it never gets the last word. It runs the busywork; framing the problem, choosing the direction, and deciding what ships stay with me. The rule I work by is the one my products ship with: a human stays in the loop. AI accelerates everything and decides nothing. The judgment is the job.</p>
-      <div class="ai-flow">
-        <div class="ai-stage">
-          <span class="ai-stage-label">Research</span>
-          <div class="ai-stage-desc">Mapping the domain and synthesizing interviews</div>
-          <div class="ai-tools">
-            <span class="ai-tool"><img src="images/ai-perplexity.svg" alt="Perplexity">Perplexity</span>
-            <span class="ai-tool"><img src="images/ai-granola.png" alt="Granola">Granola</span>
-          </div>
+      <!-- One real session, quoted from the transcript of 29 Aug 2026 (a
+           product's v2 rebuild). Words are verbatim; trims are marked, em
+           dashes in the agent's lines were set as commas per house style,
+           and the product's name was left out of the exchange on purpose. -->
+      <div class="ai-session" aria-label="Excerpt from a Claude Code session">
+        <div class="ai-session-head">
+          <span>One session, 29 August 2026</span>
+          <span>Claude Code, on a product's v2</span>
         </div>
-        <span class="ai-arrow" aria-hidden="true">&rarr;</span>
-        <div class="ai-stage">
-          <span class="ai-stage-label">Brainstorm</span>
-          <div class="ai-stage-desc">Widening directions and pressure-testing the framing</div>
-          <div class="ai-tools">
-            <span class="ai-tool"><img src="images/ai-openai.svg" alt="ChatGPT">ChatGPT</span>
-            <span class="ai-tool"><img src="images/ai-claude.svg" alt="Claude">Claude</span>
-          </div>
+        <div class="ai-turn ai-turn--me">
+          <span class="ai-who">Chang</span>
+          <p>forget about test result. just compare v2 and v1 in your opinion. if v1 is better why i do v2</p>
         </div>
-        <span class="ai-arrow" aria-hidden="true">&rarr;</span>
-        <div class="ai-stage">
-          <span class="ai-stage-label">Prototype</span>
-          <div class="ai-stage-desc">Turning the strongest direction into a working build to validate it</div>
-          <div class="ai-tools">
-            <span class="ai-tool"><img src="images/ai-claude.svg" alt="Claude Code">Claude Code</span>
-            <span class="ai-tool"><img src="images/ai-figma.svg" alt="Figma Make">Figma Make</span>
+        <div class="ai-turn">
+          <span class="ai-who">Claude Code</span>
+          <p>Stripped of the testing hedge, here's my actual opinion: v2 is the better product. Not the better-executed one today, v1 is more polished where it counts, but the better architecture. And architecture wins, because polish transfers and skeletons don't.</p>
+        </div>
+        <details class="ai-fold">
+          <summary>
+            <span class="ai-who" aria-hidden="true"></span>
+            <span class="ai-fold-label"><span class="ai-fold-show">Show the rest of the session</span><span class="ai-fold-hide">Hide the rest of the session</span></span>
+          </summary>
+          <div class="ai-fold-body">
+        <div class="ai-turn">
+          <span class="ai-who">Claude Code, continued</span>
+          <p class="ai-trim">[three paragraphs of reasoning]</p>
+          <p>Notice what my strongest v1 arguments actually were: matrix width, decision gravity, re-entry after six months. Those are execution problems inside v2. They're not arguments for v1's architecture. The asymmetry is the answer: v2 has fixable weaknesses, v1 has a foundational one.</p>
+        </div>
+        <div class="ai-turn ai-turn--me">
+          <span class="ai-who">Chang</span>
+          <p>do not change the structure but check the latest design principles on agentic workflow design. what you suggest I can improve this project?</p>
+        </div>
+        <div class="ai-turn">
+          <span class="ai-who">Claude Code</span>
+          <p>Research fleet is out, four parallel sweeps: lab guidance from NN/g, PAIR, HAX, Anthropic and OpenAI; teardowns of ChatGPT Agent, Devin, Manus, Cursor, Comet and Mariner; trust-and-oversight literature; consumer-delegation patterns like agentic checkout. When they report back I'll synthesize the findings against v2 and give you a prioritized list that leaves the three-pane structure alone.</p>
+        </div>
+        <div class="ai-turn ai-turn--me">
+          <span class="ai-who">Chang</span>
+          <p>do 2,1,5,7</p>
+        </div>
+        <div class="ai-turn ai-turn--me">
+          <span class="ai-who">Chang, forty minutes later</span>
+          <p>push to main as V2, do not touch v1</p>
+        </div>
           </div>
+        </details>
+        <div class="ai-session-foot">
+          <span class="ai-who">Shipped</span>
+          <p>The same morning, as <a href="https://homewise-v2.vercel.app" target="_blank" rel="noopener">homewise-v2.vercel.app</a>. The opinion was the agent's; the structure, the shortlist and the ship call were mine.</p>
+        </div>
+      </div>
+    </div>
         </div>
       </div>
     </div>
@@ -243,27 +352,32 @@
   </section>
 
   <!-- Books & Podcasts -->
-  <section class="media-section">
+  <section class="media-section media-section--end">
     <div class="section-meta"><span class="section-label-text">Books I'm reading lately</span></div>
     <div class="media-grid">
-      <div class="media-item book"><img src="images/book-1.jpg" alt="The Worlds I See by Dr. Fei-Fei Li"></div>
-      <div class="media-item book"><img src="images/book-2.jpg" alt="The Creative Act by Rick Rubin"></div>
-      <div class="media-item book"><img src="images/book-3.jpg" alt="The Almanack of Naval Ravikant"></div>
-      <div class="media-item book"><img src="images/book-4.jpg" alt="Why Greatness Cannot Be Planned"></div>
-      <div class="media-item book"><img src="images/book-5.jpg" alt="BOOM: Bubbles and the End of Stagnation"></div>
+      <figure class="media-figure">
+        <div class="media-item book"><img src="images/book-1.jpg" alt="The Worlds I See by Dr. Fei-Fei Li"></div>
+        <figcaption class="media-note">Where human-centered AI stops being a slogan. The person-in-the-loop rule my products ship with starts here.</figcaption>
+      </figure>
+      <figure class="media-figure">
+        <div class="media-item book"><img src="images/book-2.jpg" alt="The Creative Act by Rick Rubin"></div>
+        <figcaption class="media-note">Editing is the creative act. It is why my case studies show the versions I didn't ship.</figcaption>
+      </figure>
+      <figure class="media-figure">
+        <div class="media-item book"><img src="images/book-3.jpg" alt="The Book of Elon by Eric Jorgenson"></div>
+        <figcaption class="media-note">First principles over convention. Question the requirement before meeting it, delete the part before optimizing it.</figcaption>
+      </figure>
+      <figure class="media-figure">
+        <div class="media-item book"><img src="images/book-4.jpg" alt="Why Greatness Cannot Be Planned"></div>
+        <figcaption class="media-note">Objectives are a trap; interesting stepping stones are not. It is how a v2 got built before anyone asked for it.</figcaption>
+      </figure>
+      <figure class="media-figure">
+        <div class="media-item book"><img src="images/book-5.jpg" alt="BOOM: Bubbles and the End of Stagnation"></div>
+        <figcaption class="media-note">Why bubbles are how hard things get built. A useful lens for designing inside the AI moment.</figcaption>
+      </figure>
     </div>
   </section>
 
-  <section class="media-section media-section--end">
-    <div class="section-meta"><span class="section-label-text">Podcasts I'm hooked on</span></div>
-    <div class="media-grid">
-      <div class="media-item podcast"><img src="images/podcast-1.jpg" alt="Y Combinator"></div>
-      <div class="media-item podcast"><img src="images/podcast-2.jpg" alt="Uncapped with Jack Altman"></div>
-      <div class="media-item podcast"><img src="images/podcast-3.jpg" alt="Dive Club"></div>
-      <div class="media-item podcast"><img src="images/podcast-4.jpg" alt="Lenny's Podcast"></div>
-      <div class="media-item podcast"><img src="images/podcast-5.jpg" alt="Honest UX Talks"></div>
-    </div>
-  </section>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
