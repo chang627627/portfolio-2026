@@ -53,6 +53,33 @@ html {
   html { scroll-behavior: auto; }
 }
 
+/* Self-hosted Neue Montreal (2026-09-02). Fontshare delisted the family, so
+   its CSS endpoint returns an empty stylesheet and every visitor fell back to
+   the system font; this went unnoticed because the face is installed locally
+   on the owner's Mac. Regular + Medium, converted from the local OTFs. The
+   weight-700 the old link requested was never used. */
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('fonts/NeueMontreal-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('fonts/NeueMontreal-Medium.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'Neue Montreal';
+  src: url('fonts/NeueMontreal-Italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
 body {
   font-family: 'Neue Montreal', -apple-system, sans-serif;
   background: var(--bg);

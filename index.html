@@ -17,9 +17,9 @@
   <meta name="twitter:description" content="iF & Red Dot winner. Shaping AI products with taste.">
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400,500,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=249">
+  <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="style.css?v=250">
   <!-- Work-card motion. Scoped to this page (.card-loop / .sb-phone exist only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -99,6 +99,124 @@
     /* belt and braces: an src-less loop img is invisible anyway, but this keeps
        it out of the box model on phones entirely */
     @media (max-width: 768px) { .card-loop { display: none; } }
+
+    /* Boxless work cards. The eight identical dark tiles were the loudest
+       template tell on the page, so the tile is gone: the plate keeps the
+       radius and carries the hue glow itself, the text hangs under it flush
+       with the plate's edge, and the cursor-following white haze that lit the
+       whole tile is retired (the plate light already answers the cursor).
+       `overflow: visible` on the card is load-bearing: an ancestor's
+       overflow:hidden clips a child's box-shadow, so the plate's glow could
+       not spill past the card's own edges otherwise. The named --card-view
+       timeline on the card is unaffected (only anonymous view() cares about
+       scroll containers). */
+    .project-grid { column-gap: 32px; row-gap: 56px; }
+    .project-grid .project-card {
+      background: transparent;
+      border: 0;
+      overflow: visible;
+    }
+    .project-grid .project-card::before { display: none; }
+    .project-grid .project-img {
+      border-radius: var(--radius);
+      transition: box-shadow var(--dur-base) var(--ease-out);
+    }
+    .project-grid .project-info { padding: 18px 0 0; }
+    @media (hover: hover) {
+      .project-grid .project-card:hover { box-shadow: none; }
+      @supports (color: oklch(from white l c h)) {
+        .project-grid .project-card:hover .project-img {
+          box-shadow:
+            0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14),
+            0 0 52px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.07);
+        }
+      }
+    }
+    @media (max-width: 768px) {
+      .project-grid { row-gap: 40px; }
+    }
+
+    /* Card typography for boxless cards: the plate leads, the title is the
+       second read, the year stays at the end of the row (an inline year was
+       tried and moved back per user). The chip row stays as
+       pills: a single muted metadata line was tried and rejected the same day
+       (user: too hard to read). */
+    .project-grid .project-info-top { margin-bottom: 10px; }
+    .project-grid .project-info h3 {
+      font-size: 27px;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+    .project-grid .project-year { font-size: 14px; }
+
+    /* The site's one italic: the role line. Single family, single weight,
+       one flourish, in the one place it earns it. */
+    .hero h1 .line:nth-child(2) .line-inner { font-style: italic; }
+
+    /* The light gets a source. Same six pools, same animated positions, same
+       palette, new geometry: a compact yellow sun above the first line, its
+       red corona, a tight pink bridge, then a real horizon under line one
+       (--g2-horizon, measured against the orbs box: the two headline lines
+       split at 57% on desktop and 45.5% on phones) and a flat blue ground
+       below it. The band sits under the azure/cyan glints so blueFlow still
+       shows, and it fades out before the box edge so the clipped-edge line
+       never returns on mobile. Everything that reads or moves these pools
+       (Lightfall, drag, the beam, g2Lift, blueFlow, the specular engine)
+       is untouched because the variables are the same. */
+    .hero-orbs--g2 {
+      --g2-horizon: 57%;
+      background:
+        radial-gradient(ellipse 26% 22% at var(--g2-yellow-x) calc(var(--g2-warm-y) + var(--g2-lift) - 4%), rgba(255, 236, 120, 0.98), rgba(255, 214, 0, 0.85) 38%, rgba(255, 214, 0, 0) 100%),
+        radial-gradient(ellipse 72% 40% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.90), transparent 72%),
+        radial-gradient(ellipse 96% 18% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift) - 3%), rgba(255, 48, 176, 0.82), transparent 70%),
+        radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
+        radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
+        linear-gradient(to bottom,
+          transparent calc(var(--g2-horizon) + var(--g2-lift) - 1.5%),
+          rgba(22, 120, 255, 0.85) calc(var(--g2-horizon) + var(--g2-lift) + 1%),
+          rgba(22, 120, 255, 0.90) calc(var(--g2-horizon) + var(--g2-lift) + 9%),
+          rgba(22, 120, 255, 0.55) calc(var(--g2-horizon) + var(--g2-lift) + 17%),
+          rgba(22, 120, 255, 0.22) 82%,
+          rgba(22, 120, 255, 0) 94%),
+        radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
+    }
+    @media (max-width: 768px) { .hero-orbs--g2 { --g2-horizon: 45.5%; } }
+    /* descriptions in the long-read tier (#a0a0a0), the same step About uses */
+    .project-grid .project-info p { color: var(--text-soft); }
+
+    /* Arrival. The SELECTED WORK label is gone; the first row rises into place
+       as the hero leaves instead. Scroll-scrubbed like card-rise but larger,
+       and only for row one. The extra top padding keeps row one below a 900px
+       fold so the scrub has room to play; on taller screens the row is already
+       in view at load and would sit at its start keyframe, faded, so the
+       script further down swaps those two cards to a timed entrance. */
+    .work { padding-top: 148px; }
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .project-grid .project-card:nth-child(-n+2) {
+          animation-name: card-arrive;
+          animation-range: entry 0% entry 70%;
+        }
+        .project-grid .project-card.arrive-now {
+          animation-name: card-arrive-now;
+          animation-timeline: auto;
+          animation-duration: 0.9s;
+          animation-delay: 1.25s;
+          animation-timing-function: var(--ease-out);
+          animation-fill-mode: backwards;
+          animation-range: normal;
+        }
+      }
+    }
+    @keyframes card-arrive {
+      from { opacity: 0; transform: translateY(56px) scale(0.96); }
+      to { opacity: 1; transform: none; }
+    }
+    @keyframes card-arrive-now {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: none; }
+    }
+    @media (max-width: 768px) { .work { padding-top: 104px; } }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
@@ -290,13 +408,9 @@
 
   <!-- Work -->
   <section id="work" class="work">
-    <div class="section-meta">
-      <span class="section-label-text">Selected Work</span>
-      <span class="section-rule"></span>
-    </div>
     <div class="project-grid">
 
-      <a href="homewise.html" class="project-card" style="--plate-light: #D7DFC8; --plate-deep: #BAC6A9; --plate-base: #C8D2BA;">
+      <a href="homewise.html" class="project-card" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -309,7 +423,7 @@
 
       <a href="pollen.html" class="project-card" style="--plate-light: #D6E6F5; --plate-deep: #C8D8EC; --plate-base: #DCE8F3;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
-          <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"><img src="images/ny-product-design-silver.png" alt="NY Product Design Award Silver 2025"><img src="images/european-product-design-award.png" alt="European Product Design Award"></div>
+          <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"></div>
           <img src="images/pollennav-card.png" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
         </div>
         <div class="project-info">
@@ -321,7 +435,7 @@
         </div>
       </a>
 
-      <a href="countersign.html" class="project-card project-card--desktop-only" style="--plate-light: #DCEFE8; --plate-deep: #B9D6CB; --plate-base: #CDE3DA;">
+      <a href="countersign.html" class="project-card project-card--desktop-only" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp?v=5" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -809,6 +923,19 @@
     };
     document.fonts ? document.fonts.ready.then(armRuleWipe) : armRuleWipe();
   }
+
+  // First-row arrival. Row one is scroll-scrubbed into place (see the inline
+  // .project-grid rules in <head>), which would leave a card that is already
+  // inside the viewport at load sitting faded at its start keyframe. Those two
+  // cards get a timed entrance instead, sequenced after the hero's own reveal.
+  // Measured after fonts.ready for the same reason the rule wipe was.
+  const armArrival = () => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    [].slice.call(document.querySelectorAll('.project-grid .project-card')).slice(0, 2).forEach((c) => {
+      if (c.getBoundingClientRect().top < window.innerHeight) c.classList.add('arrive-now');
+    });
+  };
+  document.fonts ? document.fonts.ready.then(armArrival) : armArrival();
 
   // Card cursor glow + plate light.
   // The lit plates' two-radial light scene leans toward the cursor: both pools
