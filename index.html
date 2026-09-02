@@ -199,12 +199,6 @@
     }
     /* no hover glow around the row (the base .project-card:hover rule paints one) */
     @media (hover: hover) { .feature .feature-card:hover { box-shadow: none; border-color: transparent; } }
-    /* the three wide app screenshots fill most of their plate in the feature
-       rows: the WHOLE still, nothing cut, just larger (84% leaves a 30px band
-       above and below at 960x540). The inline 65% stays on the img for the
-       phone grid, hence the !important. The loop overlay follows so it keeps
-       sitting exactly on its still; NOVA's full-bleed loop is excluded. */
-    .feature .feature-card[data-still="wide"] .project-img > img:not(.card-loop--cover) { width: 84% !important; }
     .feature-card .project-info { padding: 20px 0 0; }
     .feature-card .project-info-top { margin-bottom: 10px; }
     .feature-card .project-info h3 { font-size: 36px; letter-spacing: -0.025em; line-height: 1.1; }
@@ -479,7 +473,7 @@
   <section id="work" class="work">
     <div class="project-grid">
 
-      <a href="homewise.html" class="project-card" data-still="wide" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
+      <a href="homewise.html" class="project-card" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" srcset="images/homewise-card-960.jpg 960w, images/homewise-card.jpg 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -504,7 +498,7 @@
         </div>
       </a>
 
-      <a href="countersign.html" class="project-card" data-still="wide" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
+      <a href="countersign.html" class="project-card" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp?v=5" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -529,7 +523,7 @@
         </div>
       </a>
 
-      <a href="coffee.html" class="project-card" data-still="wide" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD;">
+      <a href="coffee.html" class="project-card" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" srcset="images/coffeechat-card-960.png 960w, images/coffeechat-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
