@@ -20,6 +20,18 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=249">
+  <style>
+    /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
+       border, the image carries the radius and its hairline, text hangs
+       under it. Column gap opens up because the boxes no longer separate
+       the cards. */
+    .play-grid .play-card { background: transparent; border: 0; padding: 0; }
+    @media (hover: hover) { .play-grid .play-card:hover { border-color: transparent; box-shadow: none; } }
+    .play-grid .play-card img { border-radius: var(--radius) !important; }
+    .play-grid .play-card video, .play-grid .play-card iframe, .play-grid .play-video { border-radius: var(--radius); }
+    .play-column { gap: 48px; }
+    @media (max-width: 768px) { .play-column { gap: 40px; } }
+  </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -108,14 +120,14 @@
       <div class="play-card" style="--mo:9">
         <div class="play-info">
           <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
-          <p>Solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art.</p>
+          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Figma Make.</p>
         </div>
         <img loading="lazy" decoding="async" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:18">
+      <div class="play-card" style="--mo:18">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
-          <p>Solo project built in Unity, exploring what it feels like to sit at the console of a working robot. A humanoid runs a warehouse pick-and-place loop: approach, grasp, lift, carry, place, return. An industrial control interface reads its vitals: battery, joint load, gait stability, alarms that flash red and wait to be acknowledged. Watch from above, through the robot's own eyes, or free-flying in VR. Made with Unity and Claude Code.</p>
+          <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity and Claude Code.</p>
         </div>
         <video src="images/robot-console.mp4" controls preload="none" poster="images/robot-console-poster.jpg" playsinline width="1280" height="716" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
@@ -129,7 +141,7 @@
       <div class="play-card play-card--desktop-only" style="--mo:12">
         <div class="play-info">
           <div class="play-info-top"><h3>TickerPulse</h3><span class="play-year">2025</span></div>
-          <p>An AI trading terminal that monitors real-time news sentiment and explains the why behind every alert, not just the what. Built for active and part-time traders, it filters market noise down to portfolio-relevant moves and backs every verdict with linked evidence, so they can act on the catalyst before the move is over.</p>
+          <p>An AI trading terminal that monitors real-time news sentiment and explains the why behind every alert, not just the what. It filters market noise down to portfolio-relevant moves, backs every verdict with linked evidence, and surfaces the catalyst before the move is over.</p>
         </div>
         <div class="carousel" data-carousel>
           <div class="carousel-row">
@@ -151,15 +163,6 @@
           <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
         </div>
         <img loading="lazy" decoding="async" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
-      </div>
-      <div class="play-card" style="--mo:18">
-        <div class="play-info">
-          <div class="play-info-top"><h3>I Believe in a Thing Called Love</h3><span class="play-year">2020</span></div>
-          <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
-        </div>
-        <div class="play-video">
-          <iframe src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
-        </div>
       </div>
       <div class="play-card" style="--mo:20">
         <div class="play-info">
@@ -223,14 +226,14 @@
       <div class="play-card" style="--mo:17">
         <div class="play-info">
           <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
-          <p>Solo project built with Figma Make exploring what immersive flight can feel like inside a browser. Users can steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space.</p>
+          <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
           <a href="https://mince-lemon-30902005.figma.site/" target="_blank" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
         <div class="play-video">
           <iframe src="https://www.youtube.com/embed/bVPVKyckvwk?start=8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:17">
+      <div class="play-card" style="--mo:17">
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
@@ -248,18 +251,18 @@
       <div class="play-card" style="--mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Missing Pavilion</h3><span class="play-year">2021</span></div>
-          <p>A parametric pavilion designed in Rhino+Grasshopper. Wave-like metal and semi-transparent glass sited at a park pathway intersection, built around light, water, and quiet.</p>
+          <p>A parametric pavilion of wave-like metal and semi-transparent glass, sited at a park pathway intersection and built around light, water, and quiet. Made in Rhino and Grasshopper.</p>
         </div>
         <img loading="lazy" decoding="async" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:15">
+      <div class="play-card" style="display: none; --mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Running Dog</h3><span class="play-year">2020</span></div>
           <p>A tri-gear mechanism modeled in SolidWorks. Rotating the primary crank transfers motion to two more gears in one linked movement, and a secondary crank on the central bar converts that rotation into vertical motion through a crank pin.</p>
         </div>
         <img loading="lazy" decoding="async" src="images/solidworks-trigear.jpg" alt="Running Dog — tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:19">
+      <div class="play-card" style="display: none; --mo:19">
         <div class="play-info">
           <div class="play-info-top"><h3>About the Teddy Bear</h3><span class="play-year">2020</span></div>
           <p>A debut 3D animated short built in Maya with a student team. As animator and scene designer, I shaped the scenes and motion for a story about responsibility and impulsive commitments, following a teddy bear left behind when a young couple parts ways.</p>
@@ -268,7 +271,16 @@
           <iframe src="https://www.youtube.com/embed/zdQ4LYluWnc" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
+<div class="play-card" style="--mo:18">
+        <div class="play-info">
+          <div class="play-info-top"><h3>I Believe in a Thing Called Love</h3><span class="play-year">2020</span></div>
+          <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
+        </div>
+        <div class="play-video">
+          <iframe src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+        </div>
       </div>
+            </div>
     </div>
   </section>
 
