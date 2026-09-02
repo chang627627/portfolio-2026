@@ -161,7 +161,7 @@
        fold so the scrub has room to play; on taller screens the row is already
        in view at load and would sit at its start keyframe, faded, so the
        script further down swaps those two cards to a timed entrance. */
-    .work { padding-top: 148px; }
+    .work { padding-top: 148px; padding-bottom: 200px; } /* 200 again: the scroll-CTA that used to supply the grid-to-footer gap is gone */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
         .project-grid .project-card:nth-child(-n+2) {
@@ -187,7 +187,8 @@
       from { opacity: 0; transform: translateY(28px); }
       to { opacity: 1; transform: none; }
     }
-    @media (max-width: 768px) { .work { padding-top: 104px; } }
+    @media (max-width: 768px) { .work { padding-top: 104px; padding-bottom: 80px; } }
+
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
@@ -269,7 +270,6 @@
         <span class="line"><span class="line-inner" data-text="AI-first product designer."></span></span>
       </h1>
       <p class="hero-sub">I design products across SaaS, AI, and social impact that balance user control with automation, and I prototype in real code, this site included.</p>
-      <a class="status-tag" href="mailto:changmou627627@gmail.com"><span class="status-dot"></span>Open to new opportunities <span class="arrow">↗</span></a>
     </div>
   </section>
 
@@ -382,7 +382,7 @@
     <div class="project-grid">
 
       <a href="homewise.html" class="project-card" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" srcset="images/homewise-card-960.jpg 960w, images/homewise-card.jpg 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
@@ -395,7 +395,7 @@
       <a href="pollen.html" class="project-card" style="--plate-light: #D6E6F5; --plate-deep: #C8D8EC; --plate-base: #DCE8F3;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
           <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"></div>
-          <img src="images/pollennav-card.png" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
+          <img src="images/pollennav-card.png" srcset="images/pollennav-card-960.png 960w, images/pollennav-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
         </div>
         <div class="project-info">
           <div class="project-info-left">
@@ -407,7 +407,7 @@
       </a>
 
       <a href="countersign.html" class="project-card" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp?v=5" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp?v=5" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
@@ -419,7 +419,7 @@
 
       <a href="storybloom.html" class="project-card" style="--plate-light: #EEE3F0;">
         <div class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
-          <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026.png" alt="NY Product Design Award Silver 2026"></div>
+          <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026-160.png" alt="NY Product Design Award Silver 2026"></div>
           <img src="images/storybloom-bg.jpg" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="sb-phone sb-phone--1" src="images/storybloom-phone1.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="sb-phone sb-phone--2" src="images/storybloom-phone2.png" alt="" aria-hidden="true" loading="lazy" decoding="async"><img class="sb-phone sb-phone--3" src="images/storybloom-phone3.png" alt="" aria-hidden="true" loading="lazy" decoding="async">
         </div>
         <div class="project-info">
@@ -432,7 +432,7 @@
       </a>
 
       <a href="coffee.html" class="project-card" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/coffeechat-card.png" srcset="images/coffeechat-card-960.png 960w, images/coffeechat-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
@@ -443,7 +443,7 @@
       </a>
 
       <a href="nova.html" class="project-card" style="--plate-light: #FFFFFF;">
-        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img class="card-still--swap" src="images/nova-card.png" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img class="card-still--swap" src="images/nova-card.png" srcset="images/nova-card-960.png 960w, images/nova-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
@@ -465,7 +465,7 @@
       </a>
 
       <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #C2DBBC;">
-        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="card-loop card-loop--cover" data-loop="images/newcraft-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" srcset="images/newcraft-card-960.jpg 960w, images/newcraft-card-1280.jpg 1280w, images/newcraft-card.png 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="card-loop card-loop--cover" data-loop="images/newcraft-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>New Craft Society</h3><span class="project-year">2026</span></div>
@@ -479,12 +479,6 @@
   </section>
 
   <!-- Scroll CTA -->
-  <section class="scroll-cta">
-    <span class="scroll-word">Like</span>
-    <span class="scroll-word">what</span>
-    <span class="scroll-word">you</span>
-    <span class="scroll-word">see?</span>
-  </section>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
@@ -656,7 +650,7 @@
         // fires once — the entrance choreography lands on the hire CTA
         if (ignSeen && !ignFired && ph > 1) {
           ignFired = true;
-          const dot = document.querySelector('.status-dot');
+          const dot = document.querySelector('.hero .status-dot');
           if (dot) dot.classList.add('dot-ignite');
         }
         if (igniting || t - lastT >= 60) {
@@ -769,57 +763,6 @@
   // Still deliberately decoupled from the "Say hello" reveal below: the
   // footer keeps the plain IntersectionObserver pattern coffee/homewise/
   // ticker run, so index does not go back to being the one special case.
-  const scrollWords = document.querySelectorAll('.scroll-word');
-  const scrollCta = document.querySelector('.scroll-cta');
-  if (scrollWords.length && scrollCta) {
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches ||
-        !matchMedia('(min-width: 769px)').matches) {
-      // Reduced motion (or the mobile width, where .scroll-cta is
-      // display:none anyway): the original one-shot class toggle.
-      const updateScrollWords = () => {
-        const vh = window.innerHeight;
-        scrollWords.forEach((word, i) => {
-          const trigger = vh * 0.92 - i * (vh * 0.05);
-          word.classList.toggle('visible', word.getBoundingClientRect().top < trigger);
-        });
-      };
-      window.addEventListener('scroll', updateScrollWords, { passive: true });
-      window.addEventListener('resize', updateScrollWords, { passive: true });
-      updateScrollWords();
-    } else {
-      const ctaPageEnd = document.querySelector('.page-end');
-      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-      const clamp01 = (t) => Math.min(1, Math.max(0, t));
-      // Direct per-frame writes: the stylesheet's 0.3s transition would lag
-      // and smear a scrubbed value, so it is disabled on this path.
-      scrollWords.forEach((w) => { w.style.transition = 'none'; });
-      let raf = null;
-      const paint = () => {
-        raf = null;
-        const vh = window.innerHeight;
-        // Same progress the footer-glow height uses: how far .page-end has
-        // entered the viewport.
-        let glow = 0;
-        if (ctaPageEnd) {
-          const pe = ctaPageEnd.getBoundingClientRect();
-          glow = clamp01((vh - pe.top) / pe.height);
-        }
-        scrollWords.forEach((word, i) => {
-          const trigger = vh * 0.92 - i * (vh * 0.05);
-          const p = easeOut(clamp01((trigger - word.getBoundingClientRect().top) / (vh * 0.16)));
-          word.style.opacity = (p * (0.15 + glow * 0.25)).toFixed(3);
-          word.style.transform = 'translateY(' + ((1 - p) * 20).toFixed(1) + 'px)';
-          word.style.textShadow = glow > 0.02
-            ? '0 10px 44px rgba(30, 120, 255, ' + (glow * 0.5).toFixed(3) + ')'
-            : 'none';
-        });
-      };
-      const onScrollCta = () => { if (raf === null) raf = requestAnimationFrame(paint); };
-      window.addEventListener('scroll', onScrollCta, { passive: true });
-      window.addEventListener('resize', onScrollCta, { passive: true });
-      paint();
-    }
-  }
 
   // Footer scroll reveal — the IntersectionObserver pattern the other pages use.
   const footerBigText = document.querySelector('.footer-big-text');
@@ -1094,7 +1037,6 @@
 </script>
 
 <!-- Chat Widget -->
-<div class="chat-teaser" id="chatTeaser">Hey, I'm Chang's AI. Ask me anything.</div>
 <button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
 </button>
@@ -1137,19 +1079,8 @@
   chatToggle.addEventListener('click', () => {
     chatPanel.classList.toggle('open');
     chatToggle.classList.toggle('hidden');
-    const teaser = document.getElementById('chatTeaser');
-    if (teaser) teaser.classList.remove('visible');
   });
 
-  // First-visit teaser: fires on first scroll (not a timer) so it never overlaps the hero headline
-  const teaser = document.getElementById('chatTeaser');
-  if (teaser && !localStorage.getItem('chat_teaser_seen')) {
-    window.addEventListener('scroll', () => {
-      teaser.classList.add('visible');
-      localStorage.setItem('chat_teaser_seen', '1');
-      setTimeout(() => teaser.classList.remove('visible'), 6000);
-    }, { once: true, passive: true });
-  }
   chatClose.addEventListener('click', () => {
     chatPanel.classList.remove('open');
     chatToggle.classList.remove('hidden');
