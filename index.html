@@ -199,12 +199,42 @@
     }
     /* no hover glow around the row (the base .project-card:hover rule paints one) */
     @media (hover: hover) { .feature .feature-card:hover { box-shadow: none; border-color: transparent; } }
-    .feature-card .project-info { grid-column: 2; grid-row: 1; padding: 0; display: block; }
-    .feature-card .project-info-top { display: block; margin-bottom: 12px; }
-    .feature-card .project-info h3 { font-size: 26px; letter-spacing: -0.02em; line-height: 1.15; }
+    /* The thumbnails are untouched: they keep style.css's own floating
+       drop-shadow, square corners and 65% width. A "sheet" treatment (crisp
+       edge + contact shadow + 6px radius) was built and reverted the same
+       hour per user. The plate keeps a lip, which gives the two full-bleed
+       covers a defined edge against the black page. */
+    @media (min-width: 769px) {
+      .feature-card .project-img { box-shadow: inset 0 0 0 1px rgba(12, 18, 22, 0.08); transition: box-shadow var(--dur-base) var(--ease-out); }
+    }
+    /* DATUM. The row used to centre the caption, so each title's y was an
+       average of its own text height and no two rows shared a line. Now the
+       caption hangs off the plate's top edge from a hairline. */
+    .feature-card { align-items: start; }
+    .feature-card .project-info { grid-column: 2; grid-row: 1; display: block; border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 20px 0 0; transition: border-color var(--dur-base) var(--ease-out); }
+    .feature-card .project-info-top { display: block; margin-bottom: 18px; }
+    .feature-card .project-info h3 { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; line-height: 1.08; font-weight: 400; transition: color var(--dur-base) var(--ease-out); }
     .feature-card .project-year { display: none; } /* no year in the row caption (per user "maybe no time"); the phone grid keeps its year */
-    .feature-card .project-info p { font-size: 15px; line-height: 1.55; color: var(--text-soft); min-height: 0; }
-    .feature-card .card-meta { padding-top: 14px; gap: 6px; }
+    .feature-card .project-info p { font-size: 16px; line-height: 1.55; color: var(--text-soft); min-height: 0; } /* back to style.css's own card body size; the row build had dropped it to 15 */
+    .feature-card .card-meta { padding-top: 22px; gap: 8px; }
+    .feature-card .card-tag { padding: 6px 10px; border-color: rgba(255, 255, 255, 0.14); }
+    /* HOVER. The thumbnail keeps its original zoom from style.css; what is
+       added back here is the oklch hue glow the row build silently lost (its
+       rule is scoped to .project-grid, which stopped matching once the JS
+       moved the cards into .feature). */
+    @media (hover: hover) {
+      .feature .feature-card:hover .project-info { border-top-color: rgba(255, 255, 255, 0.28); }
+      .feature .feature-card:hover .project-info h3 { color: #fff; }
+      @supports (color: oklch(from white l c h)) {
+        /* box-shadow is not additive, so the lip has to be restated here */
+        .feature .feature-card:hover .project-img {
+          box-shadow:
+            inset 0 0 0 1px rgba(12, 18, 22, 0.08),
+            0 0 34px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14),
+            0 0 72px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.07);
+        }
+      }
+    }
     @property --plate-sy { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
     @keyframes plate-sweep { from { --plate-sy: -18%; } to { --plate-sy: 18%; } }
     @keyframes piece-arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
@@ -255,7 +285,7 @@
        cards to a timed entrance. Top padding is the stylesheet's own again,
        since the header supplies the space the 148px override used to fake. */
     .work { padding-bottom: 200px; } /* 200 again: the scroll-CTA that used to supply the grid-to-footer gap is gone */
-    .work .section-meta { margin-bottom: 64px; } /* 48 was the two-column-grid value; next to a 473px plate it read as touching (per user) */
+    .work { padding-top: 148px; } /* the SELECTED WORK header used to supply this space (deleted per user) */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
         .project-grid .project-card:nth-child(-n+2) {
@@ -281,7 +311,7 @@
       from { opacity: 0; transform: translateY(28px); }
       to { opacity: 1; transform: none; }
     }
-    @media (max-width: 768px) { .work { padding-bottom: 80px; } }
+    @media (max-width: 768px) { .work { padding-top: 104px; padding-bottom: 80px; } }
 
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/">
@@ -473,10 +503,6 @@
 
   <!-- Work -->
   <section id="work" class="work">
-    <div class="section-meta">
-      <span class="section-label-text">Selected Work</span>
-      <span class="section-rule"></span>
-    </div>
     <div class="project-grid">
 
       <a href="homewise.html" class="project-card" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
