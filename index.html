@@ -155,6 +155,63 @@
     /* descriptions in the long-read tier (#a0a0a0), the same step About uses */
     .project-grid .project-info p { color: var(--text-soft); }
 
+    /* Lassie-structure feature rows for every visible card (per user "do all 8" after
+       "card structure but do not let each to fold on each other"): each card
+       is a big centred plate (920px, 16:9) with its caption small in the side
+       gutter, alternating left and right, in NORMAL FLOW, one after another.
+       No pinning, no overlap: the earlier pinned stack was rejected twice.
+       The JS at the end of the page moves the first four visible grid cards
+       into .feature on desktop, motion-safe, timeline-capable browsers;
+       everyone else (phones included) keeps the plain grid. Rows enter with
+       the same view() rise the grid cards use. */
+    /* Editorial rows for every visible card, in NORMAL FLOW (per user, final:
+       "maybe do not let them folded on each other. i give up"). A 280px
+       caption column on the left, the plate filling everything to the right,
+       112px between rows, each row rising in on its own view() timeline. The
+       JS at the end of the page moves every visible grid card into .feature
+       on desktop, motion-safe, timeline-capable browsers and hides the empty
+       grid; phones and reduced-motion keep the eight-card grid. The pinned
+       Lassie fold was built on these rows and given up the same night. */
+    .feature { display: flex; flex-direction: column; gap: 112px; }
+    .feature-card {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      column-gap: 48px;
+      align-items: center;
+      width: 100%;
+      background: transparent; border: 0; overflow: visible;
+    }
+    .feature-card::before { display: none; }
+    .feature-card .project-img { grid-column: 2; width: 100%; border-radius: 12px; }
+    /* no hover glow around the row (the base .project-card:hover rule paints one) */
+    @media (hover: hover) { .feature .feature-card:hover { box-shadow: none; border-color: transparent; } }
+    .feature-card .project-info { grid-column: 1; grid-row: 1; padding: 0; display: block; }
+    .feature-card .project-info-top { display: block; margin-bottom: 12px; }
+    .feature-card .project-info h3 { font-size: 26px; letter-spacing: -0.02em; line-height: 1.15; }
+    .feature-card .project-year { display: block; font-size: 14px; margin-top: 6px; }
+    .feature-card .project-info p { font-size: 15px; line-height: 1.55; min-height: 0; }
+    .feature-card .card-meta { padding-top: 14px; gap: 6px; }
+    @media (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .feature .feature-card {
+          animation-name: card-arrive;
+          animation-timeline: view();
+          animation-range: entry 0% entry 55%;
+          animation-duration: auto;
+          animation-fill-mode: both;
+        }
+        .feature .feature-card.arrive-now {
+          animation-name: card-arrive-now;
+          animation-timeline: auto;
+          animation-duration: 0.9s;
+          animation-delay: 1.25s;
+          animation-timing-function: var(--ease-out);
+          animation-fill-mode: backwards;
+          animation-range: normal;
+        }
+      }
+    }
+
     /* Arrival. The SELECTED WORK label is gone; the first row rises into place
        as the hero leaves instead. Scroll-scrubbed like card-rise but larger,
        and only for row one. The extra top padding keeps row one below a 900px
@@ -453,7 +510,7 @@
         </div>
       </a>
 
-      <a href="https://www.mercor.com/mission/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #FFFFFF;">
+      <a href="https://www.mercor.com/mission/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #FFFFFF; display: none;">
         <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img src="images/mercor-card.png" alt="Mercor" loading="lazy" decoding="async" style="width: 55%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -464,7 +521,7 @@
         </div>
       </a>
 
-      <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #C2DBBC;">
+      <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #C2DBBC; display: none;">
         <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" srcset="images/newcraft-card-960.jpg 960w, images/newcraft-card-1280.jpg 1280w, images/newcraft-card.png 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="card-loop card-loop--cover" data-loop="images/newcraft-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
@@ -845,7 +902,7 @@
   // Measured after fonts.ready for the same reason the rule wipe was.
   const armArrival = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    [].slice.call(document.querySelectorAll('.project-grid .project-card')).slice(0, 2).forEach((c) => {
+    [].slice.call(document.querySelectorAll('.feature .feature-card, .project-grid .project-card')).slice(0, 2).forEach((c) => {
       if (c.getBoundingClientRect().top < window.innerHeight) c.classList.add('arrive-now');
     });
   };
@@ -990,6 +1047,30 @@
       footerGlow.style.height = (progress * maxHeight) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // Feature rows for every visible card (all eight): desktop, motion-safe, and only when
+  // the browser can drive an animation from a view timeline. Every other reader
+  // keeps the plain grid untouched (the cards never leave the markup). Runs
+  // before armArrival() measures row one, so the timed-entrance fallback
+  // applies to whichever cards are inside the viewport at load.
+  (function () {
+    if (!window.matchMedia || !matchMedia('(min-width: 769px)').matches) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'))) return;
+    var grid = document.querySelector('.project-grid');
+    if (!grid) return;
+    var cards = [].slice.call(grid.children).filter(function (c) {
+      return c.classList.contains('project-card') && getComputedStyle(c).display !== 'none';
+    });
+    if (cards.length < 2) return;
+    var feature = document.createElement('div');
+    feature.className = 'feature';
+    cards.forEach(function (c) { c.classList.add('feature-card'); feature.appendChild(c); });
+    grid.parentNode.insertBefore(feature, grid);
+    grid.hidden = true; // every visible card is a feature row now; the empty grid must not leave its gap
+  })();
 </script>
 
 <script>
