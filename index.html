@@ -175,40 +175,75 @@
     .feature { display: flex; flex-direction: column; gap: 112px; }
     .feature-card {
       display: grid;
-      grid-template-columns: 280px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) 280px; /* image left, text right (per user) */
       column-gap: 48px;
       align-items: center;
       width: 100%;
       background: transparent; border: 0; overflow: visible;
+      view-timeline-name: --row; /* the pieces below animate against the ROW's entry, not their own */
     }
     .feature-card::before { display: none; }
-    .feature-card .project-img { grid-column: 2; width: 100%; border-radius: 12px; }
+    .feature-card .project-img { grid-column: 1; grid-row: 1; width: 100%; border-radius: 12px; }
+    /* The light passes over each plate as the row crosses the viewport: the
+       same two pools the cursor leans (--plate-dx/dy) get a scroll term,
+       --plate-sy, added in a feature-row copy of the lit-plate recipe so the
+       cursor lean (inline vars from JS) and the scroll sweep (an animated
+       registered property) never fight over one variable. */
+    .feature-card .project-img--lit {
+      background:
+        radial-gradient(ellipse 70% 70% at calc(30% + var(--plate-dx)) calc(30% + var(--plate-dy) + var(--plate-sy)),
+                        var(--plate-light) 0%, transparent 60%),
+        radial-gradient(ellipse 70% 70% at calc(70% + var(--plate-dx)) calc(70% + var(--plate-dy) + var(--plate-sy)),
+                        var(--plate-deep) 0%, transparent 60%),
+        var(--plate-base);
+    }
     /* no hover glow around the row (the base .project-card:hover rule paints one) */
     @media (hover: hover) { .feature .feature-card:hover { box-shadow: none; border-color: transparent; } }
-    .feature-card .project-info { grid-column: 1; grid-row: 1; padding: 0; display: block; }
+    .feature-card .project-info { grid-column: 2; grid-row: 1; padding: 0; display: block; }
     .feature-card .project-info-top { display: block; margin-bottom: 12px; }
     .feature-card .project-info h3 { font-size: 26px; letter-spacing: -0.02em; line-height: 1.15; }
     .feature-card .project-year { display: block; font-size: 14px; margin-top: 6px; }
     .feature-card .project-info p { font-size: 15px; line-height: 1.55; min-height: 0; }
     .feature-card .card-meta { padding-top: 14px; gap: 6px; }
+    @property --plate-sy { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
+    @keyframes plate-sweep { from { --plate-sy: -18%; } to { --plate-sy: 18%; } }
+    @keyframes piece-arrive { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
+        /* the row: light sweeps across its plate over the whole traversal */
         .feature .feature-card {
-          animation-name: card-arrive;
+          animation-name: plate-sweep;
           animation-timeline: view();
-          animation-range: entry 0% entry 55%;
+          animation-range: cover 0% cover 100%;
           animation-duration: auto;
           animation-fill-mode: both;
         }
-        .feature .feature-card.arrive-now {
-          animation-name: card-arrive-now;
+        /* the plate lands first, then title, description and chips follow,
+           all scrubbed against the row's own entry so the stagger is real */
+        .feature .feature-card .project-img,
+        .feature .feature-card .project-info-left > * {
+          animation-timeline: --row;
+          animation-duration: auto;
+          animation-fill-mode: both;
+        }
+        .feature .feature-card .project-img { animation-name: card-arrive; animation-range: entry 0% entry 55%; }
+        .feature .feature-card .project-info-left > * { animation-name: piece-arrive; }
+        .feature .feature-card .project-info-top { animation-range: entry 15% entry 70%; }
+        .feature .feature-card .project-info p { animation-range: entry 25% entry 80%; }
+        .feature .feature-card .card-meta { animation-range: entry 35% entry 90%; }
+        /* a row already inside the viewport at load gets the timed version */
+        .feature .feature-card.arrive-now .project-img,
+        .feature .feature-card.arrive-now .project-info-left > * {
           animation-timeline: auto;
-          animation-duration: 0.9s;
-          animation-delay: 1.25s;
           animation-timing-function: var(--ease-out);
           animation-fill-mode: backwards;
           animation-range: normal;
         }
+        .feature .feature-card.arrive-now .project-img { animation-name: card-arrive-now; animation-duration: 0.9s; animation-delay: 1.25s; }
+        .feature .feature-card.arrive-now .project-info-left > * { animation-name: piece-arrive; animation-duration: 0.7s; }
+        .feature .feature-card.arrive-now .project-info-top { animation-delay: 1.45s; }
+        .feature .feature-card.arrive-now .project-info p { animation-delay: 1.6s; }
+        .feature .feature-card.arrive-now .card-meta { animation-delay: 1.75s; }
       }
     }
 
