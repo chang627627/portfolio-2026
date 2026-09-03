@@ -1257,26 +1257,30 @@
     chatToggle.classList.toggle('hidden');
     const teaser = document.getElementById('chatTeaser');
     if (teaser) teaser.classList.remove('visible');
-    // the bubble's job is done once the chat has actually been opened, not
-    // merely once it has been shown, so a visitor who ignored it gets asked
-    // again next time and a visitor who used it never sees it again
-    try { localStorage.setItem('chat_opened', '1'); } catch (e) {}
+    // also mark it seen here, so someone who opens the chat before scrolling
+    // never gets the bubble popping at them afterwards
+    try { localStorage.setItem('chat_teaser_seen', '1'); } catch (e) {}
   });
 
   // The teaser fires on first scroll rather than a timer, so it can never
-  // overlap the hero headline. Restored 2026-09-02 per user "i want to make
-  // the chatbot more obvious. bring that onboarding back", and deliberately
-  // more persistent than the version that was removed: it keys off whether
-  // the chat has been OPENED rather than whether the bubble has been SEEN,
-  // and it holds for 9s instead of 6.
+  // overlap the hero headline, and it is ONCE PER BROWSER, EVER. A version
+  // keyed to whether the chat had been OPENED (so it returned every visit
+  // until used) was tried 2026-09-02 and rejected: "each time open it will
+  // jump the bubble which is too much. I just need the first time." The flag
+  // is written the moment it is shown, not when it is dismissed.
   (function () {
     const teaser = document.getElementById('chatTeaser');
     if (!teaser) return;
-    let opened = false;
-    try { opened = !!localStorage.getItem('chat_opened'); } catch (e) {}
-    if (opened) return;
+    let seen = false;
+    try { seen = !!localStorage.getItem('chat_teaser_seen'); } catch (e) {}
+    if (seen) return;
     window.addEventListener('scroll', () => {
+      // re-read at fire time: the listener is registered at load, so a visitor
+      // who opens the chat BEFORE scrolling would otherwise still get the
+      // bubble popping at them on their first scroll
+      try { if (localStorage.getItem('chat_teaser_seen')) return; } catch (e) {}
       teaser.classList.add('visible');
+      try { localStorage.setItem('chat_teaser_seen', '1'); } catch (e) {}
       setTimeout(() => teaser.classList.remove('visible'), 9000);
     }, { once: true, passive: true });
   })();
