@@ -1202,6 +1202,7 @@
 </script>
 
 <!-- Chat Widget -->
+<div class="chat-teaser" id="chatTeaser">Hey, I'm Chang's AI. Ask me anything.</div>
 <button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
 </button>
@@ -1244,7 +1245,31 @@
   chatToggle.addEventListener('click', () => {
     chatPanel.classList.toggle('open');
     chatToggle.classList.toggle('hidden');
+    const teaser = document.getElementById('chatTeaser');
+    if (teaser) teaser.classList.remove('visible');
+    // the bubble's job is done once the chat has actually been opened, not
+    // merely once it has been shown, so a visitor who ignored it gets asked
+    // again next time and a visitor who used it never sees it again
+    try { localStorage.setItem('chat_opened', '1'); } catch (e) {}
   });
+
+  // The teaser fires on first scroll rather than a timer, so it can never
+  // overlap the hero headline. Restored 2026-09-02 per user "i want to make
+  // the chatbot more obvious. bring that onboarding back", and deliberately
+  // more persistent than the version that was removed: it keys off whether
+  // the chat has been OPENED rather than whether the bubble has been SEEN,
+  // and it holds for 9s instead of 6.
+  (function () {
+    const teaser = document.getElementById('chatTeaser');
+    if (!teaser) return;
+    let opened = false;
+    try { opened = !!localStorage.getItem('chat_opened'); } catch (e) {}
+    if (opened) return;
+    window.addEventListener('scroll', () => {
+      teaser.classList.add('visible');
+      setTimeout(() => teaser.classList.remove('visible'), 9000);
+    }, { once: true, passive: true });
+  })();
 
   chatClose.addEventListener('click', () => {
     chatPanel.classList.remove('open');
