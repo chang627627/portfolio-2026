@@ -215,6 +215,10 @@
     .feature-card .project-info p { font-size: 16px; line-height: 1.55; color: var(--text-soft); min-height: 0; } /* back to style.css's own card body size; the row build had dropped it to 15 */
     .feature-card .card-meta { padding-top: 22px; gap: 8px; }
     .feature-card .card-tag { padding: 6px 10px; border-color: rgba(255, 255, 255, 0.14); }
+    /* NOVA's partner credits are wordmarks, not award badges: 20px keeps them
+       legible while placing them a tier below the awards on the other cards. */
+    .project-card[href="nova.html"] .card-awards img { height: 20px; }
+    @media (max-width: 768px) { .project-card[href="nova.html"] .card-awards img { height: 13px; } }
     /* HOVER. The thumbnail keeps its original zoom from style.css; what is
        added back here is the oklch hue glow the row build silently lost (its
        rule is scoped to .project-grid, which stopped matching once the JS
@@ -599,7 +603,15 @@
       </a>
 
       <a href="nova.html" class="project-card" style="--plate-light: #FFFFFF;">
-        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img class="card-still--swap" src="images/nova-card.png" srcset="images/nova-card-960.png 960w, images/nova-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative;">
+          <!-- Partner credits, the same top-left slot the award badges use.
+               Both are transparent PNGs with strong colour (CCA teal, UNICEF
+               blue), so they read on this card's flat white plate. They sit
+               BELOW the award-badge height on purpose: those are compact marks
+               and these are wordmarks, so 26px buys far more width (192px, 23%
+               of the plate), and a partner credit is context where an award is
+               a claim. -->
+          <div class="card-awards"><img src="images/logo-cca-color.png" alt="California College of the Arts"><img src="images/logo-unicef-color.png" alt="UNICEF"></div><img class="card-still--swap" src="images/nova-card.png" srcset="images/nova-card-960.png 960w, images/nova-card.png 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
