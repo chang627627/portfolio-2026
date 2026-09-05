@@ -135,6 +135,9 @@
     /* The site's one italic: the role line. Single family, single weight,
        one flourish, in the one place it earns it. */
     .hero h1 .line:nth-child(2) .line-inner { font-style: italic; }
+    /* Stardust canvas: created by the specular engine on desktop only, so
+       phones, touch and reduced-motion never get the element at all. */
+    .hero-dust { position: absolute; inset: 0; pointer-events: none; z-index: 1; }
     /* descriptions in the long-read tier (#a0a0a0), the same step About uses */
     .project-grid .project-info p { color: var(--text-soft); }
 
@@ -745,8 +748,10 @@
         // that displacement into the "base" centers (review finding)
         centers = glyphs.map((g, i) => {
           const r = g.getBoundingClientRect();
+          gw[i] = r.width; gh[i] = r.height;
           return { x: r.left + r.width / 2 - hr.left - mx[i], y: r.top + r.height / 2 - hr.top - my[i] };
         });
+        sizeDust();
         // ignition beam travel: enter fully dark on the left, exit dark right
         ignFrom = Math.min(...centers.map(c => c.x)) - 260;
         ignTo = Math.max(...centers.map(c => c.x)) + 260;
@@ -780,6 +785,185 @@
       const PULL = 3.2, MR = 2 * 110 * 110, LERP = 0.18;
       const mx = new Float32Array(glyphs.length), my = new Float32Array(glyphs.length);
       let cur = null;            // latest cursor position in hero coords, or null
+
+      // ── Stardust ────────────────────────────────────────────────────────
+      // A sparse field of stardust across the whole hero, edge to edge, that
+      // does NOT follow the cursor (per user, explicitly, after two rounds of
+      // an interaction-only version left the empty left of the screen with
+      // nothing on it). A steady population drifts slowly upward, born at
+      // random positions, fading in and out over several seconds; the
+      // ignition beam still leaves a denser trail on the headline at load.
+      // Each mote takes its colour from the light field at the point it
+      // was born, blended from the six g2 pools read off the same registered
+      // properties irisFlow animates, so it is the gradient breaking into
+      // particles rather than white glitter laid on top: gold and rose up in
+      // the warm zone, blue and cyan below, grey-white in the dark corners.
+      const gw = new Float32Array(glyphs.length), gh = new Float32Array(glyphs.length);
+      const dust = document.createElement('canvas');
+      dust.className = 'hero-dust';
+      dust.setAttribute('aria-hidden', 'true');
+      heroEl.appendChild(dust);
+      const dctx = dust.getContext('2d');
+      const DPR = Math.min(2, window.devicePixelRatio || 1);
+      const MAX = 150;                // live motes; the oldest is replaced past this
+      const P = [];
+      let dustDirty = false, lastPoolT = -1e4, lastDustT = 0;
+      // the ambient field: ~AMB_N alive over their ~AMB_TTL life
+      const AMB_N = 80, AMB_TTL = 5600, AMB_RATE = AMB_N / (AMB_TTL / 1000);   // motes per second
+      // shape mix: sharp points read as near, soft bokeh as far, and a few
+      // sparks carry four thin diffraction rays that breathe slowly in length
+      const SHAPE_POINT = 0.60, SHAPE_BOKEH = 0.25;
+      let ambAcc = 0, seeded = false;
+      // FOLLOW: whether the field answers the hand at all. Built both ways in
+      // one hour at the user's direction ("not follow the cursor", "follow the
+      // cursor movement", "maybe not follow cursor") and left OFF: the dust is
+      // pure weather. When on, the layer leans toward the pointer at a fraction
+      // of Lightfall's travel and motes near a moving pointer are swept along.
+      const FOLLOW = false;
+      const LEAN_X = 80, LEAN_Y = 24, WAKE_S = 2 * 170 * 170, WAKE_K = 0.16;
+      let ox = 0, oy = 0, curPrev = null;
+      const shedT = new Float64Array(glyphs.length);   // per-glyph cooldown
+      const SHED_MIN = AMBIENT + 0.07;  // only cursor- or beam-lit glyphs pass this
+      const sizeDust = () => {
+        dust.width = Math.round(heroW * DPR); dust.height = Math.round(heroH * DPR);
+        dctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        dctx.globalCompositeOperation = 'lighter';
+      };
+      // the six pools in hero px, refreshed on the 60ms tick alongside --g2-warm-x
+      const POOLS = [
+        ['--g2-yellow-x', '--g2-yellow-y', 255, 214, 0],
+        ['--g2-warm-x',   '--g2-warm-y',   255, 60, 70],
+        ['--g2-pink-x',   '--g2-pink-y',   255, 90, 190],
+        ['--g2-blue-x',   '--g2-blue-y',   70, 140, 255],
+        ['--g2-azure-x',  '--g2-azure-y',  50, 150, 255],
+        ['--g2-cyan-x',   '--g2-cyan-y',   120, 220, 255],
+      ];
+      const poolPx = POOLS.map(() => ({ x: 0, y: 0 }));
+      let poolsRead = false;
+      const readPools = (cs) => {
+        const hr = heroEl.getBoundingClientRect(), ob = orbsEl.getBoundingClientRect();
+        for (let k = 0; k < POOLS.length; k++) {
+          const px = parseFloat(cs.getPropertyValue(POOLS[k][0])), py = parseFloat(cs.getPropertyValue(POOLS[k][1]));
+          poolPx[k].x = ob.left - hr.left + (isNaN(px) ? 50 : px) / 100 * ob.width;
+          poolPx[k].y = ob.top - hr.top + (isNaN(py) ? 50 : py) / 100 * ob.height;
+        }
+        poolsRead = true;
+      };
+      const tint = (x, y) => {
+        // gaussian blend of the pools by distance, then lifted toward white:
+        // a mote is light, not paint
+        let r = 0, g = 0, b = 0, w = 0;
+        const S = 2 * (heroW * 0.22) * (heroW * 0.22);
+        for (let k = 0; k < POOLS.length; k++) {
+          const dx = x - poolPx[k].x, dy = y - poolPx[k].y;
+          const wk = Math.exp(-(dx * dx + dy * dy) / S) + 1e-4;
+          r += POOLS[k][2] * wk; g += POOLS[k][3] * wk; b += POOLS[k][4] * wk; w += wk;
+        }
+        r /= w; g /= w; b /= w;
+        const L = 0.22;
+        return [Math.round(r + (255 - r) * L), Math.round(g + (255 - g) * L), Math.round(b + (255 - b) * L)];
+      };
+      // n motes born in a box (sw x sh) around x,y, drifting with velocity
+      // vx,vy plus a random spread, living ttl ms (jittered +/-30%)
+      const shed = (x, y, sw, sh, n, vx, vy, spread, ttl, buoy, age0) => {
+        if (!poolsRead) return;
+        const c = tint(x, y);
+        for (let k = 0; k < n; k++) {
+          const a = Math.random() * Math.PI * 2, sp = Math.random() * spread;
+          // shape population: SHAPE_POINT / SHAPE_BOKEH / the rest sparks
+          const q = Math.random(), kind = q < SHAPE_POINT ? 0 : q < SHAPE_POINT + SHAPE_BOKEH ? 1 : 2;
+          const m = {
+            kind, x: x + (Math.random() - 0.5) * sw, y: y + (Math.random() - 0.5) * sh,
+            vx: vx + Math.cos(a) * sp, vy: vy + Math.sin(a) * sp,
+            r: kind === 1 ? 3 + Math.random() * 4 : 1.0 + Math.random() * 0.9,
+            b: 0.55 + Math.random() * 0.45,                                     // brightness variety reads as depth
+            age: 0, ttl: ttl * (0.7 + Math.random() * 0.6) * (kind === 1 ? 1.4 : 1),
+            buoy: (buoy || 0.012) * (kind === 1 ? 0.6 : 1),                       // out-of-focus dust drifts slower
+            rays: kind === 2 ? 5 + Math.random() * 4 : 0, rot: Math.random() < 0.5 ? 0 : Math.PI / 4,
+            ph: Math.random() * 6.2832, c,
+          };
+          if (age0) m.age = Math.random() * m.ttl;                          // seeding: born mid-life
+          if (P.length >= MAX) P.shift();
+          P.push(m);
+        }
+      };
+      // one ambient mote at a random point of the hero: slow lift, tiny
+      // random walk, long life
+      const ambientOne = (age0) => shed(-40 + Math.random() * (heroW + 80), -20 + Math.random() * (heroH + 40), 0, 0, 1,
+                                        (Math.random() - 0.5) * 0.10, -(0.02 + Math.random() * 0.05), 0.05, AMB_TTL, 0.003, age0);
+      const dustFrame = (t) => {
+        const dt = lastDustT ? Math.min(50, t - lastDustT) : 16; lastDustT = t;
+        // keep the field populated: seed it once so the first frame is not
+        // empty, then top it up at a steady rate
+        if (poolsRead) {
+          if (!seeded) { seeded = true; for (let i = 0; i < AMB_N; i++) ambientOne(true); }
+          ambAcc += AMB_RATE * dt / 1000;
+          while (ambAcc >= 1) { ambAcc -= 1; ambientOne(false); }
+        }
+        // lean toward the pointer, eased; ease home when the hand leaves
+        const k = dt / 16.7, damp = Math.pow(0.985, k);
+        const hand = FOLLOW ? cur : null;
+        const tx = hand ? (hand.x / heroW - 0.5) * LEAN_X : 0, ty = hand ? (hand.y / heroH - 0.5) * LEAN_Y : 0;
+        ox += (tx - ox) * Math.min(1, 0.08 * k); oy += (ty - oy) * Math.min(1, 0.08 * k);
+        // the pointer's motion this frame, for the wake
+        let wx = 0, wy = 0, wake = false;
+        if (hand && curPrev) { wx = hand.x - curPrev.x; wy = hand.y - curPrev.y; wake = wx * wx + wy * wy > 4; }
+        curPrev = hand ? { x: hand.x, y: hand.y } : null;
+        dctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+        if (!P.length) { if (dustDirty) { dctx.clearRect(0, 0, heroW, heroH); dustDirty = false; } return; }
+        dctx.clearRect(0, 0, heroW, heroH); dustDirty = true;
+        dctx.setTransform(DPR, 0, 0, DPR, ox * DPR, oy * DPR);
+        for (let i = P.length - 1; i >= 0; i--) {
+          const m = P[i];
+          m.age += dt;
+          if (m.age >= m.ttl) { P.splice(i, 1); continue; }
+          const u = m.age / m.ttl;
+          if (wake) {
+            // swept along by a moving hand, gaussian falloff from the pointer
+            const ddx = m.x + ox - hand.x, ddy = m.y + oy - hand.y;
+            const f = Math.exp(-(ddx * ddx + ddy * ddy) / WAKE_S);
+            if (f > 0.02) { m.vx += wx * WAKE_K * f; m.vy += wy * WAKE_K * f; }
+          }
+          m.vx = m.vx * damp + (Math.random() - 0.5) * 0.04 * k;
+          m.vy = m.vy * damp - m.buoy * k;             // buoyant: stardust rises
+          m.x += m.vx * k; m.y += m.vy * k;
+          const a = (u < 0.12 ? u / 0.12 : 1 - (u - 0.12) / 0.88) * m.b;   // quick in, long out
+          const c = m.c, rgb = c[0] + ',' + c[1] + ',' + c[2];
+          if (m.kind === 1) {
+            // bokeh: a soft disc, no core, low alpha
+            const g = dctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r);
+            g.addColorStop(0, 'rgba(' + rgb + ',' + (0.20 * a).toFixed(3) + ')');
+            g.addColorStop(0.6, 'rgba(' + rgb + ',' + (0.10 * a).toFixed(3) + ')');
+            g.addColorStop(1, 'rgba(' + rgb + ',0)');
+            dctx.fillStyle = g;
+            dctx.beginPath(); dctx.arc(m.x, m.y, m.r, 0, 6.2832); dctx.fill();
+            continue;
+          }
+          const R = m.r * 2.8;                                            // hard centre, fast falloff, faint skirt
+          const g = dctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, R);
+          g.addColorStop(0, 'rgba(' + rgb + ',' + (0.55 * a).toFixed(3) + ')');
+          g.addColorStop(0.35, 'rgba(' + rgb + ',' + (0.16 * a).toFixed(3) + ')');
+          g.addColorStop(1, 'rgba(' + rgb + ',0)');
+          dctx.fillStyle = g;
+          dctx.beginPath(); dctx.arc(m.x, m.y, R, 0, 6.2832); dctx.fill();
+          if (m.kind === 2) {
+            // spark: four thin rays, brightest at the centre, breathing +/-25%
+            // in length on a slow 2.2s cycle (a breath, not a blink)
+            const L = m.r * m.rays * (1 + 0.25 * Math.sin(m.age / 350 + m.ph));
+            dctx.save(); dctx.translate(m.x, m.y); dctx.rotate(m.rot); dctx.lineWidth = 1;
+            for (let s2 = 0; s2 < 2; s2++) {
+              const gr = s2 ? dctx.createLinearGradient(0, -L, 0, L) : dctx.createLinearGradient(-L, 0, L, 0);
+              gr.addColorStop(0, 'rgba(' + rgb + ',0)'); gr.addColorStop(0.5, 'rgba(' + rgb + ',' + (0.75 * a).toFixed(3) + ')'); gr.addColorStop(1, 'rgba(' + rgb + ',0)');
+              dctx.strokeStyle = gr; dctx.beginPath();
+              if (s2) { dctx.moveTo(0, -L); dctx.lineTo(0, L); } else { dctx.moveTo(-L, 0); dctx.lineTo(L, 0); }
+              dctx.stroke();
+            }
+            dctx.restore();
+          }
+          dctx.fillStyle = 'rgba(' + rgb + ',' + a.toFixed(3) + ')';
+          dctx.beginPath(); dctx.arc(m.x, m.y, m.r, 0, 6.2832); dctx.fill();       // core
+        }
+      };
 
       // Script A still owns the cursor input — this only records it, so tilt,
       // Lightfall and the sheen all read the same pointer.
@@ -823,7 +1007,9 @@
         }
         if (igniting || t - lastT >= 60) {
           lastT = t;
-          const wx = parseFloat(getComputedStyle(orbsEl).getPropertyValue('--g2-warm-x'));
+          const ocs = getComputedStyle(orbsEl);
+          const wx = parseFloat(ocs.getPropertyValue('--g2-warm-x'));
+          if (t - lastPoolT >= 60) { lastPoolT = t; readPools(ocs); }
           const lightX = (isNaN(wx) ? 50 : wx) / 100 * heroW;
           let ignX = 0;
           if (igniting) {
@@ -839,6 +1025,7 @@
           const relRising = rel > lastRel;
           for (let i = 0; i < glyphs.length; i++) {
             const c = centers[i];
+            const prev = last[i];
             const adx = c.x - lightX;
             let I = AMBIENT * Math.exp(-(adx * adx) / AX);
             if (cur) {
@@ -853,6 +1040,14 @@
             I *= rel;   // the release damps every source at once
             if (I < 0.02) I = 0;
             const dI = I - last[i];
+            if (igniting && dI < -0.02 && prev > SHED_MIN && t - shedT[i] > 300) {
+              shedT[i] = t;
+              // count scales with how much light just left; a glyph that was
+              // at the beam's or cursor's peak sheds a little extra
+              const n = -dI * 2.0 + (prev > 0.85 ? 0.8 : 0);
+              const cnt = (n | 0) + (Math.random() < n - (n | 0) ? 1 : 0);
+              if (cnt) shed(c.x + mx[i], c.y + my[i], gw[i] * 0.8, gh[i] * 0.55, cnt, 0, -0.25, 0.35, igniting ? 3400 : 1900);
+            }
             // a rel change forces writes through the skip: at I=0 the base dim
             // is the only thing moving, and it must still be written
             if (Math.abs(dI) < 0.015 && !relMoved) continue;
@@ -902,6 +1097,11 @@
             mx[i] = 0; my[i] = 0;
           }
         }
+
+        // Nothing is EMITTED at the cursor (per user, after an interaction-only
+        // version left the empty left of the screen bare); the field's MOTION
+        // answers the hand instead, inside dustFrame.
+        dustFrame(t);
       };
       // Only burn frames while the hero is actually on screen — same gating
       // discipline as the footer pixel-dissolve.
@@ -910,6 +1110,8 @@
           if (!running) { running = true; lastT = -1e4; requestAnimationFrame(frame); }
         } else {
           running = false;
+          P.length = 0; seeded = false; ambAcc = 0; curPrev = null; ox = 0; oy = 0;
+          if (dustDirty) { dctx.clearRect(0, 0, heroW, heroH); dustDirty = false; }
           // clear the recorded pointer: with the hero fully off-screen no
           // pointer can be over it, but Firefox fires no boundary event when
           // content scrolls under a stationary cursor — without this, a
