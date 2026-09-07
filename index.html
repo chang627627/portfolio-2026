@@ -341,7 +341,70 @@
     }
     @media (max-width: 768px) { .work { padding-top: 104px; padding-bottom: 80px; } }
 
+
+    /* Two-tone sub: the sentence quiets down and the one claim that is
+       proven by the page itself stays full white. Copy unchanged. */
+    .hero-sub { color: rgba(255, 255, 255, 0.56); }
+    .hero-sub-key { color: #fff; }
+
+    /* ================================================================
+       PREVIEW LOOK SWITCH, round two (2026-09-06): finish options, each
+       behind an html class that ONLY ?look= sets:
+         ?look=bloom,edge   (or ?look=all)
+       Nothing below applies to a normal visit.
+       ================================================================ */
+
+    /* BLOOM: each plate lights the page around it in its own hue, at rest.
+       The hover glow already exists (oklch hue from --plate-light); this is
+       its quieter, always-on sibling, falling mostly below the plate like a
+       lamp on a table. Desktop rows only. */
+    @media (min-width: 769px) {
+      @supports (color: oklch(from white l c h)) {
+        .look-bloom .feature .feature-card .project-img {
+          box-shadow:
+            inset 0 0 0 1px rgba(12, 18, 22, 0.08),
+            0 28px 90px -16px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.26),
+            0 0 140px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.09);
+        }
+        @media (hover: hover) {
+          .look-bloom .feature .feature-card:hover .project-img {
+            box-shadow:
+              inset 0 0 0 1px rgba(12, 18, 22, 0.08),
+              0 28px 90px -16px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.36),
+              0 0 160px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.16);
+          }
+        }
+      }
+    }
+
+    /* EDGE: the plate as a physical surface. A specular hairline along the
+       top edge and a soft shade gathering at the bottom, painted on an
+       overlay so it composes with any shadow set on the plate itself. */
+    @media (min-width: 769px) {
+      .look-edge .feature .feature-card .project-img { position: relative; }
+      .look-edge .feature .feature-card .project-img::after {
+        content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 3;
+        box-shadow:
+          inset 0 1px 0 rgba(255, 255, 255, 0.55),
+          inset 0 -1px 0 rgba(12, 18, 22, 0.06),
+          inset 0 -40px 60px -40px rgba(12, 18, 22, 0.12);
+      }
+    }
+
   </style>
+  <script>
+    /* PREVIEW LOOK SWITCH: ?look=bloom,edge or ?look=all */
+    (function () {
+      try {
+        var m = /[?&]look=([^&#]*)/.exec(location.search);
+        if (!m) return;
+        var all = ['bloom', 'edge'];
+        var keys = decodeURIComponent(m[1]).split(',');
+        if (keys.indexOf('all') !== -1) keys = all;
+        keys.forEach(function (k) { if (all.indexOf(k) !== -1) document.documentElement.classList.add('look-' + k); });
+      } catch (e) {}
+    })();
+  </script>
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -421,7 +484,7 @@
         <span class="line"><span class="line-inner" data-text="I&#39;m Chang Mou."></span></span>
         <span class="line"><span class="line-inner" data-text="AI-first product designer."></span></span>
       </h1>
-      <p class="hero-sub">I design products across SaaS, AI, and social impact that balance user control with automation, and I prototype in real code, this site included.</p>
+      <p class="hero-sub">I design products across SaaS, AI, and social impact that balance user control with automation, and <span class="hero-sub-key">I prototype in real code, this site included.</span></p>
       <!-- Maker's mark, and now a checkable one: it links to this site's own
            repo, which is the literal proof of the sub's "I prototype in real
            code, this site included". Reuses .status-tag verbatim (the retired
