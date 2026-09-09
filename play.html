@@ -764,7 +764,7 @@
           x: rnd(-30, W + 30),
           y: bBot - span * 0.32 * Math.random() * Math.random() + rnd(-4, 8), // dense at the edge, thinning above it
           shape, c0: lift(warm, 0.2), c1: lift(COOL, 0.45),
-          r: shape === 1 ? rnd(5, 11) : rnd(1.2, 2.3),
+          r: shape === 1 ? rnd(3, 7) : rnd(1.0, 1.9), // the site's one mote: the home hero's numbers
           b: rnd(0.5, 1), vx: gauss() * 6, vy: gauss() * 4,
           rise: rnd(RISE[0], RISE[1]) * (shape === 1 ? 0.6 : 1),
           flare: age0 ? 0 : 1, // seeded motes are already old; everything else ignites
@@ -780,7 +780,7 @@
         const col = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
         if (m.shape === 1) {
           const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, r);
-          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.22 * a).toFixed(3)})`);
+          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.20 * a).toFixed(3)})`);
           g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill();
           return;
@@ -892,7 +892,10 @@
   // as each glyph dims (type); a press bursts and a held hand pours (burst); colour is
   // sampled from a dawn field laid over the hero rather than picked at random (tint);
   // and, off by default, consecutive motes link into a constellation for a moment
-  // (lines). Nothing persists: the canvas is redrawn from the mote list every frame.
+  // (lines). At rest the statement is not dead: a pool of light drifts across it on a
+  // slow sine, the footer word's own idle sweep with the hero's halo, and the hand
+  // brightens what is already moving (ambient); no dust at rest, the dust stays the
+  // hand's. Nothing persists: the canvas is redrawn from the mote list every frame.
   // Mouse only; touch scrolls and reduced motion gets the plain hero.
   //
   //   ?fx=off            the 2026-09-08 trail as it was
@@ -905,7 +908,7 @@
     if (!cv || !h1) return;
     try { localStorage.removeItem('play_graffiti_v1'); } catch (e) {} // an earlier version kept paint; nothing is kept now
     const FX = (function () {
-      const on = { event: true, momentum: true, type: true, burst: true, tint: true, lines: false };
+      const on = { event: true, momentum: true, type: true, burst: true, tint: true, ambient: true, lines: false };
       let q = null;
       try { q = new URLSearchParams(location.search).get('fx'); } catch (e) {}
       if (q === null) return on;
@@ -928,10 +931,9 @@
     const POUR = 26;              // motes a second from a held hand
     const BOKEH = 0.25, SPARK = 0.15; // shape shares; sparks grow with speed
     const JIT = 70;               // the velocity random walk, px/s per second
-    // the mote look: the event set, and the 2026-09-08 set it replaces
-    const P = FX.event
-      ? { coreR: [1.5, 2.6], bokehR: [4, 8], glowX: 3.2, g0: 0.7, g1: 0.22, bokehA: 0.24, ray: [5, 9], rayW: 1.1, flare: 1, drag: 0.9 }
-      : { coreR: [1.0, 1.9], bokehR: [3, 7], glowX: 2.8, g0: 0.55, g1: 0.16, bokehA: 0.2, ray: [5, 9], rayW: 1, flare: 0, drag: 0.9 };
+    // the mote look is the site's ONE mote (the home hero's numbers, shared with the
+    // footer); the event option adds only the ignition flare and the hold-then-fade
+    const P = { coreR: [1.0, 1.9], bokehR: [3, 7], glowX: 2.8, g0: 0.55, g1: 0.16, bokehA: 0.2, ray: [5, 9], rayW: 1, flare: FX.event ? 1 : 0, drag: 0.9 };
     let W = 0, H = 0, dpr = 1;
     const motes = []; let raf = 0, last = 0;
     cv._parts = motes; // for probing
@@ -962,6 +964,7 @@
       return c.map(v => Math.max(0, Math.min(255, Math.round(v + gauss() * 10))));
     }
     cv._tint = tintAt; // for probing
+    cv._state = () => ({ visible, settled, running: !!raf, motes: motes.length }); // for probing
     function spawn(x, y, o) {
       o = o || {};
       const speed = o.speed || 0, fast = FX.momentum ? Math.min(1, speed / 1400) : 0;
@@ -1056,13 +1059,15 @@
       for (const m of motes) drawMote(m, t);
       ctx.globalCompositeOperation = 'source-over';
       const lit = FX.type && glyphFrame(t, dt);
-      if (motes.length || lit || held) raf = requestAnimationFrame(tick);
+      if (motes.length || lit || held || (visible && settled && FX.type && FX.ambient)) raf = requestAnimationFrame(tick);
       else { raf = 0; last = 0; ctx.clearRect(0, 0, W, H); }
     }
     // the statement under the hand: each glyph in its own span, lit by a pool around the
     // pointer that rises fast and dims slowly, shedding a mote as the light leaves it
     const glyphs = []; let settled = false;
     const SX = 2 * 120 * 120, SY = 2 * 80 * 80;
+    const AMB = 0.4, AMB_SIG = 220, AMB_PERIOD = 7; // the idle light: peak, pool width in px, seconds per bounce (the footer word's numbers)
+    const span = { left: 0, width: 1 }; let visible = false;
     function splitGlyphs() {
       const inners = h1.querySelectorAll('.line-inner');
       h1.setAttribute('aria-label', Array.from(inners, el => el.textContent.trim()).join(' '));
@@ -1072,24 +1077,26 @@
         for (const ch of text) {
           if (ch === ' ') { frag.appendChild(document.createTextNode(' ')); continue; } // spaces stay bare text so wrapping behaves as plain text
           const s = document.createElement('span'); s.className = 'pt-g'; s.textContent = ch; frag.appendChild(s);
-          glyphs.push({ el: s, cx: 0, cy: 0, w: 0, h: 0, I: 0, shown: 0, cool: 0 });
+          glyphs.push({ el: s, cx: 0, cy: 0, w: 0, h: 0, I: 0, shown: 0, cool: 0, hand: 0 });
         }
         el.appendChild(frag);
       });
     }
     function cacheGlyphs() {
-      const r = cv.getBoundingClientRect();
-      for (const g of glyphs) { const b = g.el.getBoundingClientRect(); g.cx = b.left + b.width / 2 - r.left; g.cy = b.top + b.height / 2 - r.top; g.w = b.width; g.h = b.height; }
+      const r = cv.getBoundingClientRect(); let L = Infinity, R = -Infinity;
+      for (const g of glyphs) { const b = g.el.getBoundingClientRect(); g.cx = b.left + b.width / 2 - r.left; g.cy = b.top + b.height / 2 - r.top; g.w = b.width; g.h = b.height; L = Math.min(L, b.left - r.left); R = Math.max(R, b.right - r.left); }
+      span.left = L; span.width = Math.max(1, R - L);
     }
     // the glyph never moves and never gets a filter (a filter promotes it to its own layer
     // and changes its antialiasing, which reads as a twitch): only its colour steps toward
-    // white and a halo grows around it
+    // white and the home hero's own two-layer halo grows around it, the same light on
+    // every page, over the dark shadow the statement wears at rest for legibility
     function paintGlyph(g) {
       const I = g.I, st = g.el.style;
       if (I <= 0) { st.color = ''; st.textShadow = ''; return; }
       const v = Math.round(240 + 15 * I);
       st.color = 'rgb(' + v + ', ' + v + ', ' + v + ')';
-      st.textShadow = '0 0 ' + (6 + 22 * I).toFixed(1) + 'px rgba(255, 255, 255, ' + (0.66 * I).toFixed(3) + '), 0 0 2px rgba(255, 255, 255, ' + (0.45 * I).toFixed(3) + '), 0 1px 2px rgba(0, 0, 0, ' + (0.45 * (1 - I)).toFixed(3) + ')';
+      st.textShadow = '0 0 6px rgba(255, 255, 255, ' + (0.35 * I).toFixed(3) + '), 0 0 22px rgba(255, 255, 255, ' + (0.30 * I).toFixed(3) + '), 0 1px 2px rgba(0, 0, 0, ' + (0.45 * (1 - I)).toFixed(3) + ')';
     }
     function shedGlyph(g, prev) {
       if (Math.random() > 0.7) return; // not every glyph, or a pass over the line is a cloud
@@ -1101,15 +1108,22 @@
     function glyphFrame(t, dt) {
       let any = false;
       const kUp = 1 - Math.exp(-16 * dt), kDown = 1 - Math.exp(-2.4 * dt);
+      // the idle pool drifts across the statement; the hand's pool sits on top in a screen blend
+      const ambX = settled && visible && FX.ambient ? span.left + span.width * (0.5 + 0.45 * Math.sin(t / AMB_PERIOD * Math.PI * 2)) : null;
       for (const g of glyphs) {
-        let target = 0;
-        if (settled && px !== null) { const dx = px - g.cx, dy = py - g.cy; target = Math.exp(-dx * dx / SX - dy * dy / SY); if (target < 0.004) target = 0; }
+        let target = 0, c = 0;
+        if (ambX !== null) { const da = ambX - g.cx; target = AMB * Math.exp(-da * da / (2 * AMB_SIG * AMB_SIG)); }
+        if (settled && px !== null) { const dx = px - g.cx, dy = py - g.cy; c = Math.exp(-dx * dx / SX - dy * dy / SY); target = c + target * (1 - c); }
+        if (target < 0.004) target = 0;
+        // only the HAND's light leaving a glyph sheds; the idle pool's ebb never does, so a
+        // resting hand and an empty hero both stay dust-free
+        const hand = g.hand; g.hand += (c - g.hand) * (c > g.hand ? kUp : kDown); if (c === 0 && g.hand < 0.004) g.hand = 0;
+        if (hand - g.hand > 0.012 && hand > 0.6 && t - g.cool > 0.6) { g.cool = t; shedGlyph(g, hand); }
         const prev = g.I;
         g.I += (target - g.I) * (target > g.I ? kUp : kDown);
         if (target === 0 && g.I < 0.004) g.I = 0;
         if (g.I === prev) continue;
         if (g.I > 0) any = true;
-        if (prev - g.I > 0.012 && prev > 0.6 && t - g.cool > 0.6) { g.cool = t; shedGlyph(g, prev); }
         if (Math.abs(g.I - g.shown) > 0.006 || g.I === 0) { g.shown = g.I; paintGlyph(g); }
       }
       return any;
@@ -1138,10 +1152,12 @@
       // glyph boxes are read only once the reveal has landed (it slides the lines up from
       // below), and the lines drop their overflow clip then so the halo is not cut
       const inners = h1.querySelectorAll('.line-inner'); let done = false;
-      const settle = () => { if (done) return; done = true; settled = true; h1.classList.add('pt-settled'); cacheGlyphs(); };
+      const settle = () => { if (done) return; done = true; settled = true; h1.classList.add('pt-settled'); cacheGlyphs(); wake(); };
       inners[inners.length - 1].addEventListener('animationend', settle, { once: true });
       setTimeout(settle, 1800); // in case the reveal never reports
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (settled) cacheGlyphs(); });
+      // the idle light runs only while the hero is on screen
+      new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) wake(); }, { rootMargin: '80px' }).observe(hero);
     }
     // the cursor sheds dust along its path
     let lx = null, ly = null, lt = 0, carry = 0, budget = RATE * 0.25, budgetT = performance.now();

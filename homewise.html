@@ -1127,7 +1127,7 @@
           x: rnd(-30, W + 30),
           y: bBot - span * 0.32 * Math.random() * Math.random() + rnd(-4, 8), // dense at the edge, thinning above it
           shape, c0: lift(warm, 0.2), c1: lift(COOL, 0.45),
-          r: shape === 1 ? rnd(5, 11) : rnd(1.2, 2.3),
+          r: shape === 1 ? rnd(3, 7) : rnd(1.0, 1.9), // the site's one mote: the home hero's numbers
           b: rnd(0.5, 1), vx: gauss() * 6, vy: gauss() * 4,
           rise: rnd(RISE[0], RISE[1]) * (shape === 1 ? 0.6 : 1),
           flare: age0 ? 0 : 1, // seeded motes are already old; everything else ignites
@@ -1143,7 +1143,7 @@
         const col = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
         if (m.shape === 1) {
           const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, r);
-          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.22 * a).toFixed(3)})`);
+          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.20 * a).toFixed(3)})`);
           g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill();
           return;
