@@ -9,17 +9,17 @@
   <meta property="og:url" content="https://www.chang-mou.com/">
   <meta property="og:title" content="Chang Mou — Product Designer">
   <meta property="og:description" content="iF & Red Dot winner. Shaping AI products with taste.">
-  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
+  <meta property="og:image" content="https://www.chang-mou.com/images/og-image.jpg?v=6">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Chang Mou — Product Designer">
   <meta name="twitter:description" content="iF & Red Dot winner. Shaping AI products with taste.">
-  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=5">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=6">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=250">
+  <link rel="stylesheet" href="style.css?v=251">
   <!-- Work-card motion. Scoped to this page (.card-loop / .sb-phone exist only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -387,6 +387,46 @@
       }
     }
 
+
+    /* DAWN, the hero palette as of 2026-09-08 (per user, chosen over the
+       original after an outside reader named Lovable: the original ran
+       Lovable's yellow-red-magenta-blue ramp stop for stop). Same six pools,
+       same positions and animations as style.css's .hero-orbs--g2; only the
+       colours differ. Yellow crown where line 1 sits, coral-orange core,
+       violet where the magenta pool was, indigo below, glints kept, so the
+       warm-on-cool seam survives and no stop sequence is anyone's brand.
+       The original palette stays one query away: ?look=original. */
+    .hero .hero-orbs--g2 {
+      background:
+        radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
+        radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 104, 48, 0.86), transparent 60%),
+        radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(140, 70, 255, 0.82), transparent 60%),
+        radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
+        radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
+        radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(60, 20, 200, 0.88), transparent 66%);
+    }
+    /* ORIGINAL (the pre-2026-09-08 "g2" ramp, kept for comparison and for
+       going back): ?look=original restores it on this page, hero and footer.
+       Values are copies of style.css's .hero-orbs--g2 and .footer-glow as
+       they stood before the dawn palette. */
+    .look-original .hero .hero-orbs--g2 {
+      background:
+        radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
+        radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 30, 58, 0.85), transparent 60%),
+        radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(255, 48, 176, 0.82), transparent 60%),
+        radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
+        radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
+        radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(22, 120, 255, 0.88), transparent 66%);
+    }
+    .look-original .footer-glow {
+      background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(30, 122, 255, 0.68) 30%,
+        rgba(255, 48, 176, 0.64) 52%,
+        rgba(255, 40, 70, 0.60) 70%,
+        rgba(255, 190, 35, 0.64) 88%,
+        rgba(255, 190, 35, 0.64) 100%);
+    }
   </style>
   <script>
     /* PREVIEW LOOK SWITCH: ?look=bloom,edge or ?look=all */
@@ -394,7 +434,7 @@
       try {
         var m = /[?&]look=([^&#]*)/.exec(location.search);
         if (!m) return;
-        var all = ['bloom', 'edge'];
+        var all = ['bloom', 'edge', 'original'];
         var keys = decodeURIComponent(m[1]).split(',');
         if (keys.indexOf('all') !== -1) keys = all;
         keys.forEach(function (k) { if (all.indexOf(k) !== -1) document.documentElement.classList.add('look-' + k); });
@@ -810,12 +850,18 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { needSize = true; });
     const POOLS = [
       ['--g2-yellow-x', '--g2-yellow-y', 255, 214, 0],
-      ['--g2-warm-x',   '--g2-warm-y',   255, 60, 70],
-      ['--g2-pink-x',   '--g2-pink-y',   255, 90, 190],
-      ['--g2-blue-x',   '--g2-blue-y',   70, 140, 255],
+      ['--g2-warm-x',   '--g2-warm-y',   255, 130, 70],
+      ['--g2-pink-x',   '--g2-pink-y',   170, 120, 255],
+      ['--g2-blue-x',   '--g2-blue-y',   90, 70, 230],
       ['--g2-azure-x',  '--g2-azure-y',  50, 150, 255],
       ['--g2-cyan-x',   '--g2-cyan-y',   120, 220, 255],
     ];
+    // ?look=original: the pre-dawn dust colours (rose motes and all)
+    if (document.documentElement.classList.contains('look-original')) {
+      POOLS[1][2] = 255; POOLS[1][3] = 60;  POOLS[1][4] = 70;
+      POOLS[2][2] = 255; POOLS[2][3] = 90;  POOLS[2][4] = 190;
+      POOLS[3][2] = 70;  POOLS[3][3] = 140; POOLS[3][4] = 255;
+    }
     const poolPx = POOLS.map(() => ({ x: 0, y: 0 }));
     let poolsRead = false;
     const readPools = () => {
