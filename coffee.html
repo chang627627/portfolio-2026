@@ -1010,12 +1010,12 @@
 
 <script>
   // Pixel dissolve — twinkling square mask over the static gradient edge (footer top),
-  // and the Pac-Man that eats it (2026-09-08): one at a time, walking the band's own grid
-  // like a maze, node to node, turning up or down between rows and back again, mouth
-  // facing the way it goes; the light squares along its path are held dark for a while,
-  // then the twinkle has them back. The side edges are a tunnel: leave one side, come
-  // back through the other. Drawn inside the same loop, so it costs nothing extra and
-  // stops with it when the footer is off-screen or under reduced motion.
+  // and the Pac-Man that eats it (2026-09-08): one, permanent, always in sight. He walks
+  // the band's own grid like a maze, node to node, turning up or down between rows and
+  // back again, mouth facing the way it goes, and turns back at the side edges rather
+  // than leaving; the light squares along his path are held dark for a while, then the
+  // twinkle has them back. Drawn inside the same loop, so it costs nothing extra and
+  // pauses with it when the footer is off-screen or under reduced motion.
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const CELL = 20;
@@ -1030,34 +1030,35 @@
       let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0;
       // Pac-Man lives on the grid's corner points (node = a column boundary xb and a
       // row boundary kb); a two-cell corridor is eaten around every node reached.
-      // kbMin/kbMax keep the walk in the lower half of the band, where the light is.
-      const PAC_R = 17, PAC_SPEED = 115, EAT_HOLD = 9, MAX_PAC = 1, PAC_COLOR = '#FFD600';
+      // kbMin/kbMax keep the walk in the lower half of the band, where the light is;
+      // xbMin/xbMax keep him fully inside the canvas.
+      const PAC_R = 17, PAC_SPEED = 115, EAT_HOLD = 9, PAC_COLOR = '#FFD600';
       const P_TURN = 0.28; // chance to turn vertical at a node while running horizontally
       const pacs = [], eaten = new Map();
-      let nextSpawn = 0, lastT = 0, armed = false;
+      let lastT = 0, armed = false;
       cv._pacs = pacs;
       const key = (row, col) => row * 8192 + col;
       const rows = () => Math.floor((bBot - bTop) / CELL);
-      const cols = () => Math.ceil(W / CELL);
       const kbMin = () => Math.max(1, Math.ceil(rows() * 0.5)); // lower half only: the top of the band is already dark
       const kbMax = () => rows() - 1;
+      const xbMin = () => Math.ceil(PAC_R / CELL);
+      const xbMax = () => Math.floor((W - PAC_R) / CELL);
       function eatNode(xb, kb, t) {
         for (let r = kb - 1; r <= kb; r++) for (let c = xb - 1; c <= xb; c++) eaten.set(key(r, c), t + EAT_HOLD);
       }
       function spawn(t) {
-        if (rows() < 4 || W < 200) return;
+        if (rows() < 4 || W < 200 || pacs.length) return;
         const kb = kbMin() + Math.floor(Math.random() * Math.max(1, kbMax() - kbMin() + 1));
+        const xb = xbMin() + Math.floor(Math.random() * Math.max(1, xbMax() - xbMin() + 1));
         const dir = Math.random() < 0.5 ? 1 : -1;
-        const xb = dir > 0 ? -2 : cols() + 2;
-        const p = { xb, kb, x: xb * CELL, y: bTop + kb * CELL, dx: dir, dy: 0, hx: dir, run: 0, born: t, turns: 0,
-                    life: Math.floor(Math.random() * 3) }; // life = extra crossings through the tunnel
+        const p = { xb, kb, x: xb * CELL, y: bTop + kb * CELL, dx: dir, dy: 0, hx: dir, run: 0, born: t, turns: 0 };
         p.tx = p.x + p.dx * CELL; p.ty = p.y;
         pacs.push(p);
       }
       function decide(p) {
-        // at a node: choose the next heading (vertical turns only while on screen)
+        // at a node: choose the next heading
         if (p.dy === 0) {
-          if (p.x > 0 && p.x < W && Math.random() < P_TURN) {
+          if (Math.random() < P_TURN) {
             const canUp = p.kb - 1 >= kbMin(), canDown = p.kb + 1 <= kbMax();
             if (canUp || canDown) {
               p.dy = canUp && canDown ? (Math.random() < 0.5 ? -1 : 1) : (canUp ? -1 : 1);
@@ -1071,11 +1072,20 @@
             p.dy = 0; p.dx = Math.random() < 0.22 ? -p.hx : p.hx; p.hx = p.dx; p.turns++;
           }
         }
+        // the side edges are walls: turn back rather than walk out of sight
+        if (p.dx > 0 && p.xb + 1 > xbMax()) { p.dx = -1; p.hx = -1; p.turns++; }
+        if (p.dx < 0 && p.xb - 1 < xbMin()) { p.dx = 1; p.hx = 1; p.turns++; }
         p.tx = p.x + p.dx * CELL; p.ty = p.y + p.dy * CELL;
       }
+      function keepInside(p) {
+        // after a resize the canvas may have shrunk under him
+        const kb = Math.min(Math.max(p.kb, kbMin()), kbMax());
+        const xb = Math.min(Math.max(p.xb, xbMin()), xbMax());
+        if (kb !== p.kb || xb !== p.xb) { p.kb = kb; p.xb = xb; p.x = xb * CELL; p.y = bTop + kb * CELL; p.dy = 0; p.dx = p.hx; p.tx = p.x + p.dx * CELL; p.ty = p.y; }
+      }
       function updatePacs(t, dt) {
-        for (let i = pacs.length - 1; i >= 0; i--) {
-          const p = pacs[i];
+        if (!pacs.length) spawn(t);
+        for (const p of pacs) {
           let step = PAC_SPEED * dt;
           while (step > 0) {
             const rem = Math.abs(p.tx - p.x) + Math.abs(p.ty - p.y);
@@ -1084,20 +1094,6 @@
             eatNode(p.xb, p.kb, t);
             decide(p);
           }
-          const out = p.x > W + CELL * 2.5 || p.x < -CELL * 2.5;
-          if (!out) continue;
-          if (p.life > 0) {
-            // the tunnel: out one side, in through the other, same row, same heading
-            p.life--;
-            p.xb = p.dx > 0 ? -2 : cols() + 2;
-            p.x = p.xb * CELL; p.tx = p.x + p.dx * CELL; p.ty = p.y;
-          } else {
-            pacs.splice(i, 1);
-          }
-        }
-        if (t >= nextSpawn) {
-          if (pacs.length < MAX_PAC) spawn(t);
-          nextSpawn = t + 5 + Math.random() * 8;
         }
       }
       function drawPac(p, t) {
@@ -1120,11 +1116,12 @@
         const el = stopSel && document.querySelector(stopSel);
         if (el) { b0 = 0; b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04); }
         bTop = H * b0; bBot = H * b1;
+        if (!pacs.length) spawn(lastT); else pacs.forEach(keepInside);
       }
       function draw(t, live) {
         if (cv.offsetParent === null) return;
         if (live) {
-          if (!armed) { armed = true; lastT = t; nextSpawn = t + 1 + Math.random() * 1.5; }
+          if (!armed) { armed = true; lastT = t; }
           const dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
           updatePacs(t, dt);
         }
@@ -1149,7 +1146,7 @@
             if (dark) ctx.fillRect(Math.round(x), Math.round(y), CELL, CELL);
           }
         }
-        if (live) for (const p of pacs) drawPac(p, t);
+        for (const p of pacs) drawPac(p, t); // in the static frames too, so a resize never blinks him away
       }
       function loop(ts) { draw(ts / 1000, true); raf = requestAnimationFrame(loop); }
       function start() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); }
