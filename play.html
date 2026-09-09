@@ -31,6 +31,23 @@
     .play-grid .play-card video, .play-grid .play-card iframe, .play-grid .play-video { border-radius: var(--radius); }
     .play-column { gap: 48px; }
     @media (max-width: 768px) { .play-column { gap: 40px; } }
+
+    /* Graffiti wall (2026-09-08): a spray-paint canvas behind the Play hero.
+       The type stays crisp on top; the cursor sprays paint on desktop, and
+       the heading is sprayed in on load with a couple of drips. Mobile and
+       reduced motion get the plain hero. */
+    .page-hero--tight { position: relative; }
+    .page-hero--tight .spray {
+      position: absolute; top: 0; bottom: 0; left: 50%; width: 100%;
+      transform: translateX(-50%); z-index: 0; pointer-events: none; display: block; /* width is set from JS to the viewport's client width (100vw would count the scrollbar and overflow) */
+    }
+    .page-hero--tight .page-title { position: relative; z-index: 1; pointer-events: none; text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45), 0 0 28px rgba(0, 0, 0, 0.4); }
+    @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+      .page-hero--tight .spray {
+        pointer-events: auto;
+        cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'%3E%3Ccircle cx='5' cy='5' r='1.4' fill='%23FF3CB0'/%3E%3Ccircle cx='3' cy='10' r='1.1' fill='%23FF3CB0'/%3E%3Ccircle cx='8' cy='2' r='1.1' fill='%23FF3CB0'/%3E%3Crect x='12' y='3' width='4' height='3.5' rx='0.9' fill='%23f0f0f0' stroke='%230a0a0a' stroke-width='1'/%3E%3Crect x='10.5' y='6.5' width='7' height='4' rx='1' fill='%23f0f0f0' stroke='%230a0a0a' stroke-width='1.1'/%3E%3Crect x='9' y='10.5' width='10' height='15' rx='2.5' fill='%23FFD600' stroke='%230a0a0a' stroke-width='1.2'/%3E%3C/svg%3E") 5 5, crosshair;
+      }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
@@ -61,6 +78,7 @@
 
   <!-- Play Hero -->
   <section class="page-hero page-hero--tight">
+    <canvas class="spray" aria-hidden="true"></canvas>
     <h1 class="page-title">
       <span class="line" style="--d:0"><span class="line-inner">Where I explore new tools, experiment,</span></span>
       <span class="line" style="--d:1"><span class="line-inner">and stretch my range as a generalist.</span></span>
@@ -850,6 +868,127 @@
       if (reduce) return;
       new IntersectionObserver(es => { es[0].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
+  })();
+</script>
+<script>
+  // Graffiti trail: spray paint that follows the cursor's curve on the Play hero and
+  // is gone within a second. The canvas is redrawn from scratch every frame from a
+  // list of particles, each with its own lifetime, so nothing can ever linger: no
+  // residue, no history. A rAF loop runs only while a particle or a drip is alive.
+  // Mouse only; touch scrolls, reduced motion gets nothing.
+  (function () {
+    const hero = document.querySelector('.page-hero--tight');
+    const cv = hero && hero.querySelector('.spray');
+    if (!cv) return;
+    try { localStorage.removeItem('play_graffiti_v1'); } catch (e) {} // an earlier version kept the paint; nothing is kept now
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ctx = cv.getContext('2d');
+    const PALETTE = ['#FF3CB0', '#35E0FF', '#B6FF3C', '#FF7A1A', '#A56BFF', '#FFE03C'];
+    const LIFE = 0.75;        // seconds a sprayed dot lives: a short tail behind the can
+    const ENTRANCE_LIFE = 1.4;
+    const DRIP_LIFE = 1.6;
+    const MAX_PARTS = 16000;
+    let W = 0, H = 0, dpr = 1, color = PALETTE[0], ci = 1;
+    const parts = [], drips = []; let raf = 0;
+    cv._parts = parts; cv._drips = drips; // for probing
+    const rnd = (a, b) => a + Math.random() * (b - a);
+    const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+    const now = () => performance.now() / 1000;
+    function size() {
+      cv.style.width = document.documentElement.clientWidth + 'px';
+      const r = cv.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function wake() { if (!raf) raf = requestAnimationFrame(tick); }
+    function spray(x, y, n, spread, c, alpha, life) {
+      const t = now();
+      for (let i = 0; i < n; i++) {
+        const g1 = gauss(), g2 = gauss();
+        const far = Math.abs(g1) + Math.abs(g2) > 1.15;
+        parts.push({ x: x + g1 * spread, y: y + g2 * spread, r: far ? rnd(0.5, 1.4) : rnd(1.0, 2.6), c, a: (far ? 0.28 : alpha) * rnd(0.6, 1), born: t, life: life || LIFE });
+      }
+      if (parts.length > MAX_PARTS) parts.splice(0, parts.length - MAX_PARTS);
+      wake();
+    }
+    function drip(x, y, c, len) {
+      drips.push({ x, y0: y, y, c, len: len || rnd(40, 110), v: rnd(30, 62), w: rnd(2.2, 3.4), born: now() });
+      wake();
+    }
+    let last = 0;
+    function tick(ts) {
+      const t = ts / 1000, dt = Math.min(0.05, last ? t - last : 0.016); last = t;
+      ctx.clearRect(0, 0, W, H);
+      // dots: fade on a curve, drop when their time is up
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i], k = 1 - (t - p.born) / p.life;
+        if (k <= 0) { parts[i] = parts[parts.length - 1]; parts.pop(); continue; }
+        ctx.globalAlpha = p.a * k * k; ctx.fillStyle = p.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+      }
+      // drips: run, thin, then fade out with the rest
+      ctx.lineCap = 'round';
+      for (let i = drips.length - 1; i >= 0; i--) {
+        const d = drips[i], age = t - d.born, k = 1 - age / DRIP_LIFE;
+        if (k <= 0) { drips.splice(i, 1); continue; }
+        if (d.y - d.y0 < d.len) { d.y = Math.min(d.y0 + d.len, d.y + d.v * dt); d.v *= 0.985; }
+        ctx.globalAlpha = 0.9 * k * k; ctx.strokeStyle = d.c; ctx.fillStyle = d.c;
+        ctx.lineWidth = d.w; ctx.beginPath(); ctx.moveTo(d.x, d.y0); ctx.lineTo(d.x, d.y0 + (d.y - d.y0) * 0.5); ctx.stroke();
+        ctx.lineWidth = d.w * 0.6; ctx.beginPath(); ctx.moveTo(d.x, d.y0 + (d.y - d.y0) * 0.5); ctx.lineTo(d.x, d.y); ctx.stroke();
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.w * 0.6, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      if (parts.length || drips.length) raf = requestAnimationFrame(tick);
+      else { raf = 0; last = 0; ctx.clearRect(0, 0, W, H); }
+    }
+    // a spot that gets saturated runs
+    const mass = new Map(), CELL = 24; let massT = 0;
+    function addMass(x, y, m, c, t) {
+      if (t - massT > 2) { mass.clear(); massT = t; }
+      const k = Math.floor(x / CELL) * 4096 + Math.floor(y / CELL);
+      const v = (mass.get(k) || 0) + m; mass.set(k, v);
+      if (v > 30 && Math.random() < 0.4) { mass.set(k, 6); drip(x + gauss() * 6, y + 6, c); }
+    }
+    size();
+    window.addEventListener('resize', size, { passive: true });
+    if (reduce) return;
+    // entrance: overspray along each line as it lands, two drips off each, then it is gone like the rest
+    const lines = hero.querySelectorAll('.line-inner');
+    function entrance() {
+      const cr = cv.getBoundingClientRect();
+      lines.forEach((el, i) => {
+        setTimeout(() => {
+          const r = el.getBoundingClientRect();
+          const x0 = r.left - cr.left, y0 = r.top - cr.top, w = r.width, h = r.height;
+          const c = PALETTE[(i * 3 + 1) % PALETTE.length];
+          for (let k = 0; k < 110; k++) {
+            const x = x0 + Math.random() * w, y = y0 + h * (Math.random() < 0.5 ? rnd(-0.2, 0.2) : rnd(0.8, 1.2));
+            spray(x, y, 3, 9, c, 0.5, ENTRANCE_LIFE);
+          }
+          for (let k = 0; k < 2; k++) { const x = x0 + w * rnd(0.12, 0.88); spray(x, y0 + h * 0.9, 16, 6, c, 0.85, ENTRANCE_LIFE); drip(x, y0 + h * 0.98, c, rnd(50, 120)); }
+        }, 300 + i * 120 + 560);
+      });
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(entrance); else entrance();
+    // the cursor is a can
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    let lx = null, ly = null, lt = 0;
+    cv.addEventListener('pointerenter', () => { color = PALETTE[ci++ % PALETTE.length]; lx = ly = null; });
+    cv.addEventListener('pointermove', e => {
+      if (e.pointerType !== 'mouse') return;
+      const r = cv.getBoundingClientRect(); const x = e.clientX - r.left, y = e.clientY - r.top;
+      const tnow = performance.now();
+      if (lx !== null && tnow - lt > 900) { color = PALETTE[ci++ % PALETTE.length]; lx = null; } // a pause picks up a new can
+      const dist = lx === null ? 0 : Math.hypot(x - lx, y - ly);
+      const steps = Math.max(1, Math.min(14, Math.round(dist / 5)));
+      for (let k = 1; k <= steps; k++) {
+        const px = lx === null ? x : lx + (x - lx) * k / steps, py = ly === null ? y : ly + (y - ly) * k / steps;
+        spray(px, py, 8, 12, color, 0.72); addMass(px, py, 1.1, color, tnow / 1000);
+      }
+      lx = x; ly = y; lt = tnow;
+    }, { passive: true });
   })();
 </script>
 </body>
