@@ -1070,12 +1070,15 @@
       const r = cv.getBoundingClientRect();
       for (const g of glyphs) { const b = g.el.getBoundingClientRect(); g.cx = b.left + b.width / 2 - r.left; g.cy = b.top + b.height / 2 - r.top; g.w = b.width; g.h = b.height; }
     }
+    // the glyph never moves and never gets a filter (a filter promotes it to its own layer
+    // and changes its antialiasing, which reads as a twitch): only its colour steps toward
+    // white and a halo grows around it
     function paintGlyph(g) {
       const I = g.I, st = g.el.style;
-      if (I <= 0) { st.filter = ''; st.textShadow = ''; st.transform = ''; return; }
-      st.filter = 'brightness(' + (1 + 0.22 * I).toFixed(3) + ')';
-      st.textShadow = '0 0 ' + (6 + 22 * I).toFixed(1) + 'px rgba(255, 255, 255, ' + (0.62 * I).toFixed(3) + '), 0 0 2px rgba(255, 255, 255, ' + (0.45 * I).toFixed(3) + '), 0 1px 2px rgba(0, 0, 0, ' + (0.45 * (1 - I)).toFixed(3) + ')';
-      st.transform = 'translateY(' + (-2.6 * I).toFixed(2) + 'px)';
+      if (I <= 0) { st.color = ''; st.textShadow = ''; return; }
+      const v = Math.round(240 + 15 * I);
+      st.color = 'rgb(' + v + ', ' + v + ', ' + v + ')';
+      st.textShadow = '0 0 ' + (6 + 22 * I).toFixed(1) + 'px rgba(255, 255, 255, ' + (0.66 * I).toFixed(3) + '), 0 0 2px rgba(255, 255, 255, ' + (0.45 * I).toFixed(3) + '), 0 1px 2px rgba(0, 0, 0, ' + (0.45 * (1 - I)).toFixed(3) + ')';
     }
     function shedGlyph(g, prev) {
       if (Math.random() > 0.7) return; // not every glyph, or a pass over the line is a cloud
