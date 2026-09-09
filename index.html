@@ -1764,153 +1764,164 @@
 </script>
 
 <script>
-  // Pixel dissolve — twinkling square mask over the static gradient edge (footer top),
-  // and the Pac-Man that eats it (2026-09-08): one, permanent, always in sight. He walks
-  // the band's own grid like a maze, node to node, turning up or down between rows and
-  // back again, mouth facing the way it goes, and turns back at the side edges rather
-  // than leaving; the light squares along his path are held dark for a while, then the
-  // twinkle has them back. Drawn inside the same loop, so it costs nothing extra and
-  // pauses with it when the footer is off-screen or under reduced motion.
+  // Footer stardust (2026-09-09): the dawn glow sheds its dust upward. Embers ignite along
+  // the light's faint upper edge, just above "Say hello", with a small flare, rise into
+  // the dark and thin out, cooling from the glow's own amber and coral toward lilac and
+  // ice as they climb, and the emission follows the glow's scroll reveal, so the dust
+  // rises as the light does. Every ten to twenty seconds one shooting star crosses the
+  // band, never over the text. Different from the hero's dust by design: that is weather
+  // with no source; this has one. It replaces the pixel dissolve and its Pac-Man (both
+  // retired 2026-09-09 per user). Time only runs while the footer is on screen, so a
+  // return never finds the field dead; reduced motion gets one still frame.
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const CELL = 20;
-    const hash = (x, y) => { const n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return n - Math.floor(n); };
-    const smooth = t => t * t * (3 - 2 * t);
     document.querySelectorAll('.px-dissolve').forEach(cv => {
       if (getComputedStyle(cv).display === 'none') return;
       const parent = cv.parentElement;
-      const edge = cv.dataset.edge || 'bottom';
       const stopSel = cv.dataset.stop || '';
       const ctx = cv.getContext('2d');
-      let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0;
-      // Pac-Man lives on the grid's corner points (node = a column boundary xb and a
-      // row boundary kb); a two-cell corridor is eaten around every node reached.
-      // kbMin/kbMax keep the walk in the lower half of the band, where the light is;
-      // xbMin/xbMax keep him fully inside the canvas.
-      const PAC_R = 17, PAC_SPEED = 115, EAT_HOLD = 9, PAC_COLOR = '#FFD600';
-      const P_TURN = 0.28; // chance to turn vertical at a node while running horizontally
-      const pacs = [], eaten = new Map();
-      let lastT = 0, armed = false;
-      cv._pacs = pacs;
-      const key = (row, col) => row * 8192 + col;
-      const rows = () => Math.floor((bBot - bTop) / CELL);
-      const kbMin = () => Math.max(1, Math.ceil(rows() * 0.5)); // lower half only: the top of the band is already dark
-      const kbMax = () => rows() - 1;
-      const xbMin = () => Math.ceil(PAC_R / CELL);
-      const xbMax = () => Math.floor((W - PAC_R) / CELL);
-      function eatNode(xb, kb, t) {
-        for (let r = kb - 1; r <= kb; r++) for (let c = xb - 1; c <= xb; c++) eaten.set(key(r, c), t + EAT_HOLD);
+      const WARM = [[255, 190, 35], [255, 104, 48], [140, 70, 255]]; // gold, coral, violet at birth
+      const WARM_P = [0.5, 0.82];                                    // their shares
+      const COOL = [150, 200, 255];                                  // what they cool toward
+      const RATE = 12.5 / 1327;      // motes per second per px of width: about 70 alive on a laptop, 20 on a phone
+      const LIFE = [3.6, 6.0], RISE = [22, 38], MAX = 220;
+      const SHAPE_POINT = 0.55, SHAPE_BOKEH = 0.3; // the rest sparks
+      const METEOR = [10, 20];       // seconds between shooting stars
+      let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0, last = 0, T = 0, acc = 0, seeded = false, nextMeteor = 0;
+      const motes = [], meteors = [];
+      cv._parts = motes; // for probing
+      const rnd = (a, b) => a + Math.random() * (b - a);
+      const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+      const mix = (a, b, k) => [Math.round(a[0] + (b[0] - a[0]) * k), Math.round(a[1] + (b[1] - a[1]) * k), Math.round(a[2] + (b[2] - a[2]) * k)];
+      const lift = (c, L) => mix(c, [255, 255, 255], L);
+      // the glow's own reveal, the same measure the scroll script drives its height with
+      function progress() { const r = parent.getBoundingClientRect(); return Math.min(1, Math.max(0, window.innerHeight - r.top) / r.height); }
+      function born(age0) {
+        const u = Math.random();
+        const shape = u < SHAPE_POINT ? 0 : u < SHAPE_POINT + SHAPE_BOKEH ? 1 : 2;
+        const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
+        const span = bBot - bTop;
+        const m = {
+          x: rnd(-30, W + 30),
+          y: bBot - span * 0.32 * Math.random() * Math.random() + rnd(-4, 8), // dense at the edge, thinning above it
+          shape, c0: lift(warm, 0.2), c1: lift(COOL, 0.45),
+          r: shape === 1 ? rnd(5, 11) : rnd(1.2, 2.3),
+          b: rnd(0.5, 1), vx: gauss() * 6, vy: gauss() * 4,
+          rise: rnd(RISE[0], RISE[1]) * (shape === 1 ? 0.6 : 1),
+          flare: age0 ? 0 : 1, // seeded motes are already old; everything else ignites
+          ray: rnd(5, 9), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
+          born: T - (age0 || 0), life: rnd(LIFE[0], LIFE[1]) * (shape === 1 ? 1.3 : 1),
+        };
+        if (age0) { m.y -= m.rise * age0; m.x += m.vx * age0; }
+        motes.push(m);
+        if (motes.length > MAX) motes.splice(0, motes.length - MAX);
       }
-      function spawn(t) {
-        if (rows() < 4 || W < 200 || pacs.length) return;
-        const kb = kbMin() + Math.floor(Math.random() * Math.max(1, kbMax() - kbMin() + 1));
-        const xb = xbMin() + Math.floor(Math.random() * Math.max(1, xbMax() - xbMin() + 1));
+      function env(u) { return u < 0.02 ? u / 0.02 : u < 0.5 ? 1 : Math.pow(1 - (u - 0.5) / 0.5, 1.3); }
+      function drawMote(m, c, a, r) {
+        const col = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+        if (m.shape === 1) {
+          const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, r);
+          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.22 * a).toFixed(3)})`);
+          g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill();
+          return;
+        }
+        // a bright hard centre with a fast falloff: reads as an ember, not a bubble
+        const gr = r * 2.8;
+        const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, gr);
+        g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.55 * a).toFixed(3)})`);
+        g.addColorStop(0.35, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.16 * a).toFixed(3)})`);
+        g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, gr, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = a; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+        if (m.shape === 2) {
+          // four thin rays that breathe, brightest at the centre, on the base radius
+          const L = m.r * m.ray * (1 + 0.25 * Math.sin(T * 2.86 + m.ph));
+          ctx.lineWidth = 1; ctx.lineCap = 'round';
+          for (let k = 0; k < 4; k++) {
+            const ang = m.rot + k * Math.PI / 2, ex = m.x + Math.cos(ang) * L, ey = m.y + Math.sin(ang) * L;
+            const lg = ctx.createLinearGradient(m.x, m.y, ex, ey);
+            lg.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.9 * a).toFixed(3)})`);
+            lg.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+            ctx.strokeStyle = lg; ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(ex, ey); ctx.stroke();
+          }
+        }
+      }
+      // one shooting star: a bright head with a fading streak, across the band, never over the text
+      function shoot() {
+        const span = bBot - bTop, len = Math.min(520, Math.max(220, W * 0.36));
         const dir = Math.random() < 0.5 ? 1 : -1;
-        const p = { xb, kb, x: xb * CELL, y: bTop + kb * CELL, dx: dir, dy: 0, hx: dir, run: 0, born: t, turns: 0 };
-        p.tx = p.x + p.dx * CELL; p.ty = p.y;
-        pacs.push(p);
+        const y0 = bTop + span * rnd(0.1, 0.4), y1 = Math.min(bTop + span * 0.9, y0 + span * rnd(0.12, 0.55));
+        const x0 = dir > 0 ? rnd(-20, W - len - 20) : rnd(len + 20, W + 20);
+        const life = rnd(0.38, 0.52);
+        meteors.push({ x: x0, y: y0, vx: dir * len / life, vy: (y1 - y0) / life, born: T, life, tail: rnd(90, 140) });
       }
-      function decide(p) {
-        // at a node: choose the next heading
-        if (p.dy === 0) {
-          if (Math.random() < P_TURN) {
-            const canUp = p.kb - 1 >= kbMin(), canDown = p.kb + 1 <= kbMax();
-            if (canUp || canDown) {
-              p.dy = canUp && canDown ? (Math.random() < 0.5 ? -1 : 1) : (canUp ? -1 : 1);
-              p.dx = 0; p.run = 1 + Math.floor(Math.random() * 3); p.turns++;
-            }
-          }
-        } else {
-          p.run--;
-          const blocked = p.dy < 0 ? p.kb - 1 < kbMin() : p.kb + 1 > kbMax();
-          if (p.run <= 0 || blocked) {
-            p.dy = 0; p.dx = Math.random() < 0.22 ? -p.hx : p.hx; p.hx = p.dx; p.turns++;
-          }
-        }
-        // the side edges are walls: turn back rather than walk out of sight
-        if (p.dx > 0 && p.xb + 1 > xbMax()) { p.dx = -1; p.hx = -1; p.turns++; }
-        if (p.dx < 0 && p.xb - 1 < xbMin()) { p.dx = 1; p.hx = 1; p.turns++; }
-        p.tx = p.x + p.dx * CELL; p.ty = p.y + p.dy * CELL;
-      }
-      function keepInside(p) {
-        // after a resize the canvas may have shrunk under him
-        const kb = Math.min(Math.max(p.kb, kbMin()), kbMax());
-        const xb = Math.min(Math.max(p.xb, xbMin()), xbMax());
-        if (kb !== p.kb || xb !== p.xb) { p.kb = kb; p.xb = xb; p.x = xb * CELL; p.y = bTop + kb * CELL; p.dy = 0; p.dx = p.hx; p.tx = p.x + p.dx * CELL; p.ty = p.y; }
-      }
-      function updatePacs(t, dt) {
-        if (!pacs.length) spawn(t);
-        for (const p of pacs) {
-          let step = PAC_SPEED * dt;
-          while (step > 0) {
-            const rem = Math.abs(p.tx - p.x) + Math.abs(p.ty - p.y);
-            if (step < rem) { p.x += p.dx * step; p.y += p.dy * step; step = 0; break; }
-            step -= rem; p.x = p.tx; p.y = p.ty; p.xb += p.dx; p.kb += p.dy;
-            eatNode(p.xb, p.kb, t);
-            decide(p);
-          }
+      cv._shoot = shoot; // for probing
+      function drawMeteors() {
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const s = meteors[i], u = (T - s.born) / s.life;
+          if (u >= 1) { meteors.splice(i, 1); continue; }
+          const a = u < 0.15 ? u / 0.15 : Math.pow(1 - (u - 0.15) / 0.85, 1.2);
+          const hx = s.x + s.vx * (T - s.born), hy = s.y + s.vy * (T - s.born);
+          const sp = Math.hypot(s.vx, s.vy), tx = hx - s.vx / sp * s.tail, ty = hy - s.vy / sp * s.tail;
+          const lg = ctx.createLinearGradient(hx, hy, tx, ty);
+          lg.addColorStop(0, `rgba(255, 240, 210, ${(0.9 * a).toFixed(3)})`);
+          lg.addColorStop(1, 'rgba(255, 240, 210, 0)');
+          ctx.strokeStyle = lg; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+          const g = ctx.createRadialGradient(hx, hy, 0, hx, hy, 7);
+          g.addColorStop(0, `rgba(255, 244, 220, ${(0.8 * a).toFixed(3)})`);
+          g.addColorStop(1, 'rgba(255, 244, 220, 0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, 7, 0, Math.PI * 2); ctx.fill();
         }
       }
-      function drawPac(p, t) {
-        const m = 0.06 + Math.abs(Math.sin((t - p.born) * 9)) * 0.62; // mouth half-angle
-        const th = Math.atan2(p.dy, p.dx);
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, PAC_R, th + m, th - m + Math.PI * 2);
-        ctx.lineTo(p.x, p.y);
-        ctx.closePath();
-        ctx.fillStyle = PAC_COLOR;
-        ctx.fill();
+      function draw(dt) {
+        if (cv.offsetParent === null) return;
+        T += dt;
+        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
+        if (dt) {
+          const p = progress();
+          acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
+          if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
+        }
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        const span = bBot - bTop;
+        for (let i = motes.length - 1; i >= 0; i--) {
+          const m = motes[i];
+          const age = T - m.born, u = age / m.life;
+          if (u >= 1) { motes[i] = motes[motes.length - 1]; motes.pop(); continue; }
+          if (dt) {
+            m.vx = m.vx * 0.985 + gauss() * 1.0; m.vy = m.vy * 0.985 + gauss() * 1.0;
+            m.x += m.vx * dt; m.y += (m.vy - m.rise) * dt;
+          }
+          const h = Math.min(1, Math.max(0, (bBot - m.y) / span));      // height above the light's edge, 0 to 1
+          const fl = m.flare ? Math.exp(-Math.max(0, age) / 0.12) : 0;   // the ignition
+          const a = Math.min(1, m.b * env(Math.max(0, u)) * (1 - 0.55 * h * h) * (1 + 0.9 * fl)); // thinner the higher it climbs
+          if (a <= 0.003) continue;
+          drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl)); // and cooler
+        }
+        drawMeteors();
+        ctx.globalCompositeOperation = 'source-over';
       }
       function layout() {
         const dpr = Math.min(2, window.devicePixelRatio || 1);
         W = parent.clientWidth; H = parent.clientHeight;
         cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        let b0 = 0, b1 = 0.34;
-        if (cv.dataset.band) { const p = cv.dataset.band.split(',').map(Number); b0 = p[0]; b1 = p[1]; }
+        let b1 = 0.34;
         const el = stopSel && document.querySelector(stopSel);
-        if (el) { b0 = 0; b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04); }
-        bTop = H * b0; bBot = H * b1;
-        if (!pacs.length) spawn(lastT); else pacs.forEach(keepInside);
+        if (el) b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04);
+        bTop = 0; bBot = H * b1;
       }
-      function draw(t, live) {
-        if (cv.offsetParent === null) return;
-        if (live) {
-          if (!armed) { armed = true; lastT = t; }
-          const dt = Math.min(0.05, Math.max(0, t - lastT)); lastT = t;
-          updatePacs(t, dt);
-        }
-        ctx.clearRect(0, 0, W, H);
-        ctx.fillStyle = '#0a0a0a';
-        const span = bBot - bTop;
-        let row = 0;
-        for (let y = bTop; y < bBot; y += CELL, row++) {
-          let vy = (y - bTop) / span;
-          if (edge === 'top') vy = 1 - vy;
-          const gap = smooth(vy);
-          const amp = reduce ? 0 : 0.16 * 4 * vy * (1 - vy);
-          let xi = 0;
-          for (let x = 0; x < W; x += CELL, xi++) {
-            const ph = hash(x, y) * 6.283;
-            const rank = hash(x * 1.3 + 5, y * 0.7 + 9);
-            let dark = rank < gap + amp * Math.sin(t * 1.3 + ph);
-            if (!dark && eaten.size) {
-              const until = eaten.get(key(row, xi));
-              if (until !== undefined) { if (until > t) dark = true; else eaten.delete(key(row, xi)); }
-            }
-            if (dark) ctx.fillRect(Math.round(x), Math.round(y), CELL, CELL);
-          }
-        }
-        for (const p of pacs) drawPac(p, t); // in the static frames too, so a resize never blinks him away
-      }
-      function loop(ts) { draw(ts / 1000, true); raf = requestAnimationFrame(loop); }
-      function start() { if (running || reduce) return; running = true; raf = requestAnimationFrame(loop); }
+      function loop(ts) { const t = ts / 1000; const dt = last ? Math.min(0.05, Math.max(0, t - last)) : 0.016; last = t; draw(dt); raf = requestAnimationFrame(loop); }
+      function start() { if (running || reduce) return; running = true; last = 0; raf = requestAnimationFrame(loop); }
       function stop() { running = false; cancelAnimationFrame(raf); }
       layout();
-      draw(0, false);
-      window.addEventListener('resize', () => { layout(); draw(lastT, false); }, { passive: true });
+      draw(0);
+      window.addEventListener('resize', () => { layout(); draw(0); }, { passive: true });
       if (reduce) return;
-      new IntersectionObserver(es => { es[0].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
+      new IntersectionObserver(es => { es[es.length - 1].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
   })();
 </script>
