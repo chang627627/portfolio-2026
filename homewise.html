@@ -1087,10 +1087,11 @@
 
 <script>
   // Pixel dissolve — twinkling square mask over the static gradient edge (footer top),
-  // and the Pac-Men that eat it (2026-09-08): each one walks the band's own grid like a
-  // maze, node to node, turning up or down between rows and back again, mouth facing
-  // the way it goes; the light squares along its path are held dark for a while, then
-  // the twinkle has them back. Drawn inside the same loop, so it costs nothing extra and
+  // and the Pac-Man that eats it (2026-09-08): one at a time, walking the band's own grid
+  // like a maze, node to node, turning up or down between rows and back again, mouth
+  // facing the way it goes; the light squares along its path are held dark for a while,
+  // then the twinkle has them back. The side edges are a tunnel: leave one side, come
+  // back through the other. Drawn inside the same loop, so it costs nothing extra and
   // stops with it when the footer is off-screen or under reduced motion.
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1104,18 +1105,18 @@
       const stopSel = cv.dataset.stop || '';
       const ctx = cv.getContext('2d');
       let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0;
-      // Pac-Men. Positions live on the grid's corner points (node = a column
-      // boundary xb and a row boundary kb); a two-cell-wide corridor is eaten
-      // around every node reached. rows(), kbMin/kbMax keep the walk inside the
-      // lower part of the band, where the light squares are.
-      const PAC_R = 17, PAC_SPEED = 115, EAT_HOLD = 9, MAX_PAC = 2, PAC_COLOR = '#FFD600';
+      // Pac-Man lives on the grid's corner points (node = a column boundary xb and a
+      // row boundary kb); a two-cell corridor is eaten around every node reached.
+      // kbMin/kbMax keep the walk in the lower half of the band, where the light is.
+      const PAC_R = 17, PAC_SPEED = 115, EAT_HOLD = 9, MAX_PAC = 1, PAC_COLOR = '#FFD600';
       const P_TURN = 0.28; // chance to turn vertical at a node while running horizontally
       const pacs = [], eaten = new Map();
       let nextSpawn = 0, lastT = 0, armed = false;
       cv._pacs = pacs;
       const key = (row, col) => row * 8192 + col;
       const rows = () => Math.floor((bBot - bTop) / CELL);
-      const kbMin = () => Math.max(1, Math.floor(rows() * 0.35));
+      const cols = () => Math.ceil(W / CELL);
+      const kbMin = () => Math.max(1, Math.ceil(rows() * 0.5)); // lower half only: the top of the band is already dark
       const kbMax = () => rows() - 1;
       function eatNode(xb, kb, t) {
         for (let r = kb - 1; r <= kb; r++) for (let c = xb - 1; c <= xb; c++) eaten.set(key(r, c), t + EAT_HOLD);
@@ -1123,17 +1124,17 @@
       function spawn(t) {
         if (rows() < 4 || W < 200) return;
         const kb = kbMin() + Math.floor(Math.random() * Math.max(1, kbMax() - kbMin() + 1));
-        const cols = Math.ceil(W / CELL);
         const dir = Math.random() < 0.5 ? 1 : -1;
-        const xb = dir > 0 ? -2 : cols + 2;
-        const p = { xb, kb, x: xb * CELL, y: bTop + kb * CELL, dx: dir, dy: 0, hx: dir, run: 0, born: t, turns: 0 };
+        const xb = dir > 0 ? -2 : cols() + 2;
+        const p = { xb, kb, x: xb * CELL, y: bTop + kb * CELL, dx: dir, dy: 0, hx: dir, run: 0, born: t, turns: 0,
+                    life: Math.floor(Math.random() * 3) }; // life = extra crossings through the tunnel
         p.tx = p.x + p.dx * CELL; p.ty = p.y;
         pacs.push(p);
       }
       function decide(p) {
-        // at a node: choose the next heading
+        // at a node: choose the next heading (vertical turns only while on screen)
         if (p.dy === 0) {
-          if (Math.random() < P_TURN) {
+          if (p.x > 0 && p.x < W && Math.random() < P_TURN) {
             const canUp = p.kb - 1 >= kbMin(), canDown = p.kb + 1 <= kbMax();
             if (canUp || canDown) {
               p.dy = canUp && canDown ? (Math.random() < 0.5 ? -1 : 1) : (canUp ? -1 : 1);
@@ -1160,7 +1161,16 @@
             eatNode(p.xb, p.kb, t);
             decide(p);
           }
-          if (p.x > W + CELL * 2.5 || p.x < -CELL * 2.5) pacs.splice(i, 1);
+          const out = p.x > W + CELL * 2.5 || p.x < -CELL * 2.5;
+          if (!out) continue;
+          if (p.life > 0) {
+            // the tunnel: out one side, in through the other, same row, same heading
+            p.life--;
+            p.xb = p.dx > 0 ? -2 : cols() + 2;
+            p.x = p.xb * CELL; p.tx = p.x + p.dx * CELL; p.ty = p.y;
+          } else {
+            pacs.splice(i, 1);
+          }
         }
         if (t >= nextSpawn) {
           if (pacs.length < MAX_PAC) spawn(t);
