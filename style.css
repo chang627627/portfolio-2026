@@ -2677,6 +2677,11 @@ footer {
 /* Iteration strip: compressed before/after layout */
 .iteration-strip {
   max-width: var(--max-width);
+  /* width:100% is load-bearing (2026-09-09): the strip sits in a flex column
+     that centres its children, so without it the grid shrink-wraps to its
+     captions' text width before the lazy images arrive (448px tracks instead
+     of 464px), then jumps when they load. */
+  width: 100%;
   margin: 32px auto 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -2981,6 +2986,15 @@ footer {
 
 .project-img-full {
   width: 100%;
+  /* Case-study images now carry width/height attributes so the browser reserves
+     their box before the lazy file arrives (2026-09-09). height:auto is what
+     makes the attributes an aspect ratio instead of a fixed pixel height; without
+     it a 1920x1080 file would render 960px wide and 1080px tall. */
+  height: auto;
+}
+
+.case-cover {
+  height: auto; /* same reason; the cover carries attributes too */
 }
 
 /* Case-study cover image: contained + rounded, inset to match content padding on mobile.
