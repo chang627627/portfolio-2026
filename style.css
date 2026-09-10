@@ -5180,3 +5180,107 @@ body {
     gap: 24px;
   }
 }
+
+/* Case-study chain (2026-09-09): Previous / Next at the end of every case study, in
+   home-grid order and only between the six internal case studies (external cards are
+   never in the chain). No preview: the words are the interaction, in the site's own
+   link grammar. On hover a 1px line draws under the title over --dur-base/--ease-out,
+   the footer / Play / nav underline recipe verbatim, TOWARD the arrow: Next from the
+   left, Previous from the right; the arrow nudges its way and the label lifts. The
+   text never moves. Pure CSS; phones get the plain links. */
+.case-nav {
+  width: 100%;
+  margin-top: 120px;
+  padding-top: 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 32px;
+}
+
+.case-nav-link {
+  display: block;
+  justify-self: start;
+  min-width: 0;
+  padding: 12px 0;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.case-nav-link--next {
+  justify-self: end;
+  text-align: right;
+}
+
+.case-nav-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.case-nav-arrow {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+.case-nav-title {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 6px;
+  font-size: 28px;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.case-nav-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--text);
+  transition: width var(--dur-base) var(--ease-out);
+}
+
+.case-nav-link--prev .case-nav-title::after {
+  left: auto;
+  right: 0;
+}
+
+.case-nav-link:hover .case-nav-title::after,
+.case-nav-link:focus-visible .case-nav-title::after {
+  width: 100%;
+}
+
+.case-nav-link:hover .case-nav-title,
+.case-nav-link:focus-visible .case-nav-title {
+  color: #fff;
+}
+
+.case-nav-link:hover .case-nav-label,
+.case-nav-link:focus-visible .case-nav-label {
+  color: var(--text-soft);
+}
+
+@media (hover: hover) {
+  .case-nav-link--prev:hover .case-nav-arrow { transform: translateX(-4px); }
+  .case-nav-link--next:hover .case-nav-arrow { transform: translateX(4px); }
+}
+
+@media (max-width: 768px) {
+  .case-nav {
+    grid-template-columns: 1fr;
+    gap: 4px;
+    margin-top: 80px;
+    padding-top: 32px;
+  }
+  .case-nav-link--next { justify-self: start; text-align: left; }
+  .case-nav-title { font-size: 22px; }
+}
