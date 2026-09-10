@@ -5187,7 +5187,7 @@ body {
    each title is glyph spans in the markup (--i counts up, --r counts down) and on hover
    the letters step to white with the home headline's halo one after another TOWARD the
    arrow, Next left to right and Previous right to left, then all let go together.
-   TELL: the destination's own card line sits under the title with its room reserved,
+   TELL: the destination's full card description sits under the title, two rows, its room reserved,
    invisible at rest, and wipes in from the arrow's side a beat after the light. The
    text never moves. Pure CSS; phones show the line at rest since they cannot hover. */
 .case-nav {
@@ -5205,7 +5205,7 @@ body {
   display: block;
   justify-self: start;
   min-width: 0;
-  max-width: 440px;
+  max-width: 460px;
   padding: 12px 0;
   color: var(--text);
   text-decoration: none;
