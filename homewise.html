@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=255">
+  <link rel="stylesheet" href="style.css?v=256">
   <link rel="canonical" href="https://www.chang-mou.com/homewise.html">
   <script type="application/ld+json">
   {
@@ -128,6 +128,56 @@
         min-width: 900px;
       }
     }
+
+    /* Solution stages as screens (2026-09-09, portfolio-audit priority fix 1).
+       A 2x2 of whole-screen stills under the Solution prose; spacing mirrors the
+       compare-table it replaced (32px after prose, 96px to the next section). */
+    .hw-stages {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 24px;
+      margin-top: 32px;
+    }
+    .hw-stages + .project-section {
+      margin-top: 96px;
+    }
+    .hw-stage {
+      margin: 0;
+    }
+    .hw-stage img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius);
+      outline: 1px solid rgba(255, 255, 255, 0.08);
+      outline-offset: -1px;
+      cursor: zoom-in;
+    }
+    .hw-stage figcaption {
+      margin-top: 14px;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+    .hw-stage figcaption strong {
+      display: block;
+      font-weight: 400;
+      font-size: 16px;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    /* The tradeoff evidence crops are 462px wide with ~7px UI text; they open in
+       the shared lightbox (markup + script at the end of the page), so the
+       zoom cursor is the affordance. */
+    .hw-trade-shot img {
+      cursor: zoom-in;
+    }
+    @media (max-width: 768px) {
+      .hw-stages {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -162,9 +212,9 @@
     <a href="#insight" class="side-nav-link">Insight</a>
     <a href="#complexity" class="side-nav-link">Why this is hard</a>
     <a href="#solution" class="side-nav-link">Solution</a>
-    <a href="#process" class="side-nav-link">Process</a>
     <a href="#final-design" class="side-nav-link">Final Design</a>
     <a href="#system" class="side-nav-link">Design System</a>
+    <a href="#process" class="side-nav-link">Process</a>
     <a href="#collaboration" class="side-nav-link">Collaboration</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
     <a href="#v2" class="side-nav-link">One more thing</a>
@@ -289,32 +339,192 @@
     </div>
 
 
-    <table class="compare-table">
-      <thead>
-        <tr>
-          <th style="width: 160px;">Stage</th>
-          <th>Why the stage exists</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>1. Scope</td>
-          <td style="color: var(--text-muted);">You do not know the right words, so the agent writes them with you.</td>
-        </tr>
-        <tr>
-          <td>2. Match</td>
-          <td style="color: var(--text-muted);">You cannot vet a stranger yourself, so the agent checks licenses, insurance, and permits.</td>
-        </tr>
-        <tr>
-          <td>3. Compare</td>
-          <td style="color: var(--text-muted);">Different scopes cannot be compared, so every bid answers the same one.</td>
-        </tr>
-        <tr>
-          <td>4. Track</td>
-          <td style="color: var(--text-muted);">Jobs slip back into scattered calls, so the whole job stays in one place.</td>
-        </tr>
-      </tbody>
-    </table>
+    <!-- Solution stages as screens (2026-09-09, portfolio-audit priority fix 1):
+         the four stage rows carry their own screen, so the reader meets the
+         interface where it is first named instead of ~1,700px later at the
+         first clip. The stills are the deck's chrome-free captures
+         (images/homewise-still-*.jpg), WHOLE screens per the whole-interface
+         rule, never crops; each opens in the lightbox. Scope shows the scope
+         document rather than the intake chat because the document is the
+         product's central artifact and reads as a screen at this size. -->
+    <div class="hw-stages">
+      <figure class="hw-stage">
+        <img src="images/homewise-still-send.jpg" alt="The scope of work document: Kitchen sink, P-trap leak and faucet cartridge replacement, marked Ready to send" width="1920" height="1204" loading="lazy" decoding="async">
+        <figcaption><strong>1. Scope</strong>You do not know the right words, so the agent writes them with you.</figcaption>
+      </figure>
+      <figure class="hw-stage">
+        <img src="images/homewise-still-match.jpg" alt="Three contractors side by side: license, insurance, permit history and Homewiser recommendations, with one insurance flagged" width="1920" height="1204" loading="lazy" decoding="async">
+        <figcaption><strong>2. Match</strong>You cannot vet a stranger yourself, so the agent checks licenses, insurance, and permits.</figcaption>
+      </figure>
+      <figure class="hw-stage">
+        <img src="images/homewise-still-compare.jpg" alt="Three quotes on one normalized scope, with a plain language summary and outlier flags" width="1920" height="1204" loading="lazy" decoding="async">
+        <figcaption><strong>3. Compare</strong>Different scopes cannot be compared, so every bid answers the same one.</figcaption>
+      </figure>
+      <figure class="hw-stage">
+        <img src="images/homewise-still-track.jpg" alt="The home overview: one job in motion, scheduled with Jason, above the home's watchlist" width="1920" height="1204" loading="lazy" decoding="async">
+        <figcaption><strong>4. Track</strong>Jobs slip back into scattered calls, so the whole job stays in one place.</figcaption>
+      </figure>
+    </div>
+
+    <!-- Final Design -->
+    <div id="final-design" class="project-section">
+      <p class="section-label">Final Design</p>
+      <h2>Define the scope, in plain language</h2>
+      <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, the most important artifact in the whole product.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-scope.mp4" poster="images/homewise-scope-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-intake-old.jpg" alt="The old intake, three shots requested and a one-click upload that accepted anything"></div>
+          <p>The first intake could not say no. It asked for three shots, one click flipped to "Photos uploaded", and the conversation moved on with no photo ever checked. Nothing pushed back, and it felt fake.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-intake-new.jpg" alt="The shipped intake, the agent rejecting a photo it cannot read with advice for the retake"></div>
+          <p>I rebuilt the intake to push back: the shipped chat is built to check the photo in front of you, a shot the agent cannot read gets rejected with advice for the retake, and the conversation moves only once it has what it needs. An agent that can say no is one you can believe.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>One scope, every contractor</h4>
+      <p>The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job. That only works if you believe the scope you are sending, which is where the first version failed.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-contractors.mp4" poster="images/homewise-contractors-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-scope-old.jpg" alt="The old diagnosis card, leading with 92% confidence and a one line source"></div>
+          <p>The scope's diagnosis led with "92% confidence". Three of four testers asked what the number was based on, and every attempt to explain it, a one line source, then a step by step trail, just added chrome.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-scope-new.jpg" alt="The shipped diagnosis card, Most likely cause with the photos it read"></div>
+          <p>I replaced the score with "Most likely cause", and the diagnosis with a local price benchmark does the trust work the number was not doing. A claim that can explain itself beats one that only sounds precise.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>A match you can trust, not a list to sort</h4>
+      <p>Homewise surfaces a verified, fairly priced match with its reasoning: verification on license, insurance, and real permit history, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating. Ratings can be gamed. Permit records cannot.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-match.mp4" poster="images/homewise-match-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-send-old.jpg" alt="The old page, reject, reroll and approve buttons sitting above the evidence"></div>
+          <p>The actions sat at the top of the page: reject all three, show three different, approve and send. It asked for a commitment before you had read a single row, and the swap icon on every column was decorative, wired to nothing.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-send-new.jpg" alt="The shipped page, the Ready to proceed dock sitting below the evidence"></div>
+          <p>I moved Approve below the evidence into a "Ready to proceed" dock, so the decision comes after the read. Any column swaps for its next best match in one click, and an urgent job pulls bids back in 24 hours instead of five days. The page never asks for a yes it has not earned.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>Compare apples to apples, then you sign off</h4>
+      <p>Bids line up side by side with a plain language summary and outlier flags, the comparison homeowners reach for ChatGPT to fake today. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-compare.mp4" poster="images/homewise-compare-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-compare-old.jpg" alt="The old approve section, contact hidden as a small link below the Approve button"></div>
+          <p>The first version topped the matrix with a "3 deviations flagged" headline and tucked contact under Approve as a small ghost link. The count didn't match the matrix, and four of four testers wanted the call first.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-compare-new.jpg" alt="The shipped page, Ask before booking sitting above the approve section"></div>
+          <p>I dropped the count and moved the flags into the cells they describe, and the summary names them: the $75 fee, the missing warranty language. "Ask before booking" became a full button above Approve, so the page reads ask first, then approve.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>One place, from booking to done</h4>
+      <p>Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
+    </div>
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-track.mp4" poster="images/homewise-track-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-trade">
+      <p class="hw-trade-k">The tradeoff</p>
+      <div class="hw-trade-cols">
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-thread-old.jpg" alt="The old thread after the work was done, still marked Live and awaiting approval"></div>
+          <p>The job's thread did not know when the job ended. With the work complete it still read "Live thread", the status still said awaiting your approval, and the suggested next step was still to approve Jason. The story stopped mid sentence.</p>
+        </div>
+        <div class="hw-trade-col">
+          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
+          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-thread-new.jpg" alt="The shipped thread's ending, visit complete, work confirmed, job closed out, Completed"></div>
+          <p>I made the thread the tracker. The agent narrates each step as it happens, booking confirmed, visit complete, work confirmed, and files what it produces as cards. When the work ends the ending is written in, and the thread flips to Completed. The story gets its ending.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverable">
+      <h4>A working prototype, not a mockup</h4>
+      <p>Homewise is live and interactive.</p>
+    </div>
+
+    <!-- The repo button lives HERE, not in Collaboration (moved 2026-08-29 per
+         user): a button's claim comes from what it sits under. Under the team's
+         shipped-build video it read as their code; under the prototype clips,
+         beside "a working prototype, not a mockup", it claims exactly what Chang
+         built. The label scopes the claim on purpose — never relabel it back to
+         a generic "View the repository". -->
+    <div class="hw-cta-row">
+      <a href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener" class="hw-cta">Explore the live prototype <span aria-hidden="true">↗</span></a>
+      <a href="https://github.com/chang627627/homewise" target="_blank" rel="noopener" class="hw-cta" style="margin-left: 12px;">View the prototype's code <span aria-hidden="true">↗</span></a>
+    </div>
+
+    <!-- System -->
+    <div id="system" class="project-section">
+      <p class="section-label">Design System</p>
+      <h2>Hearth, one warm system across every screen</h2>
+      <p>Homewise runs on Hearth, its own design system. It reads like a calm, premium homeowner tool, closer to Notion or Linear than a SaaS dashboard, with a humanist warmth most AI brands skip.</p>
+      <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Type is one typeface, Geist, on an editorial weight ladder capped at 52px, because larger sans starts to shout. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. And it is living code, not a static spec: every new token ships behind a drift linter.</p>
+    </div>
+
+    <div class="hw-clip project-img-full">
+      <video src="images/homewise-hearth.mp4" poster="images/homewise-hearth-poster.jpg" loop muted playsinline preload="metadata"></video>
+      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
+    </div>
+
+    <div class="hw-cta-row">
+      <a href="https://homewise-rust.vercel.app/designsystem" target="_blank" rel="noopener" class="hw-cta">Explore the Hearth design system <span aria-hidden="true">↗</span></a>
+    </div>
 
     <!-- Process -->
     <div id="process" class="project-section">
@@ -376,166 +586,6 @@
         <text x="594" y="124" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-family="'Neue Montreal', sans-serif">repeat until it is right</text>
       </svg>
       </div>
-    </div>
-
-    <!-- Final Design -->
-    <div id="final-design" class="project-section">
-      <p class="section-label">Final Design</p>
-      <h2>Define the scope, in plain language</h2>
-      <p>You describe the problem in your own words. The agent turns it into a structured, editable scope of work, the most important artifact in the whole product.</p>
-    </div>
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-scope.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-trade">
-      <p class="hw-trade-k">The tradeoff</p>
-      <div class="hw-trade-cols">
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-intake-old.jpg" alt="The old intake, three shots requested and a one-click upload that accepted anything"></div>
-          <p>The first intake could not say no. It asked for three shots, one click flipped to "Photos uploaded", and the conversation moved on with no photo ever checked. Nothing pushed back, and it felt fake.</p>
-        </div>
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-intake-new.jpg" alt="The shipped intake, the agent rejecting a photo it cannot read with advice for the retake"></div>
-          <p>I rebuilt the intake to push back: the shipped chat is built to check the photo in front of you, a shot the agent cannot read gets rejected with advice for the retake, and the conversation moves only once it has what it needs. An agent that can say no is one you can believe.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="deliverable">
-      <h4>One scope, every contractor</h4>
-      <p>The same scope goes out to every contractor, so you stop repeating yourself on the phone and everyone quotes the exact same job. That only works if you believe the scope you are sending, which is where the first version failed.</p>
-    </div>
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-contractors.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-trade">
-      <p class="hw-trade-k">The tradeoff</p>
-      <div class="hw-trade-cols">
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-scope-old.jpg" alt="The old diagnosis card, leading with 92% confidence and a one line source"></div>
-          <p>The scope's diagnosis led with "92% confidence". Three of four testers asked what the number was based on, and every attempt to explain it, a one line source, then a step by step trail, just added chrome.</p>
-        </div>
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-scope-new.jpg" alt="The shipped diagnosis card, Most likely cause with the photos it read"></div>
-          <p>I replaced the score with "Most likely cause", and the diagnosis with a local price benchmark does the trust work the number was not doing. A claim that can explain itself beats one that only sounds precise.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="deliverable">
-      <h4>A match you can trust, not a list to sort</h4>
-      <p>Homewise surfaces a verified, fairly priced match with its reasoning: verification on license, insurance, and real permit history, and how many Homewisers recommend them. Social proof, the way a neighbor refers someone, not an anonymous star rating. Ratings can be gamed. Permit records cannot.</p>
-    </div>
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-match.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-trade">
-      <p class="hw-trade-k">The tradeoff</p>
-      <div class="hw-trade-cols">
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-send-old.jpg" alt="The old page, reject, reroll and approve buttons sitting above the evidence"></div>
-          <p>The actions sat at the top of the page: reject all three, show three different, approve and send. It asked for a commitment before you had read a single row, and the swap icon on every column was decorative, wired to nothing.</p>
-        </div>
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-send-new.jpg" alt="The shipped page, the Ready to proceed dock sitting below the evidence"></div>
-          <p>I moved Approve below the evidence into a "Ready to proceed" dock, so the decision comes after the read. Any column swaps for its next best match in one click, and an urgent job pulls bids back in 24 hours instead of five days. The page never asks for a yes it has not earned.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="deliverable">
-      <h4>Compare apples to apples, then you sign off</h4>
-      <p>Bids line up side by side with a plain language summary and outlier flags, the comparison homeowners reach for ChatGPT to fake today. The agent recommends, but nothing happens until you approve. A deliberate, human moment, never an autopilot default.</p>
-    </div>
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-compare.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-trade">
-      <p class="hw-trade-k">The tradeoff</p>
-      <div class="hw-trade-cols">
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-compare-old.jpg" alt="The old approve section, contact hidden as a small link below the Approve button"></div>
-          <p>The first version topped the matrix with a "3 deviations flagged" headline and tucked contact under Approve as a small ghost link. The count didn't match the matrix, and four of four testers wanted the call first.</p>
-        </div>
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-compare-new.jpg" alt="The shipped page, Ask before booking sitting above the approve section"></div>
-          <p>I dropped the count and moved the flags into the cells they describe, and the summary names them: the $75 fee, the missing warranty language. "Ask before booking" became a full button above Approve, so the page reads ask first, then approve.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="deliverable">
-      <h4>One place, from booking to done</h4>
-      <p>Once a contractor is booked, the whole job lives on one dashboard. It tracks itself from scheduled to closed out, so it never slips back into scattered calls and texts.</p>
-    </div>
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-track.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-trade">
-      <p class="hw-trade-k">The tradeoff</p>
-      <div class="hw-trade-cols">
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--bad">✕</span>The version I didn't ship</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-thread-old.jpg" alt="The old thread after the work was done, still marked Live and awaiting approval"></div>
-          <p>The job's thread did not know when the job ended. With the work complete it still read "Live thread", the status still said awaiting your approval, and the suggested next step was still to approve Jason. The story stopped mid sentence.</p>
-        </div>
-        <div class="hw-trade-col">
-          <h4><span class="hw-tick hw-tick--good">✓</span>Why it shipped this way</h4>
-          <div class="hw-trade-shot"><img loading="lazy" decoding="async" src="images/homewise-trade-thread-new.jpg" alt="The shipped thread's ending, visit complete, work confirmed, job closed out, Completed"></div>
-          <p>I made the thread the tracker. The agent narrates each step as it happens, booking confirmed, visit complete, work confirmed, and files what it produces as cards. When the work ends the ending is written in, and the thread flips to Completed. The story gets its ending.</p>
-        </div>
-      </div>
-    </div>
-
-    <div class="deliverable">
-      <h4>A working prototype, not a mockup</h4>
-      <p>Homewise is live and interactive.</p>
-    </div>
-
-    <!-- The repo button lives HERE, not in Collaboration (moved 2026-08-29 per
-         user): a button's claim comes from what it sits under. Under the team's
-         shipped-build video it read as their code; under the prototype clips,
-         beside "a working prototype, not a mockup", it claims exactly what Chang
-         built. The label scopes the claim on purpose — never relabel it back to
-         a generic "View the repository". -->
-    <div class="hw-cta-row">
-      <a href="https://homewise-rust.vercel.app/" target="_blank" rel="noopener" class="hw-cta">Explore the live prototype <span aria-hidden="true">↗</span></a>
-      <a href="https://github.com/chang627627/homewise" target="_blank" rel="noopener" class="hw-cta" style="margin-left: 12px;">View the prototype's code <span aria-hidden="true">↗</span></a>
-    </div>
-
-    <!-- System -->
-    <div id="system" class="project-section">
-      <p class="section-label">Design System</p>
-      <h2>Hearth, one warm system across every screen</h2>
-      <p>Homewise runs on Hearth, its own design system. It reads like a calm, premium homeowner tool, closer to Notion or Linear than a SaaS dashboard, with a humanist warmth most AI brands skip.</p>
-      <p>The palette is read by role, not hue: sage for trust, ember for caution, sky for info, over a warm cream canvas and near black ink. Type is one typeface, Geist, on an editorial weight ladder capped at 52px, because larger sans starts to shout. Shadows are banned, so depth comes from a five tier surface ladder and hairlines instead. And it is living code, not a static spec: every new token ships behind a drift linter.</p>
-    </div>
-
-    <div class="hw-clip project-img-full">
-      <video src="images/homewise-hearth.mp4" loop muted playsinline preload="metadata"></video>
-      <div class="hw-clip-progress"><div class="hw-clip-progress-bar"></div></div>
-    </div>
-
-    <div class="hw-cta-row">
-      <a href="https://homewise-rust.vercel.app/designsystem" target="_blank" rel="noopener" class="hw-cta">Explore the Hearth design system <span aria-hidden="true">↗</span></a>
     </div>
 
     <!-- Collaboration -->
@@ -640,6 +690,13 @@
   <button class="back-to-top" aria-label="Back to top">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
+
+  <!-- Lightbox (2026-09-09): the Play page's, verbatim. Opens the tradeoff
+       evidence crops and the Solution stills; CSS lives in style.css. -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
+    <img loading="lazy" decoding="async" id="lightboxImg" src="" alt="">
+  </div>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
@@ -928,6 +985,39 @@
       });
     }, { rootMargin: '200px' });
     vids.forEach(v => io.observe(v));
+  })();
+</script>
+
+<script>
+  // Lightbox: the Play page's IIFE, pointed at the tradeoff crops + Solution stills
+  (function() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    if (!lightbox) return;
+
+    document.querySelectorAll('.hw-trade-shot img, .hw-stage img').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    lightbox.addEventListener('click', closeLightbox);
+    lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
   })();
 </script>
 

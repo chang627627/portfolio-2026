@@ -4483,12 +4483,16 @@ footer {
   height: 18px;
 }
 
-/* Hide side nav on smaller screens where it would overlap content.
+/* Hide side nav only where it would really overlap content (2026-09-09,
+   portfolio-audit). Measured: the rail is 108px wide at left:48 plus a 12px
+   active indent, so its right edge sits at 168px. The 960px column starts at
+   (viewport - 960) / 2, and 1344px is the first width that leaves 24px of
+   clearance, so the rail shows on 1366 and 1440 laptops (it used to hide at
+   <= 1440, i.e. on every MacBook Air) and hides at 1280.
    .back-to-top is deliberately NOT in this rule: it is a fixed bottom-right
    button that overlaps nothing, so the side-nav's margin-collision reason
-   never applied to it. Bundling them here hid it on every common laptop
-   width (1440 / 1366 / 1280). It now hides only at the mobile breakpoint. */
-@media (max-width: 1440px) {
+   never applied to it. It hides only at the mobile breakpoint. */
+@media (max-width: 1343px) {
   .side-nav {
     display: none;
   }
