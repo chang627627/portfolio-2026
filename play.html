@@ -31,6 +31,22 @@
     .play-grid .play-card video, .play-grid .play-card iframe, .play-grid .play-video { border-radius: var(--radius); }
     .play-column { gap: 48px; }
     @media (max-width: 768px) { .play-column { gap: 40px; } }
+    /* Photo cards carry width/height attributes (2026-09-10) so the masonry
+       stops reflowing by ~900px as they load; height:auto turns the attribute
+       into an aspect ratio, since .play-img-photo sizes only the width. */
+    .play-img-photo { height: auto; }
+    /* YouTube click-to-play facade (2026-09-10): a local poster and a glass
+       play button in the .play-video frame; the player is injected on click,
+       so YouTube's title bar (a course filename on a teammate's channel, and
+       "No subscribers") never shows before playback and two third-party
+       players stop loading on arrival. Same pattern as Fish Ocean's native
+       click-to-play, in the site's glass-button material. */
+    .yt-facade { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: #000; display: block; cursor: pointer; }
+    .play-grid .play-card .yt-facade__poster { width: 100%; height: 100%; object-fit: cover; display: block; cursor: pointer; outline: none; border-radius: 0 !important; }
+    .yt-facade__play { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; transform: translate(-50%, -50%); border-radius: 50%; background: rgba(20, 20, 20, 0.72); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.14); transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out); }
+    .yt-facade__play::after { content: ''; position: absolute; left: 55%; top: 50%; transform: translate(-50%, -50%); border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent rgba(240, 240, 240, 0.95); }
+    @media (hover: hover) { .yt-facade:hover .yt-facade__play { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
+    .yt-facade:active .yt-facade__play { transform: translate(-50%, -50%) scale(0.96); }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
@@ -77,28 +93,28 @@
           <div class="play-info-top"><h3>Scope</h3><span class="play-year">2026</span></div>
           <p>A Gen Z cultural platform imagined as one AI-native brand world. Identity, music, fashion, and digital drops. Made with GPT Image 2.</p>
         </div>
-        <img src="images/scope-card.jpg" alt="Scope — Gen Z cultural platform branding exploration" class="play-img-photo">
+        <img width="1254" height="1254" src="images/scope-card.jpg" alt="Scope — Gen Z cultural platform branding exploration" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:5;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Buffering Ocean</h3><span class="play-year">2026</span></div>
           <p>A seaside scene caught in digital delay. Loading windows, broken pixels, and drifting interface fragments turn the shoreline into a soft glitch between nature and the network. Made with GPT Image 2.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/gpt2-buffering-ocean.jpg" alt="Buffering Ocean — coastal cityscape glitching with loading bars, pixelated sky and sea, and simulation UI fragments" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1536" height="1024" src="images/gpt2-buffering-ocean.jpg" alt="Buffering Ocean — coastal cityscape glitching with loading bars, pixelated sky and sea, and simulation UI fragments" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:3">
         <div class="play-info">
           <div class="play-info-top"><h3>Octocrab</h3><span class="play-year">2026</span></div>
           <p>An octagonal crab drawn in ASCII. Glyphs and dither become pearl armor, neon claws, and a glowing core. Made with GPT Image 2.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/gpt2-mech-crab.jpg" alt="Octocrab — pearl-white sci-fi crab creature with neon claws and a glowing core" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1254" height="1254" src="images/gpt2-mech-crab.jpg" alt="Octocrab — pearl-white sci-fi crab creature with neon claws and a glowing core" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:4;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Golden Flux</h3><span class="play-year">2026</span></div>
           <p>Warmth caught mid-motion. Molten gold, orbiting trails, and grainy light flow through the dark like heat you can almost feel. Made with GPT Image 2.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/gpt2-golden-flux.jpg" alt="Golden Flux — abstract poster of molten gold ribbons, orbiting trails, and grain on black" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1054" height="1492" src="images/gpt2-golden-flux.jpg" alt="Golden Flux — abstract poster of molten gold ribbons, orbiting trails, and grain on black" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:8">
         <div class="play-info">
@@ -122,7 +138,7 @@
           <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
           <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Figma Make.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:18">
         <div class="play-info">
@@ -136,7 +152,7 @@
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
           <p>A specialty coffee e-commerce redesign leaning on editorial typography and rich product imagery. Bold brand color meets calm layouts to carry browsing, discovery, and subscription flows.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/redbrick.jpg" alt="Redbrick Coffee" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1920" height="1537" src="images/redbrick.jpg" alt="Redbrick Coffee" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:12">
         <div class="play-info">
@@ -162,14 +178,14 @@
           <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
           <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Missing Pavilion</h3><span class="play-year">2021</span></div>
           <p>A parametric pavilion of wave-like metal and semi-transparent glass, sited at a park pathway intersection and built around light, water, and quiet. Made in Rhino and Grasshopper.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1920" height="1243" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:20">
         <div class="play-info">
@@ -177,7 +193,7 @@
           <p>A team 3D adventure built in Unity. As game designer, I shaped levels and mechanics where players shapeshift between humans, wolves, and seagulls to solve puzzles.</p>
         </div>
         <div class="play-video">
-          <iframe src="https://player.vimeo.com/video/486270690?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <iframe loading="lazy" title="UN/FOLD" src="https://player.vimeo.com/video/486270690?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
       </div>
@@ -188,26 +204,26 @@
           <div class="play-info-top"><h3>The Last Human Gestures</h3><span class="play-year">2026</span></div>
           <p>A future archive of irreplaceable human behavior. Hesitation, waiting, wandering, and daydreaming reframed as qualities worth preserving in the age of AI. Made with GPT Image 2.</p>
         </div>
-        <img src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
+        <img width="1024" height="1536" src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:6">
         <div class="play-info">
           <div class="play-info-top"><h3>No Signal Summer</h3><span class="play-year">2026</span></div>
           <p>Future nostalgia and the quiet beauty of being unreachable. A summer when nothing was trying to reach us. Made with GPT Image 2.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:7;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Escape Velocity</h3><span class="play-year">2026</span></div>
           <p>Motion, light, and leaving gravity behind. The moment everything opens up. Made with GPT Image 2.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/gpt2-escape-velocity.jpg" alt="Escape Velocity — sci-fi editorial poster of an iridescent sphere pierced by a rocket trail" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-escape-velocity.jpg" alt="Escape Velocity — sci-fi editorial poster of an iridescent sphere pierced by a rocket trail" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:11">
         <div class="play-info">
           <div class="play-info-top"><h3>Whisper XR</h3><span class="play-year">2025</span></div>
-          <p>Team project for Apple Vision Pro. An AI-powered extended reality service that simulates social scenarios to help people with social anxiety prepare for real-life interactions.</p>
+          <p>Team project for Apple Vision Pro. An AI powered extended reality service that simulates social scenarios to help people with social anxiety prepare for real-life interactions.</p>
         </div>
         <div class="carousel" data-carousel>
           <div class="carousel-row">
@@ -237,7 +253,7 @@
           <a href="https://mince-lemon-30902005.figma.site/" target="_blank" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
         <div class="play-video">
-          <iframe src="https://www.youtube.com/embed/bVPVKyckvwk?start=8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=8&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
       <div class="play-card" style="--mo:17">
@@ -253,14 +269,14 @@
           <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
           <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Running Dog</h3><span class="play-year">2020</span></div>
           <p>A tri-gear mechanism modeled in SolidWorks. Rotating the primary crank transfers motion to two more gears in one linked movement, and a secondary crank on the central bar converts that rotation into vertical motion through a crank pin.</p>
         </div>
-        <img loading="lazy" decoding="async" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1920" height="1285" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:19">
         <div class="play-info">
@@ -268,7 +284,7 @@
           <p>A debut 3D animated short built in Maya with a student team. As animator and scene designer, I shaped the scenes and motion for a story about responsibility and impulsive commitments, following a teddy bear left behind when a young couple parts ways.</p>
         </div>
         <div class="play-video">
-          <iframe src="https://www.youtube-nocookie.com/embed/zdQ4LYluWnc?rel=0&amp;modestbranding=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/zdQ4LYluWnc?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: About the Teddy Bear"><img class="yt-facade__poster" src="images/teddybear-poster.jpg" alt="" width="640" height="480" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
 <div class="play-card" style="--mo:18">
@@ -277,7 +293,7 @@
           <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
         </div>
         <div class="play-video">
-          <iframe src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <iframe loading="lazy" title="I Believe in a Thing Called Love" src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
             </div>
@@ -455,7 +471,7 @@
     const lightboxClose = document.getElementById('lightboxClose');
     if (!lightbox) return;
 
-    document.querySelectorAll('.play-card img').forEach(img => {
+    document.querySelectorAll('.play-card img:not(.yt-facade__poster)').forEach(img => {
       img.addEventListener('click', (e) => {
         e.stopPropagation();
         lightboxImg.src = img.src;
@@ -519,6 +535,21 @@
       footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // YouTube facades: swap the poster for the player on click (autoplay is in data-embed)
+  document.querySelectorAll('.yt-facade').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const f = document.createElement('iframe');
+      f.src = btn.dataset.embed;
+      f.title = btn.getAttribute('aria-label').replace(/^Play: /, '');
+      f.setAttribute('frameborder', '0');
+      f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
+      f.allowFullscreen = true;
+      btn.replaceWith(f);
+    }, { once: true });
+  });
 </script>
 
 <!-- Chat Widget -->
