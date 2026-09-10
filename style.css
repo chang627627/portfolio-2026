@@ -5183,13 +5183,12 @@ body {
 
 /* Case-study chain (2026-09-09): Previous / Next at the end of every case study, in
    home-grid order and only between the six internal case studies (external cards are
-   never in the chain). No preview: the words are the interaction, two ways. IGNITE:
-   each title is glyph spans in the markup (--i counts up, --r counts down) and on hover
-   the letters step to white with the home headline's halo one after another TOWARD the
-   arrow, Next left to right and Previous right to left, then all let go together.
-   TELL: the destination's full card description sits under the title, two rows, its room reserved,
-   invisible at rest, and wipes in from the arrow's side a beat after the light. The
-   text never moves. Pure CSS; phones show the line at rest since they cannot hover. */
+   never in the chain). No preview, no description: the title is the interaction. Each
+   title is glyph spans in the markup (--i counts up, --r counts down) and on hover the
+   letters step to white with the home headline's halo one after another TOWARD the
+   arrow, Next left to right and Previous right to left, then all let go together; the
+   arrow nudges its way and the label lifts. The text never moves. Pure CSS; phones get
+   the plain links. */
 .case-nav {
   width: 100%;
   margin-top: 120px;
@@ -5205,7 +5204,6 @@ body {
   display: block;
   justify-self: start;
   min-width: 0;
-  max-width: 460px;
   padding: 12px 0;
   color: var(--text);
   text-decoration: none;
@@ -5256,27 +5254,8 @@ body {
   transition-delay: calc(var(--r) * 22ms);
 }
 
-.case-nav-desc {
-  display: block;
-  margin-top: 14px;
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--text-soft);
-  opacity: 0;
-  clip-path: inset(0 100% 0 0);
-  transition: opacity var(--dur-slow) var(--ease-out), clip-path var(--dur-slow) var(--ease-out);
-}
 
-.case-nav-link--prev .case-nav-desc {
-  clip-path: inset(0 0 0 100%);
-}
 
-.case-nav-link:hover .case-nav-desc,
-.case-nav-link:focus-visible .case-nav-desc {
-  opacity: 1;
-  clip-path: inset(0 0 0 0);
-  transition-delay: 120ms;
-}
 
 .case-nav-link:hover .case-nav-label,
 .case-nav-link:focus-visible .case-nav-label {
@@ -5289,7 +5268,7 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .case-nav-title .g, .case-nav-desc, .case-nav-arrow { transition: none; }
+  .case-nav-title .g, .case-nav-arrow { transition: none; }
 }
 
 @media (max-width: 768px) {
@@ -5302,5 +5281,4 @@ body {
   .case-nav-link { max-width: none; }
   .case-nav-link--next { justify-self: start; text-align: left; }
   .case-nav-title { font-size: 28px; }
-  .case-nav-desc { opacity: 1; clip-path: none; }
 }
