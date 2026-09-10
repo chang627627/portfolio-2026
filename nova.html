@@ -20,6 +20,14 @@
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=258">
+  <style>
+    /* Every attributed image reserves its box; the attribute must set an
+       aspect ratio, not a fixed pixel height, so height:auto everywhere the
+       stylesheet sizes only the width (partner logos carry no attributes,
+       their CSS fixes height with width:auto). */
+    .project-content img[width][height] { height: auto; }
+    .carousel-slide img, .hud-example img, .iter-example img, .phone-flow__cell img, .mascot-exploration img, .hud-grid img { cursor: zoom-in; }
+  </style>
   <link rel="canonical" href="https://www.chang-mou.com/nova.html">
   <script type="application/ld+json">
   {
@@ -63,7 +71,7 @@
   </nav>
 
   <!-- Immersive Cover -->
-  <img src="images/nova-hero-unigirl.jpg" alt="UNICEF NOVA cover — child wearing AR glasses on a city street" class="case-cover">
+  <img width="1920" height="852" src="images/nova-hero-unigirl.jpg" alt="UNICEF NOVA cover — child wearing AR glasses on a city street" class="case-cover">
 
   <!-- Project Hero -->
   <section class="project-hero">
@@ -222,15 +230,15 @@
 
     <div class="research-image-row">
       <figure style="flex: 1.14;">
-        <img loading="lazy" decoding="async" src="images/nova-research-activities.png" alt="Field research collage — UC Berkeley transit equity events, San Francisco Summer Resource Fair, and co-creation workshops with families">
+        <img loading="lazy" decoding="async" width="736" height="648" src="images/nova-research-activities.png" alt="Field research collage — UC Berkeley transit equity events, San Francisco Summer Resource Fair, and co-creation workshops with families">
         <figcaption>Field research at UC Berkeley and the SF Summer Resource Fair</figcaption>
       </figure>
       <figure style="flex: 1.35;">
-        <img loading="lazy" decoding="async" src="images/nova-research-interviews.png" alt="Parent interview synthesis grid — five interviewees with color-coded findings">
+        <img loading="lazy" decoding="async" width="872" height="648" src="images/nova-research-interviews.png" alt="Parent interview synthesis grid — five interviewees with color-coded findings">
         <figcaption>Synthesis of five parent interviews</figcaption>
       </figure>
       <figure style="flex: 1.66;">
-        <img loading="lazy" decoding="async" src="images/nova-research-affinity.png" alt="Affinity map — clustering interview quotes and observations into themes">
+        <img loading="lazy" decoding="async" width="1076" height="648" src="images/nova-research-affinity.png" alt="Affinity map — clustering interview quotes and observations into themes">
         <figcaption>Affinity mapping from co-creation workshops</figcaption>
       </figure>
     </div>
@@ -323,20 +331,20 @@
 
     <div class="comp-grid">
       <figure>
-        <img loading="lazy" decoding="async" src="images/nova-comp-meta-orion.webp" alt="Meta Orion AR glasses with floating UI in a living room">
-        <figcaption>Meta Orion — full AR display prototype</figcaption>
+        <img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-comp-meta-orion.webp" alt="Meta Orion AR glasses with floating UI in a living room">
+        <figcaption>Meta Orion, full AR display prototype</figcaption>
       </figure>
       <figure>
-        <img loading="lazy" decoding="async" src="images/nova-comp-snap.jpg" alt="Snap Spectacles AR glasses with a translucent UI panel">
-        <figcaption>Snap Spectacles — standalone AR with hand input</figcaption>
+        <img loading="lazy" decoding="async" width="1200" height="630" src="images/nova-comp-snap.jpg" alt="Snap Spectacles AR glasses with a translucent UI panel">
+        <figcaption>Snap Spectacles, standalone AR with hand input</figcaption>
       </figure>
       <figure>
-        <img loading="lazy" decoding="async" src="images/nova-comp-rayban.jpg" alt="Smart sunglasses worn outdoors, camera-style frames">
-        <figcaption>Meta Ray-Ban — camera and audio, no display yet</figcaption>
+        <img loading="lazy" decoding="async" width="1280" height="720" src="images/nova-comp-rayban.jpg" alt="Smart sunglasses worn outdoors, camera-style frames">
+        <figcaption>Meta Ray-Ban, camera and audio, no display yet</figcaption>
       </figure>
       <figure>
-        <img loading="lazy" decoding="async" src="images/nova-comp-apple-roadmap.jpeg" alt="Apple Vision Series and smart glasses roadmap forecast 2025–2028">
-        <figcaption>Apple Vision roadmap — XR and smart-glasses lines projected through 2028</figcaption>
+        <img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-comp-apple-roadmap.jpeg" alt="Apple Vision Series and smart glasses roadmap forecast 2025–2028">
+        <figcaption>Apple Vision roadmap, XR and smart-glasses lines projected through 2028</figcaption>
       </figure>
     </div>
 
@@ -371,32 +379,32 @@
     <div class="hud-grid">
       <figure class="hud-grid__item hud-grid__item--selected">
         <h3 class="hud-grid__title">HUD Text</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-fixed.jpg" alt="HUD text — distance, calories, BPM, and progress in fixed peripheral positions">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-fixed.jpg" alt="HUD text — distance, calories, BPM, and progress in fixed peripheral positions">
         <figcaption>Shows essential information in fixed positions so the user can read it quickly without losing focus on the main task.</figcaption>
       </figure>
       <figure class="hud-grid__item">
         <h3 class="hud-grid__title">Text for Long Reading</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-popup.jpg" alt="Text for long reading — large block of text on a contextual panel">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-popup.jpg" alt="Text for long reading — large block of text on a contextual panel">
         <figcaption>Presents longer content in a stable layout that supports uninterrupted reading.</figcaption>
       </figure>
       <figure class="hud-grid__item">
         <h3 class="hud-grid__title">Sticky Info Text</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-label.jpg" alt="Sticky info text — calorie info anchored to a food box">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-label.jpg" alt="Sticky info text — calorie info anchored to a food box">
         <figcaption>Attaches information to objects or points of interest so context stays clear while the user moves or looks around.</figcaption>
       </figure>
       <figure class="hud-grid__item">
         <h3 class="hud-grid__title">Signage Text</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-signage.jpg" alt="Signage text — billboard-style storefront overlay">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-signage.jpg" alt="Signage text — billboard-style storefront overlay">
         <figcaption>Displays clear static labels or signs that stay consistent across different viewpoints.</figcaption>
       </figure>
       <figure class="hud-grid__item">
         <h3 class="hud-grid__title">Responsive Text</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-arrow.jpg" alt="Responsive text — destination arrow at two scales">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-arrow.jpg" alt="Responsive text — destination arrow at two scales">
         <figcaption>Updates dynamically in reaction to movement or interaction to keep guidance and information timely.</figcaption>
       </figure>
       <figure class="hud-grid__item">
         <h3 class="hud-grid__title">Ticker Text</h3>
-        <img loading="lazy" decoding="async" src="images/nova-hud-ticker.jpg" alt="Ticker text — chat message scrolling across the top of the view">
+        <img loading="lazy" decoding="async" width="1920" height="1033" src="images/nova-hud-ticker.jpg" alt="Ticker text — chat message scrolling across the top of the view">
         <figcaption>Streams continuous updates in motion so ongoing information stays visible without blocking the main view.</figcaption>
       </figure>
     </div>
@@ -408,11 +416,11 @@
         <li><span class="hud-example__num">3</span><span class="hud-example__copy"><strong>Mascot (Nova):</strong> Child-friendly companion for guidance.</span></li>
         <li><span class="hud-example__num">4</span><span class="hud-example__copy"><strong>Navigation Path:</strong> Responsive guide that adapts to movement.</span></li>
       </ol>
-      <img loading="lazy" decoding="async" src="images/nova-hud-text-example.jpg" alt="NOVA HUD Text in action — annotated AR view with safety alert, time and distance readout, mascot guide, and navigation path overlay">
+      <img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-hud-text-example.jpg" alt="NOVA HUD Text in action — annotated AR view with safety alert, time and distance readout, mascot guide, and navigation path overlay">
     </div>
 
     <div class="project-section table-caption">
-      <p><span class="highlight">"I want my child to get directions, but not so much text that they lose focus on the road."</span> — Parent, usability test</p>
+      <p><span class="highlight">"I want my child to get directions, but not so much text that they lose focus on the road."</span> · Parent, usability test</p>
     </div>
 
     <!-- Challenge 2 -->
@@ -425,22 +433,22 @@
     <div class="phone-flow">
       <div class="phone-flow__panel">
         <figure class="phone-flow__cell">
-          <img loading="lazy" decoding="async" src="images/nova-c2-onboarding.png?v=2" alt="Joint onboarding — Hi parents and kids! Please team up to complete the onboarding together.">
+          <img loading="lazy" decoding="async" width="982" height="2128" src="images/nova-c2-onboarding.png?v=2" alt="Joint onboarding — Hi parents and kids! Please team up to complete the onboarding together.">
           <figcaption>Joint Onboarding</figcaption>
         </figure>
         <figure class="phone-flow__cell">
-          <img loading="lazy" decoding="async" src="images/nova-c2-safety-zones.png?v=2" alt="Safe Zone Setup — define safe areas where the child can move freely without alerts">
+          <img loading="lazy" decoding="async" width="982" height="2128" src="images/nova-c2-safety-zones.png?v=2" alt="Safe Zone Setup — define safe areas where the child can move freely without alerts">
           <figcaption>Safe Zone Setup</figcaption>
         </figure>
         <figure class="phone-flow__cell">
-          <img loading="lazy" decoding="async" src="images/nova-c2-safety-settings.png?v=2" alt="Safety Controls — toggles for real-time tracking, boundary alerts, emergency mode, and voice commands">
+          <img loading="lazy" decoding="async" width="982" height="2128" src="images/nova-c2-safety-settings.png?v=2" alt="Safety Controls — toggles for real-time tracking, boundary alerts, emergency mode, and voice commands">
           <figcaption>Safety Controls</figcaption>
         </figure>
       </div>
     </div>
 
     <div class="project-section table-caption">
-      <p><span class="highlight">"I want my child to feel trusted, but I still need to know if they go somewhere unsafe."</span> — Parent, usability test</p>
+      <p><span class="highlight">"I want my child to feel trusted, but I still need to know if they go somewhere unsafe."</span> · Parent, usability test</p>
     </div>
 
     <!-- Challenge 3 -->
@@ -454,30 +462,30 @@
     <div class="iter-example">
       <div class="iter-example__row">
         <figure class="iter-example__cell">
-          <img loading="lazy" decoding="async" src="images/nova-mascot-before.jpg" alt="Before — AR view with HUD text only, no mascot">
+          <img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-mascot-before.jpg" alt="Before — AR view with HUD text only, no mascot">
           <figcaption><strong class="iter-example__mark iter-example__mark--bad">Before:</strong> Minimal AR view without a mascot.</figcaption>
         </figure>
         <figure class="iter-example__cell">
-          <img loading="lazy" decoding="async" src="images/nova-mascot-after.jpg" alt="After — same AR view with Nova mascot in the scene">
+          <img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-mascot-after.jpg" alt="After — same AR view with Nova mascot in the scene">
           <figcaption><strong class="iter-example__mark iter-example__mark--good">After:</strong> Nova adds warmth and clarity without crowding the view.</figcaption>
         </figure>
       </div>
     </div>
 
     <figure class="mascot-exploration">
-      <img loading="lazy" decoding="async" src="images/nova-mascot-exploration.png" alt="Nova character exploration — multiple poses including waving, megaphone, thumbs up, hard hat with flag">
+      <img loading="lazy" decoding="async" width="1920" height="799" src="images/nova-mascot-exploration.png" alt="Nova character exploration — multiple poses including waving, megaphone, thumbs up, hard hat with flag">
       <figcaption>Nova character exploration</figcaption>
     </figure>
 
     <div class="project-section table-caption">
-      <p><span class="highlight">"My daughter actually wanted to wear the glasses because of Nova. That's a first."</span> — Parent, usability test</p>
+      <p><span class="highlight">"My daughter actually wanted to wear the glasses because of Nova. That's a first."</span> · Parent, usability test</p>
     </div>
 
     <!-- Usability Testing -->
     <div id="usability-testing" class="project-section">
       <p class="section-label">Usability Testing</p>
       <h2>Iterative feedback to refine the experience</h2>
-      <p>Over a one-month prototype sprint, we tested with 20 parents, sometimes together with their children. Their feedback sharpened the navigation cues, the safety alerts, and the companion app setup, and it pushed the hardware concept toward thinner, more child-friendly glasses.</p>
+      <p>Over a one month prototype sprint, we tested with 20 parents, sometimes together with their children. Their feedback sharpened the navigation cues, the safety alerts, and the companion app setup, and it pushed the hardware concept toward thinner, more child-friendly glasses.</p>
     </div>
 
     <!-- Final Deliverables -->
@@ -491,9 +499,9 @@
       <div class="carousel-row">
         <button class="carousel-arrow carousel-prev" aria-label="Previous">‹</button>
         <div class="carousel-track">
-          <div class="carousel-slide active"><img loading="lazy" decoding="async" src="images/nova-7IX2TVYFhIMLqXTEK1HErhzOvU.jpg" alt="NOVA companion app — sign-in and pair glasses flow" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-rlCqFB6mmq5njbWp5bSsmUsBvY.jpg" alt="NOVA companion app — child profile, emergency contacts, safe zones, and safety settings" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-companion-dashboard.jpg" alt="NOVA companion app — All Set confirmation, daily activity dashboard, lock-screen notification, and notifications history" style="width: 100%; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide active"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-7IX2TVYFhIMLqXTEK1HErhzOvU.jpg" alt="NOVA companion app — sign-in and pair glasses flow" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-rlCqFB6mmq5njbWp5bSsmUsBvY.jpg" alt="NOVA companion app — child profile, emergency contacts, safe zones, and safety settings" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-companion-dashboard.jpg" alt="NOVA companion app — All Set confirmation, daily activity dashboard, lock-screen notification, and notifications history" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
         </div>
         <button class="carousel-arrow carousel-next" aria-label="Next">›</button>
       </div>
@@ -509,15 +517,15 @@
       <div class="carousel-row">
         <button class="carousel-arrow carousel-prev" aria-label="Previous">‹</button>
         <div class="carousel-track">
-          <div class="carousel-slide active"><img loading="lazy" decoding="async" src="images/nova-gh8Pt73ypnrQBnE9wxrL2Tq3dqY.jpg" alt="NOVA AR view — Where should I take you? Home / School / Other" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-zJ6u1RkPpAmB6A9mwZk5Dq3DQt4.jpg" alt="NOVA AR view — School, please, voice command in action" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-OXusPLRUF0MH6VJ5r8Vkklh4.jpg" alt="NOVA AR view — Follow me to school, with mascot guidance" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-nav-start.jpg" alt="NOVA AR view — Start your trip to school now!" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-mhBwtqyNxJEfbdQamBs7PFgfmA.jpg" alt="NOVA AR view — Keep going (30 feet) with directional arrow" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-HFrwfLOQa6suUBAEuull6rKo.jpg" alt="NOVA AR view — White light, it is time to go, with traffic awareness" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-nav-turn-right.jpg" alt="NOVA AR view — Turn right (10 feet) with blue path arrow" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-nav-turn-left.jpg" alt="NOVA AR view — Turn left, construction area, with mascot and route overlay" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-nav-arrived.jpg" alt="NOVA AR view — Amazing work! You're at school safe! arrival celebration" style="width: 100%; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide active"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-gh8Pt73ypnrQBnE9wxrL2Tq3dqY.jpg" alt="NOVA AR view — Where should I take you? Home / School / Other" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-zJ6u1RkPpAmB6A9mwZk5Dq3DQt4.jpg" alt="NOVA AR view — School, please, voice command in action" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-OXusPLRUF0MH6VJ5r8Vkklh4.jpg" alt="NOVA AR view — Follow me to school, with mascot guidance" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-nav-start.jpg" alt="NOVA AR view — Start your trip to school now!" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-mhBwtqyNxJEfbdQamBs7PFgfmA.jpg" alt="NOVA AR view — Keep going (30 feet) with directional arrow" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-HFrwfLOQa6suUBAEuull6rKo.jpg" alt="NOVA AR view — White light, it is time to go, with traffic awareness" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-nav-turn-right.jpg" alt="NOVA AR view — Turn right (10 feet) with blue path arrow" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-nav-turn-left.jpg" alt="NOVA AR view — Turn left, construction area, with mascot and route overlay" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-nav-arrived.jpg" alt="NOVA AR view — Amazing work! You're at school safe! arrival celebration" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
         </div>
         <button class="carousel-arrow carousel-next" aria-label="Next">›</button>
       </div>
@@ -533,12 +541,12 @@
       <div class="carousel-row">
         <button class="carousel-arrow carousel-prev" aria-label="Previous">‹</button>
         <div class="carousel-track">
-          <div class="carousel-slide active"><img loading="lazy" decoding="async" src="images/nova-Rvbl8bdfYQQCnQoz8gSggig3ot8.jpg" alt="NOVA AR view — You're leaving the safe area" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-JSmZUIYSXDmlIMIlkAaED6CqD18.jpg" alt="NOVA AR view — Don't talk to strangers, with safe-zone awareness" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-free-detect.jpg" alt="NOVA AR view — Wanna find a safe place? with Yes please / Wait a second prompts" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-free-respond.jpg" alt="NOVA AR view — Yes, please, voice response in action" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-free-guide.jpg" alt="NOVA AR view — Turn left right now, urgent guidance with mascot and route arrow" style="width: 100%; display: block; border-radius: var(--radius);"></div>
-          <div class="carousel-slide"><img loading="lazy" decoding="async" src="images/nova-free-recover.jpg" alt="NOVA AR view — Great job. We're back in the safe zone! arrival celebration with Call my mum / Take me home options" style="width: 100%; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide active"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-Rvbl8bdfYQQCnQoz8gSggig3ot8.jpg" alt="NOVA AR view — You're leaving the safe area" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-JSmZUIYSXDmlIMIlkAaED6CqD18.jpg" alt="NOVA AR view — Don't talk to strangers, with safe-zone awareness" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-free-detect.jpg" alt="NOVA AR view — Wanna find a safe place? with Yes please / Wait a second prompts" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-free-respond.jpg" alt="NOVA AR view — Yes, please, voice response in action" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-free-guide.jpg" alt="NOVA AR view — Turn left right now, urgent guidance with mascot and route arrow" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
+          <div class="carousel-slide"><img loading="lazy" decoding="async" width="1920" height="1080" src="images/nova-free-recover.jpg" alt="NOVA AR view — Great job. We're back in the safe zone! arrival celebration with Call my mum / Take me home options" style="width: 100%; height: auto; display: block; border-radius: var(--radius);"></div>
         </div>
         <button class="carousel-arrow carousel-next" aria-label="Next">›</button>
       </div>
@@ -571,6 +579,12 @@
   <button class="back-to-top" aria-label="Back to top">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
+
+  <!-- Lightbox (2026-09-10): the Play page's, verbatim. CSS lives in style.css. -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
+    <img loading="lazy" decoding="async" id="lightboxImg" src="" alt="">
+  </div>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
@@ -856,6 +870,39 @@
   }
 </script>
 
+
+<script>
+  // Lightbox: the Play page's IIFE, pointed at the carousel slides and the design artifacts
+  (function() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    if (!lightbox) return;
+
+    document.querySelectorAll('.carousel-slide img, .hud-example img, .iter-example img, .phone-flow__cell img, .mascot-exploration img, .hud-grid img').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    lightbox.addEventListener('click', closeLightbox);
+    lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
+  })();
+</script>
 
 <!-- Chat Widget -->
 <button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
