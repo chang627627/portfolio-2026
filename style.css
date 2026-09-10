@@ -5183,11 +5183,13 @@ body {
 
 /* Case-study chain (2026-09-09): Previous / Next at the end of every case study, in
    home-grid order and only between the six internal case studies (external cards are
-   never in the chain). No preview: the words are the interaction, in the site's own
-   link grammar. On hover a 1px line draws under the title over --dur-base/--ease-out,
-   the footer / Play / nav underline recipe verbatim, TOWARD the arrow: Next from the
-   left, Previous from the right; the arrow nudges its way and the label lifts. The
-   text never moves. Pure CSS; phones get the plain links. */
+   never in the chain). No preview: the words are the interaction, two ways. IGNITE:
+   each title is glyph spans in the markup (--i counts up, --r counts down) and on hover
+   the letters step to white with the home headline's halo one after another TOWARD the
+   arrow, Next left to right and Previous right to left, then all let go together.
+   TELL: the destination's own card line sits under the title with its room reserved,
+   invisible at rest, and wipes in from the arrow's side a beat after the light. The
+   text never moves. Pure CSS; phones show the line at rest since they cannot hover. */
 .case-nav {
   width: 100%;
   margin-top: 120px;
@@ -5203,6 +5205,7 @@ body {
   display: block;
   justify-self: start;
   min-width: 0;
+  max-width: 440px;
   padding: 12px 0;
   color: var(--text);
   text-decoration: none;
@@ -5215,7 +5218,7 @@ body {
 
 .case-nav-label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   font-size: 13px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -5229,39 +5232,50 @@ body {
 }
 
 .case-nav-title {
-  position: relative;
-  display: inline-block;
-  padding-bottom: 6px;
-  font-size: 28px;
+  display: block;
+  font-size: 40px;
   letter-spacing: -0.02em;
-  line-height: 1.15;
-  transition: color var(--dur-base) var(--ease-out);
+  line-height: 1.1;
 }
 
-.case-nav-title::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
+.case-nav-title .g {
+  display: inline-block;
+  color: var(--text);
+  transition: color var(--dur-base) var(--ease-out), text-shadow var(--dur-base) var(--ease-out);
 }
 
-.case-nav-link--prev .case-nav-title::after {
-  left: auto;
-  right: 0;
-}
-
-.case-nav-link:hover .case-nav-title::after,
-.case-nav-link:focus-visible .case-nav-title::after {
-  width: 100%;
-}
-
-.case-nav-link:hover .case-nav-title,
-.case-nav-link:focus-visible .case-nav-title {
+.case-nav-link:hover .case-nav-title .g,
+.case-nav-link:focus-visible .case-nav-title .g {
   color: #fff;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35), 0 0 22px rgba(255, 255, 255, 0.3);
+  transition-delay: calc(var(--i) * 22ms);
+}
+
+.case-nav-link--prev:hover .case-nav-title .g,
+.case-nav-link--prev:focus-visible .case-nav-title .g {
+  transition-delay: calc(var(--r) * 22ms);
+}
+
+.case-nav-desc {
+  display: block;
+  margin-top: 14px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-soft);
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition: opacity var(--dur-slow) var(--ease-out), clip-path var(--dur-slow) var(--ease-out);
+}
+
+.case-nav-link--prev .case-nav-desc {
+  clip-path: inset(0 0 0 100%);
+}
+
+.case-nav-link:hover .case-nav-desc,
+.case-nav-link:focus-visible .case-nav-desc {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+  transition-delay: 120ms;
 }
 
 .case-nav-link:hover .case-nav-label,
@@ -5274,13 +5288,19 @@ body {
   .case-nav-link--next:hover .case-nav-arrow { transform: translateX(4px); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .case-nav-title .g, .case-nav-desc, .case-nav-arrow { transition: none; }
+}
+
 @media (max-width: 768px) {
   .case-nav {
     grid-template-columns: 1fr;
-    gap: 4px;
+    gap: 12px;
     margin-top: 80px;
     padding-top: 32px;
   }
+  .case-nav-link { max-width: none; }
   .case-nav-link--next { justify-self: start; text-align: left; }
-  .case-nav-title { font-size: 22px; }
+  .case-nav-title { font-size: 28px; }
+  .case-nav-desc { opacity: 1; clip-path: none; }
 }
