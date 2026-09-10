@@ -19,57 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=257">
-  <style>
-    /* Recognition rows (2026-09-09). PollenNav-only, so it stays inline rather
-       than forcing a style.css bump for one page; mirrors the About page's
-       name / detail / date row and the site's hairline structure. */
-    .award-rows {
-      list-style: none;
-      margin: 32px 0 0;
-      padding: 0;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .award-row {
-      display: grid;
-      grid-template-columns: 112px minmax(0, 1fr) auto auto;
-      gap: 24px;
-      align-items: baseline;
-      padding: 18px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-    .award-name {
-      font-size: 20px;
-      color: var(--text);
-    }
-    .award-detail {
-      font-size: 15px;
-      color: var(--text-muted);
-    }
-    .award-year {
-      font-size: 14px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-    .award-rows .impact-link {
-      margin-top: 0;
-    }
-    .award-rows + .project-section {
-      margin-top: 96px; /* component-to-section gap, same as the cards had */
-    }
-    @media (max-width: 768px) {
-      /* Three lines per award: name, detail, then year left and View right.
-         Spans are explicit so auto-placement never leaves a phantom track. */
-      .award-row {
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 6px 16px;
-      }
-      .award-name,
-      .award-detail {
-        grid-column: 1 / -1;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css?v=258">
   <link rel="canonical" href="https://www.chang-mou.com/pollen.html">
   <script type="application/ld+json">
   {

@@ -3809,6 +3809,57 @@ footer {
   margin-bottom: 12px;
 }
 
+/* Award rows (2026-09-09): the Recognition treatment on pollen.html and
+   storybloom.html. Four (or two) 220px .impact-card tiles with 48px wordmarks
+   read as a billboard at the top of a case study; the same awards as hairline
+   rows keep every fact and link at a third of the height. Name white, detail
+   muted, year tabular, the existing .impact-link for View. Phones stack each
+   award as name, detail, then year left and View right, with explicit spans so
+   auto-placement never leaves a phantom track. Spacing mirrors .impact-grid. */
+.award-rows {
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.award-row {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) auto auto;
+  gap: 24px;
+  align-items: baseline;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.award-name {
+  font-size: 20px;
+  color: var(--text);
+}
+.award-detail {
+  font-size: 15px;
+  color: var(--text-muted);
+}
+.award-year {
+  font-size: 14px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+.award-rows .impact-link {
+  margin-top: 0;
+}
+.project-content .award-rows + .project-section {
+  margin-top: 96px;
+}
+@media (max-width: 768px) {
+  .award-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 16px;
+  }
+  .award-name,
+  .award-detail {
+    grid-column: 1 / -1;
+  }
+}
+
 .impact-card p {
   font-size: 16px;
   color: var(--text-muted);

@@ -19,7 +19,11 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=257">
+  <link rel="stylesheet" href="style.css?v=258">
+  <style>
+    /* The ten plates open in the shared lightbox (2026-09-09). */
+    img.project-img-full { cursor: zoom-in; }
+  </style>
   <link rel="canonical" href="https://www.chang-mou.com/storybloom.html">
   <script type="application/ld+json">
   {
@@ -63,7 +67,7 @@
   </nav>
 
   <!-- Cover (top, content width) -->
-  <img src="images/storybloom-card.png?v=4" alt="StoryBloom, a bedtime storytelling app" class="case-cover">
+  <img width="1920" height="1080" src="images/storybloom-card.png?v=4" alt="StoryBloom, a bedtime storytelling app" class="case-cover">
 
   <!-- Project Hero -->
   <section class="project-hero">
@@ -93,7 +97,7 @@
       </div>
       <div class="project-detail-item">
         <h3>Timeline</h3>
-        <p>2026</p>
+        <p>May 2026</p>
       </div>
       <div class="project-detail-item">
         <h3>Team</h3>
@@ -120,18 +124,23 @@
       <p class="section-label">Recognition</p>
     </div>
 
-    <div class="impact-grid grid-2x2">
-      <div class="impact-card">
-        <span class="impact-number">Red Dot</span>
-        <p>Winner, Red Dot Design Award, 2026</p>
-        <a href="https://drive.google.com/file/d/1HCtIL7uSzCGC1EWR9ykP6ihrmdkdoTPs/view?usp=sharing" target="_blank" class="impact-link">View ↗</a>
-      </div>
-      <div class="impact-card">
-        <span class="impact-number">NYPDA</span>
-        <p>Silver Winner, NY Product Design Awards, 2026</p>
-        <a href="https://nydesignawards.com/winner-info.php?id=4480" target="_blank" class="impact-link">View ↗</a>
-      </div>
-    </div>
+    <!-- Recognition as hairline rows (2026-09-09, portfolio-audit fix 2):
+         the same two awards and links as the 220px cards, a quarter of the
+         height; shares .award-rows with pollen.html. -->
+    <ul class="award-rows">
+      <li class="award-row">
+        <span class="award-name">Red Dot</span>
+        <span class="award-detail">Winner, Red Dot Design Award</span>
+        <span class="award-year">2026</span>
+        <a href="https://drive.google.com/file/d/1HCtIL7uSzCGC1EWR9ykP6ihrmdkdoTPs/view?usp=sharing" target="_blank" rel="noopener" class="impact-link">View ↗</a>
+      </li>
+      <li class="award-row">
+        <span class="award-name">NYPDA</span>
+        <span class="award-detail">Silver Winner, NY Product Design Awards</span>
+        <span class="award-year">2026</span>
+        <a href="https://nydesignawards.com/winner-info.php?id=4480" target="_blank" rel="noopener" class="impact-link">View ↗</a>
+      </li>
+    </ul>
 
     <!-- Problem -->
     <div id="problem" class="project-section">
@@ -155,7 +164,7 @@
       <p>Seven moments. The first four are inward: how today felt, answered one tap at a time. The fifth turns outward to where tonight's story should happen, and the last two close the night. Every step can be skipped, and words are never required.</p>
     </div>
 
-    <img loading="lazy" decoding="async" src="images/storybloom-ritual.jpg" alt="The seven moments of the ritual: color, weather, shape, friend, dreamland, story, goodnight" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="493" src="images/storybloom-ritual.jpg" alt="The seven moments of the ritual: color, weather, shape, friend, dreamland, story, goodnight" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- One night -->
     <div id="one-night" class="project-section">
@@ -164,7 +173,7 @@
       <p>Tonight's picks compose the story's emotional palette. Lavender reads as dreamy, rain becomes a drizzly little day, a tangled shape leaves a heart still a bit tangled, and the paper crane takes the starring role. The same dreamland can hold many nights; the difference is the child.</p>
     </div>
 
-    <img loading="lazy" decoding="async" src="images/storybloom-one-night.jpg" alt="One night worked through: five picks composing into the story Goodnight, moon garden" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="742" src="images/storybloom-one-night.jpg" alt="One night worked through: five picks composing into the story Goodnight, moon garden" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="project-section">
       <p>In the working build, ten handwritten templates, two per dreamland, stand in for the model. The four picks pour into their placeholders and shift the voice, not just the nouns, so every night reads differently while the language stays hand tuned for reading aloud. Short sentences, concrete images, picture book vocabulary.</p>
@@ -177,7 +186,7 @@
       <p>Six pastels carry the day's color picks, but every button is periwinkle. <span style="color: var(--text);">Coral is activating; periwinkle is sleepy. Bedtime gets the sleepy one.</span> Fraunces holds the storytelling and Nunito holds the interface, one narrative voice and one interface voice. Nothing in the system demands attention.</p>
     </div>
 
-    <img loading="lazy" decoding="async" src="images/storybloom-design-language.jpg" alt="Design language board: palette, type, the five worlds, surface and rhythm" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="812" src="images/storybloom-design-language.jpg" alt="Design language board: palette, type, the five worlds, surface and rhythm" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Principles -->
     <div id="principles" class="project-section">
@@ -211,43 +220,43 @@
       <h2>It starts with an invitation</h2>
       <p>Lumo the moon, asleep on a cloud, and one button. The promise underneath is the whole scope of the product: takes about three minutes.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-welcome.jpg" alt="The welcome screen, Lumo asleep on a cloud" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-welcome.jpg" alt="The welcome screen, Lumo asleep on a cloud" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Four picks, no typing</h4>
       <p>Color, weather, shape, and a little friend. Each screen asks one soft question and accepts one tap for an answer.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-picks.jpg" alt="The four feeling steps: color, weather, shape, and little friend" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="820" src="images/storybloom-picks.jpg" alt="The four feeling steps: color, weather, shape, and little friend" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Nine friends, or make one up</h4>
       <p>The companions are deliberately portable, a paper boat, a lantern, a little bear, so any friend fits any world. The Create a Friend sheet lets the child invent their own: a name, a shape, a color, a few words about what it's like. It saves to the device and stars in every story after.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-friends.jpg" alt="The little friend picker and the Create a Friend sheet" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-friends.jpg" alt="The little friend picker and the Create a Friend sheet" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Then the night turns outward</h4>
       <p>The fifth moment is imaginative rather than reflective: where should tonight's story happen? Five dreamlands, then the story arrives, written for tonight.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-night.jpg" alt="World selection and tonight's story screen" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-night.jpg" alt="World selection and tonight's story screen" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>The last screen asks for nothing</h4>
       <p>After the story, one gentle action closes the night: a slow breath together, a small wish, a goodnight wave. Then Sleep Mode dims the screen and stops asking. No app should win an argument with sleep.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-goodnight.jpg" alt="The goodnight step and Sleep Mode" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-goodnight.jpg" alt="The goodnight step and Sleep Mode" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Tonight's story becomes tomorrow's star</h4>
       <p>Kept stories return as a constellation on the welcome screen, each star back where its night left it, and Lily's shelf holds the library: stars kept, nights, friends met. The ritual recurs because the night before kept something worth coming back to, not because the app demands it.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-keep.jpg" alt="Saved stories as a constellation on the welcome screen, and Lily's shelf" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-keep.jpg" alt="Saved stories as a constellation on the welcome screen, and Lily's shelf" class="project-img-full" style="border-radius: var(--radius);">
 
     <div class="deliverable">
       <h4>Quiet controls for the grown-up</h4>
       <p>Behind a small gear, one sheet holds everything the adult needs and the child never sees. The child's name flows into the story, age tailors the gentle words, a narrator reads at a pre-reader pace, and theme chips steer what tonight's stories lean toward. Everything lives on the device. No account needed.</p>
     </div>
-    <img loading="lazy" decoding="async" src="images/storybloom-parents.jpg" alt="The parent settings sheet: little one, story, bedtime, and content preferences" class="project-img-full" style="border-radius: var(--radius);">
+    <img loading="lazy" decoding="async" width="1920" height="1046" src="images/storybloom-parents.jpg" alt="The parent settings sheet: little one, story, bedtime, and content preferences" class="project-img-full" style="border-radius: var(--radius);">
 
     <!-- Try it live -->
     <div id="live" class="project-section project-section--desktop-only">
@@ -285,6 +294,13 @@
   <button class="back-to-top" aria-label="Back to top">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
   </button>
+
+  <!-- Lightbox (2026-09-09): the Play page's, verbatim; opens the ten plates.
+       CSS lives in style.css. -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
+    <img loading="lazy" decoding="async" id="lightboxImg" src="" alt="">
+  </div>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
@@ -568,6 +584,39 @@
       }
     }, { rootMargin: '200px 0px' });
     io.observe(frame);
+  })();
+</script>
+
+<script>
+  // Lightbox: the Play page's IIFE, pointed at the plates
+  (function() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    if (!lightbox) return;
+
+    document.querySelectorAll('img.project-img-full').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+
+    lightbox.addEventListener('click', closeLightbox);
+    lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
   })();
 </script>
 
