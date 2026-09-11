@@ -1313,6 +1313,7 @@
       // outline nose -> back -> dorsal -> stalk -> fluke -> belly; the long pectoral fin is its own polygon.
       const WB = [[0,-0.02],[0.02,-0.055],[0.06,-0.066],[0.15,-0.072],[0.3,-0.075],[0.45,-0.075],[0.55,-0.072],[0.58,-0.076],[0.595,-0.086],[0.61,-0.096],[0.62,-0.09],[0.63,-0.07],[0.67,-0.063],[0.72,-0.052],[0.78,-0.037],[0.845,-0.032],[0.832,-0.075],[0.826,-0.115],[0.836,-0.138],[0.858,-0.142],[0.878,-0.125],[0.89,-0.1],[0.898,-0.078],[0.925,-0.062],[0.96,-0.045],[1,-0.022],[0.985,-0.004],[0.95,0.004],[0.905,0.002],[0.87,-0.004],[0.845,-0.012],[0.78,0],[0.72,0.023],[0.67,0.046],[0.61,0.063],[0.55,0.08],[0.49,0.092],[0.44,0.098],[0.38,0.1],[0.32,0.098],[0.26,0.075],[0.21,0.052],[0.15,0.035],[0.09,0.015],[0.035,-0.006],[0.01,-0.017]];
       const WF = [[0.245,0.068],[0.285,0.115],[0.335,0.165],[0.395,0.212],[0.44,0.24],[0.465,0.25],[0.462,0.222],[0.435,0.195],[0.395,0.15],[0.365,0.118],[0.348,0.096],[0.335,0.086]];
+      const WF2 = [[0.215,0.055],[0.225,0.1],[0.24,0.145],[0.26,0.18],[0.276,0.195],[0.285,0.175],[0.29,0.14],[0.285,0.105],[0.27,0.078]]; // the far flipper, seen past the body: forward of the near one, hanging more steeply, half as bright
       const W_SPARKS = [[0.19,-0.022],[0.61,-0.096],[0.465,0.247],[0.858,-0.142],[1,-0.022]]; // eye, dorsal, fin tip, fluke tips
       const W_MOUTH = [[0.005,-0.028],[0.08,-0.016],[0.16,-0.006],[0.23,0.004],[0.25,0]]; // the long jaw, curling up at the corner
       const W_PLEATS = [[[0.03,0],[0.15,0.03],[0.3,0.062]], [[0.045,0.014],[0.165,0.047],[0.32,0.082]]]; // ventral grooves along the throat, fainter still
@@ -1353,9 +1354,10 @@
       function whaleMote(p, kind, part) { // the site's one mote, anchored in whale space
         const spark = kind === 'spark', fill = kind === 'fill', bokeh = fill && Math.random() < 0.15;
         const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
+        const dim = part === 'fin2' ? 0.35 : 1; // the far flipper reads as behind the body (0.5 for an hour on 2026-09-11, then a third per user)
         return { s: p[0], t: p[1], part, shape: spark ? 2 : bokeh ? 1 : 0,
           r: spark ? rnd(1.6, 1.9) : bokeh ? rnd(3, 5) : kind === 'outline' ? rnd(1.0, 1.7) : kind === 'pleat' ? 0.9 : rnd(0.9, 1.3),
-          b: spark ? 1 : kind === 'outline' ? rnd(0.7, 1) : kind === 'mouth' ? 0.5 : kind === 'pleat' ? 0.3 : bokeh ? 0.4 : rnd(0.28, 0.5),
+          b: dim * (spark ? 1 : kind === 'outline' ? rnd(0.7, 1) : kind === 'mouth' ? 0.5 : kind === 'pleat' ? 0.3 : bokeh ? 0.4 : rnd(0.28, 0.5)),
           c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
           x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
       }
@@ -1374,6 +1376,9 @@
         } else if (m.part === 'fin') { // a slow flap about its root
           const th = 0.10 * Math.sin(age * 1.85 + 1), hx = 0.29, hy = 0.085, dx = m.s - hx, dy = m.t - hy, c = Math.cos(th), sn = Math.sin(th);
           ss = hx + dx * c - dy * sn; tt = wave(hx) + hy + dx * sn + dy * c;
+        } else if (m.part === 'fin2') { // the far flipper flaps a beat behind the near one
+          const th = 0.08 * Math.sin(age * 1.85 + 2.3), hx = 0.24, hy = 0.062, dx = m.s - hx, dy = m.t - hy, c = Math.cos(th), sn = Math.sin(th);
+          ss = hx + dx * c - dy * sn; tt = wave(hx) + hy + dx * sn + dy * c;
         } else tt = m.t + wave(m.s);
         return [cx + w.dir * (0.5 - ss) * w.L + 0.6 * Math.sin(age * 3 + m.ph), cy + tt * w.L + 0.6 * Math.cos(age * 2.7 + m.ph)];
       }
@@ -1383,14 +1388,16 @@
         const L = Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424); // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap
         if (L < 120) return;
         const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
-        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
+        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
         const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
         // density (2026-09-11, per user): outline motes about 12px apart and a half-strength fill, so each star stays a star
         const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
         resample(body, Math.round(55 * k)).forEach(p => list.push(whaleMote(p, 'outline', p[2] >= F0 && p[2] < F1 ? 'fluke' : 'body')));
         resample(fin, Math.round(13 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin')));
+        resample(fin2, Math.round(9 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin2')));
         sampleInside(body, Math.round(27 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')));
         sampleInside(fin, Math.round(4 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
+        sampleInside(fin2, Math.round(2 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin2')));
         catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'mouth', 'body')));
         W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
         W_SPARKS.forEach((p, i) => list.push(whaleMote(p, 'spark', i === 2 ? 'fin' : isFluke(p) ? 'fluke' : 'body')));
