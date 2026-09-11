@@ -872,7 +872,7 @@
       const W_FLUKE = [15, 30], W_HINGE = [0.845, -0.022]; // the fluke is WB[15..30], stalk top to stalk bottom; it turns about the stalk's centre
       const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
       const W_SWIM = 18, W_GATHER = 1.5, W_LET = 2.0; // the crossing, each mote's rise into place, the tail-first let-go
-      const WHALE = [45, 75];                 // seconds between whales
+      const WHALE = [28, 45];                 // seconds between whale starts (a crossing takes about 20s, so 8 to 25s of empty band between them; was 45 to 75 until 2026-09-11, per user "more frequent")
       let whale = null, nextWhale = 0;
       function catmull(pts, per, closed) {
         const out = [], n = pts.length;
@@ -938,11 +938,12 @@
         const dir = Math.random() < 0.5 ? 1 : -1;
         const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
         const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
+        // density (2026-09-11, per user): outline motes about 12px apart and a half-strength fill, so each star stays a star
         const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
-        resample(body, Math.round(82 * k)).forEach(p => list.push(whaleMote(p, 'outline', p[2] >= F0 && p[2] < F1 ? 'fluke' : 'body')));
-        resample(fin, Math.round(20 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin')));
-        sampleInside(body, Math.round(54 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')));
-        sampleInside(fin, Math.round(8 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
+        resample(body, Math.round(55 * k)).forEach(p => list.push(whaleMote(p, 'outline', p[2] >= F0 && p[2] < F1 ? 'fluke' : 'body')));
+        resample(fin, Math.round(13 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin')));
+        sampleInside(body, Math.round(27 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')));
+        sampleInside(fin, Math.round(4 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
         catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'mouth', 'body')));
         W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
         W_SPARKS.forEach((p, i) => list.push(whaleMote(p, 'spark', i === 2 ? 'fin' : isFluke(p) ? 'fluke' : 'body')));
