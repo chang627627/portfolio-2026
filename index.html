@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=258">
+  <link rel="stylesheet" href="style.css?v=259">
   <!-- Work-card motion. Scoped to this page (.card-loop / .sb-phone exist only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -1793,8 +1793,16 @@
   // with no source; this has one. It replaces the pixel dissolve and its Pac-Man (both
   // retired 2026-09-09 per user). Time only runs while the footer is on screen, so a
   // return never finds the field dead; reduced motion gets one still frame.
+  // THE WHALE (2026-09-10): on desktop the footer's one event is a humpback made of the same
+  // motes instead of the meteor. Embers ignite at the glow's edge and rise into a constellation
+  // nose first, it swims once across the band above "Say hello" on a shallow surfacing arc with a
+  // travelling body wave and a hinged fluke, then lets go tail first and every mote lives out an
+  // ember's life. It ignores the pointer like the rest of the dust. ?fx=-whale brings the meteor
+  // back to compare; phones and reduced motion never see it.
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
+    const whaleOn = matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine)').matches && !FX.includes('-whale') && !FX.includes('off');
     document.querySelectorAll('.px-dissolve').forEach(cv => {
       if (getComputedStyle(cv).display === 'none') return;
       const parent = cv.parentElement;
@@ -1804,7 +1812,7 @@
       const WARM_P = [0.5, 0.82];                                    // their shares
       const COOL = [150, 200, 255];                                  // what they cool toward
       const RATE = 12.5 / 1327;      // motes per second per px of width: about 70 alive on a laptop, 20 on a phone
-      const LIFE = [3.6, 6.0], RISE = [22, 38], MAX = 220;
+      const LIFE = [3.6, 6.0], RISE = [22, 38], MAX = 560; // room for a let-go whale on top of the ambient field
       const SHAPE_POINT = 0.55, SHAPE_BOKEH = 0.3; // the rest sparks
       const METEOR = [10, 20];       // seconds between shooting stars
       let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0, last = 0, T = 0, acc = 0, seeded = false, nextMeteor = 0;
@@ -1877,6 +1885,126 @@
         meteors.push({ x: x0, y: y0, vx: dir * len / life, vy: (y1 - y0) / life, born: T, life, tail: rnd(90, 140) });
       }
       cv._shoot = shoot; // for probing
+      // The whale. Shape in whale units: x 0 (nose) to 1 (fluke tips), y down, midline 0. Closed body
+      // outline nose -> back -> dorsal -> stalk -> fluke -> belly; the long pectoral fin is its own polygon.
+      const WB = [[0,-0.02],[0.02,-0.055],[0.06,-0.066],[0.15,-0.072],[0.3,-0.075],[0.45,-0.075],[0.55,-0.072],[0.58,-0.076],[0.595,-0.086],[0.61,-0.096],[0.62,-0.09],[0.63,-0.07],[0.67,-0.063],[0.72,-0.052],[0.78,-0.037],[0.845,-0.032],[0.832,-0.075],[0.826,-0.115],[0.836,-0.138],[0.858,-0.142],[0.878,-0.125],[0.89,-0.1],[0.898,-0.078],[0.925,-0.062],[0.96,-0.045],[1,-0.022],[0.985,-0.004],[0.95,0.004],[0.905,0.002],[0.87,-0.004],[0.845,-0.012],[0.78,0],[0.72,0.023],[0.67,0.046],[0.61,0.063],[0.55,0.08],[0.49,0.092],[0.44,0.098],[0.38,0.1],[0.32,0.098],[0.26,0.075],[0.21,0.052],[0.15,0.035],[0.09,0.015],[0.035,-0.006],[0.01,-0.017]];
+      const WF = [[0.245,0.068],[0.285,0.115],[0.335,0.165],[0.395,0.212],[0.44,0.24],[0.465,0.25],[0.462,0.222],[0.435,0.195],[0.395,0.15],[0.365,0.118],[0.348,0.096],[0.335,0.086]];
+      const W_SPARKS = [[0.19,-0.022],[0.61,-0.096],[0.465,0.247],[0.858,-0.142],[1,-0.022]]; // eye, dorsal, fin tip, fluke tips
+      const W_MOUTH = [[0.005,-0.028],[0.08,-0.016],[0.16,-0.006],[0.23,0.004],[0.25,0]]; // the long jaw, curling up at the corner
+      const W_PLEATS = [[[0.03,0],[0.15,0.03],[0.3,0.062]], [[0.045,0.014],[0.165,0.047],[0.32,0.082]]]; // ventral grooves along the throat, fainter still
+      const W_FLUKE = [15, 30], W_HINGE = [0.845, -0.022]; // the fluke is WB[15..30], stalk top to stalk bottom; it turns about the stalk's centre
+      const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
+      const W_SWIM = 18, W_GATHER = 1.5, W_LET = 2.0; // the crossing, each mote's rise into place, the tail-first let-go
+      const WHALE = [45, 75];                 // seconds between whales
+      let whale = null, nextWhale = 0;
+      function catmull(pts, per, closed) {
+        const out = [], n = pts.length;
+        for (let i = 0; i < (closed ? n : n - 1); i++) {
+          const p0 = closed ? pts[(i - 1 + n) % n] : pts[Math.max(i - 1, 0)], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = closed ? pts[(i + 2) % n] : pts[Math.min(i + 2, n - 1)];
+          for (let k = 0; k < per; k++) {
+            const t = k / per, t2 = t * t, t3 = t2 * t;
+            out.push([0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+              0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]);
+          }
+        }
+        return out;
+      }
+      function resample(poly, n) { // n points evenly spaced by arc length around a closed polyline
+        const L = [0];
+        for (let i = 1; i <= poly.length; i++) { const a = poly[i - 1], b = poly[i % poly.length]; L.push(L[L.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
+        const tot = L[L.length - 1], out = [];
+        for (let k = 0; k < n; k++) {
+          const d = tot * k / n;
+          for (let i = 1; i < L.length; i++) if (L[i] >= d) { const a = poly[i - 1], b = poly[i % poly.length], seg = L[i] - L[i - 1], t = seg ? (d - L[i - 1]) / seg : 0; out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, i - 1]); break; }
+        }
+        return out;
+      }
+      function inside(poly, x, y) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1] + 1e-12) + a[0]) c = !c; } return c; }
+      function sampleInside(poly, n) {
+        let x0 = 9, x1 = -9, y0 = 9, y1 = -9; poly.forEach(p => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+        const out = []; let guard = 0;
+        while (out.length < n && guard++ < 20000) { const x = rnd(x0, x1), y = rnd(y0, y1); if (inside(poly, x, y)) out.push([x, y]); }
+        return out;
+      }
+      function whaleMote(p, kind, part) { // the site's one mote, anchored in whale space
+        const spark = kind === 'spark', fill = kind === 'fill', bokeh = fill && Math.random() < 0.15;
+        const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
+        return { s: p[0], t: p[1], part, shape: spark ? 2 : bokeh ? 1 : 0,
+          r: spark ? rnd(1.6, 1.9) : bokeh ? rnd(3, 5) : kind === 'outline' ? rnd(1.0, 1.7) : kind === 'pleat' ? 0.9 : rnd(0.9, 1.3),
+          b: spark ? 1 : kind === 'outline' ? rnd(0.7, 1) : kind === 'mouth' ? 0.5 : kind === 'pleat' ? 0.3 : bokeh ? 0.4 : rnd(0.28, 0.5),
+          c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
+          x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
+      }
+      function whalePoint(m, age) { // whale-space kinematics to canvas px
+        const w = whale, u = Math.min(1, Math.max(0, age / W_SWIM));
+        const f = Math.min(age, W_SWIM) / W_SWIM + Math.max(0, age - W_SWIM) * 0.4 / W_SWIM; // it slows while letting go
+        const cs = w.dir > 0 ? w.cx0 : w.cx1, ce = w.dir > 0 ? w.cx1 : w.cx0;
+        const cx = cs + (ce - cs) * f, cy = w.cyEnd - w.arc * Math.sin(Math.PI * u) + 2 * Math.sin(2 * Math.PI * age / 5 + w.ph);
+        const tw = 2 * Math.PI / W_P * age, wave = s => W_A * s * s * Math.sin(2 * Math.PI * 0.85 * s - tw);
+        let ss = m.s, tt;
+        if (m.part === 'fluke') { // hinged at the stalk, turned by the wave's slope there
+          const sh = W_HINGE[0], shy = W_HINGE[1], ph = 2 * Math.PI * 0.85 * sh - tw;
+          const th = Math.atan(W_A * (2 * sh * Math.sin(ph) + sh * sh * 2 * Math.PI * 0.85 * Math.cos(ph))) * 1.5;
+          const dx = m.s - sh, dy = m.t - shy, c = Math.cos(th), sn = Math.sin(th);
+          ss = sh + dx * c - dy * sn; tt = wave(sh) + shy + dx * sn + dy * c;
+        } else if (m.part === 'fin') { // a slow flap about its root
+          const th = 0.10 * Math.sin(age * 1.85 + 1), hx = 0.29, hy = 0.085, dx = m.s - hx, dy = m.t - hy, c = Math.cos(th), sn = Math.sin(th);
+          ss = hx + dx * c - dy * sn; tt = wave(hx) + hy + dx * sn + dy * c;
+        } else tt = m.t + wave(m.s);
+        return [cx + w.dir * (0.5 - ss) * w.L + 0.6 * Math.sin(age * 3 + m.ph), cy + tt * w.L + 0.6 * Math.cos(age * 2.7 + m.ph)];
+      }
+      function spawnWhale() {
+        if (whale || !whaleOn) return;
+        const span = bBot - bTop, arc = span * 0.035;
+        const L = Math.min(W * 0.30, 440, (span - 38 - arc) / 0.424); // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap
+        if (L < 120) return;
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
+        const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
+        const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
+        resample(body, Math.round(82 * k)).forEach(p => list.push(whaleMote(p, 'outline', p[2] >= F0 && p[2] < F1 ? 'fluke' : 'body')));
+        resample(fin, Math.round(20 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin')));
+        sampleInside(body, Math.round(54 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')));
+        sampleInside(fin, Math.round(8 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
+        catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'mouth', 'body')));
+        W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
+        W_SPARKS.forEach((p, i) => list.push(whaleMote(p, 'spark', i === 2 ? 'fin' : isFluke(p) ? 'fluke' : 'body')));
+        whale = { born: T, dir, L, arc, cx0: 0.55 * L + 20, cx1: W - 0.55 * L - 60, cyEnd: bTop + 30 + 0.142 * L + arc, motes: list, ph: Math.random() * 6.283 };
+        nextWhale = T + rnd(WHALE[0], WHALE[1]);
+        list.forEach(m => { // each ember ignites at the glow's edge under its place and rises into it, nose first
+          const a = whalePoint(m, 0);
+          m.bx = a[0] + gauss() * 70; m.by = bBot - span * 0.28 * Math.random() * Math.random() + rnd(-4, 8);
+          m.gd = m.s * 1.1 + rnd(0, 0.5); m.rel = W_SWIM + (1 - m.s) * W_LET + rnd(0, 0.5);
+          m.x = m.bx; m.y = m.by;
+        });
+      }
+      cv._whale = spawnWhale; cv._whaleOn = whaleOn; cv._whaleMotes = () => whale ? whale.motes : null; // for probing
+      cv._whaleBox = () => { if (!whale) return null; let n = 0, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; whale.motes.forEach(m => { if (m.done) return; n++; x0 = Math.min(x0, m.x); x1 = Math.max(x1, m.x); y0 = Math.min(y0, m.y); y1 = Math.max(y1, m.y); }); return { n, x0, x1, y0, y1, age: T - whale.born, L: whale.L, bBot }; };
+      function drawWhale(dt) {
+        if (!whale) return;
+        const w = whale, age = T - w.born, span = bBot - bTop;
+        let alive = 0;
+        for (const m of w.motes) {
+          if (m.done) continue;
+          const ma = age - m.gd;
+          if (ma < 0) { alive++; continue; }        // not yet ignited
+          if (age >= m.rel) {                       // let go: from here on it is an ordinary ember
+            m.done = true;
+            const vx = (w.cx1 - w.cx0) / W_SWIM * w.dir * 0.35;
+            motes.push({ x: m.x, y: m.y, shape: m.shape, c0: m.c0, c1: m.c1, r: m.r, b: m.b, vx: vx + gauss() * 8, vy: gauss() * 4, rise: rnd(RISE[0], RISE[1]) * 0.8, flare: 0, ray: m.ray, rot: m.rot, ph: m.ph, born: T - 0.15, life: rnd(LIFE[0], LIFE[1]) });
+            if (motes.length > MAX) motes.splice(0, motes.length - MAX);
+            continue;
+          }
+          alive++;
+          const k = Math.min(1, ma / W_GATHER), e = 1 - Math.pow(1 - k, 3), a0 = whalePoint(m, age);
+          if (dt && k < 1) { m.by -= 14 * dt; m.bx += gauss() * 2 * dt; } // the ember drifts up while it gathers
+          m.x = m.bx + (a0[0] - m.bx) * e; m.y = m.by + (a0[1] - m.by) * e;
+          const h = Math.min(1, Math.max(0, (bBot - m.y) / span)), fl = Math.exp(-ma / 0.12);
+          const a = Math.min(1, m.b * (0.45 + 0.55 * e) * (1 - 0.3 * h * h) * (1 + 0.9 * fl));
+          drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl));
+        }
+        if (!alive) whale = null;
+      }
       function drawMeteors() {
         for (let i = meteors.length - 1; i >= 0; i--) {
           const s = meteors[i], u = (T - s.born) / s.life;
@@ -1898,11 +2026,12 @@
       function draw(dt) {
         if (cv.offsetParent === null) return;
         T += dt;
-        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
+        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); nextWhale = T + 2; const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
         if (dt) {
           const p = progress();
           acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
-          if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
+          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > 0.85) spawnWhale(); else nextWhale = T + 1; } }
+          else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
         }
         ctx.clearRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'lighter';
@@ -1921,6 +2050,7 @@
           if (a <= 0.003) continue;
           drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl)); // and cooler
         }
+        drawWhale(dt);
         drawMeteors();
         ctx.globalCompositeOperation = 'source-over';
       }
@@ -1933,7 +2063,9 @@
         const el = stopSel && document.querySelector(stopSel);
         if (el) b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04);
         bTop = 0; bBot = H * b1;
+        if (whale) { whale = null; nextWhale = T + 3; }
       }
+      cv._draw = draw; // for probing: step the simulation without waiting on frames
       function loop(ts) { const t = ts / 1000; const dt = last ? Math.min(0.05, Math.max(0, t - last)) : 0.016; last = t; draw(dt); raf = requestAnimationFrame(loop); }
       function start() { if (running || reduce) return; running = true; last = 0; raf = requestAnimationFrame(loop); }
       function stop() { running = false; cancelAnimationFrame(raf); }
