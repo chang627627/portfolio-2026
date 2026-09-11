@@ -968,8 +968,9 @@
       const W_PLEATS = [[[0.03,0],[0.15,0.03],[0.3,0.062]], [[0.045,0.014],[0.165,0.047],[0.32,0.082]]]; // ventral grooves along the throat, fainter still
       const W_FLUKE = [15, 30], W_HINGE = [0.845, -0.022]; // the fluke is WB[15..30], stalk top to stalk bottom; it turns about the stalk's centre
       const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
-      const W_SWIM = 18, W_GATHER = 1.5, W_LET = 2.0; // the crossing, each mote's rise into place, the tail-first let-go
-      const WHALE = [28, 45];                 // seconds between whale starts (a crossing takes about 20s, so 8 to 25s of empty band between them; was 45 to 75 until 2026-09-11, per user "more frequent")
+      const W_SWIM = 25, W_GATHER = 1.5, W_LET = 2.0; // the crossing (18s until 2026-09-11, slowed per user "how to make the whale more obvious?"), each mote's rise into place, the tail-first let-go
+      const SETTLE_PULSE = 0.3, FIELD_DIM = 0.3, WHALE_R = 1.15; // the click when the last star lands, how much the ambient field steps back while it swims, the whale's stars a little larger than the field's
+      const WHALE = [34, 50];                 // seconds between whale starts (a crossing now takes about 27s, so 7 to 23s of empty band between them; was 45 to 75, then 28 to 45 with the 18s crossing)
       let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
       function catmull(pts, per, closed) {
         const out = [], n = pts.length;
@@ -1006,7 +1007,7 @@
         const dim = part === 'fin2' ? 0.35 : 1; // the far flipper reads as behind the body (0.5 for an hour on 2026-09-11, then a third per user)
         const r = spark ? 1.8 : kind === 'anchor' ? rnd(1.5, 1.7) : kind === 'anchor2' ? rnd(1.3, 1.5) : kind === 'outline' ? rnd(1.0, 1.4) : kind === 'outline3' ? rnd(0.55, 0.75) : rnd(0.8, 1.1);
         const b = spark ? 1 : kind === 'anchor' ? rnd(0.9, 1) : kind === 'anchor2' ? rnd(0.72, 0.82) : kind === 'outline' ? rnd(0.66, 0.92) : kind === 'outline3' ? rnd(0.3, 0.45) : rnd(0.26, 0.4); // lifted a tier on 2026-09-11 per user "a little too dark"
-        return { s: p[0], t: p[1], part, kind, shape: spark ? 2 : 0, r, b: dim * b, k: interior ? 1 : 0,
+        return { s: p[0], t: p[1], part, kind, shape: spark ? 2 : 0, r: r * WHALE_R, b: dim * b, k: interior ? 1 : 0,
           c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
           x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
       }
@@ -1073,13 +1074,17 @@
           m.gd = m.s * 1.1 + rnd(0, 0.5); m.rel = W_SWIM + (1 - m.s) * W_LET + rnd(0, 0.5);
           m.x = m.bx; m.y = m.by;
         });
+        whale.settle = Math.max(...list.map(m => m.gd)) + W_GATHER; // when the last star lands
       }
-      cv._whale = spawnWhale; cv._whaleOn = whaleOn; cv._whaleMotes = () => whale ? whale.motes : null; // for probing
+      cv._whale = spawnWhale; cv._whaleOn = whaleOn; cv._whaleMotes = () => whale ? whale.motes : null; cv._presence = () => whalePresence(); // for probing
       cv._whaleBox = () => { if (!whale) return null; let n = 0, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; whale.motes.forEach(m => { if (m.done) return; n++; x0 = Math.min(x0, m.x); x1 = Math.max(x1, m.x); y0 = Math.min(y0, m.y); y1 = Math.max(y1, m.y); }); return { n, x0, x1, y0, y1, age: T - whale.born, L: whale.L, dir: whale.dir, bBot }; };
+      function whalePresence() { if (!whale) return 0; const age = T - whale.born; return Math.min(1, Math.max(0, age / 1.2)) * Math.min(1, Math.max(0, 1 - (age - W_SWIM) / W_LET)); }
       function drawWhale(dt) {
         if (!whale) return;
         const w = whale, age = T - w.born, span = bBot - bTop;
-        const sc = ((age % POOL_CYCLE) / POOL_CYCLE) * 1.6 - 0.3, br = 1 + BREATH_A * Math.sin(2 * Math.PI * age / BREATH_T); // the pool's centre runs past both ends so it fully leaves
+        const sc = ((age % POOL_CYCLE) / POOL_CYCLE) * 1.6 - 0.3; // the pool's centre runs past both ends so it fully leaves
+        const ps = age - w.settle, pulse = ps < 0 ? 0 : ps < 0.12 ? ps / 0.12 : Math.pow(Math.max(0, 1 - (ps - 0.12) / 0.5), 1.5); // the click when the last star lands
+        const br = (1 + BREATH_A * Math.sin(2 * Math.PI * age / BREATH_T)) * (1 + SETTLE_PULSE * pulse);
         let alive = 0;
         for (const m of w.motes) {
           if (m.done) continue;
@@ -1101,7 +1106,7 @@
           const a = Math.min(1, m.b * (0.45 + 0.55 * e) * (1 - 0.3 * h * h) * (1 + 0.9 * fl) * br * (1 + (m.k ? POOL_IN : POOL_OUT) * g));
           let c = mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9));
           if (g > 0.02) c = lift(c, POOL_LIFT * g);
-          drawMote(m, c, a, m.r * (1 + 0.9 * fl) * (1 + POOL_R * g));
+          drawMote(m, c, a, m.r * (1 + 0.9 * fl) * (1 + POOL_R * g) * (1 + 0.35 * pulse)); // the settle click swells the stars too, since the bright ones are already at full alpha
         }
         if (dt && age < W_SWIM) { // on each beat's reversal the landed fluke tips shed a couple of embers into the field
           const th = flukeAngle(age), d = th - w.thPrev;
@@ -1138,16 +1143,16 @@
       function draw(dt) {
         if (cv.offsetParent === null) return;
         T += dt;
-        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); nextWhale = T + 2; const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
+        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); nextWhale = T + 0.6; const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
         if (dt) {
           const p = progress();
           acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
-          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > 0.85) spawnWhale(); else nextWhale = T + 1; } }
+          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > 0.5) spawnWhale(); else nextWhale = T + 0.5; } }
           else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
         }
         ctx.clearRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'lighter';
-        const span = bBot - bTop;
+        const span = bBot - bTop, fieldDim = 1 - FIELD_DIM * whalePresence();
         for (let i = motes.length - 1; i >= 0; i--) {
           const m = motes[i];
           const age = T - m.born, u = age / m.life;
@@ -1158,7 +1163,7 @@
           }
           const h = Math.min(1, Math.max(0, (bBot - m.y) / span));      // height above the light's edge, 0 to 1
           const fl = m.flare ? Math.exp(-Math.max(0, age) / 0.12) : 0;   // the ignition
-          const a = Math.min(1, m.b * env(Math.max(0, u)) * (1 - 0.55 * h * h) * (1 + 0.9 * fl)); // thinner the higher it climbs
+          const a = Math.min(1, m.b * env(Math.max(0, u)) * (1 - 0.55 * h * h) * (1 + 0.9 * fl)) * fieldDim; // thinner the higher it climbs; the field steps back while the whale swims
           if (a <= 0.003) continue;
           drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl)); // and cooler
         }
