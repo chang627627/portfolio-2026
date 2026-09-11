@@ -1753,7 +1753,7 @@ footer {
 }
 
 .say-hello {
-  padding-top: 232px; /* 160 until 2026-09-11: the extra 72px is the whale's headroom (see index.html's footer stardust block) */
+  padding-top: 302px; /* 160 until 2026-09-11, then 232, then 302 the same day: the extra room is the whale's sky (see index.html's footer stardust block) */
   text-align: center;
 }
 

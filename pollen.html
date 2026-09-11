@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=259">
+  <link rel="stylesheet" href="style.css?v=260">
   <link rel="canonical" href="https://www.chang-mou.com/pollen.html">
   <script type="application/ld+json">
   {
@@ -960,7 +960,7 @@
       const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
       const W_SWIM = 18, W_GATHER = 1.5, W_LET = 2.0; // the crossing, each mote's rise into place, the tail-first let-go
       const WHALE = [28, 45];                 // seconds between whale starts (a crossing takes about 20s, so 8 to 25s of empty band between them; was 45 to 75 until 2026-09-11, per user "more frequent")
-      let whale = null, nextWhale = 0;
+      let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
       function catmull(pts, per, closed) {
         const out = [], n = pts.length;
         for (let i = 0; i < (closed ? n : n - 1); i++) {
@@ -1020,9 +1020,9 @@
       function spawnWhale() {
         if (whale || !whaleOn) return;
         const span = bBot - bTop, arc = span * 0.035;
-        const L = Math.min(W * 0.30, 440, (span - 38 - arc) / 0.424); // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap
+        const L = Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424); // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap
         if (L < 120) return;
-        const dir = Math.random() < 0.5 ? 1 : -1;
+        const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
         const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
         const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
         // density (2026-09-11, per user): outline motes about 12px apart and a half-strength fill, so each star stays a star
@@ -1044,7 +1044,7 @@
         });
       }
       cv._whale = spawnWhale; cv._whaleOn = whaleOn; cv._whaleMotes = () => whale ? whale.motes : null; // for probing
-      cv._whaleBox = () => { if (!whale) return null; let n = 0, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; whale.motes.forEach(m => { if (m.done) return; n++; x0 = Math.min(x0, m.x); x1 = Math.max(x1, m.x); y0 = Math.min(y0, m.y); y1 = Math.max(y1, m.y); }); return { n, x0, x1, y0, y1, age: T - whale.born, L: whale.L, bBot }; };
+      cv._whaleBox = () => { if (!whale) return null; let n = 0, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; whale.motes.forEach(m => { if (m.done) return; n++; x0 = Math.min(x0, m.x); x1 = Math.max(x1, m.x); y0 = Math.min(y0, m.y); y1 = Math.max(y1, m.y); }); return { n, x0, x1, y0, y1, age: T - whale.born, L: whale.L, dir: whale.dir, bBot }; };
       function drawWhale(dt) {
         if (!whale) return;
         const w = whale, age = T - w.born, span = bBot - bTop;
