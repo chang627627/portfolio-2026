@@ -312,7 +312,8 @@
        its start keyframe, faded, so the script further down swaps those two
        cards to a timed entrance. Top padding is the stylesheet's own again,
        since the header supplies the space the 148px override used to fake. */
-    .work { padding-bottom: 200px; } /* 200 again: the scroll-CTA that used to supply the grid-to-footer gap is gone */
+    .work { padding-bottom: 80px; } /* the scroll line below supplies the rest of the grid-to-footer gap (200 while it was gone) */
+    .scroll-cta { min-height: 64vh; } /* 40vh in style.css; taller here (2026-09-11, per user) so the line sits well clear of the whale's band below it */
     .work { padding-top: 148px; } /* the SELECTED WORK header used to supply this space (deleted per user) */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
@@ -750,6 +751,14 @@
   </section>
 
   <!-- Scroll CTA -->
+
+  <!-- Scroll line (2026-09-11, per user): four words that light up one by one on the way to the footer. -->
+  <section class="scroll-cta">
+    <span class="scroll-word">Let's</span>
+    <span class="scroll-word">build</span>
+    <span class="scroll-word">what's</span>
+    <span class="scroll-word">next.</span>
+  </section>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
   <div class="page-end">
@@ -1292,6 +1301,53 @@
   // Still deliberately decoupled from the "Say hello" reveal below: the
   // footer keeps the plain IntersectionObserver pattern coffee/homewise/
   // ticker run, so index does not go back to being the one special case.
+
+  // Scroll line (back 2026-09-11 with new words, per user; the mechanics are the 2026-07-28 page-end light pass):
+  // each word's opacity is scrubbed from its own viewport position, fully reversible, and as .page-end enters
+  // the words lift past their 0.15 rest and pick up a violet cast, the colour of the glow's nearest stop, so they
+  // read as lit by the approaching light rather than by a new painted glow. Decoupled from the "Say hello" reveal.
+  const scrollWords = document.querySelectorAll('.scroll-word');
+  const scrollCta = document.querySelector('.scroll-cta');
+  if (scrollWords.length && scrollCta) {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches ||
+        !matchMedia('(min-width: 769px)').matches) {
+      // Reduced motion (or the mobile width, where .scroll-cta is display:none anyway): a one-shot class toggle.
+      const updateScrollWords = () => {
+        const vh = window.innerHeight;
+        scrollWords.forEach((word, i) => {
+          const trigger = vh * 0.92 - i * (vh * 0.05);
+          word.classList.toggle('visible', word.getBoundingClientRect().top < trigger);
+        });
+      };
+      window.addEventListener('scroll', updateScrollWords, { passive: true });
+      window.addEventListener('resize', updateScrollWords, { passive: true });
+      updateScrollWords();
+    } else {
+      const ctaPageEnd = document.querySelector('.page-end');
+      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+      const clamp01 = (t) => Math.min(1, Math.max(0, t));
+      // Direct per-frame writes: the stylesheet's 0.3s transition would smear a scrubbed value, so it is off here.
+      scrollWords.forEach((w) => { w.style.transition = 'none'; });
+      let raf = null;
+      const paint = () => {
+        raf = null;
+        const vh = window.innerHeight;
+        let glow = 0; // the same progress the footer glow's height uses: how far .page-end has entered the viewport
+        if (ctaPageEnd) { const pe = ctaPageEnd.getBoundingClientRect(); glow = clamp01((vh - pe.top) / pe.height); }
+        scrollWords.forEach((word, i) => {
+          const trigger = vh * 0.92 - i * (vh * 0.05);
+          const p = easeOut(clamp01((trigger - word.getBoundingClientRect().top) / (vh * 0.16)));
+          word.style.opacity = (p * (0.15 + glow * 0.25)).toFixed(3);
+          word.style.transform = 'translateY(' + ((1 - p) * 20).toFixed(1) + 'px)';
+          word.style.textShadow = glow > 0.02 ? '0 10px 44px rgba(110, 70, 255, ' + (glow * 0.5).toFixed(3) + ')' : 'none';
+        });
+      };
+      const onScrollCta = () => { if (raf === null) raf = requestAnimationFrame(paint); };
+      window.addEventListener('scroll', onScrollCta, { passive: true });
+      window.addEventListener('resize', onScrollCta, { passive: true });
+      paint();
+    }
+  }
 
   // Footer scroll reveal — the IntersectionObserver pattern the other pages use.
   const footerBigText = document.querySelector('.footer-big-text');
