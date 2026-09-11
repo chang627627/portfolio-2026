@@ -593,7 +593,7 @@
     <!-- Footer -->
     <footer>
       <div class="footer-bottom">
-        <p class="footer-copy">© 2026 Chang Mou · Designed in the fog</p>
+        <p class="footer-copy">© 2026 Chang Mou · Designed in the fog<span class="footer-time"></span></p>
         <div class="footer-links">
           <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
           <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
@@ -602,6 +602,26 @@
         </div>
       </div>
     </footer>
+    <script>
+      // Footer local time (2026-09-10): appends " · 4:32 pm", San Francisco time, to the © line.
+      // Text only: if anything fails the line simply ends at "fog". The © line is desktop-only
+      // (hidden at 768px and below), so phones never see it. Per-page paste like the chat widget:
+      // edit it on index.html, then copy verbatim to the other nine pages.
+      (function () {
+        var el = document.querySelector('.footer-time');
+        if (!el || !window.Intl || !Intl.DateTimeFormat) return;
+        var fmt;
+        try {
+          fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles' });
+        } catch (e) { return; }
+        function tick() {
+          var t = fmt.format(new Date()).replace(/\s*(AM|PM)$/i, function (m, p) { return ' ' + p.toLowerCase(); });
+          el.textContent = ' · ' + t;
+        }
+        tick();
+        setInterval(tick, 10000);
+      })();
+    </script>
   </div>
 
 <script>
