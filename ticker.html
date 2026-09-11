@@ -830,7 +830,16 @@
       const WB = [[0,-0.02],[0.02,-0.055],[0.06,-0.066],[0.15,-0.072],[0.3,-0.075],[0.45,-0.075],[0.55,-0.072],[0.58,-0.076],[0.595,-0.086],[0.61,-0.096],[0.62,-0.09],[0.63,-0.07],[0.67,-0.063],[0.72,-0.052],[0.78,-0.037],[0.845,-0.032],[0.832,-0.075],[0.826,-0.115],[0.836,-0.138],[0.858,-0.142],[0.878,-0.125],[0.89,-0.1],[0.898,-0.078],[0.925,-0.062],[0.96,-0.045],[1,-0.022],[0.985,-0.004],[0.95,0.004],[0.905,0.002],[0.87,-0.004],[0.845,-0.012],[0.78,0],[0.72,0.023],[0.67,0.046],[0.61,0.063],[0.55,0.08],[0.49,0.092],[0.44,0.098],[0.38,0.1],[0.32,0.098],[0.26,0.075],[0.21,0.052],[0.15,0.035],[0.09,0.015],[0.035,-0.006],[0.01,-0.017]];
       const WF = [[0.245,0.068],[0.285,0.115],[0.335,0.165],[0.395,0.212],[0.44,0.24],[0.465,0.25],[0.462,0.222],[0.435,0.195],[0.395,0.15],[0.365,0.118],[0.348,0.096],[0.335,0.086]];
       const WF2 = [[0.215,0.055],[0.225,0.1],[0.24,0.145],[0.26,0.18],[0.276,0.195],[0.285,0.175],[0.29,0.14],[0.285,0.105],[0.27,0.078]]; // the far flipper, seen past the body: forward of the near one, hanging more steeply, half as bright
-      const W_SPARKS = [[0.19,-0.022],[0.61,-0.096],[0.465,0.247],[0.858,-0.142],[1,-0.022]]; // eye, dorsal, fin tip, fluke tips
+      // POLISH (2026-09-11, from the judged workflow: light over a hierarchy). Ten anchor stars at the joints, five of them
+      // the old sparks with rays: [x, y, spark, magnitude, part]. The outline is a loose stipple around them, the interior dim,
+      // a pool of light crosses nose to tail, the animal breathes, and the fluke tips shed embers on each beat. No lines, no fill.
+      const W_ANCHORS = [[0.003,-0.02,0,1,'body'],[0.25,0,0,2,'body'],[0.19,-0.022,1,1,'body'],[0.29,0.085,0,1,'body'],[0.465,0.247,1,1,'fin'],[0.61,-0.096,1,1,'body'],[0.845,-0.022,0,1,'body'],[0.898,-0.078,0,2,'fluke'],[0.858,-0.142,1,1,'fluke'],[1,-0.022,1,1,'fluke']]; // nose, jaw corner, eye, fin root, fin tip, dorsal, stalk, notch, fluke top, fluke far tip
+      const OUT_PX = 13, OUT_DROP = 0.08, OUT_SLIDE = 0.3, MID_KEEP = 0.5, MID_JIT = 1.2; // outline stars about 13px apart, 8% dropped, slid up to 30% along the curve, faint jittered midpoints between half of them
+      const FILL_AT_460 = [22, 3, 2];          // interior stars in the body, near fin and far fin at a 460px whale, scaling with area
+      const ANCHOR_CLEAR = 9;                  // px: no outline or fill star this close to an anchor
+      const POOL_SIG2 = 0.0392, POOL_CYCLE = 8, POOL_OUT = 0.45, POOL_IN = 0.9, POOL_R = 0.3, POOL_LIFT = 0.5; // the light that crosses nose to tail every 8s: gains on outline and interior, radius, lift toward white
+      const BREATH_T = 5.5, BREATH_A = 0.08;   // the whole animal breathes 8% in brightness
+      const WAKE_N = 2, WAKE_LIFE = [1.8, 2.6], WAKE_B = [0.38, 0.62]; // embers shed by each fluke tip on every beat
       const W_MOUTH = [[0.005,-0.028],[0.08,-0.016],[0.16,-0.006],[0.23,0.004],[0.25,0]]; // the long jaw, curling up at the corner
       const W_PLEATS = [[[0.03,0],[0.15,0.03],[0.3,0.062]], [[0.045,0.014],[0.165,0.047],[0.32,0.082]]]; // ventral grooves along the throat, fainter still
       const W_FLUKE = [15, 30], W_HINGE = [0.845, -0.022]; // the fluke is WB[15..30], stalk top to stalk bottom; it turns about the stalk's centre
@@ -867,15 +876,30 @@
         while (out.length < n && guard++ < 20000) { const x = rnd(x0, x1), y = rnd(y0, y1); if (inside(poly, x, y)) out.push([x, y]); }
         return out;
       }
-      function whaleMote(p, kind, part) { // the site's one mote, anchored in whale space
-        const spark = kind === 'spark', fill = kind === 'fill', bokeh = fill && Math.random() < 0.15;
+      function whaleMote(p, kind, part) { // the site's one mote, anchored in whale space, in four magnitudes
+        const spark = kind === 'spark', interior = kind === 'fill' || kind === 'mouth' || kind === 'pleat';
         const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
         const dim = part === 'fin2' ? 0.35 : 1; // the far flipper reads as behind the body (0.5 for an hour on 2026-09-11, then a third per user)
-        return { s: p[0], t: p[1], part, shape: spark ? 2 : bokeh ? 1 : 0,
-          r: spark ? rnd(1.6, 1.9) : bokeh ? rnd(3, 5) : kind === 'outline' ? rnd(1.0, 1.7) : kind === 'pleat' ? 0.9 : rnd(0.9, 1.3),
-          b: dim * (spark ? 1 : kind === 'outline' ? rnd(0.7, 1) : kind === 'mouth' ? 0.5 : kind === 'pleat' ? 0.3 : bokeh ? 0.4 : rnd(0.28, 0.5)),
+        const r = spark ? 1.8 : kind === 'anchor' ? rnd(1.5, 1.7) : kind === 'anchor2' ? rnd(1.3, 1.5) : kind === 'outline' ? rnd(1.0, 1.4) : kind === 'outline3' ? rnd(0.55, 0.75) : rnd(0.8, 1.1);
+        const b = spark ? 1 : kind === 'anchor' ? rnd(0.9, 1) : kind === 'anchor2' ? rnd(0.72, 0.82) : kind === 'outline' ? rnd(0.66, 0.92) : kind === 'outline3' ? rnd(0.3, 0.45) : rnd(0.26, 0.4); // lifted a tier on 2026-09-11 per user "a little too dark"
+        return { s: p[0], t: p[1], part, kind, shape: spark ? 2 : 0, r, b: dim * b, k: interior ? 1 : 0,
           c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
           x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
+      }
+      function flukeAngle(age) { // the hinged fluke's turn, the wave's slope at the stalk
+        const tw = 2 * Math.PI / W_P * age, sh = W_HINGE[0], ph = 2 * Math.PI * 0.85 * sh - tw;
+        return Math.atan(W_A * (2 * sh * Math.sin(ph) + sh * sh * 2 * Math.PI * 0.85 * Math.cos(ph))) * 1.5;
+      }
+      function sampleAlong(poly, L) { // stars along a closed polyline: OUT_PX apart, some dropped, each slid along the curve, faint midpoints between
+        const C = [0];
+        for (let i = 1; i <= poly.length; i++) { const a = poly[i - 1], b = poly[i % poly.length]; C.push(C[C.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
+        const tot = C[C.length - 1], sp = OUT_PX / L, n = Math.max(3, Math.floor(tot / sp)), out = [];
+        const at = d => { d = ((d % tot) + tot) % tot; for (let i = 1; i < C.length; i++) if (C[i] >= d) { const a = poly[i - 1], b = poly[i % poly.length], seg = C[i] - C[i - 1], t = seg ? (d - C[i - 1]) / seg : 0; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, i - 1]; } return [poly[0][0], poly[0][1], 0]; };
+        for (let i = 0; i < n; i++) {
+          if (Math.random() >= OUT_DROP) out.push({ p: at((i + rnd(-OUT_SLIDE, OUT_SLIDE)) * sp), kind: 'outline' });
+          if (Math.random() < MID_KEEP) { const m = at((i + 0.5) * sp); out.push({ p: [m[0] + gauss() * MID_JIT / L, m[1] + gauss() * MID_JIT / L, m[2]], kind: 'outline3' }); }
+        }
+        return out;
       }
       function whalePoint(m, age) { // whale-space kinematics to canvas px
         const w = whale, u = Math.min(1, Math.max(0, age / W_SWIM));
@@ -885,8 +909,7 @@
         const tw = 2 * Math.PI / W_P * age, wave = s => W_A * s * s * Math.sin(2 * Math.PI * 0.85 * s - tw);
         let ss = m.s, tt;
         if (m.part === 'fluke') { // hinged at the stalk, turned by the wave's slope there
-          const sh = W_HINGE[0], shy = W_HINGE[1], ph = 2 * Math.PI * 0.85 * sh - tw;
-          const th = Math.atan(W_A * (2 * sh * Math.sin(ph) + sh * sh * 2 * Math.PI * 0.85 * Math.cos(ph))) * 1.5;
+          const sh = W_HINGE[0], shy = W_HINGE[1], th = flukeAngle(age);
           const dx = m.s - sh, dy = m.t - shy, c = Math.cos(th), sn = Math.sin(th);
           ss = sh + dx * c - dy * sn; tt = wave(sh) + shy + dx * sn + dy * c;
         } else if (m.part === 'fin') { // a slow flap about its root
@@ -904,20 +927,21 @@
         const L = Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424); // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap
         if (L < 120) return;
         const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
-        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], k = L / 240; // mote counts scale with the length, fills with the area
+        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], ka = (L / 460) * (L / 460);
         const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
-        // density (2026-09-11, per user): outline motes about 12px apart and a half-strength fill, so each star stays a star
         const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
-        resample(body, Math.round(55 * k)).forEach(p => list.push(whaleMote(p, 'outline', p[2] >= F0 && p[2] < F1 ? 'fluke' : 'body')));
-        resample(fin, Math.round(13 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin')));
-        resample(fin2, Math.round(9 * k)).forEach(p => list.push(whaleMote(p, 'outline', 'fin2')));
-        sampleInside(body, Math.round(27 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')));
-        sampleInside(fin, Math.round(4 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
-        sampleInside(fin2, Math.round(2 * k * k)).forEach(p => list.push(whaleMote(p, 'fill', 'fin2')));
-        catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'mouth', 'body')));
+        const clear = p => !W_ANCHORS.some(a => Math.hypot(p[0] - a[0], p[1] - a[1]) * L < ANCHOR_CLEAR); // anchors stand alone
+        W_ANCHORS.forEach(a => list.push(whaleMote(a, a[2] ? 'spark' : a[3] === 2 ? 'anchor2' : 'anchor', a[4])));
+        sampleAlong(body, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, o.p[2] >= F0 && o.p[2] < F1 ? 'fluke' : 'body')); });
+        sampleAlong(fin, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, 'fin')); });
+        sampleAlong(fin2, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, 'fin2')); });
+        sampleInside(body, Math.max(4, Math.round(FILL_AT_460[0] * ka))).forEach(p => { if (clear(p)) list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')); });
+        sampleInside(fin, Math.max(1, Math.round(FILL_AT_460[1] * ka))).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
+        sampleInside(fin2, Math.max(1, Math.round(FILL_AT_460[2] * ka))).forEach(p => list.push(whaleMote(p, 'fill', 'fin2')));
+        const k = L / 240;
+        catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => { if (clear(p)) list.push(whaleMote(p, 'mouth', 'body')); });
         W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
-        W_SPARKS.forEach((p, i) => list.push(whaleMote(p, 'spark', i === 2 ? 'fin' : isFluke(p) ? 'fluke' : 'body')));
-        whale = { born: T, dir, L, arc, cx0: 0.55 * L + 20, cx1: W - 0.55 * L - 60, cyEnd: bTop + 30 + 0.142 * L + arc, motes: list, ph: Math.random() * 6.283 };
+        whale = { born: T, dir, L, arc, cx0: 0.55 * L + 20, cx1: W - 0.55 * L - 60, cyEnd: bTop + 30 + 0.142 * L + arc, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
         nextWhale = T + rnd(WHALE[0], WHALE[1]);
         list.forEach(m => { // each ember ignites at the glow's edge under its place and rises into it, nose first
           const a = whalePoint(m, 0);
@@ -931,6 +955,7 @@
       function drawWhale(dt) {
         if (!whale) return;
         const w = whale, age = T - w.born, span = bBot - bTop;
+        const sc = ((age % POOL_CYCLE) / POOL_CYCLE) * 1.6 - 0.3, br = 1 + BREATH_A * Math.sin(2 * Math.PI * age / BREATH_T); // the pool's centre runs past both ends so it fully leaves
         let alive = 0;
         for (const m of w.motes) {
           if (m.done) continue;
@@ -948,8 +973,23 @@
           if (dt && k < 1) { m.by -= 14 * dt; m.bx += gauss() * 2 * dt; } // the ember drifts up while it gathers
           m.x = m.bx + (a0[0] - m.bx) * e; m.y = m.by + (a0[1] - m.by) * e;
           const h = Math.min(1, Math.max(0, (bBot - m.y) / span)), fl = Math.exp(-ma / 0.12);
-          const a = Math.min(1, m.b * (0.45 + 0.55 * e) * (1 - 0.3 * h * h) * (1 + 0.9 * fl));
-          drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl));
+          const g = Math.exp(-(m.s - sc) * (m.s - sc) / POOL_SIG2); // the light passing over this star
+          const a = Math.min(1, m.b * (0.45 + 0.55 * e) * (1 - 0.3 * h * h) * (1 + 0.9 * fl) * br * (1 + (m.k ? POOL_IN : POOL_OUT) * g));
+          let c = mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9));
+          if (g > 0.02) c = lift(c, POOL_LIFT * g);
+          drawMote(m, c, a, m.r * (1 + 0.9 * fl) * (1 + POOL_R * g));
+        }
+        if (dt && age < W_SWIM) { // on each beat's reversal the landed fluke tips shed a couple of embers into the field
+          const th = flukeAngle(age), d = th - w.thPrev;
+          if (d !== 0 && w.dPrev !== 0 && Math.sign(d) !== Math.sign(w.dPrev)) {
+            const vx = (w.cx1 - w.cx0) / W_SWIM * w.dir * 0.3;
+            for (const m of w.motes) {
+              if (m.done || m.part !== 'fluke' || m.shape !== 2 || age - m.gd < W_GATHER) continue;
+              for (let i = 0; i < WAKE_N; i++) motes.push({ x: m.x, y: m.y, shape: 0, c0: m.c0, c1: m.c1, r: rnd(1, 1.6), b: rnd(WAKE_B[0], WAKE_B[1]), vx: vx + gauss() * 6, vy: gauss() * 4, rise: rnd(RISE[0], RISE[1]) * 0.8, flare: 0, ray: 6, rot: 0, ph: Math.random() * 6.283, born: T - 0.15, life: rnd(WAKE_LIFE[0], WAKE_LIFE[1]) });
+            }
+            if (motes.length > MAX) motes.splice(0, motes.length - MAX);
+          }
+          w.dPrev = d; w.thPrev = th;
         }
         if (!alive) whale = null;
       }
