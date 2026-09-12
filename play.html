@@ -57,6 +57,12 @@
        letter version"; a four-face pool shipped for a day before it). The overlay never
        enters layout, so the line cannot reflow; the original letter fades under it.
        Desktop, fine pointer, motion-safe only; the split never runs on phones. */
+    /* The hover effect invites sweeping the cursor along the line, and a sweep with the
+       button down selects the text, which painted the whole statement as a pale slab (the
+       site's ::selection is a white inversion). The statement is a caption, not copy anyone
+       needs to lift, so it opts out of selection; the glyph spans still take pointer events,
+       so the italic is untouched. Page-scoped, so selection elsewhere is unchanged. */
+    .page-hero--tight .page-title { -webkit-user-select: none; user-select: none; }
     .page-title .gt-g { position: relative; display: inline-block; transform: translateX(var(--sx, 0px)); transition: transform 240ms var(--ease-out); }
     .page-title .gt-g.is-alt { z-index: 1; }
     .page-title .gt-t { transition: opacity var(--dur-base) var(--ease-out); }
