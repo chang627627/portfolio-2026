@@ -312,8 +312,8 @@
        its start keyframe, faded, so the script further down swaps those two
        cards to a timed entrance. Top padding is the stylesheet's own again,
        since the header supplies the space the 148px override used to fake. */
-    .work { padding-bottom: 0; } /* the scroll line below owns the whole gap, equal above and below the words (2026-09-11, per user); phones keep 80px via the media rule further down, since the line is hidden there */
-    .scroll-cta { min-height: 66vh; } /* 40vh in style.css; the words are centred, so this is the same air on both sides, about 280px each on a laptop, the height of the whale's band, so card to words, words to band and band to the word are three equal steps (80vh for an hour read as a gap, not a beat) */
+    .work { padding-bottom: 0; } /* the scroll line below owns the whole gap, equal above and below the words; phones keep 80px via the media rule further down, since the line is hidden there */
+    .scroll-cta { min-height: 66vh; } /* 40vh in style.css; the words are centred, so this is the same air on both sides, about 265px each on a laptop */
     .work { padding-top: 148px; } /* the SELECTED WORK header used to supply this space (deleted per user) */
     @media (prefers-reduced-motion: no-preference) {
       @supports (animation-timeline: view()) {
@@ -752,7 +752,7 @@
 
   <!-- Scroll CTA -->
 
-  <!-- Scroll line (2026-09-11, per user): four words that light up one by one on the way to the footer. -->
+  <!-- Scroll line (2026-09-11, per user, last attempt): lit by the dawn as the footer rises. -->
   <section class="scroll-cta">
     <span class="scroll-word">Let's</span>
     <span class="scroll-word">build</span>
@@ -1302,10 +1302,11 @@
   // footer keeps the plain IntersectionObserver pattern coffee/homewise/
   // ticker run, so index does not go back to being the one special case.
 
-  // Scroll line (back 2026-09-11 with new words, per user; the mechanics are the 2026-07-28 page-end light pass):
-  // each word's opacity is scrubbed from its own viewport position, fully reversible, and as .page-end enters
-  // the words lift past their 0.15 rest and pick up a violet cast, the colour of the glow's nearest stop, so they
-  // read as lit by the approaching light rather than by a new painted glow. Decoupled from the "Say hello" reveal.
+  // Scroll line, LIT BY THE DAWN (2026-09-11, per user, the last attempt): the sentence sits in the dark at its dim
+  // rest, and as the footer's glow rises into view the light rises into the letters: a waterline tied to the footer's
+  // reveal climbs through the text, the dawn's violet and coral at its front, white below it, dim above it, until the
+  // letters are white with the dawn still touching their base. Painted as a gradient clipped to the text, scrubbed by
+  // scroll, reversible. No words move and nothing travels sideways; the one light source is the footer's own.
   const scrollWords = document.querySelectorAll('.scroll-word');
   const scrollCta = document.querySelector('.scroll-cta');
   if (scrollWords.length && scrollCta) {
@@ -1324,27 +1325,34 @@
       updateScrollWords();
     } else {
       const ctaPageEnd = document.querySelector('.page-end');
-      const easeOut = (t) => 1 - Math.pow(1 - t, 3);
       const clamp01 = (t) => Math.min(1, Math.max(0, t));
-      // Direct per-frame writes: the stylesheet's 0.3s transition would smear a scrubbed value, so it is off here.
-      scrollWords.forEach((w) => { w.style.transition = 'none'; });
-      let raf = null;
+      const DIM = [240, 240, 240, 0.15], WHITE = [255, 255, 255, 1], CORAL = [255, 104, 48, 1], VIOLET = [140, 70, 255, 1];
+      const rgba = (c, k) => 'rgba(' + c[0] + ', ' + c[1] + ', ' + c[2] + ', ' + (c[3] * k).toFixed(3) + ')';
+      scrollWords.forEach((w) => {
+        w.style.transition = 'none'; w.style.opacity = '1'; w.style.transform = 'none';
+        w.style.webkitBackgroundClip = 'text'; w.style.backgroundClip = 'text';
+        w.style.color = 'transparent'; w.style.webkitTextFillColor = 'transparent';
+      });
+      let raf = null, lastKey = -1;
       const paint = () => {
         raf = null;
         const vh = window.innerHeight;
         let glow = 0; // the same progress the footer glow's height uses: how far .page-end has entered the viewport
         if (ctaPageEnd) { const pe = ctaPageEnd.getBoundingClientRect(); glow = clamp01((vh - pe.top) / pe.height); }
-        scrollWords.forEach((word, i) => {
-          const trigger = vh * 0.92 - i * (vh * 0.05);
-          const p = easeOut(clamp01((trigger - word.getBoundingClientRect().top) / (vh * 0.16)));
-          word.style.opacity = (p * (0.15 + glow * 0.25)).toFixed(3);
-          word.style.transform = 'translateY(' + ((1 - p) * 20).toFixed(1) + 'px)';
-          word.style.textShadow = glow > 0.02 ? '0 10px 44px rgba(110, 70, 255, ' + (glow * 0.5).toFixed(3) + ')' : 'none';
-        });
+        const key = Math.round(glow * 400);
+        if (key === lastKey) return;
+        lastKey = key;
+        const wl = -16 + glow * 132;            // the waterline, in percent of the letter height from the bottom: below the letters at 0, above them at 1
+        const base = Math.min(1, glow * 1.6);   // the dawn's touch at the base of the letters, arriving with the light
+        const g = 'linear-gradient(to top, ' +
+          rgba(VIOLET, base) + ' 0%, ' + rgba(CORAL, base) + ' 6%, ' + rgba(WHITE, 1) + ' 14%, ' +
+          rgba(WHITE, 1) + ' ' + wl.toFixed(1) + '%, ' + rgba(CORAL, 1) + ' ' + (wl + 7).toFixed(1) + '%, ' +
+          rgba(VIOLET, 1) + ' ' + (wl + 13).toFixed(1) + '%, ' + rgba(DIM, 1) + ' ' + (wl + 22).toFixed(1) + '%, ' + rgba(DIM, 1) + ' 100%)';
+        scrollWords.forEach((w) => { w.style.backgroundImage = g; });
       };
       const onScrollCta = () => { if (raf === null) raf = requestAnimationFrame(paint); };
       window.addEventListener('scroll', onScrollCta, { passive: true });
-      window.addEventListener('resize', onScrollCta, { passive: true });
+      window.addEventListener('resize', () => { lastKey = -1; onScrollCta(); }, { passive: true });
       paint();
     }
   }
