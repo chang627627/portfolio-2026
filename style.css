@@ -1614,7 +1614,7 @@ nav::before {
 /* Last content section before the footer — match the case-study gap
    (.project-content uses 200px bottom on desktop) */
 .media-section--end {
-  padding-bottom: 200px;
+  padding-bottom: 280px; /* 280 on every page as of 2026-09-12 (was 200), matching the home grid */
 }
 /* Books + Podcasts are hidden on mobile (per user) — Testimonials becomes the
    last section, and its 80px mobile bottom padding carries the gap to the footer */
@@ -2453,7 +2453,7 @@ footer {
 .project-content {
   max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 0 200px;
+  padding: 0 0 280px; /* content-to-footer gap: 280px on every page as of 2026-09-12 (was 200), matching the home grid's last card to the footer band */
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -3972,7 +3972,7 @@ footer {
   }
 
   .project-content {
-    padding-bottom: 96px;
+    padding-bottom: 80px; /* phones: 80 on every page as of 2026-09-12 (was 96), matching the home grid */
   }
 
   .impact-grid,
@@ -4110,7 +4110,7 @@ footer {
 
 /* Play Page */
 .play-section {
-  padding: 0 48px 200px;
+  padding: 0 48px 280px; /* 280 on every page as of 2026-09-12 (was 200), matching the home grid */
 }
 
 .play-grid {
@@ -4674,7 +4674,7 @@ footer {
   }
 
   .work, .about, .about-page, .play-section {
-    padding: 40px 24px 120px;
+    padding: 40px 24px 80px; /* phones: 80 on every page as of 2026-09-12 (was 120; .about/.about-page are orphan classes) */
   }
 
   .page-hero {
