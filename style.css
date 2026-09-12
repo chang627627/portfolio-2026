@@ -228,12 +228,30 @@ nav:not(.side-nav)::after {
   color: var(--text-soft);
 }
 
-/* Links answer in colour, not with an underline (the curated.design manner): rest in the
-   secondary grey above, hover and the current page in white. Weight stays 400 everywhere
-   (the reference bolds its active link; this site is single-weight by identity). */
+/* Links rest in the secondary grey above and turn white on hover and for the current page
+   (weight stays 400 everywhere; the reference bolds its active link, this site is
+   single-weight by identity). The hover also draws the footer's line, the same 1px
+   underline growing left to right on the same tokens (per user, 2026-09-12, "use the line
+   animation for hover state like the footer"); the current page carries no persistent
+   line, colour alone marks it. */
 .nav-links a:not(.nav-cta) {
   position: relative;
   transition: color var(--dur-base) var(--ease-out);
+}
+
+.nav-links a:not(.nav-cta)::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--text);
+  transition: width var(--dur-base) var(--ease-out);
+}
+
+.nav-links a:not(.nav-cta):hover::after {
+  width: 100%;
 }
 
 .nav-links a:hover,
