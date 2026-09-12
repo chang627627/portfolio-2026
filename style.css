@@ -134,13 +134,17 @@ p, figcaption {
   width: 100%;
 }
 
-/* Nav (2026-09-12): a full-width transparent bar in the curated.design manner, replacing
-   the 700px floating glass pill. Nothing is drawn around the links: the wordmark sits at the
-   far left on the site's 48px inset, the links at the right, and the only material is a
-   progressive blur band under the bar (two stacked backdrop layers on the nav's own
-   pseudo-elements, each masked so the blur is strong at the top edge and gone by 112px)
-   with a faint scrim, so content scrolling under the links softens and the links stay
-   legible over the home hero. Scoped with :not(.side-nav): the case-study side rail is
+/* Nav (2026-09-12): a full-width bar in the curated.design manner, replacing the 700px
+   floating glass pill. Nothing is drawn around the links: the wordmark sits at the far left
+   on the site's 48px inset, the links at the right, and the only material is a progressive
+   blur band under the bar (two stacked backdrop layers on the nav's own pseudo-elements,
+   each masked so the blur is strong at the top edge and gone by 112px) with a faint scrim.
+   THE BAND WAS REMOVED AND PUT STRAIGHT BACK (2026-09-12): asked for the ssense treatment,
+   which is a genuinely transparent fixed header, it shipped bare for one round and the
+   contrast was measured on play.html at 449px of scroll, where the four links sit on a
+   near-white card and read 1.1 to 2.35 against the 4.5 floor. The user's call: "bring back
+   the blur. the contrast is not enough". THE SCRIM IS THE HALF THAT DOES THE WORK; the blur
+   alone would not have saved it. Scoped with :not(.side-nav): the case-study side rail is
    also a <nav> and used to inherit the pill's glass (the documented bare-nav gotcha). */
 nav:not(.side-nav) {
   display: flex;
@@ -230,10 +234,10 @@ nav:not(.side-nav)::after {
 
 /* Links rest in the secondary grey above and turn white on hover and for the current page
    (weight stays 400 everywhere; the reference bolds its active link, this site is
-   single-weight by identity). The hover also draws the footer's line, the same 1px
-   underline growing left to right on the same tokens (per user, 2026-09-12, "use the line
-   animation for hover state like the footer"); the current page carries no persistent
-   line, colour alone marks it. */
+   single-weight by identity). The hover draws the footer's line, the same 1px underline
+   growing left to right on the same tokens. THE CURRENT PAGE CARRIES NO RESTING LINE: it
+   was given one and it came straight back off (2026-09-12, "remove the line after
+   selected"), so the line is only ever an affordance and colour alone says "you are here". */
 .nav-links a:not(.nav-cta) {
   position: relative;
   transition: color var(--dur-base) var(--ease-out);
