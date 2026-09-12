@@ -106,6 +106,31 @@
       .ai-fold-label { grid-column: 1; }
       .ai-fold-body { gap: 18px; padding-top: 18px; }
     }
+
+    /* Photo deck depth (2026-09-12): the row bends into a shallow drum. Each card turns
+       toward the centre and recedes by its signed distance from it (--pos, written per
+       frame by the deck engine, -1 at the left edge to 1 at the right). Nothing else
+       changes: the wings keep their colour (a saturation fade was built and removed the
+       same hour, per user "do not darken the far away image"). Page-scoped because the
+       deck exists only here, and scoped to desktop + motion-safe so the stylesheet's
+       mobile grid and reduced-motion resets stay in charge everywhere else. */
+    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+      .deck .deck-card {
+        --pos: 0;
+        --arc: 20deg;      /* how far a card at the edge turns toward the centre */
+        --recede: 120px;   /* how far a card at the edge sits behind the centre */
+        transform:
+          translateZ(calc(-1 * var(--recede) * max(var(--pos), -1 * var(--pos))))
+          rotateY(calc(var(--pos) * var(--arc) + var(--tilt-ry)))
+          rotateX(var(--tilt-rx))
+          scale(calc(0.82 + 0.22 * var(--focus)));
+      }
+    }
+    /* The coral halo behind the protagonist card (style.css, since 2026-05-29) is off
+       (2026-09-12, per user "why the background has the strange glow or light?" then
+       "remove"): the drum leaves more dark space around the centre card, where the
+       blurred gradient read as a stray light. The card stands on its shadow alone. */
+    .deck-card::before { display: none; }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
@@ -601,7 +626,7 @@
   }
 
   // per-card state — focus (skip redundant writes) + tilt target/current (lerp)
-  const state = cards.map(() => ({ lastFocus: -1, tRx: 0, tRy: 0, cRx: 0, cRy: 0 }));
+  const state = cards.map(() => ({ lastFocus: -1, lastPos: 9, tRx: 0, tRy: 0, cRx: 0, cRy: 0 }));
   // global cursor — paintCards resolves which card it's over each frame, so the
   // tilt tracks both the cursor AND the cards drifting beneath it
   let mouseX = -1, mouseY = -1, mouseOver = false;
@@ -665,6 +690,14 @@
       if (Math.abs(focus - s.lastFocus) > 0.005) {
         card.style.setProperty('--focus', focus.toFixed(3));
         s.lastFocus = focus;
+      }
+
+      // signed distance from the centre (-1 left edge, 1 right edge) drives the drum arc
+      // and recede in the page's CSS (2026-09-12)
+      const pos = Math.max(-1, Math.min(1, (cardCenter - centerX) / (trackRect.width / 2)));
+      if (Math.abs(pos - s.lastPos) > 0.004) {
+        card.style.setProperty('--pos', pos.toFixed(3));
+        s.lastPos = pos;
       }
 
       // light-shimmer hover tilt — the card under the cursor tilts toward it
