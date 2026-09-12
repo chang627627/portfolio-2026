@@ -214,9 +214,13 @@ nav:not(.side-nav)::after {
 /* "← Back" on the case studies (2026-09-12): the arrow gets real air from the word. Neue
    Montreal's space is 2.8px at 14px and the heading's -0.02em tracking takes half of it,
    so the arrow's ink sat 1.7px from the B. The logo script splits the link into one span
-   per character, so the arrow is always the first span. */
+   per character, so the arrow is always the first span. 4px, NOT 6: it puts the ink gap at
+   7.6px of a 14px face, i.e. 0.54em, which is exactly the gap the case-nav chain's own
+   "← Previous" carries (6.98px of 13px). At 6px the header's arrow sat at 0.69em and read
+   as detached from its word, 28% looser than the same gesture at the foot of every case
+   study. Measured, not guessed: ink gap = 3.6px + this margin. */
 .logo--back span:first-child {
-  margin-right: 6px;
+  margin-right: 4px;
 }
 
 .nav-links {
