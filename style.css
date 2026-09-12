@@ -134,53 +134,57 @@ p, figcaption {
   width: 100%;
 }
 
-/* Nav */
-nav {
+/* Nav (2026-09-12): a full-width transparent bar in the curated.design manner, replacing
+   the 700px floating glass pill. Nothing is drawn around the links: the wordmark sits at the
+   far left on the site's 48px inset, the links at the right, and the only material is a
+   progressive blur band under the bar (two stacked backdrop layers on the nav's own
+   pseudo-elements, each masked so the blur is strong at the top edge and gone by 112px)
+   with a faint scrim, so content scrolling under the links softens and the links stay
+   legible over the home hero. Scoped with :not(.side-nav): the case-study side rail is
+   also a <nav> and used to inherit the pill's glass (the documented bare-nav gotcha). */
+nav:not(.side-nav) {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 24px;
+  gap: 24px;
   position: fixed;
-  top: 16px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  padding: 0 48px;
   z-index: 100;
-  /* Specular glass: a faint top-lit fill over a saturated frosted base — reads as
-     a real frosted slab rather than a flat translucent div (the 2026 material tell) */
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.025), rgba(255, 255, 255, 0) 55%),
-    rgba(18, 18, 20, 0.72);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
-  border: none; /* the hairline is drawn by the nav::before gradient ring below */
-  border-radius: var(--radius);
-  width: 700px; /* the condensed ("after shrink") size, kept static, with the lighter before-shrink glass opacity */
-  gap: 32px;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.09),    /* specular lip on the top edge */
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),  /* base hairline all around */
-    0 8px 24px rgba(0, 0, 0, 0.42),             /* lift */
-    0 1px 2px rgba(0, 0, 0, 0.30);              /* contact */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
-/* bright-top gradient hairline (light-catch edge) via a mask-composite ring */
-nav::before {
+/* the progressive blur band: ::before is the strong layer at the top edge, ::after the soft
+   layer that carries the fade to nothing plus the scrim; both paint behind the links */
+nav:not(.side-nav)::before,
+nav:not(.side-nav)::after {
   content: '';
   position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.04) 42%, rgba(255, 255, 255, 0.015));
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-          mask-composite: exclude;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 112px;
   pointer-events: none;
+  z-index: -1;
 }
-
-/* opaque fallback where backdrop-filter is unsupported */
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  nav { background: rgba(18, 18, 20, 0.92); }
+nav:not(.side-nav)::before {
+  -webkit-backdrop-filter: blur(12px);
+          backdrop-filter: blur(12px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 64%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 28%, transparent 64%);
+}
+nav:not(.side-nav)::after {
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.55), rgba(10, 10, 10, 0.2) 50%, rgba(10, 10, 10, 0));
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
 }
 
 .logo {
@@ -188,7 +192,7 @@ nav::before {
   font-size: 14px;
   letter-spacing: -0.02em;
   white-space: nowrap;
-  margin-right: 24px;
+  margin-right: 0;
 }
 
 .logo span {
@@ -203,10 +207,18 @@ nav::before {
   }
 }
 
+/* "← Back" on the case studies (2026-09-12): the arrow gets real air from the word. Neue
+   Montreal's space is 2.8px at 14px and the heading's -0.02em tracking takes half of it,
+   so the arrow's ink sat 1.7px from the B. The logo script splits the link into one span
+   per character, so the arrow is always the first span. */
+.logo--back span:first-child {
+  margin-right: 6px;
+}
+
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 20px;
   font-size: 13px;
   /* --text-soft, not --text-muted: at 13px over the hero gradient the muted
      #888 measured 3.44:1 worst-case across the irisFlow cycle (fails WCAG AA
@@ -216,31 +228,16 @@ nav::before {
   color: var(--text-soft);
 }
 
+/* Links answer in colour, not with an underline (the curated.design manner): rest in the
+   secondary grey above, hover and the current page in white. Weight stays 400 everywhere
+   (the reference bolds its active link; this site is single-weight by identity). */
 .nav-links a:not(.nav-cta) {
   position: relative;
+  transition: color var(--dur-base) var(--ease-out);
 }
 
-.nav-links a:not(.nav-cta)::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
-.nav-links a:not(.nav-cta):hover::after {
-  width: 100%;
-}
-
-/* persistent underline under the current page — the nav's "you are here" tick */
-.nav-links a.nav-active::after {
-  width: 100%;
-}
-
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.nav-active {
   color: var(--text);
 }
 
@@ -259,43 +256,45 @@ nav::before {
   opacity: 0.85;
 }
 
-/* Hamburger */
+/* Hamburger: a 40px rounded-square button (the reference's phone menu button) holding two 16px lines */
 .hamburger {
   display: none;
-  background: none;
+  background: rgba(255, 255, 255, 0.08);
   border: none;
+  border-radius: 10px;
   cursor: pointer;
-  width: 32px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   position: relative;
   z-index: 101;
 }
 
 .hamburger span {
   display: block;
-  width: 100%;
+  width: 16px;
   height: 2px;
   background: var(--text);
   position: absolute;
-  left: 0;
+  left: 12px;
   transition: transform var(--dur-base) var(--ease-out), top var(--dur-base) var(--ease-out);
 }
 
 .hamburger span:first-child {
-  top: 6px;
+  top: 15px;
 }
 
 .hamburger span:last-child {
-  top: 16px;
+  top: 23px;
 }
 
 .hamburger.active span:first-child {
-  top: 11px;
+  top: 19px;
   transform: rotate(45deg);
 }
 
 .hamburger.active span:last-child {
-  top: 11px;
+  top: 19px;
   transform: rotate(-45deg);
 }
 
@@ -4612,28 +4611,14 @@ footer {
     margin-top: 16px;
   }
 
-  nav {
-    padding: 10px 20px;
-    top: 12px;
-    max-width: calc(100% - 32px);
+  nav:not(.side-nav) {
+    height: 56px;
+    padding: 0 24px;
     gap: 0;
-    justify-content: space-between;
   }
 
-  body.menu-open nav {
-    background: transparent;
-    border-color: transparent;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
-    box-shadow: none;
-    transform: none;
-    left: 0;
-    width: 100%;
-    max-width: 100%;
-    top: 0;
-    padding: 22px 20px;
-  }
-  body.menu-open nav::before { display: none; } /* drop the glass ring when the overlay is open */
+  body.menu-open nav:not(.side-nav)::before,
+  body.menu-open nav:not(.side-nav)::after { display: none; } /* the overlay is opaque; no band under it */
 
   .hero {
     padding: 120px 24px 40px;
