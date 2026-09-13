@@ -155,7 +155,19 @@
       border-radius: 0;
       padding: 32px 0;
     }
-    .testimonial-card + .testimonial-card { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+    /* Every card gets the rule, including the first (2026-09-12, per user "add a
+       line between 'People I've worked with' and [the first quote] or get it
+       closer"). Both halves of that were the same defect and it was mine: the
+       cards carry 32px of top padding, and with a rule only BETWEEN siblings the
+       first quote had no top edge while the other two did, and it floated 60px
+       under the label where every other section on this page sits at 28. The
+       rule now lands at that same 28, so the label has an edge to sit on and the
+       three quotes read as one ruled list.
+       NOTE this is NOT the `.section-rule` that was added and removed from the
+       About labels: that one is home's SELECTED WORK treatment, a hairline
+       trailing the label on its own line. This is the list's own top edge, the
+       same rule already separating the quotes. */
+    .testimonial-card { border-top: 1px solid rgba(255, 255, 255, 0.08); }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
