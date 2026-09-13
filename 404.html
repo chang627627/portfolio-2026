@@ -7,8 +7,7 @@
   <meta name="description" content="This page doesn't exist. The work does.">
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=3">
-  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="preload" href="/fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/style.css?v=265">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -34,6 +33,19 @@
     }
     /* plain-text headline (no per-glyph machinery on this page) */
     .hero h1 { position: relative; z-index: 2; }
+    /* DAWN, copied verbatim from index.html's hero override (2026-09-13).
+       style.css's .hero-orbs--g2 still carries the retired red/magenta/blue
+       ramp, so without this the 404 showed the old gradient. Keep the two
+       blocks in step if the home palette changes. */
+    .hero .hero-orbs--g2 {
+      background:
+        radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
+        radial-gradient(ellipse 96% 50% at var(--g2-warm-x) calc(var(--g2-warm-y) + var(--g2-lift)), rgba(255, 104, 48, 0.86), transparent 60%),
+        radial-gradient(ellipse 96% 50% at var(--g2-pink-x) calc(var(--g2-pink-y) + var(--g2-lift)), rgba(140, 70, 255, 0.82), transparent 60%),
+        radial-gradient(ellipse 58% 34% at var(--g2-azure-x) calc(var(--g2-azure-y) + var(--g2-lift)), rgba(10, 132, 255, 0.50), transparent 68%),
+        radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
+        radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(60, 20, 200, 0.88), transparent 66%);
+    }
   </style>
 </head>
 <body>
@@ -59,7 +71,7 @@
       <h1>Lost in the fog.</h1>
       <p class="hero-sub">This page doesn't exist. The work does.</p>
       <div class="notfound-tags">
-        <a class="status-tag" href="/index.html"><span class="status-dot"></span>Back to the work <span class="arrow">↗</span></a>
+        <a class="status-tag" href="/index.html">Back to the work <span class="arrow">↗</span></a>
         <a class="status-tag" href="mailto:changmou627627@gmail.com">Say hello <span class="arrow">↗</span></a>
       </div>
     </div>
@@ -84,7 +96,7 @@
         const rect = hero.getBoundingClientRect();
         const nx = (cx - rect.left) / rect.width - 0.5;
         const ny = (cy - rect.top) / rect.height - 0.5;
-        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -6}deg) rotateY(${nx * 6}deg)`;
+        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -3}deg) rotateY(${nx * 3}deg)`;
         heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
       };
       hero.addEventListener('mousemove', (e) => {
