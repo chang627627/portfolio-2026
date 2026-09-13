@@ -107,11 +107,15 @@
         --recede: 120px;   /* how far a card at the edge sits behind the centre */
         transform:
           translateZ(calc(-1 * var(--recede) * max(var(--pos), -1 * var(--pos))))
-          rotateY(calc(var(--pos) * var(--arc) + var(--tilt-ry)))
-          rotateX(var(--tilt-rx))
+          rotateY(calc(var(--pos) * var(--arc)))
           scale(calc(0.82 + 0.22 * var(--focus)));
       }
     }
+    /* No hover effect on the deck (2026-09-13, per user "cancel the hover effect of
+       carousel"): the card under the cursor no longer tilts toward it, and the
+       stylesheet's leftover grab cursor from the drag era is reset, since the deck
+       is only scroll-driven. */
+    .deck-track { cursor: auto; }
     /* The coral halo behind the protagonist card (style.css, since 2026-05-29) is off
        (2026-09-12, per user "why the background has the strange glow or light?" then
        "remove"): the drum leaves more dark space around the centre card, where the
@@ -659,14 +663,11 @@
   const cards = Array.from(track.children);
   const SET_LENGTH = cards.length / 3;            // 8 unique photos
   const FOCUS_SPAN_RATIO = 0.28;                   // tighter = sharper protagonist
-  const TILT_MAX = 11;                             // ± degrees of hover tilt
-  const LERP = 0.14;                               // tilt easing per frame
   const NAV_CLEAR = 88;                            // keep the parked deck below the header
   const RUNWAY_RATIO = 1.5;                        // scroll spent per pixel of travel
   const DWELL = 0.55;                              // how much each photo settles at the centre
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const coarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
   // Mobile (≤768px): render the static 4×8 grid via CSS — no pin, no scroll drive.
   if (window.matchMedia('(max-width: 768px)').matches) {
@@ -678,12 +679,8 @@
   const pin = document.querySelector('.deck-pin');
   const stage = document.querySelector('.deck-stage');
 
-  // per-card state — focus (skip redundant writes) + tilt target/current (lerp)
-  const state = cards.map(() => ({ lastFocus: -1, lastPos: 9, tRx: 0, tRy: 0, cRx: 0, cRy: 0 }));
-  // global cursor — paintCards resolves which card it's over each frame, so the
-  // tilt tracks both the cursor AND the cards moving beneath it
-  let mouseX = -1, mouseY = -1, mouseOver = false;
-  const isDragging = false;                        // the deck is no longer draggable
+  // per-card state — last written focus and position (skip redundant writes)
+  const state = cards.map(() => ({ lastFocus: -1, lastPos: 9 }));
 
   let setWidth = 0;     // one full set of photographs
   let base = 0;         // scrollLeft at progress 0, middle set centred
@@ -762,27 +759,6 @@
         card.style.setProperty('--pos', pos.toFixed(3));
         s.lastPos = pos;
       }
-
-      // light-shimmer hover tilt — the card under the cursor tilts toward it
-      // in 3D, recomputed every frame so it tracks the drifting cards. No
-      // pause: the deck keeps drifting (that's what avoids the leave-jump).
-      if (!coarsePointer) {
-        const over = mouseOver && !isDragging &&
-          mouseX >= r.left && mouseX <= r.right &&
-          mouseY >= r.top && mouseY <= r.bottom;
-        if (over) {
-          const px = (mouseX - r.left) / r.width;
-          const py = (mouseY - r.top) / r.height;
-          s.tRy = (px - 0.5) * 2 * TILT_MAX;   // cursor left/right → rotateY
-          s.tRx = (0.5 - py) * 2 * TILT_MAX;   // cursor top/bottom → rotateX
-        } else {
-          s.tRx = 0; s.tRy = 0;
-        }
-        s.cRx += (s.tRx - s.cRx) * LERP;
-        s.cRy += (s.tRy - s.cRy) * LERP;
-        card.style.setProperty('--tilt-rx', s.cRx.toFixed(2) + 'deg');
-        card.style.setProperty('--tilt-ry', s.cRy.toFixed(2) + 'deg');
-      }
     }
   }
 
@@ -808,13 +784,6 @@
   }
   function deckStop() {
     if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
-  }
-
-  // track the cursor globally for the per-frame hover tilt (fine pointers only)
-  if (!coarsePointer && !reducedMotion) {
-    track.addEventListener('mousemove', (e) => { mouseX = e.clientX; mouseY = e.clientY; mouseOver = true; });
-    track.addEventListener('mouseenter', (e) => { mouseX = e.clientX; mouseY = e.clientY; mouseOver = true; });
-    track.addEventListener('mouseleave', () => { mouseOver = false; });
   }
 
   // wait for first images to settle, then measure + rest + reveal
