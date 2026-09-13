@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=264">
+  <link rel="stylesheet" href="style.css?v=265">
   <style>
     /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
        border, the image carries the radius and its hairline, text hangs
@@ -47,6 +47,67 @@
     .yt-facade__play::after { content: ''; position: absolute; left: 55%; top: 50%; transform: translate(-50%, -50%); border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent rgba(240, 240, 240, 0.95); }
     @media (hover: hover) { .yt-facade:hover .yt-facade__play { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
     .yt-facade:active .yt-facade__play { transform: translate(-50%, -50%) scale(0.96); }
+
+    /* ---- Aesthetics pass, 2026-09-12 ----------------------------------------
+       All page-scoped: .play-* and .page-hero--tight exist on this page only,
+       so style.css is untouched and no version bump is needed.
+
+       1. THE CAPTION WAS SET AT BODY LEADING. .play-info h3 declares no
+          line-height, so a 22px heading inherited body's 1.6 and rendered at
+          35.2px. That is why the caption landed as a soft lump under every
+          vivid thumbnail. The glyph size does not move, only the leading, so
+          nothing gets smaller to read. The year drops a tier and the
+          description moves to --text-soft, which is exactly what the home
+          cards took on 2026-09-02 for this same reason; Play never got it.
+          The ladder is now 13 / 16 / 22 with nothing shrunk.
+
+       2. SIX OF THE NINETEEN PIECES HAD NO EDGE. .play-card img carries a
+          1px hairline whose own comment says it exists because dark content
+          dissolves into the #0a0a0a page. Every video was missing it, and the
+          Midjourney tile contradicted itself: six edged stills over three
+          unedged clips. Put it on the .play-video wrapper, never on a
+          cross-origin iframe, and never on .carousel-track, whose slides are
+          <img> and already inherit it. Reference: Framer's video index, where
+          uniformity of the FRAME is what holds mixed content together.
+
+       3. THE STATEMENT WAS RENDERING A TIER BELOW ITS OWN RULE. .page-hero h1
+          is (0,1,1) and caps it at clamp(36px, 5vw, 56px); .page-title is
+          (0,1,0) and asks for clamp(40px, 5.5vw, 64px). The more specific rule
+          won, so the page's only piece of type has been 56px for as long as
+          both rules have existed. Scoping to .page-hero--tight .page-title is
+          (0,2,0) and restores the authored size.
+
+       4. AND IT SAT ON NO AXIS. The grid runs from x=48 and the statement was
+          centred in a 960 container nothing else on the page uses, so the first
+          element establishing a left margin was a raw screenshot. The calc
+          reproduces .play-grid's box model exactly, so the statement and the
+          first thumbnail share one left edge at every width. Only the
+          horizontal inset changes; the vertical padding is left alone.
+          Reference: Waka Waka's index and Pentagram's work grid, where the
+          opening type and the content share one axis. NOTE this makes Play's
+          statement left-aligned where About's is still centred; About carries
+          the identical specificity collision and is a one-line follow-on. */
+
+    .play-info h3 { line-height: 1.2; letter-spacing: -0.01em; }
+    .play-info p { color: var(--text-soft); }
+    .play-card .play-year { font-size: 13px; font-variant-numeric: tabular-nums; }
+    .play-card .play-info { margin-top: 14px; }
+    .play-card .play-video,
+    .play-card video { outline: 1px solid rgba(255, 255, 255, 0.08); outline-offset: -1px; }
+
+    @media (min-width: 769px) {
+      .page-hero--tight {
+        max-width: calc(1344px + 96px);   /* the grid's own box model */
+        padding-left: 48px;
+        padding-right: 48px;
+        text-align: left;
+      }
+      .page-hero--tight .page-title {     /* (0,2,0), beats .page-hero h1 */
+        font-size: clamp(40px, 5.5vw, 64px);
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+      }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->

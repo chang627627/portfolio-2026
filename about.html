@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=264">
+  <link rel="stylesheet" href="style.css?v=265">
   <style>
     /* One real session, in the content-card family (surface, radius, 32px, no
        border) so it sits like the testimonial cards below it. */
@@ -127,6 +127,35 @@
          horizontal trackpad gesture can no longer fight the scroll-driven position */
       .deck .deck-track { overflow-x: hidden; cursor: default; touch-action: auto; }
     }
+
+    /* ---- Aesthetics pass, 2026-09-12 ----------------------------------------
+       About-only classes, so style.css is untouched.
+
+       THE TESTIMONIALS LOSE THEIR BOXES. Three --surface slabs with an 8px
+       radius were the last filled, rounded surfaces on a page otherwise built
+       entirely from hairlines, and exactly the treatment the home grid retired
+       when eight identical dark tiles were judged the loudest template tell on
+       the site. The avatars stay: with the boxes gone they are the only thing
+       separating three voices from the ruled sections above. All three stay
+       equal, so this is not the featured quote that was rejected.
+
+       THE CREDENTIAL LISTS WERE CHANGED AND PUT BACK the same day (per user
+       "Experience. Education. and Recognition / go back previous version").
+       The year briefly led each row in a fixed 112px rail, with the rule
+       recoloured off --surface and the sizes stepped to 14/18/15. It measured
+       well (the empty middle fell from 74% to 32%, all three sections shared
+       one axis, nothing wrapped) and he did not want it. Experience, Education
+       and Recognition are back to style.css exactly as authored: the inline
+       "name · detail" row with the year pushed right by margin-left:auto.
+       Do not re-propose a rail, a column or a grid for these three lists. */
+
+    .testimonial-list { gap: 0; }
+    .testimonial-card {
+      background: none;
+      border-radius: 0;
+      padding: 32px 0;
+    }
+    .testimonial-card + .testimonial-card { border-top: 1px solid rgba(255, 255, 255, 0.08); }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->

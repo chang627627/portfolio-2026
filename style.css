@@ -612,11 +612,20 @@ nav:not(.side-nav)::after {
 
 .hero h1 {
   font-family: 'Neue Montreal', -apple-system, sans-serif;
-  font-size: clamp(48px, 7vw, 104px); /* max raised 84->104 with the shorter line 2 — scale is the landing moment's cheapest lever */
+  /* 2026-09-12: 8vw/120 and -0.04em. Line 2 measured 976px inside a 1344px
+     column, 73%, where display-led references run 80-95, and it is the RATIO
+     that makes display type read as display. Tracking tightens as size grows,
+     which is the opposite of what was here: the headline was 2.65x the row
+     titles but only 20% tighter, so the word spaces read as gaps at 100px.
+     The lockup below tightens by the same amount this adds, so the hero stays
+     768px and the first plate does not move. That is why this is NOT the
+     2026-07-26 fold compression that was rejected: that pass cut 208px to crop
+     row one into the fold; this one is height-neutral. */
+  font-size: clamp(48px, 8vw, 120px);
   font-weight: 400;
   line-height: 1.08;
-  letter-spacing: -0.03em;
-  margin-bottom: 48px;
+  letter-spacing: -0.04em;
+  margin-bottom: 28px;
   position: relative;
   z-index: 2;
 }
@@ -705,8 +714,12 @@ nav:not(.side-nav)::after {
   font-size: 16px;
   color: rgba(255, 255, 255, 0.82);
   max-width: 520px;
-  margin: 32px auto 0;
-  line-height: 1.6; /* was 1.75 — the leading scale is now uniform with body (see P5 note) */
+  /* 28, not 32: .hero-content is a block container, so the h1's bottom margin
+     and this one COLLAPSE. Setting only the h1 would leave max(28, 32) = 32.
+     Both must move or the lockup does not tighten. Leading stays 1.6, the
+     deliberate unification with body. */
+  margin: 28px auto 0;
+  line-height: 1.6;
   opacity: 0;
   /* keyed to the sweep entrance: headline settles ~1.15s (450ms position
      stagger + 700ms per glyph), so the sub lands just as it finishes.
@@ -750,7 +763,7 @@ nav:not(.side-nav)::after {
   font-size: 13px;
   color: rgba(255, 255, 255, 0.92);
   letter-spacing: 0.02em;
-  margin-top: 40px; /* was 48 — the .hero-meta row now sits between sub and pill */
+  margin-top: 32px; /* was 40, then 48 with the retired .hero-meta row: headline, sub and mark read as one lockup rather than three deposits */
   background: rgba(10, 10, 12, 0.45);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);

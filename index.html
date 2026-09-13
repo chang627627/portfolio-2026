@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=264">
+  <link rel="stylesheet" href="style.css?v=265">
   <!-- Work-card motion. Scoped to this page (.card-loop / .sb-phone exist only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -205,7 +205,7 @@
        over --dur-base on --ease-out, the same motion the nav, footer, play and
        about links use, instead of the whole line changing opacity at once.
        scaleX rather than width, which is pixel-identical here and cheaper. */
-    .feature-card .project-info { position: relative; grid-column: 2; grid-row: 1; display: block; border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 20px 0 0; }
+    .feature-card .project-info { position: relative; grid-column: 2; grid-row: 1; display: block; border-top: 1px solid rgba(255, 255, 255, 0.12); padding: 28px 0 0; } /* 20 -> 28 (2026-09-12): clearance, so the hairline reads as the column's top edge rather than an overline on the word */
     .feature-card .project-info::before {
       content: '';
       position: absolute; top: -1px; left: 0; right: 0; height: 1px;
@@ -213,12 +213,18 @@
       transform: scaleX(0); transform-origin: left;
       transition: transform var(--dur-base) var(--ease-out);
     }
-    .feature-card .project-info-top { display: block; margin-bottom: 18px; }
+    .feature-card .project-info-top { display: block; margin-bottom: 14px; } /* 18 -> 14 (2026-09-12): weld the title to its description. The three steps were 20/18/22, three accidents rather than a ladder; they are now 28/14/22, so the pair groups and the chips separate. 14 is the floor under a 38px title, not 12. */
     .feature-card .project-info h3 { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; line-height: 1.08; font-weight: 400; transition: color var(--dur-base) var(--ease-out); }
     .feature-card .project-year { display: none; } /* no year in the row caption (per user "maybe no time"); the phone grid keeps its year */
     .feature-card .project-info p { font-size: 16px; line-height: 1.55; color: var(--text-soft); min-height: 0; } /* back to style.css's own card body size; the row build had dropped it to 15 */
     .feature-card .card-meta { padding-top: 22px; gap: 8px; }
     .feature-card .card-tag { padding: 6px 10px; border-color: rgba(255, 255, 255, 0.14); }
+    /* The filled type chip rendered at 0.92 white on a 0.16 fill, against a 0.63
+       description and a 0.94 title. So the brightest mark after the title was the
+       word PROFESSIONAL, at the bottom of the column, six times down the page.
+       A category label is the quietest tier in a caption, never the second loudest.
+       The pill stays: this is a value change, not the metadata line that was killed. */
+    .feature-card .card-tag--type { color: rgba(255, 255, 255, 0.70); background: rgba(255, 255, 255, 0.10); }
     /* NOVA's partner credits are wordmarks, not award badges: 20px keeps them
        legible while placing them a tier below the awards on the other cards. */
     .project-card[href="nova.html"] .card-awards img { height: 20px; }
