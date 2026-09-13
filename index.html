@@ -213,7 +213,12 @@
       transform: scaleX(0); transform-origin: left;
       transition: transform var(--dur-base) var(--ease-out);
     }
-    .feature-card .project-info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; } /* 18 -> 14 (2026-09-12): weld the title to its description. The three steps were 20/18/22, three accidents rather than a ladder; they are now 28/14/22, so the pair groups and the chips separate. 14 is the floor under a 38px title, not 12. */
+    /* centre, not baseline (2026-09-12, per user "I think year should be centered
+       with the title"): baseline pinned the year to the title's FIRST line, which
+       reads high against a 38px title and lands the year beside line one when
+       "Litespace Coffee Chat" wraps to two below 1280. Centre puts it on the
+       title block's middle in both cases. */
+    .feature-card .project-info-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; } /* 18 -> 14 (2026-09-12): weld the title to its description. The three steps were 20/18/22, three accidents rather than a ladder; they are now 28/14/22, so the pair groups and the chips separate. 14 is the floor under a 38px title, not 12. */
     .feature-card .project-info h3 { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; line-height: 1.08; font-weight: 400; transition: color var(--dur-base) var(--ease-out); }
     /* The year is back on the desktop rows (2026-09-12, per user). It sits at the END
        of the row, right-aligned off the flex, which is the form he endorsed on the grid
