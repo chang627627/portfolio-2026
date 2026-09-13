@@ -213,9 +213,13 @@
       transform: scaleX(0); transform-origin: left;
       transition: transform var(--dur-base) var(--ease-out);
     }
-    .feature-card .project-info-top { display: block; margin-bottom: 14px; } /* 18 -> 14 (2026-09-12): weld the title to its description. The three steps were 20/18/22, three accidents rather than a ladder; they are now 28/14/22, so the pair groups and the chips separate. 14 is the floor under a 38px title, not 12. */
+    .feature-card .project-info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 14px; } /* 18 -> 14 (2026-09-12): weld the title to its description. The three steps were 20/18/22, three accidents rather than a ladder; they are now 28/14/22, so the pair groups and the chips separate. 14 is the floor under a 38px title, not 12. */
     .feature-card .project-info h3 { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; line-height: 1.08; font-weight: 400; transition: color var(--dur-base) var(--ease-out); }
-    .feature-card .project-year { display: none; } /* no year in the row caption (per user "maybe no time"); the phone grid keeps its year */
+    /* The year is back on the desktop rows (2026-09-12, per user). It sits at the END
+       of the row, right-aligned off the flex, which is the form he endorsed on the grid
+       ("time should be at the end of the row"); the inline-after-the-title version was
+       rejected as too close. Phones were never affected, they render the card grid. */
+    .feature-card .project-year { font-size: 14px; flex-shrink: 0; }
     .feature-card .project-info p { font-size: 16px; line-height: 1.55; color: var(--text-soft); min-height: 0; } /* back to style.css's own card body size; the row build had dropped it to 15 */
     .feature-card .card-meta { padding-top: 22px; gap: 8px; }
     .feature-card .card-tag { padding: 6px 10px; border-color: rgba(255, 255, 255, 0.14); }
