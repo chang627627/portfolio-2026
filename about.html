@@ -72,30 +72,12 @@
     .ai-fold::details-content { height: 0; overflow: clip; transition: height var(--dur-slow) var(--ease-out), content-visibility var(--dur-slow) allow-discrete; }
     .ai-fold[open]::details-content { height: auto; }
     .ai-fold-body { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; }
-    /* Books: one line per cover, revealed on hover as a scrim over the
-       cover's foot (per user: always-on lines were too much to read). The
-       shelf reads as five covers until you point at one. */
-    .media-figure { flex: 1; min-width: 0; margin: 0; position: relative; }
-    .media-figure img { transition: filter var(--dur-base) var(--ease-out); }
-    .media-note {
-      position: absolute;
-      left: 0; right: 0; bottom: 0;
-      padding: 40px 14px 14px;
-      border-radius: 0 0 var(--radius) var(--radius);
-      background: linear-gradient(to top, rgba(10,10,10,0.94) 0%, rgba(10,10,10,0.82) 55%, rgba(10,10,10,0) 100%);
-      color: var(--text);
-      font-size: 13px;
-      line-height: 1.5;
-      opacity: 0;
-      transform: translateY(6px);
-      transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
-      pointer-events: none;
-    }
-    @media (hover: hover) {
-      .media-figure:hover .media-note { opacity: 1; transform: none; }
-      .media-figure:hover img { filter: brightness(0.7); }
-    }
-    @media (prefers-reduced-motion: reduce) { .media-note { transition: none; transform: none; } }
+    /* Books: five covers, and nothing happens when you point at one (2026-09-12,
+       per user "delete hover effect"). The per-cover lines are kept in the markup
+       but never rendered, so the shelf is the covers alone. The layout rule stays
+       because the flex sizing is what makes the row of five work. */
+    .media-figure { flex: 1; min-width: 0; margin: 0; }
+    .media-note { display: none; }
     .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
     @media (max-width: 768px) {
       .ai-session { padding: 24px 20px; gap: 18px; }
