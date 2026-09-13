@@ -330,7 +330,13 @@ nav:not(.side-nav)::after {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 200px 48px 160px;
+  /* 188, not 160 (2026-09-12): the lockup below the headline was tightened by
+     28px and the headline size that offset it was put back, so without this the
+     hero would shrink by exactly that and pull 28px more of row one into the
+     fold. Compressing the hero to crop work into the fold was rejected outright
+     on 2026-07-26, so the type change stays type-only and the page keeps its
+     768px first screen. If the lockup ever loosens again, take this back to 160. */
+  padding: 200px 48px 188px;
   position: relative;
   overflow: hidden;
 }
@@ -612,16 +618,22 @@ nav:not(.side-nav)::after {
 
 .hero h1 {
   font-family: 'Neue Montreal', -apple-system, sans-serif;
-  /* 2026-09-12: 8vw/120 and -0.04em. Line 2 measured 976px inside a 1344px
-     column, 73%, where display-led references run 80-95, and it is the RATIO
-     that makes display type read as display. Tracking tightens as size grows,
-     which is the opposite of what was here: the headline was 2.65x the row
-     titles but only 20% tighter, so the word spaces read as gaps at 100px.
-     The lockup below tightens by the same amount this adds, so the hero stays
-     768px and the first plate does not move. That is why this is NOT the
-     2026-07-26 fold compression that was rejected: that pass cut 208px to crop
-     row one into the fold; this one is height-neutral. */
-  font-size: clamp(48px, 8vw, 120px);
+  /* 2026-09-12: the TRACKING moved and the size did not. -0.04em because
+     optical scaling was backwards here: the headline is 2.65x the row titles
+     but was only 20% tighter, so the words in "AI-first product designer."
+     sat apart as separate words instead of holding as a phrase. Larger type
+     wants tighter spacing, not looser.
+     THE SIZE WAS RAISED TO clamp(48px, 8vw, 120px) AND PUT BACK THE SAME DAY
+     (per user "did you make it bigger?" then "why to make it bigger?" then
+     "do" on returning it). The case for it was the ratio, line 2 spanning 73%
+     of the column where display-led references run 80 to 95, and it was
+     height-neutral. But it is the weakest of the three changes and it has a
+     real cost: the warm/blue seam is hand-tuned to land between the two
+     headline lines, and a bigger headline pushes both lines about 15px
+     further from it. The gradient is this hero's signature and the type
+     should not crowd it. Do not raise the cap again without a reason that
+     beats the seam. */
+  font-size: clamp(48px, 7vw, 104px);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.04em;
