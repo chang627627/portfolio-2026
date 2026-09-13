@@ -77,16 +77,19 @@
           both rules have existed. Scoping to .page-hero--tight .page-title is
           (0,2,0) and restores the authored size.
 
-       4. AND IT SAT ON NO AXIS. The grid runs from x=48 and the statement was
-          centred in a 960 container nothing else on the page uses, so the first
-          element establishing a left margin was a raw screenshot. The calc
-          reproduces .play-grid's box model exactly, so the statement and the
-          first thumbnail share one left edge at every width. Only the
-          horizontal inset changes; the vertical padding is left alone.
-          Reference: Waka Waka's index and Pentagram's work grid, where the
-          opening type and the content share one axis. NOTE this makes Play's
-          statement left-aligned where About's is still centred; About carries
-          the identical specificity collision and is a one-line follow-on. */
+       4. THE STATEMENT STAYS CENTRED, but its container widens, and that is
+          load-bearing rather than cosmetic. .page-hero caps at 960 and at the
+          restored 64px the first line measures about 995px, so it would WRAP
+          inside the old box. The calc reproduces .play-grid's box model, which
+          gives the line room while leaving the centring alone.
+          IT WAS BRIEFLY LEFT-ALIGNED and put back the same day (per user "why
+          ... need left aligned?" then "make it center"). The argument for the
+          left edge was real: the grid starts at x=48 and the statement began
+          around x=285, so the page's only type shared an edge with none of the
+          nineteen cards and the first element setting a left margin was a raw
+          screenshot. But it was taste, not a defect, it split Play from
+          About's centred statement, and centred is the site's own default for
+          inner-page heroes. Do not re-propose left-aligning it. */
 
     .play-info h3 { line-height: 1.2; letter-spacing: -0.01em; }
     .play-info p { color: var(--text-soft); }
@@ -100,7 +103,6 @@
         max-width: calc(1344px + 96px);   /* the grid's own box model */
         padding-left: 48px;
         padding-right: 48px;
-        text-align: left;
       }
       .page-hero--tight .page-title {     /* (0,2,0), beats .page-hero h1 */
         font-size: clamp(40px, 5.5vw, 64px);
