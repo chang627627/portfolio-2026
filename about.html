@@ -78,6 +78,10 @@
        because the flex sizing is what makes the row of five work. */
     .media-figure { flex: 1; min-width: 0; margin: 0; }
     .media-note { display: none; }
+    /* Books is hidden (2026-09-13), so "People I've worked with" closes the page on
+       desktop and takes over the 280px content-to-footer gap every page uses, which
+       .media-section--end used to carry. Phones keep style.css's 80px. */
+    @media (min-width: 769px) { .testimonials { padding-bottom: 280px; } }
     .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
     @media (max-width: 768px) {
       .ai-session { padding: 24px 20px; gap: 18px; }
@@ -419,8 +423,8 @@
     </div>
   </section>
 
-  <!-- Books & Podcasts -->
-  <section class="media-section media-section--end">
+  <!-- Books & Podcasts. Hidden 2026-09-13 per user ("hide books"); markup kept. -->
+  <section class="media-section media-section--end" style="display: none;">
     <div class="section-meta"><span class="section-label-text">Books I'm reading lately</span></div>
     <div class="media-grid">
       <figure class="media-figure">
