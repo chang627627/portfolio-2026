@@ -1052,7 +1052,7 @@ nav:not(.side-nav)::after {
   padding: 0 16px 12px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px; /* 8 until 2026-09-14: the reply lost its bubble, so the space between turns carries the separation */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
 }
@@ -1102,14 +1102,23 @@ nav:not(.side-nav)::after {
   word-wrap: break-word;
 }
 
+/* The AI's reply is plain text on the panel, and only the visitor's turn keeps a
+   bubble (2026-09-14, from the AI-site sweep). It was #888 on a 6% white bubble,
+   about 4.2:1; --text-soft on the panel surface is about 6.7:1. */
 .chat-msg.assistant {
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-muted);
+  background: none;
+  padding: 0;
+  max-width: 100%;
+  border-radius: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-soft);
   align-self: flex-start;
 }
 
 .chat-msg.assistant.typing {
   opacity: 0.5;
+  padding: 6px 0;
 }
 
 /* Three staggered dots while Claude responds (2-5s round-trip) — a designed
@@ -1137,6 +1146,7 @@ nav:not(.side-nav)::after {
   background: rgba(255, 255, 255, 0.1);
   color: var(--text);
   align-self: flex-end;
+  font-size: 14px;
 }
 
 .chat-bottom {
@@ -1746,6 +1756,10 @@ nav:not(.side-nav)::after {
   line-height: 1.6;
   color: var(--text-soft);
   margin-bottom: 24px;
+  /* the curly opening mark hangs outside the text edge (2026-09-14): its measured
+     width at 16px is 5.3px, so the first letter lines up with the lines below and
+     the avatar. Not hanging-punctuation, which Safari would add on top of this. */
+  text-indent: -0.33em;
   /* no measure cap — see the .about-block p note (62ch reverted per user) */
 }
 
@@ -2695,7 +2709,7 @@ footer {
   font-weight: 400;
   color: var(--text);
   margin: 0 0 8px 0;
-  line-height: 1.4;
+  line-height: 1.25; /* 1.4 until 2026-09-14, tightened with the section claims */
 }
 
 .deliverable p {
@@ -3015,6 +3029,7 @@ footer {
   font-size: 28px; /* was 22 — the ramp's missing middle; size is the only hierarchy channel in a single-weight system */
   font-weight: 400;
   letter-spacing: -0.02em;
+  line-height: 1.18; /* 2026-09-14: it inherited the body's 1.6, so a wrapped claim had 44.8px between lines and read as two loose lines */
   margin: 0;
 }
 
@@ -4395,10 +4410,14 @@ footer {
    under the fade — a cut under a crossfade reads fine). */
 @media (prefers-reduced-motion: no-preference) {
   .carousel-slide.active {
-    transition: opacity var(--dur-base) var(--ease-out);
+    transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-slow) var(--ease-out);
   }
   @starting-style {
     .carousel-slide.active { opacity: 0; }
+    /* the entering slide arrives from the side the visitor moved toward (2026-09-14);
+       the carousel script records it in data-dir, a carousel without it just fades */
+    [data-dir="next"] .carousel-slide.active { transform: translateX(12px); }
+    [data-dir="prev"] .carousel-slide.active { transform: translateX(-12px); }
   }
 }
 
@@ -4467,12 +4486,16 @@ footer {
   border: none;
   background: transparent;
   position: relative;
-  opacity: 0.3;
+  opacity: 0.35;
   cursor: pointer;
   padding: 0;
-  transition: opacity var(--dur-base) var(--ease-out);
 }
 
+/* Stretch-to-active (2026-09-14, from the AI-site sweep): every bar used to be the
+   same 24px and the active one only reached #888, so position was hard to read.
+   The current bar is now full width and white, the others 6px marks. clip-path
+   rather than scaleX keeps the rounded ends; the 24x20 hit target and the rail
+   width do not change. */
 .carousel-dot::before {
   content: '';
   position: absolute;
@@ -4482,14 +4505,25 @@ footer {
   height: 4px;
   border-radius: 2px;
   background: var(--text-muted);
+  clip-path: inset(0 9px round 2px);
 }
 
 @media (hover: hover) {
-  .carousel-dot:hover { opacity: 0.6; }
+  .carousel-dot:not(.active):hover { opacity: 0.6; }
 }
 
 .carousel-dot.active {
   opacity: 1;
+}
+.carousel-dot.active::before {
+  clip-path: inset(0 0 round 2px);
+  background: var(--text);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .carousel-dot { transition: opacity var(--dur-base) var(--ease-out); }
+  .carousel-dot::before {
+    transition: clip-path var(--dur-slow) var(--ease-out), background-color var(--dur-slow) var(--ease-out);
+  }
 }
 
 /* Side Nav */

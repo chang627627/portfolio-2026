@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=266">
+  <link rel="stylesheet" href="style.css?v=267">
   <style>
     /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
        border, the image carries the radius and its hairline, text hangs
@@ -119,50 +119,6 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-RRQ4XH93F3');
-  </script>
-  <script>
-    /* PREVIEW LOOK SWITCH (2026-09-14): ?look=chatprose,heads,dots,quotes writes
-       looks-preview.css into the page. Nothing happens without the query. */
-    (function () {
-      try {
-        var m = /[?&]look=([^&#]*)/.exec(location.search);
-        if (!m) return;
-        var all = ['chatprose', 'heads', 'dots', 'quotes'];
-        var keys = decodeURIComponent(m[1]).split(',').filter(function (k) { return all.indexOf(k) !== -1; });
-        if (!keys.length) return;
-        keys.forEach(function (k) { document.documentElement.classList.add('look-' + k); });
-        document.write('<link rel="stylesheet" href="looks-preview.css?v=4">');
-        // quotes: curly marks, the opener hung outside the text edge by its own measured width
-        if (keys.indexOf('quotes') !== -1) document.addEventListener('DOMContentLoaded', function () {
-          var qs = [].slice.call(document.querySelectorAll('.testimonial-quote'));
-          qs.forEach(function (p) {
-            var first = p.firstChild;
-            if (first && first.nodeType === 3 && first.nodeValue.charAt(0) === '"') {
-              first.nodeValue = first.nodeValue.slice(1);
-              var open = document.createElement('span');
-              open.className = 'q-open';
-              open.textContent = '\u201C';
-              p.insertBefore(open, first);
-            }
-            // apostrophes inside the quote curl with the marks
-            [].slice.call(p.childNodes).concat([].slice.call(p.querySelectorAll('span'))).forEach(function (n) {
-              var t = n.nodeType === 3 ? n : (n.firstChild && n.firstChild.nodeType === 3 ? n.firstChild : null);
-              if (t) t.nodeValue = t.nodeValue.replace(/(\w)'(\w)/g, '$1\u2019$2');
-            });
-            var last = p.lastChild;
-            if (last && last.nodeType === 3 && /"$/.test(last.nodeValue)) last.nodeValue = last.nodeValue.replace(/"$/, '\u201D');
-          });
-          function hang() {
-            qs.forEach(function (p) {
-              var o = p.querySelector('.q-open');
-              if (o) p.style.textIndent = (-o.getBoundingClientRect().width) + 'px';
-            });
-          }
-          (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(hang);
-          addEventListener('resize', hang);
-        });
-      } catch (e) {}
-    })();
   </script>
 </head>
 <body>
@@ -649,8 +605,7 @@
 
     function goTo(index, dir) {
       if ((index + slides.length) % slides.length === current) return;
-      // which way the visitor moved, for the preview's directional entrance
-      // (?look=dots); a data attribute only, nothing reads it on a normal visit
+      // which way the visitor moved: style.css slides the entering slide in from that side
       carousel.dataset.dir = dir || (index > current ? 'next' : 'prev');
       slides[current].classList.remove('active');
       dotsContainer.children[current].classList.remove('active');

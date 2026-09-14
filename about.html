@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=266">
+  <link rel="stylesheet" href="style.css?v=267">
   <style>
     /* One real session, in the content-card family (surface, radius, 32px, no
        border) so it sits like the testimonial cards below it. */
@@ -185,50 +185,6 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-RRQ4XH93F3');
-  </script>
-  <script>
-    /* PREVIEW LOOK SWITCH (2026-09-14): ?look=chatprose,heads,dots,quotes writes
-       looks-preview.css into the page. Nothing happens without the query. */
-    (function () {
-      try {
-        var m = /[?&]look=([^&#]*)/.exec(location.search);
-        if (!m) return;
-        var all = ['chatprose', 'heads', 'dots', 'quotes'];
-        var keys = decodeURIComponent(m[1]).split(',').filter(function (k) { return all.indexOf(k) !== -1; });
-        if (!keys.length) return;
-        keys.forEach(function (k) { document.documentElement.classList.add('look-' + k); });
-        document.write('<link rel="stylesheet" href="looks-preview.css?v=4">');
-        // quotes: curly marks, the opener hung outside the text edge by its own measured width
-        if (keys.indexOf('quotes') !== -1) document.addEventListener('DOMContentLoaded', function () {
-          var qs = [].slice.call(document.querySelectorAll('.testimonial-quote'));
-          qs.forEach(function (p) {
-            var first = p.firstChild;
-            if (first && first.nodeType === 3 && first.nodeValue.charAt(0) === '"') {
-              first.nodeValue = first.nodeValue.slice(1);
-              var open = document.createElement('span');
-              open.className = 'q-open';
-              open.textContent = '\u201C';
-              p.insertBefore(open, first);
-            }
-            // apostrophes inside the quote curl with the marks
-            [].slice.call(p.childNodes).concat([].slice.call(p.querySelectorAll('span'))).forEach(function (n) {
-              var t = n.nodeType === 3 ? n : (n.firstChild && n.firstChild.nodeType === 3 ? n.firstChild : null);
-              if (t) t.nodeValue = t.nodeValue.replace(/(\w)'(\w)/g, '$1\u2019$2');
-            });
-            var last = p.lastChild;
-            if (last && last.nodeType === 3 && /"$/.test(last.nodeValue)) last.nodeValue = last.nodeValue.replace(/"$/, '\u201D');
-          });
-          function hang() {
-            qs.forEach(function (p) {
-              var o = p.querySelector('.q-open');
-              if (o) p.style.textIndent = (-o.getBoundingClientRect().width) + 'px';
-            });
-          }
-          (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(hang);
-          addEventListener('resize', hang);
-        });
-      } catch (e) {}
-    })();
   </script>
 </head>
 <body>
@@ -439,7 +395,7 @@
     <div class="section-meta"><span class="section-label-text">People I've worked with</span></div>
     <div class="testimonial-list">
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang impressed our team at Litespace with his ability to <span style="color: var(--text)">conceptualize and implement complex design solutions</span> like the Payments Dashboard and team collaboration tools. His dedication and user-centered approach made a significant impact on our product."</p>
+        <p class="testimonial-quote">“Chang impressed our team at Litespace with his ability to <span style="color: var(--text)">conceptualize and implement complex design solutions</span> like the Payments Dashboard and team collaboration tools. His dedication and user-centered approach made a significant impact on our product.”</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-zeeshan.jpg" alt="Zeeshan Shahid">
           <div>
@@ -449,7 +405,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang's strong work ethic and creativity stood out during his time at Asset Layer. He consistently adapted to team needs, delivered high-quality design work, and <span style="color: var(--text)">supported his colleagues</span> with enthusiasm and collaboration."</p>
+        <p class="testimonial-quote">“Chang’s strong work ethic and creativity stood out during his time at Asset Layer. He consistently adapted to team needs, delivered high-quality design work, and <span style="color: var(--text)">supported his colleagues</span> with enthusiasm and collaboration.”</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-dylan.jpg" alt="Dylan Straffon">
           <div>
@@ -459,7 +415,7 @@
         </div>
       </div>
       <div class="testimonial-card">
-        <p class="testimonial-quote">"Chang is not just a phenomenal designer; he is a true leader and invaluable strategic partner. He consistently delivered top-tier designs ahead of schedule while <span style="color: var(--text)">mentoring junior designers and elevating the people around him</span>."</p>
+        <p class="testimonial-quote">“Chang is not just a phenomenal designer; he is a true leader and invaluable strategic partner. He consistently delivered top-tier designs ahead of schedule while <span style="color: var(--text)">mentoring junior designers and elevating the people around him</span>.”</p>
         <div class="testimonial-author">
           <img class="testimonial-avatar" src="images/avatar-isabel.jpg" alt="Isabel Wei">
           <div>
