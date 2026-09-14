@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=3">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=265">
+  <link rel="stylesheet" href="style.css?v=266">
   <!-- Work-card motion. Scoped to this page (.card-loop exists only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -420,15 +420,17 @@
     }
   </style>
   <script>
-    /* PREVIEW LOOK SWITCH: ?look=bloom,edge or ?look=all */
+    /* PREVIEW LOOK SWITCH: ?look=bloom,edge or ?look=all; ?look=chatprose,heads
+       (2026-09-14) also writes looks-preview.css into the page */
     (function () {
       try {
         var m = /[?&]look=([^&#]*)/.exec(location.search);
         if (!m) return;
-        var all = ['bloom', 'edge', 'original'];
+        var all = ['bloom', 'edge', 'original', 'chatprose', 'heads'];
         var keys = decodeURIComponent(m[1]).split(',');
-        if (keys.indexOf('all') !== -1) keys = all;
+        if (keys.indexOf('all') !== -1) keys = keys.concat(['bloom', 'edge', 'original']);
         keys.forEach(function (k) { if (all.indexOf(k) !== -1) document.documentElement.classList.add('look-' + k); });
+        if (keys.some(function (k) { return ['chatprose', 'heads'].indexOf(k) !== -1; })) document.write('<link rel="stylesheet" href="looks-preview.css?v=4">');
       } catch (e) {}
     })();
   </script>

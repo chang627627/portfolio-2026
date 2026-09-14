@@ -5083,7 +5083,13 @@ footer {
 .project-content .project-section.solution-coda { margin-top: 44px; }
 
 /* Outcome CTA — handoff to the live product */
-.hw-cta-row { margin-top: 32px; }
+/* Case-study buttons (2026-09-14, per user "I want what homewise did", from the AI-site
+   sweep): a pair reads as one solid primary and one outlined secondary instead of two
+   white slabs. The outline is an inset shadow, not a border, so both buttons keep the
+   same box; the row is a 12px flex gap, which replaced Homewise's inline margin (that
+   margin also indented the wrapped second button 12px on phones). Hover whitens the
+   primary or brightens the outline, and the arrow nudges toward where the link goes. */
+.hw-cta-row { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 12px; }
 .hw-cta {
   display: inline-flex;
   align-items: center;
@@ -5094,9 +5100,25 @@ footer {
   border-radius: var(--radius);
   font-size: 15px;
   text-decoration: none;
-  transition: opacity var(--dur-base) var(--ease-out);
+  transition: background var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
 }
-.hw-cta:hover { opacity: 0.85; }
+.hw-cta + .hw-cta {
+  background: transparent;
+  color: var(--text) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+.hw-cta span[aria-hidden] {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+@media (hover: hover) {
+  .hw-cta:hover { background: #fff; }
+  .hw-cta + .hw-cta:hover {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.34);
+  }
+  .hw-cta:hover span[aria-hidden] { transform: translate(2px, -2px); }
+}
 
 /* Walkthrough clip wrapper + minimal playback progress bar */
 .hw-clip {
