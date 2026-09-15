@@ -126,8 +126,15 @@
        reveal at load (delays continue from the statement's two lines); on desktop + motion-safe the
        script adds .story-on, which parks the hero for half a screen of scroll and hands the beats
        to the scroll instead. A JS failure, phones and reduced motion keep the still answer. */
-    .story-answer { margin: 40px auto 0; max-width: 760px; font-size: clamp(20px, 1.9vw, 27px); line-height: 1.4; letter-spacing: -0.01em; color: var(--text); }
+    /* A QUIET LEAD-IN, THREE CALLS A TIER UP (2026-09-15, per user "can [the answer] have a better way to present?"
+       then "DO", from a rendered five-direction pass). The four lines were one tier (27px white), so the question read
+       as a fourth answer. The lead-in is now the bio's grey tier at 22px and the three calls are white at 36px, 16px
+       below it: the page steps 64 / 36 / 22 and the calls widen line by line, so the block lands on the last one.
+       Same words, same centring, same scroll beats; the lead-in arrives grey and stays grey, nothing dims. */
+    .story-answer { margin: 40px auto 0; max-width: 880px; font-size: 22px; line-height: 1.4; letter-spacing: -0.01em; color: var(--text); }
     .story-answer .line { display: block; overflow: hidden; }
+    .story-answer .line:first-child { color: var(--text-soft); margin-bottom: 16px; }
+    .story-answer .line:not(:first-child) { font-size: 36px; line-height: 1.2; letter-spacing: -0.025em; color: var(--text); padding-bottom: 0.04em; }
     .story-answer .line-inner { display: inline-block; opacity: 0; transform: translateY(100%); animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.3s + var(--d) * 0.12s); }
     /* The statement renders at the site's inner-page title size (2026-09-15). `.page-hero h1` (0,1,1) in
        style.css caps it at 56px and outranks `.page-title` (0,1,0), which asks for 64px, so About's statement
@@ -161,7 +168,13 @@
         animation-range: 0 var(--story-runway);
       }
     }
-    @media (max-width: 768px) { .story-answer { margin-top: 24px; } }
+    @media (max-width: 768px) {
+      .story-answer { font-size: 17px; margin-top: 28px; }
+      .story-answer .line:first-child { margin-bottom: 12px; }
+      .story-answer .line:not(:first-child) { font-size: 24px; line-height: 1.25; }
+      .story-answer .line:not(:first-child) .line-inner { text-wrap: balance; }
+      .story-answer .line:nth-child(n+3) { margin-top: 8px; }
+    }
 
     /* Scroll-driven deck (2026-09-12): the row no longer drifts and cannot be dragged.
        The stage parks in the middle of the screen and one full set of photographs
@@ -343,7 +356,7 @@
     const LEAD = 0.06;    // the first beat starts this far into the hold
     // the photograph row waits cut by the fold while the statement holds (2026-09-15): the centre card's top rests
     // PEEK px above the fold, never closer than GAP under the answer's last line, never further than GAP_MAX
-    const PEEK = 150, GAP = 96, GAP_MAX = 240;
+    const PEEK = 150, GAP = 72, GAP_MAX = 240;   // GAP was 96; 72 since the answer grew 29px with the 36px calls, so the peek survives at 720 tall
     let runway = 0, last = -1, raf = 0, visible = true;
     function offsetWithin(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
     function placeDeck() {
