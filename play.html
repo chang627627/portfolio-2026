@@ -191,7 +191,9 @@
     const RUNWAY = 1.0;                 // screens of scroll the statement holds for
     const SIZE = 0.16, MAX_S = 250;     // prism side as a share of the stage's width, capped
     const DEPTH = 1.1;                  // prism length along its axis, in sides
-    const ROLL = [-0.14, 0.24];         // turn in the picture plane across the hold, radians
+    const ROLL = [0, 0.24];             // the prism's turn in the picture plane across the hold, radians. Starts at 0 so the side
+                                        // view's base is level (2026-09-15, per user "why the bottom can not be horizontal"; was -0.14)
+    const FAN_ROLL = [-0.14, 0.24];     // the roll the fan's centre follows: the old range, so the six rays leave at the same angles
     const YAW = [0, -1.05];             // turn about the vertical axis across the hold, radians. It starts at 0, a flat side view
                                         // down the prism's axis (the classic triangle), and turns into 3D as you scroll (2026-09-15,
                                         // per user "can start point be the side view and then it rotate to 3D"). It never crosses
@@ -277,7 +279,7 @@
 
       // the fan: its centre follows the roll, its width follows the scroll, and it never rises into the statement
       const spread = mix(SPREAD[0], SPREAD[1], e);
-      let centre = FAN_DIP + roll * 0.8;
+      let centre = FAN_DIP + mix(FAN_ROLL[0], FAN_ROLL[1], e) * 0.8;
       const topAllowed = Math.atan2(titleBottom + CLEAR - exit[1], W - exit[0]);
       if (centre - spread / 2 < topAllowed) centre = topAllowed + spread / 2;
       const flow = t * FLOW;
