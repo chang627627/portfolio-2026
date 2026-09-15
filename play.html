@@ -110,6 +110,18 @@
         letter-spacing: -0.03em;
       }
     }
+
+    /* THE PRISM (2026-09-15, per user "I think it has no metaphor with the play section. I need a
+       better idea" then "do1", replacing the stardust planet that was moved here from the home
+       hero). The script adds .prism-on only on desktop + motion-safe, so the pin exists only where
+       the prism does and a JS failure leaves the plain statement. The stage is one screen tall and
+       sticky; the statement keeps its own padding, so it sits exactly where it always has, and the
+       prism and its light live in the space below it. */
+    .play-prism { display: none; }
+    .prism-on .prism-stage { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+    .prism-on .play-prism { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.5s; }
+    .prism-on .play-prism.is-lit { opacity: 1; }
+    .prism-on .prism-stage .page-hero { position: relative; z-index: 1; }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
@@ -138,13 +150,212 @@
     </div>
   </nav>
 
-  <!-- Play Hero -->
+  <!-- Play Hero (inside .prism-pin: on desktop the statement holds for one screen of scroll while the prism turns under it and its light fans out, then releases) -->
+  <div class="prism-pin">
+   <div class="prism-stage">
   <section class="page-hero page-hero--tight">
     <h1 class="page-title">
       <span class="line" style="--d:0"><span class="line-inner">Where I explore new tools, experiment,</span></span>
       <span class="line" style="--d:1"><span class="line-inner">and stretch my range as a generalist.</span></span>
     </h1>
   </section>
+   </div>
+  </div>
+
+<script>
+  // THE PRISM (2026-09-15, per user "I think it has no metaphor with the play section. I need a better
+  // idea" then "do1"; it replaces a stardust planet that had been built for the home hero after
+  // sleep-well-creatives.com and moved here). The metaphor is the statement's last word: one stream of
+  // white light goes into a prism and comes out as a range of colours, one designer refracted into many
+  // disciplines. On desktop the statement holds still for one screen of scrolling while the prism turns
+  // in 3D and the fan of light it throws opens wider and wider, until it spans the screen and the grid
+  // of experiments comes up. The prism, the beam and the fan are all made of the site's motes, in the
+  // dawn colours. The turn and the width of the fan follow the scroll only (scroll back and they close
+  // again); the light itself flows gently along the beams, which is what makes it read as light.
+  // Canvas 2D with pre-tinted sprites, gated to the stage being on screen. Phones and reduced motion
+  // keep the plain statement: no pin, no prism.
+  (function () {
+    if (!matchMedia('(min-width: 769px)').matches) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const pin = document.querySelector('.prism-pin');
+    const stage = pin && pin.querySelector('.prism-stage');
+    const title = stage && stage.querySelector('.page-title');
+    if (!stage || !title) return;
+    const cv = document.createElement('canvas');
+    cv.className = 'play-prism'; cv.setAttribute('aria-hidden', 'true');
+    stage.insertBefore(cv, stage.firstChild);
+    const ctx = cv.getContext('2d');
+    document.documentElement.classList.add('prism-on');
+
+    // DIALS
+    const RUNWAY = 1.0;                 // screens of scroll the statement holds for
+    const SIZE = 0.16, MAX_S = 250;     // prism side as a share of the stage's width, capped
+    const DEPTH = 1.1;                  // prism length along its axis, in sides
+    const ROLL = [-0.14, 0.24];         // turn in the picture plane across the hold, radians
+    const YAW = [-0.6, 0.55];           // turn about the vertical axis across the hold, radians
+    const SPREAD = [0.05, 0.82];        // the fan's full angle at the start and end of the hold, radians
+    const FAN_DIP = 0.26;               // the fan's centre, below horizontal, radians
+    const FLOW = 70;                    // px per second the light travels along the beams
+    const EASE = 0.14;                  // how quickly the drawn scene follows the scroll, per frame
+    const CLEAR = 40;                   // no light rises closer than this under the statement
+    const FAN = [ // top to bottom, the dawn as a spectrum
+      [255, 222, 120], [255, 176, 80], [255, 118, 76], [210, 110, 255], [120, 120, 255], [110, 205, 255],
+    ];
+    const WHITE = [255, 248, 236];
+
+    // pre-tinted glow sprites: a hard bright centre with a fast falloff, the site's one mote
+    const SPR = 48;
+    function sprite(c) {
+      const s = document.createElement('canvas'); s.width = s.height = SPR;
+      const g = s.getContext('2d'), h = SPR / 2, grad = g.createRadialGradient(h, h, 0, h, h, h);
+      grad.addColorStop(0, `rgba(${Math.min(255, c[0] + 40)}, ${Math.min(255, c[1] + 40)}, ${Math.min(255, c[2] + 40)}, 1)`);
+      grad.addColorStop(0.14, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.95)`);
+      grad.addColorStop(0.34, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.2)`);
+      grad.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+      g.fillStyle = grad; g.fillRect(0, 0, SPR, SPR);
+      return s;
+    }
+    const fanSprites = FAN.map(sprite), whiteSprite = sprite(WHITE), edgeSprite = sprite([235, 232, 255]);
+    const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+    const mix = (a, b, t) => a + (b - a) * t;
+    const smooth = (u) => u * u * (3 - 2 * u);
+
+    let W = 0, H = 0, runway = 0, titleBottom = 0, target = 0, shown = -1, visible = true, raf = 0, t0 = performance.now();
+    function layout() {
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = stage.clientWidth; H = stage.clientHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      runway = Math.round(window.innerHeight * RUNWAY);
+      pin.style.height = (H + runway) + 'px';
+      titleBottom = title.getBoundingClientRect().bottom - stage.getBoundingClientRect().top;
+      shown = -1;
+    }
+    function progress() { return Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / runway)); }
+
+    function dot(spr, x, y, r, a) {
+      if (a < 0.015) return;
+      const size = r * 5.2;
+      ctx.globalAlpha = Math.min(1, a);
+      ctx.drawImage(spr, x - size / 2, y - size / 2, size, size);
+    }
+    // how far a ray from (x, y) at angle th travels before leaving the stage
+    function reach(x, y, th) {
+      const dx = Math.cos(th), dy = Math.sin(th); let L = 1e5;
+      if (dx > 1e-6) L = Math.min(L, (W + 40 - x) / dx); else if (dx < -1e-6) L = Math.min(L, (-40 - x) / dx);
+      if (dy > 1e-6) L = Math.min(L, (H + 40 - y) / dy); else if (dy < -1e-6) L = Math.min(L, (-40 - y) / dy);
+      return Math.max(0, L);
+    }
+
+    function draw(p, t) {
+      ctx.clearRect(0, 0, W, H);
+      ctx.globalCompositeOperation = 'lighter';
+      const e = smooth(p);
+      const S = Math.min(W * SIZE, MAX_S), cx = W * 0.44, cy = Math.max(titleBottom + 70 + S * 0.62, H * 0.6);
+      const roll = mix(ROLL[0], ROLL[1], e), yaw = mix(YAW[0], YAW[1], e), tilt = 0.14;
+      const F = 1100, rC = S / Math.sqrt(3), half = S * DEPTH / 2;
+      // the prism in 3D: an equilateral cross-section, apex up, extruded along the depth axis
+      function project(ang, zl) {
+        let x = rC * Math.cos(ang + roll), y = rC * Math.sin(ang + roll), z = zl;
+        const x1 = x * Math.cos(yaw) + z * Math.sin(yaw), z1 = -x * Math.sin(yaw) + z * Math.cos(yaw);
+        const y2 = y * Math.cos(tilt) - z1 * Math.sin(tilt), z2 = y * Math.sin(tilt) + z1 * Math.cos(tilt);
+        const f = F / (F - z2);
+        return [cx + x1 * f, cy - y2 * f, z2];
+      }
+      const ANG = [Math.PI / 2, Math.PI * 7 / 6, Math.PI * 11 / 6]; // apex, bottom left, bottom right
+      const front = ANG.map(a => project(a, half)), back = ANG.map(a => project(a, -half)), mid = ANG.map(a => project(a, 0));
+      const lerp2 = (a, b, u) => [mix(a[0], b[0], u), mix(a[1], b[1], u)];
+      const entry = lerp2(mid[0], mid[1], 0.58), exit = lerp2(mid[0], mid[2], 0.62);
+
+      // the fan: its centre follows the roll, its width follows the scroll, and it never rises into the statement
+      const spread = mix(SPREAD[0], SPREAD[1], e);
+      let centre = FAN_DIP + roll * 0.8;
+      const topAllowed = Math.atan2(titleBottom + CLEAR - exit[1], W - exit[0]);
+      if (centre - spread / 2 < topAllowed) centre = topAllowed + spread / 2;
+      const flow = t * FLOW;
+
+      // 1. the fan of colour, broad soft glow first, then the motes flowing out along each ray
+      FAN.forEach((c, i) => {
+        const th = centre + (i / (FAN.length - 1) - 0.5) * spread, L = reach(exit[0], exit[1], th);
+        const ex = exit[0] + Math.cos(th) * L, ey = exit[1] + Math.sin(th) * L;
+        const g = ctx.createLinearGradient(exit[0], exit[1], ex, ey);
+        g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.16 + 0.1 * e).toFixed(3)})`);
+        g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+        ctx.globalAlpha = 1; ctx.strokeStyle = g; ctx.lineCap = 'round';
+        ctx.lineWidth = 3 + 18 * e; ctx.beginPath(); ctx.moveTo(exit[0], exit[1]); ctx.lineTo(ex, ey); ctx.stroke();
+        const n = 46, nx = -Math.sin(th), ny = Math.cos(th);
+        for (let k = 0; k < n; k++) {
+          const seed = i * 97 + k;
+          const s = ((flow * (0.8 + 0.4 * hash(seed + 3)) + hash(seed) * L) % L);
+          const w = (hash(seed + 1) - 0.5) * (2 + s * (0.02 + 0.05 * e)); // the band widens as it travels
+          const fade = Math.pow(1 - s / L, 0.7) * (0.35 + 0.65 * Math.min(1, s / 30));
+          dot(fanSprites[i], exit[0] + Math.cos(th) * s + nx * w, exit[1] + Math.sin(th) * s + ny * w, 0.9 + 0.8 * hash(seed + 2), fade * (0.55 + 0.35 * e));
+        }
+      });
+
+      // 2. the white beam, flowing in from the left edge
+      const src = [-30, entry[1] + 110], dx = entry[0] - src[0], dy = entry[1] - src[1], inL = Math.hypot(dx, dy);
+      {
+        const g = ctx.createLinearGradient(src[0], src[1], entry[0], entry[1]);
+        g.addColorStop(0, 'rgba(255, 248, 236, 0)'); g.addColorStop(1, 'rgba(255, 248, 236, 0.22)');
+        ctx.globalAlpha = 1; ctx.strokeStyle = g; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(src[0], src[1]); ctx.lineTo(entry[0], entry[1]); ctx.stroke();
+        for (let k = 0; k < 70; k++) {
+          const s = (flow * (0.9 + 0.2 * hash(k + 500)) + hash(k + 400) * inL) % inL, u = s / inL;
+          const w = (hash(k + 401) - 0.5) * 3;
+          dot(whiteSprite, src[0] + dx * u - dy / inL * w, src[1] + dy * u + dx / inL * w, 0.9 + 0.6 * hash(k + 402), 0.25 + 0.7 * u);
+        }
+        // inside the glass: a short bright bundle from the entry face to the exit face
+        for (let k = 0; k < 16; k++) {
+          const u = ((flow / 60 + hash(k + 600)) % 1);
+          dot(whiteSprite, mix(entry[0], exit[0], u), mix(entry[1], exit[1], u) + (hash(k + 601) - 0.5) * 3, 1.1, 0.7);
+        }
+      }
+
+      // 3. the prism: its nine edges as stippled light, the near ones brighter, over a faint glass fill
+      const tri = (pts, a) => { ctx.globalAlpha = a; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); ctx.lineTo(pts[2][0], pts[2][1]); ctx.closePath(); ctx.fill(); };
+      ctx.globalCompositeOperation = 'source-over';
+      tri(back, 0.025); tri(front, 0.035);
+      ctx.globalCompositeOperation = 'lighter';
+      const edges = [[front[0], front[1]], [front[1], front[2]], [front[2], front[0]], [back[0], back[1]], [back[1], back[2]], [back[2], back[0]], [front[0], back[0]], [front[1], back[1]], [front[2], back[2]]];
+      edges.forEach(([a, b], j) => {
+        const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(4, Math.round(len / 6.5));
+        const near = (a[2] + b[2]) / 2 > 0 ? 1 : 0.45;
+        for (let k = 0; k <= n; k++) {
+          const u = k / n, wob = (hash(j * 31 + k) - 0.5) * 1.2;
+          dot(edgeSprite, mix(a[0], b[0], u) + wob, mix(a[1], b[1], u) + wob, 0.8 + 0.3 * hash(j * 17 + k), near * (0.45 + 0.35 * hash(j * 13 + k)));
+        }
+      });
+      // corners catch the light
+      front.concat(back).forEach((v, i) => dot(whiteSprite, v[0], v[1], 1.5, v[2] > 0 ? 0.85 : 0.4));
+
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      // dissolve into the bottom of the screen, never a hard cut
+      const fade = ctx.createLinearGradient(0, H - 160, 0, H);
+      fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,1)');
+      ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = fade; ctx.fillRect(0, H - 160, W, 160);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (!visible) return;
+      target = progress();
+      shown = shown < 0 ? target : shown + (target - shown) * EASE;
+      if (Math.abs(shown - target) < 0.0004) shown = target;
+      draw(shown, (now - t0) / 1000);
+      raf = requestAnimationFrame(frame);
+    }
+    function start() { if (!raf && visible) raf = requestAnimationFrame(frame); }
+    window.addEventListener('resize', layout, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) start(); }, { rootMargin: '100px' }).observe(stage);
+    layout();
+    requestAnimationFrame(() => cv.classList.add('is-lit'));
+    start();
+    cv._prism = () => ({ W, H, runway, titleBottom, target, shown }); // for probing
+    cv._draw = draw;
+  })();
+</script>
 
   <!-- Play Grid -->
   <section class="play-section">
