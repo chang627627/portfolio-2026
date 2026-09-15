@@ -1766,6 +1766,7 @@
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
     const whaleOn = !FX.includes('-whale') && !FX.includes('off');
+    const phoneMQ = matchMedia('(max-width: 768px)'); // the same breakpoint the footer's CSS uses, so the whale's size always matches its band
     document.querySelectorAll('.px-dissolve').forEach(cv => {
       if (getComputedStyle(cv).display === 'none') return;
       const parent = cv.parentElement;
@@ -1869,7 +1870,7 @@
       const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
       const W_SWIM = 25, W_GATHER = 1.5, W_LET = 2.0; // the crossing (18s until 2026-09-11, slowed per user "how to make the whale more obvious?"), each mote's rise into place, the tail-first let-go
       const SETTLE_PULSE = 0.3, FIELD_DIM = 0.3, WHALE_R = 1.15; // the click when the last star lands, how much the ambient field steps back while it swims, the whale's stars a little larger than the field's
-      const WHALE = [34, 50];                 // seconds between whale starts (a crossing now takes about 27s, so 7 to 23s of empty band between them; was 45 to 75, then 28 to 45 with the 18s crossing)
+      const WHALE = [34, 50];                 // seconds between whale starts (a desktop crossing takes about 27s, so 7 to 23s of empty band between them; a phone crossing about 18s, so 16 to 32s; was 45 to 75, then 28 to 45 with the 18s crossing)
       let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
       let rScale = 1; // the stars grow a little on phones, where the whale is half the size (set per spawn)
       function catmull(pts, per, closed) {
@@ -1948,7 +1949,7 @@
       }
       function spawnWhale() {
         if (whale || !whaleOn) return;
-        const span = bBot - bTop, arc = span * 0.035, phone = W < 769;
+        const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
         // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
         // On a phone the width decides instead: 55% of it, so the animal reads at 375
         const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
@@ -2053,7 +2054,7 @@
         if (dt) {
           const p = progress();
           acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
-          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (W < 769 ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
+          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (phoneMQ.matches ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
           else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
         }
         ctx.clearRect(0, 0, W, H);
@@ -2079,6 +2080,9 @@
       }
       function layout() {
         const dpr = Math.min(2, window.devicePixelRatio || 1);
+        // a phone fires resize whenever its address bar collapses or returns, and the footer's box
+        // does not change, so an unchanged size must not throw away the whale mid-swim (2026-09-15)
+        if (W && parent.clientWidth === W && parent.clientHeight === H && cv.width === Math.round(W * dpr)) return;
         W = parent.clientWidth; H = parent.clientHeight;
         cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);

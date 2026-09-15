@@ -176,6 +176,55 @@
        trailing the label on its own line. This is the list's own top edge, the
        same rule already separating the quotes. */
     .testimonial-card { border-top: 1px solid rgba(255, 255, 255, 0.08); }
+
+    /* ---- Parallax after the deck, 2026-09-15 (per user "i need more parallax
+       scrolling. the top photos part did good. what about the rest?", then "do 1
+       and 2"). Desktop and motion-safe only, like the deck; phones and reduced
+       motion keep the still page. Nothing here moves or dims a paragraph while
+       it is being read: the bio is untouched, and a list row has stopped moving
+       before it is a third of the way up the screen. -------------------------
+
+       1. THE PHOTOS RECEDE AS THEY RELEASE. When the pinned pass ends the deck
+       no longer scrolls off like a flat picture: the deck script shrinks it and
+       fades it out over the first 420px of scroll, so it falls away into the
+       dark. It NEVER moves toward Background: a first version let the photos
+       lag half the scroll behind and slid Background over them as a curtain,
+       and the user read the two as overlapping ("still feel overlapped with
+       each other"), so there is no lag and no curtain, and the gap above the
+       Background label can only grow as the photos shrink. */
+    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+      .deck-stage { transform-origin: 50% 40%; }
+    }
+
+    /* 2. THE LISTS FILL IN ROW BY ROW. Each Experience, Education and
+       Recognition row rises into place on its own view() timeline as it comes
+       up the screen, and a row lower in its list starts further down, so the
+       list opens out and closes up as it arrives. Each row is fully opaque once
+       it is on screen and at rest by the time it is 30% of the way up. */
+    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .about-vertical .experience-list li {
+          animation-name: row-unfold;
+          animation-timeline: view();
+          animation-range: entry 0% cover 30%;
+          animation-duration: auto;
+          animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+          animation-fill-mode: both;
+        }
+        .experience-list li:nth-child(2) { --i: 1; }
+        .experience-list li:nth-child(3) { --i: 2; }
+        .experience-list li:nth-child(4) { --i: 3; }
+        .experience-list li:nth-child(5) { --i: 4; }
+        .experience-list li:nth-child(6) { --i: 5; }
+        .experience-list li:nth-child(7) { --i: 6; }
+        .experience-list li:nth-child(8) { --i: 7; }
+      }
+    }
+    @keyframes row-unfold {
+      0% { opacity: 0; translate: 0 calc(28px + var(--i, 0) * 10px); }
+      22% { opacity: 1; }
+      100% { opacity: 1; translate: 0 0; }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
@@ -686,7 +735,13 @@
   let base = 0;         // scrollLeft at progress 0, middle set centred
   let stickyTop = 0;    // where the stage parks while pinned
   let runway = 0;       // pinned scroll budget for one pass
+  let deckH = 0;        // the parked stage's height
   let lastScroll = -1;
+  let lastSink = -1;
+  // after the pass (2026-09-15): over SINK_SPAN px of scroll the deck shrinks by SHRINK and fades
+  // out. No lag at all: a version that let it trail the scroll slid it into Background and read
+  // as overlap (per user), so it scrolls away at full speed and the gap can only grow.
+  const SHRINK = 0.1, SINK_SPAN = 420;
 
   // measure one set, the resting position, and the runway the pass is spread over
   function measure() {
@@ -698,6 +753,7 @@
 
     if (!pin || !stage || reducedMotion) return;
     const h = deckEl.offsetHeight;
+    deckH = h;
     // park it in the middle of the screen, but never under the header bar
     stickyTop = Math.max(NAV_CLEAR, Math.round((window.innerHeight - h) / 2));
     stage.style.top = stickyTop + 'px';
@@ -762,12 +818,27 @@
     }
   }
 
+  // The photos recede as they release: once the pinned pass is over, the stage shrinks and
+  // fades into the dark. Zero while pinned, so the pass is untouched.
+  function sink() {
+    if (!pin || !stage || !runway) return;
+    const rel = Math.max(0, stickyTop + deckH - pin.getBoundingClientRect().bottom);
+    const r = Math.round(rel);
+    if (r === lastSink) return;
+    lastSink = r;
+    if (!r) { stage.style.scale = ''; stage.style.opacity = ''; return; }
+    const k = Math.min(1, r / SINK_SPAN), ease = k * k * (3 - 2 * k);
+    stage.style.scale = (1 - SHRINK * ease).toFixed(4);
+    stage.style.opacity = (1 - ease).toFixed(3);
+  }
+
   function tick() {
     if (!reducedMotion) {
       // the page drives the deck: across the runway one whole set passes the
       // centre, every photograph taking its turn as the protagonist
       const target = Math.round(base + settle(progress()) * setWidth);
       if (target !== lastScroll) { track.scrollLeft = target; lastScroll = target; }
+      sink();
     }
     paintCards();
     rafId = requestAnimationFrame(tick);
@@ -814,7 +885,7 @@
   let resizeId;
   window.addEventListener('resize', () => {
     clearTimeout(resizeId);
-    resizeId = setTimeout(() => { measure(); lastScroll = -1; }, 120);
+    resizeId = setTimeout(() => { measure(); lastScroll = -1; lastSink = -1; }, 120);
   });
 
   // probe handle
@@ -1013,6 +1084,7 @@
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
     const whaleOn = !FX.includes('-whale') && !FX.includes('off');
+    const phoneMQ = matchMedia('(max-width: 768px)'); // the same breakpoint the footer's CSS uses, so the whale's size always matches its band
     document.querySelectorAll('.px-dissolve').forEach(cv => {
       if (getComputedStyle(cv).display === 'none') return;
       const parent = cv.parentElement;
@@ -1116,7 +1188,7 @@
       const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
       const W_SWIM = 25, W_GATHER = 1.5, W_LET = 2.0; // the crossing (18s until 2026-09-11, slowed per user "how to make the whale more obvious?"), each mote's rise into place, the tail-first let-go
       const SETTLE_PULSE = 0.3, FIELD_DIM = 0.3, WHALE_R = 1.15; // the click when the last star lands, how much the ambient field steps back while it swims, the whale's stars a little larger than the field's
-      const WHALE = [34, 50];                 // seconds between whale starts (a crossing now takes about 27s, so 7 to 23s of empty band between them; was 45 to 75, then 28 to 45 with the 18s crossing)
+      const WHALE = [34, 50];                 // seconds between whale starts (a desktop crossing takes about 27s, so 7 to 23s of empty band between them; a phone crossing about 18s, so 16 to 32s; was 45 to 75, then 28 to 45 with the 18s crossing)
       let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
       let rScale = 1; // the stars grow a little on phones, where the whale is half the size (set per spawn)
       function catmull(pts, per, closed) {
@@ -1195,7 +1267,7 @@
       }
       function spawnWhale() {
         if (whale || !whaleOn) return;
-        const span = bBot - bTop, arc = span * 0.035, phone = W < 769;
+        const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
         // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
         // On a phone the width decides instead: 55% of it, so the animal reads at 375
         const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
@@ -1300,7 +1372,7 @@
         if (dt) {
           const p = progress();
           acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
-          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (W < 769 ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
+          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (phoneMQ.matches ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
           else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
         }
         ctx.clearRect(0, 0, W, H);
@@ -1326,6 +1398,9 @@
       }
       function layout() {
         const dpr = Math.min(2, window.devicePixelRatio || 1);
+        // a phone fires resize whenever its address bar collapses or returns, and the footer's box
+        // does not change, so an unchanged size must not throw away the whale mid-swim (2026-09-15)
+        if (W && parent.clientWidth === W && parent.clientHeight === H && cv.width === Math.round(W * dpr)) return;
         W = parent.clientWidth; H = parent.clientHeight;
         cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
