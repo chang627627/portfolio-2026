@@ -283,12 +283,7 @@
         g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
         ctx.globalAlpha = 1; ctx.strokeStyle = g; ctx.lineCap = 'round';
         ctx.lineWidth = 3 + 18 * e; ctx.beginPath(); ctx.moveTo(exit[0], exit[1]); ctx.lineTo(ex, ey); ctx.stroke();
-        // a thin bright spine inside the glow, so each ray reads as a beam rather than a smear (finish pass, 2026-09-15)
-        const g2 = ctx.createLinearGradient(exit[0], exit[1], ex, ey);
-        g2.addColorStop(0, `rgba(${Math.min(255, c[0] + 50)}, ${Math.min(255, c[1] + 50)}, ${Math.min(255, c[2] + 50)}, ${(0.42 + 0.2 * e).toFixed(3)})`);
-        g2.addColorStop(0.55, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.12 + 0.08 * e).toFixed(3)})`);
-        g2.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
-        ctx.strokeStyle = g2; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(exit[0], exit[1]); ctx.lineTo(ex, ey); ctx.stroke();
+        // (a thin bright spine inside each ray was added in the finish pass and removed per user the same day)
         const n = 46, nx = -Math.sin(th), ny = Math.cos(th);
         for (let k = 0; k < n; k++) {
           const seed = i * 97 + k;
