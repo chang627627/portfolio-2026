@@ -192,10 +192,15 @@
     const SIZE = 0.16, MAX_S = 250;     // prism side as a share of the stage's width, capped
     const DEPTH = 1.1;                  // prism length along its axis, in sides
     const ROLL = [-0.14, 0.24];         // turn in the picture plane across the hold, radians
-    const YAW = [-0.45, -1.05];         // turn about the vertical axis across the hold, radians. Both ends negative so the
-                                        // exit face (the rectangle the six rays leave from) faces the viewer the whole way and
-                                        // turns further toward them as the fan opens (2026-09-15, per user: it was [-0.6, 0.55],
-                                        // which turned that face away past mid-hold, so the rays were seen through the back)
+    const YAW = [0, -1.05];             // turn about the vertical axis across the hold, radians. It starts at 0, a flat side view
+                                        // down the prism's axis (the classic triangle), and turns into 3D as you scroll (2026-09-15,
+                                        // per user "can start point be the side view and then it rotate to 3D"). It never crosses
+                                        // zero, so the exit face (the rectangle the six rays leave from) is edge-on at the start and
+                                        // faces the viewer from then on (it was [-0.6, 0.55], which turned that face away past
+                                        // mid-hold, so the rays were seen through the back of the glass)
+    const TILT = [0, 0.14];             // looking down onto the prism, radians: none in the side view, a little once it is 3D
+    const PERSP = [0, 1 / 1100];        // perspective strength: none in the side view (so the back triangle sits exactly behind
+                                        // the front one instead of showing as a smaller triangle inside it), full once it is 3D
     const SPREAD = [0.05, 0.82];        // the fan's full angle at the start and end of the hold, radians
     const FAN_DIP = 0.26;               // the fan's centre, below horizontal, radians
     const FLOW = 70;                    // px per second the light travels along the beams
@@ -255,14 +260,14 @@
       ctx.globalCompositeOperation = 'lighter';
       const e = smooth(p);
       const S = Math.min(W * SIZE, MAX_S), cx = W * 0.44, cy = Math.max(titleBottom + 70 + S * 0.62, H * 0.6);
-      const roll = mix(ROLL[0], ROLL[1], e), yaw = mix(YAW[0], YAW[1], e), tilt = 0.14;
-      const F = 1100, rC = S / Math.sqrt(3), half = S * DEPTH / 2;
+      const roll = mix(ROLL[0], ROLL[1], e), yaw = mix(YAW[0], YAW[1], e), tilt = mix(TILT[0], TILT[1], e), persp = mix(PERSP[0], PERSP[1], e);
+      const rC = S / Math.sqrt(3), half = S * DEPTH / 2;
       // the prism in 3D: an equilateral cross-section, apex up, extruded along the depth axis
       function project(ang, zl) {
         let x = rC * Math.cos(ang + roll), y = rC * Math.sin(ang + roll), z = zl;
         const x1 = x * Math.cos(yaw) + z * Math.sin(yaw), z1 = -x * Math.sin(yaw) + z * Math.cos(yaw);
         const y2 = y * Math.cos(tilt) - z1 * Math.sin(tilt), z2 = y * Math.sin(tilt) + z1 * Math.cos(tilt);
-        const f = F / (F - z2);
+        const f = 1 / (1 - z2 * persp);
         return [cx + x1 * f, cy - y2 * f, z2, x1, y2]; // screen x, screen y, then camera-space z, x, y
       }
       const ANG = [Math.PI / 2, Math.PI * 7 / 6, Math.PI * 11 / 6]; // apex, bottom left, bottom right
@@ -340,7 +345,7 @@
         const u = [c[1][0] - c[0][0], c[1][1] - c[0][1], c[1][2] - c[0][2]], w = [c[2][0] - c[0][0], c[2][1] - c[0][1], c[2][2] - c[0][2]];
         let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
         if (n[0] * o[0] + n[1] * o[1] + n[2] * o[2] < 0) n = n.map(q => -q); // the prism is centred on the origin
-        const view = [-o[0], -o[1], F - o[2]];
+        const view = persp > 1e-9 ? [-o[0], -o[1], 1 / persp - o[2]] : [0, 0, 1];
         return (n[0] * view[0] + n[1] * view[1] + n[2] * view[2]) / (Math.hypot(...n) * Math.hypot(...view));
       };
       const faces = { front: [front[0], front[1], front[2]], back: [back[0], back[1], back[2]], entry: [front[0], front[1], back[1], back[0]], base: [front[1], front[2], back[2], back[1]], exit: [front[2], front[0], back[0], back[2]] };
