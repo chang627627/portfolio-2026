@@ -144,30 +144,11 @@
     }
     .story-on .story-stage { position: sticky; top: 0; }
     .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
-    /* THE FIRST SCREEN CUES THE SCROLL (2026-09-15, per user "too much white space and user do not know
-       he need to scroll down"). Two devices, both from the research's rule that the next beat is already
-       in motion before a release: the photograph row waits CUT BY THE FOLD while the statement holds (a first answer line lit
-       at load was built and removed the same hour, per user: "The parts a model cannot take off your hands:
-       need to be hidden"; all four lines are scroll beats). The story engine sets the
-       deck's margin so the centre card's top rests PEEK px above the fold (never closer than GAP under
-       the answer, never further than GAP_MAX, so tall screens do not grow the void), and this scroll
-       timeline lifts the deck stage by the hold's runway at scroll 0 and lets it down to 0 by the
-       release, so the row stands still on screen through the hold and then leaves with the statement
-       at full speed. No per-frame JS (a JS translate ran a compositor frame behind the wheel and the
-       row shivered beside the still statement). `translate` is its own longhand, so the sink's inline
-       scale and opacity on the same element are untouched. Browsers without scroll timelines keep the
-       stylesheet's deck position and get the colon alone. */
-    @supports (animation-timeline: scroll()) {
-      @keyframes deck-wait { from { translate: 0 calc(-1 * var(--story-runway)); } to { translate: 0 0; } }
-      .story-on .deck-stage {
-        animation-name: deck-wait;
-        animation-duration: auto;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-        animation-timeline: scroll(root block);
-        animation-range: 0 var(--story-runway);
-      }
-    }
+    /* THE FIRST SCREEN IS THE STATEMENT ALONE, AND THE PHOTOGRAPHS WAIT FOR THE TEXT (2026-09-15, per user "the first
+       sight I only want to see I'm Chang Mou, a product designer working on what AI can't design yet." then "hold the
+       photos back until the last line lands"). The photo peek at the fold, held still with a scroll-driven translate
+       on the sticky deck stage, is gone: it also drew the photos over the statement in the owner's browser. The deck
+       is in plain layout, pushed down by the story engine so the photographs come up only after the hold releases. */
     @media (max-width: 768px) {
       .story-answer { font-size: 24px; line-height: 1.25; margin-top: 28px; }
       .story-answer .line-inner { text-wrap: balance; }
@@ -351,32 +332,28 @@
     const SPAN = 0.32;    // the share of the hold each beat takes to arrive (three beats since the lead-in line was deleted, 2026-09-15)
     const STEP = 0.27;    // the share of the hold between one beat's start and the next
     const LEAD = 0.08;    // the first beat starts this far into the hold
-    // the photograph row waits cut by the fold while the statement holds (2026-09-15): the centre card's top rests
-    // PEEK px above the fold, never closer than GAP under the answer's last line, never further than GAP_MAX
-    const PEEK = 150, GAP = 96, GAP_MAX = 240;   // (72 for one evening while the answer carried a lead-in line; back to 96 now it is three lines)
     let runway = 0, last = -1, raf = 0, visible = true;
-    function offsetWithin(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
-    function placeDeck() {
+    // the photographs wait for the text (2026-09-15, per user "hold the photos back until the last line lands"): the deck
+    // is pushed down in plain layout so its highest photograph reaches the bottom edge of the screen only when the hold
+    // releases, after the last line has landed (at 94% of the hold). No scroll-driven transform: a translate-held peek
+    // drew the photos over the statement in the owner's browser.
+    function keepDeckBelowFold() {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
       const cards = ds ? ds.querySelectorAll('.deck-card') : [];
-      if (!ds || cards.length < 16 || !(window.CSS && CSS.supports('animation-timeline: scroll()'))) return;
-      const card = cards[cards.length / 3];                    // the resting card of the middle set (his portrait)
-      const lines = stage.querySelectorAll('.story-answer .line'), lastLine = lines[lines.length - 1];
-      const answerBottom = offsetWithin(lastLine, stage) + lastLine.offsetHeight;   // layout numbers, never rects: the stage is translated
-      const cardOff = offsetWithin(card, dp);                  // the pin is positioned, so it is in the card's offsetParent chain
-      if (!(answerBottom > 0) || !(cardOff >= 0)) return;
-      const lift = 0.02 * card.offsetHeight;                   // the 1.04 focus scale paints the card's top this much above its box
-      const rest = Math.min(Math.max(window.innerHeight - PEEK, answerBottom + GAP), answerBottom + GAP_MAX);
-      const target = rest - cardOff + lift + runway;           // the deck-pin's document top: the stage is lifted by the runway at scroll 0
-      dp.style.marginTop = '0px';
-      let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
-      for (let k = 0; k < 2; k++) { const err = dp.offsetTop - target; if (Math.abs(err) < 0.5) break; m -= err; dp.style.marginTop = m + 'px'; } // the deck's own negative margin collapses through; correct once
+      if (!ds || cards.length < 3) return;
+      const card = cards[cards.length / 3];               // the resting card of the middle set: the highest one, it is scaled up
+      let off = 0, n = card;                               // offsets inside the stage only: the stage itself is sticky, so never read it
+      while (n && n !== ds) { off += n.offsetTop; n = n.offsetParent; }
+      if (n !== ds) return;
+      dp.style.marginTop = '';
+      const lift = 0.02 * card.offsetHeight + 1;           // the centre card's 1.04 focus scale paints its top this far above its box
+      const need = window.innerHeight + runway + lift - (dp.offsetTop + off); // card top at the fold when scroll = runway
+      if (need > 0) dp.style.marginTop = (parseFloat(getComputedStyle(dp).marginTop) || 0) + need + 'px';
     }
     function layout() {
       runway = Math.round(window.innerHeight * RUNWAY);
       pin.style.height = (stage.offsetHeight + runway) + 'px';
-      document.documentElement.style.setProperty('--story-runway', runway + 'px'); // the CSS hold reads the same number as the engine
-      placeDeck();
+      keepDeckBelowFold();
       last = -1; kick();
     }
     function progress() { return runway ? Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / runway)) : 0; }
