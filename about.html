@@ -143,6 +143,15 @@
       .page-hero .page-title { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.12; letter-spacing: -0.03em; }
     }
     .story-on .story-stage { position: sticky; top: 0; }
+    /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
+       canvas of the site's motes under the statement. Everything a model can make is a loose field; as the lines land,
+       most of it falls away (deciding what to build), the rest gathers around one steady point (a person stays in
+       control), condenses into a single star (good enough to ship), and that star lifts and fades as the photographs
+       rise. The canvas sits under the text and is drawn by the story engine; phones and reduced motion never get it. */
+    .story-field { display: none; }
+    .story-on .story-field { display: block; position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.9s; }
+    .story-on .story-field.is-lit { opacity: 1; }
+    .story-on .story-stage .page-hero { position: relative; z-index: 1; }
     .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
     /* THE SCROLL CUE (2026-09-15, per user "I think I need some affordance to let user know need to scroll down" then
        "do"): one word in the section-label style at the bottom centre of the first screen, desktop + motion-safe only
@@ -442,6 +451,102 @@
       const leave = () => { if (window.scrollY > 40) { gone = true; cue.classList.remove('is-shown'); window.removeEventListener('scroll', leave); } };
       if (!gone) { window.addEventListener('scroll', leave, { passive: true }); setTimeout(() => { if (!gone && window.scrollY <= 40) cue.classList.add('is-shown'); }, 1600); }
     }
+    // MANY INTO ONE: the field of motes that answers the three lines (see the CSS note)
+    (function field() {
+      const cv = document.createElement('canvas');
+      cv.className = 'story-field'; cv.setAttribute('aria-hidden', 'true');
+      stage.insertBefore(cv, stage.firstChild);
+      const ctx = cv.getContext('2d');
+      const N = 170, KEEP = 24;                  // motes in the field, and how many survive the first line
+      const WHITE = [245, 244, 255], WARM = [255, 236, 214];
+      const SPR = 48;
+      const sprite = c => {
+        const s = document.createElement('canvas'); s.width = s.height = SPR;
+        const g = s.getContext('2d'), h = SPR / 2, gr = g.createRadialGradient(h, h, 0, h, h, h);
+        gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.14, 'rgba(' + c + ',0.95)');
+        gr.addColorStop(0.34, 'rgba(' + c + ',0.2)'); gr.addColorStop(1, 'rgba(' + c + ',0)');
+        g.fillStyle = gr; g.fillRect(0, 0, SPR, SPR); return s;
+      };
+      const sW = sprite(WHITE.join(',')), sWarm = sprite(WARM.join(','));
+      const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
+      const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
+      const mix = (a, b, t) => a + (b - a) * t;
+      // each mote: a place in the field, a size, a brightness, and whether it survives
+      const motes = [];
+      for (let i = 0; i < N; i++) {
+        const a = hash(i) * Math.PI * 2, r = Math.sqrt(hash(i + 7));
+        motes.push({ ax: Math.cos(a) * r, ay: Math.sin(a) * r, size: 0.8 + 0.9 * hash(i + 11), b: 0.35 + 0.5 * hash(i + 13), ph: hash(i + 17) * 6.28, fall: hash(i + 19), keep: false });
+      }
+      // the survivors are spread through the field, not all from the middle
+      motes.slice().sort((m, n) => hash(motes.indexOf(m) + 23) - hash(motes.indexOf(n) + 23)).slice(0, KEEP).forEach((m, k) => { m.keep = true; m.ring = (k / KEEP) * Math.PI * 2; });
+      let W = 0, H = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
+      function size() {
+        dpr = Math.min(2, window.devicePixelRatio || 1);
+        W = stage.clientWidth; H = window.innerHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        cv.style.width = W + 'px'; cv.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        shown = -1;
+      }
+      function dot(spr, x, y, r, a) { if (a < 0.015) return; const sz = r * 5.2; ctx.globalAlpha = Math.min(1, a); ctx.drawImage(spr, x - sz / 2, y - sz / 2, sz, sz); }
+      function draw(sc, t) {
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        const foot = answerFoot(); if (!(foot > 0) || !beatRun) return;
+        const band = Math.max(80, H - foot);
+        const cx = W / 2, cy = foot + band * 0.45, rx = Math.min(W * 0.3, 460), ry = Math.max(40, Math.min(120, band * 0.26));
+        const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
+        const e1 = line(0), e2 = line(1), e3 = line(2);
+        const landPx = beatRun * LAND, rise = runway - landPx;
+        const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
+        const liftTo = foot + 44;
+        motes.forEach((m, i) => {
+          const wob = 2.2 * Math.sin(t * 0.45 + m.ph), wob2 = 1.6 * Math.cos(t * 0.37 + m.ph * 1.3);
+          let x = cx + m.ax * rx + wob, y = cy + m.ay * ry + wob2, a = m.b, r = m.size;
+          if (!m.keep) {
+            // 1. deciding what to build: most of the field falls away
+            y += e1 * (40 + 150 * m.fall); x += e1 * (m.ax * 30); a *= 1 - e1;
+          } else {
+            // 2. a person stays in control: the survivors gather round one steady point
+            const ringR = mix(38, 6, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.6;
+            x = mix(x, rxp, e2); y = mix(y, ryp, e2);
+            a = mix(a, 0.85, e2) * (1 - 0.85 * e3); r = mix(r, 1.1, e2);
+            // 3. good enough to ship: they condense into the star, which lifts and fades as the photographs rise
+            y = mix(y, liftTo, lift); a *= 1 - lift;
+          }
+          dot(sW, x, y, r, a);
+        });
+        // the steady point, then the star
+        const coreY = mix(cy, liftTo, lift), coreA = (0.25 + 0.75 * Math.max(e2 * 0.6, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0);
+        if (coreA > 0.01) {
+          dot(sWarm, cx, coreY, 3.2 + 3 * e3, coreA * 0.35);
+          dot(sW, cx, coreY, 1.4 + 1.2 * e3, coreA);
+          if (e3 > 0.05) { // four thin rays once it is a star
+            const len = (8 + 22 * e3) * (1 + 0.12 * Math.sin(t * 1.4));
+            ctx.globalAlpha = coreA * 0.6 * e3; ctx.strokeStyle = 'rgba(255,255,255,1)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(cx - len, coreY); ctx.lineTo(cx + len, coreY); ctx.moveTo(cx, coreY - len); ctx.lineTo(cx, coreY + len); ctx.stroke();
+          }
+        }
+        ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+      }
+      function frame(now) {
+        loop = 0;
+        if (!visible) return;
+        const target = scrolled();
+        shown = shown < 0 ? target : shown + (target - shown) * 0.2;
+        if (Math.abs(target - shown) < 0.3) shown = target;
+        draw(Math.min(shown, runway + 1), (now - t0) / 1000);
+        loop = requestAnimationFrame(frame);
+      }
+      const start = () => { if (!loop && visible) loop = requestAnimationFrame(frame); };
+      size();
+      window.addEventListener('resize', () => { size(); start(); }, { passive: true });
+      window.addEventListener('scroll', start, { passive: true });
+      new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px' }).observe(pin);
+      requestAnimationFrame(() => cv.classList.add('is-lit'));
+      start();
+      cv._field = () => ({ W, H, shown, runway, beatRun }); cv._draw = draw;
+    })();
     pin._story = () => ({ runway, beatRun, progress: progress(), beats: beats.map(b => b.style.opacity) }); // for probing
   })();
 </script>
