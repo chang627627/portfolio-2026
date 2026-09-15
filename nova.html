@@ -906,14 +906,14 @@
         lightboxImg.alt = img.alt;
         lightbox.classList.add('open');
         lightbox.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden'; // lock the viewport: html carries overflow-x: hidden, so a body lock never reached it (fixed 2026-09-15)
       });
     });
 
     function closeLightbox() {
       lightbox.classList.remove('open');
       lightbox.setAttribute('aria-hidden', 'true');
-      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     }
 
     lightbox.addEventListener('click', closeLightbox);
