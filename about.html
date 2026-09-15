@@ -153,13 +153,6 @@
     .story-on .story-field.is-lit { opacity: 1; }
     .story-on .story-stage .page-hero { position: relative; z-index: 1; }
     .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
-    /* THE SCROLL CUE (2026-09-15, per user "I think I need some affordance to let user know need to scroll down" then
-       "do"): one word in the section-label style at the bottom centre of the first screen, desktop + motion-safe only
-       (phones and reduced motion already show the lines and photos under the statement). It fades in after the statement
-       has arrived and leaves for good on the first scroll. No arrow, no chevron, no bouncing icon. */
-    .scroll-cue { display: none; }
-    .story-on .scroll-cue { display: block; position: fixed; left: 50%; bottom: 32px; transform: translateX(-50%); z-index: 40; pointer-events: none; font-size: 13px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); opacity: 0; transition: opacity 0.6s var(--ease-out); }
-    .story-on .scroll-cue.is-shown { opacity: 1; }
     .story-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
     /* THE FIRST SCREEN IS THE STATEMENT ALONE, AND THE PHOTOGRAPHS WAIT FOR THE TEXT (2026-09-15, per user "the first
        sight I only want to see I'm Chang Mou, a product designer working on what AI can't design yet." then "hold the
@@ -328,7 +321,6 @@
   </section>
    </div>
   </div>
-  <div class="scroll-cue" aria-hidden="true">Scroll</div>
 
 <script>
   // THE ANSWER ARRIVES WITH THE SCROLL (2026-09-15, per user: merge the statement with the bio's
@@ -444,13 +436,6 @@
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
     new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: '100px' }).observe(pin);
     layout();
-    // the scroll cue: shown once the statement has arrived, gone for good on the first scroll
-    const cue = document.querySelector('.scroll-cue');
-    if (cue) {
-      let gone = window.scrollY > 40;
-      const leave = () => { if (window.scrollY > 40) { gone = true; cue.classList.remove('is-shown'); window.removeEventListener('scroll', leave); } };
-      if (!gone) { window.addEventListener('scroll', leave, { passive: true }); setTimeout(() => { if (!gone && window.scrollY <= 40) cue.classList.add('is-shown'); }, 1600); }
-    }
     // MANY INTO ONE: the field of motes that answers the three lines (see the CSS note)
     (function field() {
       const cv = document.createElement('canvas');
