@@ -328,38 +328,51 @@
     const beats = stage ? [].slice.call(stage.querySelectorAll('.story-beat')) : [];
     if (!stage || beats.length < 2) return;
     document.documentElement.classList.add('story-on');
-    const RUNWAY = 0.5;   // screens of scroll the statement holds for
-    const SPAN = 0.32;    // the share of the hold each beat takes to arrive (three beats since the lead-in line was deleted, 2026-09-15)
-    const STEP = 0.27;    // the share of the hold between one beat's start and the next
-    const LEAD = 0.08;    // the first beat starts this far into the hold
-    let runway = 0, last = -1, raf = 0, visible = true;
-    // the photographs wait for the text (2026-09-15, per user "hold the photos back until the last line lands"): the deck
-    // is pushed down in plain layout so its highest photograph reaches the bottom edge of the screen only when the hold
-    // releases, after the last line has landed (at 94% of the hold). No scroll-driven transform: a translate-held peek
-    // drew the photos over the statement in the owner's browser.
-    function keepDeckBelowFold() {
+    const BEATS = 0.5;    // screens of scroll the three lines take to arrive
+    const SPAN = 0.32;    // the share of that run each line takes to arrive
+    const STEP = 0.27;    // the share of that run between one line's start and the next
+    const LEAD = 0.08;    // the first line starts this far into the run
+    const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last line has landed here
+    const GAP = 110;      // px between the answer's last line and the photographs when the hold releases
+    let beatRun = 0, runway = 0, last = -1, raf = 0, visible = true;
+    // THE PHOTOGRAPHS WAIT FOR THE TEXT, THEN RISE TO MEET IT (2026-09-15, per user "hold the photos back until the last
+    // line lands", then "too much space" at the black band that left between the answer and the rising row). The hold is
+    // two parts: the three lines land over `beatRun`, then the statement stays pinned while the deck, in plain layout,
+    // scrolls up from the bottom edge until its highest photograph sits GAP under the answer; only then does the hold
+    // release, and the text and the photographs leave together. The hold's length is the lines' run plus that rise, so
+    // it grows with the screen height. No scroll-driven transform anywhere: a translate-held peek drew the photos over
+    // the statement in the owner's browser.
+    function offsetIn(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
+    function answerFoot() { const ls = stage.querySelectorAll('.story-answer .line'), l = ls[ls.length - 1]; return l ? offsetIn(l, stage) + l.offsetHeight : NaN; }
+    function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
       const cards = ds ? ds.querySelectorAll('.deck-card') : [];
-      if (!ds || cards.length < 3) return;
+      if (!ds || cards.length < 3 || !(foot > 0)) return;
       const card = cards[cards.length / 3];               // the resting card of the middle set: the highest one, it is scaled up
-      let off = 0, n = card;                               // offsets inside the stage only: the stage itself is sticky, so never read it
-      while (n && n !== ds) { off += n.offsetTop; n = n.offsetParent; }
-      if (n !== ds) return;
-      dp.style.marginTop = '';
+      const off = offsetIn(card, ds);                      // offsets inside the stage only: the stage itself is sticky, so never read it
+      if (!(off >= 0)) return;
       const lift = 0.02 * card.offsetHeight + 1;           // the centre card's 1.04 focus scale paints its top this far above its box
-      const need = window.innerHeight + runway + lift - (dp.offsetTop + off); // card top at the fold when scroll = runway
-      if (need > 0) dp.style.marginTop = (parseFloat(getComputedStyle(dp).marginTop) || 0) + need + 'px';
+      const target = foot + GAP + runway + lift - off;     // the deck-pin's document top: the card's painted top is GAP under the answer at release
+      dp.style.marginTop = '0px';
+      let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
+      for (let k = 0; k < 2; k++) { const err = dp.offsetTop - target; if (Math.abs(err) < 0.5) break; m -= err; dp.style.marginTop = m + 'px'; } // the deck's own negative margin collapses through the pin; correct for it
     }
     function layout() {
-      runway = Math.round(window.innerHeight * RUNWAY);
+      const H = window.innerHeight, foot = answerFoot();
+      beatRun = Math.round(H * BEATS);
+      const rise = foot > 0 ? Math.max(0, H - (foot + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the answer
+      runway = Math.round(beatRun * LAND + rise);
+      if (runway < beatRun) runway = beatRun;
       pin.style.height = (stage.offsetHeight + runway) + 'px';
-      keepDeckBelowFold();
+      placeDeck(foot);
       last = -1; kick();
     }
-    function progress() { return runway ? Math.min(1, Math.max(0, -pin.getBoundingClientRect().top / runway)) : 0; }
+    function scrolled() { return Math.max(0, -pin.getBoundingClientRect().top); }
+    function progress() { return runway ? Math.min(1, scrolled() / runway) : 0; }
     function paint(p) {
+      const q = beatRun ? Math.min(1, (p * runway) / beatRun) : 0; // the lines run on their own stretch at the start of the hold
       beats.forEach((b, i) => {
-        const u = Math.min(1, Math.max(0, (p - LEAD - i * STEP) / SPAN)), e = u * u * (3 - 2 * u);
+        const u = Math.min(1, Math.max(0, (q - LEAD - i * STEP) / SPAN)), e = u * u * (3 - 2 * u);
         b.style.opacity = e.toFixed(3);
         b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';
       });
@@ -372,7 +385,7 @@
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
     new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: '100px' }).observe(pin);
     layout();
-    pin._story = () => ({ runway, progress: progress(), beats: beats.map(b => b.style.opacity) }); // for probing
+    pin._story = () => ({ runway, beatRun, progress: progress(), beats: beats.map(b => b.style.opacity) }); // for probing
   })();
 </script>
 
