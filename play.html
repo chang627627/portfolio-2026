@@ -192,7 +192,10 @@
     const SIZE = 0.16, MAX_S = 250;     // prism side as a share of the stage's width, capped
     const DEPTH = 1.1;                  // prism length along its axis, in sides
     const ROLL = [-0.14, 0.24];         // turn in the picture plane across the hold, radians
-    const YAW = [-0.6, 0.55];           // turn about the vertical axis across the hold, radians
+    const YAW = [-0.45, -1.05];         // turn about the vertical axis across the hold, radians. Both ends negative so the
+                                        // exit face (the rectangle the six rays leave from) faces the viewer the whole way and
+                                        // turns further toward them as the fan opens (2026-09-15, per user: it was [-0.6, 0.55],
+                                        // which turned that face away past mid-hold, so the rays were seen through the back)
     const SPREAD = [0.05, 0.82];        // the fan's full angle at the start and end of the hold, radians
     const FAN_DIP = 0.26;               // the fan's centre, below horizontal, radians
     const FLOW = 70;                    // px per second the light travels along the beams
@@ -260,7 +263,7 @@
         const x1 = x * Math.cos(yaw) + z * Math.sin(yaw), z1 = -x * Math.sin(yaw) + z * Math.cos(yaw);
         const y2 = y * Math.cos(tilt) - z1 * Math.sin(tilt), z2 = y * Math.sin(tilt) + z1 * Math.cos(tilt);
         const f = F / (F - z2);
-        return [cx + x1 * f, cy - y2 * f, z2];
+        return [cx + x1 * f, cy - y2 * f, z2, x1, y2]; // screen x, screen y, then camera-space z, x, y
       }
       const ANG = [Math.PI / 2, Math.PI * 7 / 6, Math.PI * 11 / 6]; // apex, bottom left, bottom right
       const front = ANG.map(a => project(a, half)), back = ANG.map(a => project(a, -half)), mid = ANG.map(a => project(a, 0));
@@ -327,22 +330,38 @@
         dot(whiteSprite, entry[0], entry[1], 1.6, 0.85);
       }
 
-      // 3. the prism: its nine edges as stippled light, the near ones brighter, over a faint glass fill
-      const tri = (pts, a) => { ctx.globalAlpha = a; ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); ctx.lineTo(pts[1][0], pts[1][1]); ctx.lineTo(pts[2][0], pts[2][1]); ctx.closePath(); ctx.fill(); };
+      // 3. the prism: its nine edges as stippled light over a faint glass fill. A wireframe of transparent glass reads
+      // both ways, so the depth is stated (2026-09-15, per user: the rays read as leaving the triangle, not the rectangle):
+      // a face turned toward the viewer gets a faint fill, the exit face a little more, and an edge that belongs only to
+      // faces turned away is drawn dim, behind the glass.
+      const cam = v => [v[3], v[4], v[2]];
+      const faceToward = (pts) => { // outward normal against the view vector, at the face's centre
+        const c = pts.map(cam), o = c.reduce((m, v) => [m[0] + v[0] / c.length, m[1] + v[1] / c.length, m[2] + v[2] / c.length], [0, 0, 0]);
+        const u = [c[1][0] - c[0][0], c[1][1] - c[0][1], c[1][2] - c[0][2]], w = [c[2][0] - c[0][0], c[2][1] - c[0][1], c[2][2] - c[0][2]];
+        let n = [u[1] * w[2] - u[2] * w[1], u[2] * w[0] - u[0] * w[2], u[0] * w[1] - u[1] * w[0]];
+        if (n[0] * o[0] + n[1] * o[1] + n[2] * o[2] < 0) n = n.map(q => -q); // the prism is centred on the origin
+        const view = [-o[0], -o[1], F - o[2]];
+        return (n[0] * view[0] + n[1] * view[1] + n[2] * view[2]) / (Math.hypot(...n) * Math.hypot(...view));
+      };
+      const faces = { front: [front[0], front[1], front[2]], back: [back[0], back[1], back[2]], entry: [front[0], front[1], back[1], back[0]], base: [front[1], front[2], back[2], back[1]], exit: [front[2], front[0], back[0], back[2]] };
+      const toward = {}; Object.keys(faces).forEach(k => { toward[k] = faceToward(faces[k]) > 0; });
+      const poly = (pts, a) => { ctx.globalAlpha = a; ctx.fillStyle = '#ffffff'; ctx.beginPath(); pts.forEach((v, i) => i ? ctx.lineTo(v[0], v[1]) : ctx.moveTo(v[0], v[1])); ctx.closePath(); ctx.fill(); };
       ctx.globalCompositeOperation = 'source-over';
-      tri(back, 0.025); tri(front, 0.035);
+      Object.keys(faces).forEach(k => { if (toward[k]) poly(faces[k], k === 'exit' ? 0.05 : 0.03); });
       ctx.globalCompositeOperation = 'lighter';
-      const edges = [[front[0], front[1]], [front[1], front[2]], [front[2], front[0]], [back[0], back[1]], [back[1], back[2]], [back[2], back[0]], [front[0], back[0]], [front[1], back[1]], [front[2], back[2]]];
-      edges.forEach(([a, b], j) => {
+      const edges = [[front[0], front[1], 'front', 'entry'], [front[1], front[2], 'front', 'base'], [front[2], front[0], 'front', 'exit'], [back[0], back[1], 'back', 'entry'], [back[1], back[2], 'back', 'base'], [back[2], back[0], 'back', 'exit'], [front[0], back[0], 'entry', 'exit'], [front[1], back[1], 'entry', 'base'], [front[2], back[2], 'base', 'exit']];
+      edges.forEach(([a, b, f1, f2], j) => {
         const len = Math.hypot(b[0] - a[0], b[1] - a[1]), n = Math.max(4, Math.round(len / 6.5));
-        const near = (a[2] + b[2]) / 2 > 0 ? 1 : 0.45;
+        const near = toward[f1] || toward[f2] ? 1 : 0.3;
         for (let k = 0; k <= n; k++) {
           const u = k / n, wob = (hash(j * 31 + k) - 0.5) * 1.2;
           dot(edgeSprite, mix(a[0], b[0], u) + wob, mix(a[1], b[1], u) + wob, 0.8 + 0.3 * hash(j * 17 + k), near * (0.45 + 0.35 * hash(j * 13 + k)));
         }
       });
       // corners catch the light
-      front.concat(back).forEach((v, i) => dot(whiteSprite, v[0], v[1], 1.5, v[2] > 0 ? 0.85 : 0.4));
+      const cornerFaces = [['front', 'entry', 'exit'], ['front', 'entry', 'base'], ['front', 'base', 'exit'], ['back', 'entry', 'exit'], ['back', 'entry', 'base'], ['back', 'base', 'exit']];
+      front.concat(back).forEach((v, i) => dot(whiteSprite, v[0], v[1], 1.5, cornerFaces[i].some(k => toward[k]) ? 0.85 : 0.3));
+      cv._faces = toward; // for probing
 
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
       // dissolve into the bottom of the screen, never a hard cut
