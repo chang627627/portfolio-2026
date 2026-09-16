@@ -287,8 +287,8 @@
     </div>
   </nav>
 
-  <!-- About Hero (inside .story-pin: on desktop the statement holds for half a screen of scroll while
-       its answer arrives beneath it in four beats, then releases into the photo deck) -->
+  <!-- About Hero (inside .story-pin: on desktop the statement holds while the galaxy beneath it runs its
+       three stages, then the photographs rise to meet it and the hold releases) -->
   <div class="story-pin">
    <div class="story-stage">
   <section class="page-hero">
@@ -575,6 +575,7 @@
         loop = requestAnimationFrame(frame);
       }
       const start = () => { if (!loop && visible) loop = requestAnimationFrame(frame); };
+      onShow = start;                                      // the story engine's layout() and IntersectionObserver wake the field through this
       size();
       window.addEventListener('resize', () => { size(); start(); }, { passive: true });
       window.addEventListener('scroll', start, { passive: true });
