@@ -392,6 +392,7 @@
     // the statement in the owner's browser.
     function offsetIn(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
     function answerFoot() { const ls = stage.querySelectorAll('.story-answer .line'), l = ls[ls.length - 1]; return l ? offsetIn(l, stage) + l.offsetHeight : NaN; }
+    function titleFoot() { const t = stage.querySelector('.page-title'); return t ? offsetIn(t, stage) + t.offsetHeight : NaN; }
     function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
       const cards = ds ? ds.querySelectorAll('.deck-card') : [];
@@ -587,11 +588,19 @@
         const band = Math.max(80, H - foot);
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
         // the disc hangs a fixed GAP under the answer and may run past the fold, so it reads big without drifting down
-        const GAP_TOP = 56, SPILL = 120, vf = VF;            // vf is measured off the motes at build time
-        const cx = W / 2;
-        const rx = Math.max(180, Math.min(W * 0.33, 520, (H + SPILL - foot - GAP_TOP) / (2 * vf)));
-        const ry = rx, cy = foot + GAP_TOP + rx * vf;
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
+        // AT REST IT HANGS UNDER THE STATEMENT, THEN MOVES DOWN AND EXPANDS TO MAKE ROOM FOR THE LINES
+        // (2026-09-15, per user "still gap is too big. you can make the galaxy move down and expand at the same
+        // time"): at scroll 0 its top sits GAP_TOP under the statement itself, so the first screen has no void;
+        // by the time the first line starts to arrive it has slid down to GAP_TOP under the answer and grown to
+        // full size, spilling past the fold. One move, driven by the same scroll as the lines.
+        const GAP_TOP = 40, SPILL = 420, vf = VF;            // vf is measured off the motes at build time
+        const cx = W / 2, title = titleFoot();
+        const rxFull = Math.max(180, Math.min(W * 0.46, 780, (H + SPILL - foot - GAP_TOP) / (2 * vf)));
+        const open = smooth(q / (LEAD * 1.6));                // fully down and out before the first line lands
+        const rx = mix(rxFull * 0.62, rxFull, open), ry = rx;
+        const top = mix((title > 0 ? title : foot) + GAP_TOP, foot + GAP_TOP, open);
+        const cy = top + rx * vf;
         const e1 = line(0), e2 = line(1), e3 = line(2);
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
