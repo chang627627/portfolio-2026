@@ -151,8 +151,13 @@
     }
     /* the stage is a full screen so the lines can be placed at an exact viewport y inside it */
     .story-on .story-stage { position: sticky; top: 0; height: 100vh; }
-    .story-on .story-answer { position: absolute; left: 0; right: 0; top: 0; padding-left: 24px; padding-right: 24px; z-index: 1; }
-    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); transition: color var(--dur-slow) var(--ease-out); }
+    /* ONE PLACE, ONE LINE (2026-09-16, per user "they can appear at the same position"). Only one line is
+       ever on screen, so they do not need a slot each: all three are absolutely stacked in the same box,
+       whose foot the script pins to the statement's own foot. Each one therefore arrives exactly where the
+       statement's last line was, and nothing on the page ever shifts. */
+    .story-on .story-answer { position: absolute; left: 0; right: 0; z-index: 1; }
+    .story-on .story-answer .line { position: absolute; left: 0; right: 0; top: 0; }
+    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
     /* the light sweep splits each line into per-glyph spans and keeps the whole sentence beside them for
        screen readers. LOAD-BEARING: without this rule that copy renders, and every line reads twice. */
     .story-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
@@ -395,7 +400,8 @@
     const BEATS = 1.5;    // screens of scroll the galaxy's three stages take (0.5, then 1.0 per user "too short", now 1.5)
     const SPAN = 0.28;    // the share of that run each galaxy stage takes to complete
     const TEXT = 0.42;    // a line lands this far into its own stage: read first, then watch
-    const STEP = 0.30;    // the share of that run between one stage's start and the next: larger than SPAN, so they do not blur together
+    const STEP = 0.34;    // the share of that run between one stage's start and the next: larger than SPAN, so a line can leave before the next arrives
+    const OUT_RUN = 0.05; // and this is how long it takes to go, starting the moment its own stage completes
     // THE STATEMENT FADES, IT DOES NOT MOVE, AND IT IS GONE BEFORE ANY LINE BEGINS. The gap between FADE_AT +
     // FADE_RUN (0.16) and LEAD (0.18) is the whole point: there is never an instant with two texts both part
     // lit, which is the failure that killed the bio illumination and the two-tone hero sub. In between, the
@@ -422,8 +428,10 @@
     // the lines sit at an exact viewport y inside the full-screen stage: their block foot on the anchor
     function placeAnswer(foot) {
       const a = stage.querySelector('.story-answer'); if (!a || !(foot > 0)) return;
-      a.style.paddingTop = '0px';
-      a.style.paddingTop = Math.max(0, Math.round(foot - a.offsetHeight)) + 'px';
+      const l = a.querySelector('.line'); if (!l) return;
+      const h = l.offsetHeight;                              // they all sit in the same box, so one line is the height
+      a.style.height = h + 'px';
+      a.style.top = Math.max(0, Math.round(foot - h)) + 'px'; // its foot on the anchor: where the statement's last line was
     }
     function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
@@ -457,20 +465,22 @@
       const q = beatRun ? (p * runway) / beatRun : 0; // the stages run on their own stretch at the start of the hold
       const fu = Math.min(1, Math.max(0, (q - FADE_AT) / FADE_RUN));
       hero.style.opacity = (1 - fu * fu * (3 - 2 * fu)).toFixed(3);
-      // ONE LINE IN FOCUS AT A TIME (2026-09-16, per user "do not highlight three. when animation comes just
-      // show the focus on the line related to it"). While the galaxy is working, the line whose stage is
-      // running holds the page's white and the ones already spoken step back to the bio's own grey, so the
-      // eye is always on the line the field is illustrating. They are stepped back, never dimmed out of
-      // readability: --text-soft is 7.5:1 and is the tier the whole About bio is set in. Once the last stage
-      // is done the three are equal again, so the block the photographs rise to meet reads as one answer.
-      // the handoff is on the new line's LANDING, not its stage's start: switching on the start left a beat
-      // where the old line had stepped back and the new one had not arrived, so nothing held the focus
-      const act = q < LEAD ? -1 : q >= LAND ? -1 : Math.min(2, Math.max(0, Math.floor((q - LEAD - SPAN * TEXT) / STEP)));
-      beats.forEach((b, i) => { b.style.color = (act < 0 || i === act) ? '' : 'var(--text-soft)'; });
+      // ONE LINE AT A TIME, THE OTHER TWO NOT THERE AT ALL (2026-09-16, per user "maybe show one line at a
+      // time and hide other two", the end of a thread that ran --text-soft, then #6a6a6a, then "need to be
+      // fucking darker"). Going to zero is the right answer rather than a darker grey: there is no dim text
+      // on the page at any point, so the readability question the whole About page has been fighting since
+      // the bio illumination simply does not arise. Each line arrives, holds while its own galaxy stage
+      // runs, and leaves the moment that stage completes, in place and by fading only. STEP is wider than
+      // SPAN + OUT_RUN so a line is fully gone before the next begins to arrive: verified, never two at once.
+      // THE LAST LINE DOES NOT LEAVE, and the other two never come back (per user "no need to show three at
+      // the same time"): the page ends the hold on the call it closes with, not on a recap.
+      const sm = v => { v = Math.min(1, Math.max(0, v)); return v * v * (3 - 2 * v); };
       beats.forEach((b, i) => {
-        const u = Math.min(1, Math.max(0, (q - LEAD - i * STEP) / (SPAN * TEXT))), e = u * u * (3 - 2 * u);
-        b.style.opacity = e.toFixed(3);
-        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';
+        const at = LEAD + i * STEP;
+        const e = sm((q - at) / (SPAN * TEXT));              // arrives
+        const gone = i < 2 ? sm((q - at - SPAN) / OUT_RUN) : 0; // and leaves when its own stage is done
+        b.style.opacity = (e * (1 - gone)).toFixed(3);
+        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';   // only the arrival moves; leaving and returning are pure fades
         if (b._armed === null) b._armed = e < 1;          // first paint: a line already landed stays quiet
         else if (e >= 1 && b._armed) { b._armed = false; sweep(b); }
         else if (e < 0.5) b._armed = true;                // it plays again if the reader scrolls back and it lands again
@@ -619,8 +629,13 @@
       // what survives the first line is the nucleus: the disc scatters and its middle stays
       motes.slice().sort((m, n) => m.r - n.r).slice(0, KEEP).forEach((m, k) => {
         m.keep = true;
-        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 1.15;   // even base, jittered so it is a cluster and not an orbit
-        m.rr = 0.40 + 0.95 * (m.ph / 6.2832);                        // and its own distance out
+        // ORGANISED, AND VISIBLY SO (2026-09-16, per user "control visual should looks more organized like
+        // circle something. Right now it is not obvious"). The jitter was +/-33 degrees against a 13.8 degree
+        // spacing, which destroyed the order outright and left a loose scatter: the stage is "where a person
+        // stays in control", so it has to READ as order forming around one point. It is now +/-8.6 degrees,
+        // under the spacing, and a thin annulus rather than a wide band: a ring, breathing, not a diagram.
+        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.30;
+        m.rr = 0.90 + 0.16 * (m.ph / 6.2832);
       });
       const OVER = 160;   // the canvas reaches this far above the stage, so a short screen cannot clip the galaxy's top
       let W = 0, H = 0, CH = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
@@ -675,7 +690,9 @@
             x += e1 * ((m.ax / d) * (30 + 90 * m.fall)); y += e1 * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall); a *= 1 - e1;
           } else {
             // 2. a person stays in control: the survivors gather round one steady point
-            const ringR = mix(92 * m.rr, 8, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.6;
+            // rounder than the disc it came from (0.6 to 0.82): the galaxy is seen at an angle, the ring the
+            // survivors make is the one thing on this page that should read as a circle
+            const ringR = mix(92 * m.rr, 8, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.82;
             x = mix(x, rxp, e2); y = mix(y, ryp, e2);
             a = mix(a, 0.85, e2) * (1 - 0.85 * e3); r = mix(r, 1.1, e2);
             // 3. good enough to ship: they condense into the star, which lifts and fades as the photographs rise
