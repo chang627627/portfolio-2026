@@ -137,11 +137,17 @@
     .story-answer { margin: 0 auto 160px; max-width: 960px; text-align: center; font-size: clamp(34px, 5.5vw, 54px); line-height: 1.2; letter-spacing: -0.025em; color: var(--text); }
     .story-answer .line { display: block; overflow: hidden; padding-bottom: 0.04em; }
     .story-answer .line-inner { display: inline-block; opacity: 0; transform: translateY(100%); animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.3s + var(--d) * 0.12s); }
-    /* phones and reduced motion never get the hold, so the answer just follows the statement in flow */
+    /* desktop reduced motion never gets the hold, so there the answer just follows the statement in flow */
+    /* PHONES READ THE ANSWER IN THE BIO INSTEAD (2026-09-16, per user "for mobile version. no need [the three
+       lines] as part of the animation. Just merge them into the first paragraph of the background part").
+       Below 769px the block under the statement is gone, the statement hands straight to the photographs
+       (the pre-answer phone layout), and Background's first paragraph swaps its short ending for the full
+       sentence. Both endings live in the one <p> as spans, so the paragraph spacing never changes. */
+    .bio-phone { display: none; }
     @media (max-width: 768px) {
-      .story-answer { font-size: 24px; line-height: 1.25; margin-top: -20px; margin-bottom: 48px; padding: 0 24px; }
-      .story-answer .line-inner { text-wrap: balance; }
-      .story-answer .line + .line { margin-top: 8px; }
+      .story-answer { display: none; }
+      .bio-wide { display: none; }
+      .bio-phone { display: inline; }
     }
     /* The statement renders at the site's inner-page title size (2026-09-15). `.page-hero h1` (0,1,1) in
        style.css caps it at 56px and outranks `.page-title` (0,1,0), which asks for 64px, so About's statement
@@ -869,7 +875,7 @@
   <section class="about-vertical">
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Background</span></div>
-      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design, working on AI products.</p>
+      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design<span class="bio-wide">, working on AI products.</span><span class="bio-phone">. I work on AI products, and specifically on the parts a model cannot take off your hands: deciding what to build, where a person stays in control, and what is actually good enough to ship.</span></p>
       <p>I run my own research and build my own prototypes: in Figma when that is the right tool, in real code when a spec would lose too much, so the team gets <span style="color: var(--text)">a working build to extend, not a spec to translate</span>.</p>
       <p>I want to make people's lives better, and in this work that usually means taking something away rather than adding it. Those calls come before the data does, and taste is what you have instead. The model gives the hours back, and judgment is what they are for. <span style="color: var(--text)">Designers get more powerful in the AI era, not less.</span></p>
       <p>Outside of work, I cook, walk the city on foot, read widely, vibe code some gimmicks, and spend time with friends. I listen to a lot of music, and more of my ideas come from it than from any designer. Nothing stays in its own field for long, and <span style="color: var(--text)">design is where it all connects</span>.</p>
