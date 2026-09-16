@@ -442,7 +442,6 @@
       cv.className = 'story-field'; cv.setAttribute('aria-hidden', 'true');
       stage.insertBefore(cv, stage.firstChild);
       const ctx = cv.getContext('2d');
-      const N = 170, KEEP = 24;                  // motes in the field, and how many survive the first line
       const WHITE = [245, 244, 255], WARM = [255, 236, 214];
       const SPR = 48;
       const sprite = c => {
@@ -453,17 +452,124 @@
         g.fillStyle = gr; g.fillRect(0, 0, SPR, SPR); return s;
       };
       const sW = sprite(WHITE.join(',')), sWarm = sprite(WARM.join(','));
-      const hash = i => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
       const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
       const mix = (a, b, t) => a + (b - a) * t;
-      // each mote: a place in the field, a size, a brightness, and whether it survives
-      const motes = [];
-      for (let i = 0; i < N; i++) {
-        const a = hash(i) * Math.PI * 2, r = Math.sqrt(hash(i + 7));
-        motes.push({ ax: Math.cos(a) * r, ay: Math.sin(a) * r, size: 0.8 + 0.9 * hash(i + 11), b: 0.35 + 0.5 * hash(i + 13), ph: hash(i + 17) * 6.28, fall: hash(i + 19), tw: 0.6 + 1.4 * hash(i + 29), spark: hash(i + 31) < 0.14, sr: 0.5 + 0.8 * hash(i + 37), keep: false });
-      }
-      // the survivors are spread through the field, not all from the middle
-      motes.slice().sort((m, n) => hash(motes.indexOf(m) + 23) - hash(motes.indexOf(n) + 23)).slice(0, KEEP).forEach((m, k) => { m.keep = true; m.ring = (k / KEEP) * Math.PI * 2; });
+
+      const KEEP = 26;                           // how many survive the first line
+      // A GALAXY OF CLUMPS. A tilted disc seen at an angle, built from four populations and nothing else:
+      // a nucleus dense enough that its light piles up into one graded core, the warm old bulge around it,
+      // two arms made of star forming clumps strung along one log spiral with real gaps between them, and a
+      // faint disc that leans on the same spiral so the arms sit inside something. The lumpiness is the point:
+      // a smooth arm reads as a drawn line, a chain of clumps reads as a galaxy. Suggested, never drawn: no
+      // haze, no strokes, no space colours, the same motes at the same sizes as the rest of the site.
+      const TILT = -0.19, FLAT = 0.38;           // the roll in the picture plane, and the squash of the disc
+      const PITCH = 15, RIN = 0.19, RMAX = 0.76; // a TIGHT spiral: an open one is a swoosh, this one nests
+      const ARMS = 2;
+      const motes = (() => {
+        let s = 7 * 2654435761 >>> 0;            // one fixed sky, the same for every visitor
+        const rnd = () => { s |= 0; s = s + 0x6D2B79F5 | 0; let t = Math.imul(s ^ s >>> 15, 1 | s); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+        const gauss = () => (rnd() + rnd() + rnd() + rnd() + rnd() + rnd() - 3) / 1.22;
+        const out = [], ca = Math.cos(TILT), sa = Math.sin(TILT);
+        const B = Math.tan(PITCH * Math.PI / 180);
+        const phase = rr => Math.log(Math.max(rr, 0.02) / RIN) / B;
+        // one place in the disc plane becomes one place on the screen
+        const put = (ex, ey, flat, o) => {
+          const py = ey * flat;
+          out.push(Object.assign({
+            ax: ex * ca - py * sa, ay: ex * sa + py * ca,
+            r: Math.min(1.4, Math.hypot(ex, ey)),
+            ph: rnd() * 6.28, fall: rnd(), tw: 0.6 + 1.4 * rnd(),
+            spark: rnd() < 0.10, sr: 0.5 + 0.8 * rnd(), keep: false,
+          }, o));
+        };
+
+        // THE NUCLEUS. 72 stars inside 0.13 of the radius, close enough that the sprites overlap and the
+        // light grades instead of sitting there as one hot pixel. These are the ones the first line keeps.
+        for (let i = 0; i < 72; i++) {
+          const rr = 0.13 * Math.pow(rnd(), 0.53), th = rnd() * 6.283, c = 1 - rr / 0.13;
+          put(Math.cos(th) * rr, Math.sin(th) * rr, 0.92, {
+            size: Math.min(2.2, 1.15 + 1.0 * c + 0.25 * rnd()),
+            b: Math.min(0.95, 0.44 + 0.56 * c + 0.1 * rnd()), warm: rnd() < 0.7,
+          });
+        }
+        // THE BULGE. the warm old surround the core sits inside, nearly round because a bulge is a sphere
+        for (let i = 0; i < 165; i++) {
+          const rr = 0.104 + 0.246 * Math.pow(rnd(), 0.85), th = rnd() * 6.283, c = 1 - rr / 0.35;
+          put(Math.cos(th) * rr, Math.sin(th) * rr, 0.87, {
+            size: 0.62 + 0.55 * c * c + 0.28 * rnd(),
+            b: 0.24 + 0.34 * Math.pow(c, 1.6) + 0.12 * rnd(), warm: rnd() < 0.5 + 0.4 * c,
+          });
+        }
+        // THE ARMS. knot centres spaced by radius along the spiral, a small cluster scattered round each,
+        // stretched along the arm, a few bright stars in every one, and nothing at all in between
+        const base0 = [];
+        for (let a = 0; a < ARMS; a++) {
+          const base = a * (6.283 / ARMS) + (rnd() - 0.5) * 0.45;
+          base0.push(base);
+          const span = 1 + (rnd() - 0.5) * 0.18;                      // one arm always reaches further
+          const K = Math.max(3, Math.round(11 * (1 + (rnd() - 0.5) * 0.34)));
+          const gain = 0.86 + 0.3 * rnd();                            // and one is always the brighter
+          for (let k = 0; k < K; k++) {
+            const u = Math.min(1.04, Math.max(0, (k + 0.5 + (rnd() - 0.5) * 0.45) / K));
+            const rr = RIN + (RMAX * span - RIN) * Math.pow(u, 0.92);
+            const t = (rr - RIN) / (RMAX - RIN);
+            const th = base + Math.log(rr / RIN) / B;
+            const kx = Math.cos(th) * rr, ky = Math.sin(th) * rr;
+            const tx = -Math.sin(th), ty = Math.cos(th);              // along the arm at this knot
+            const sig = 0.026 + 0.062 * t;                            // outer complexes are looser
+            const peak = Math.sin(Math.min(1, t) * Math.PI * 0.9 + 0.3);
+            const n = Math.round(7 + 13 * peak * (0.45 + 0.9 * rnd()));
+            for (let j = 0; j < n; j++) {
+              const du = gauss() * sig * 2.1, dv = gauss() * sig;
+              const ex = kx + tx * du + (kx / rr) * dv, ey = ky + ty * du + (ky / rr) * dv;
+              const big = j < 4 && rnd() < 0.75;
+              put(ex, ey, FLAT, {
+                size: big ? 1.3 + 0.7 * rnd() : 0.68 + 0.5 * rnd(),
+                b: Math.min(0.9, gain * (big ? 0.76 + 0.30 * rnd() : 0.32 + 0.36 * rnd())) * (1 - 0.26 * t),
+                warm: rnd() < 0.1,
+              });
+            }
+          }
+        }
+        // THE DISC. smooth and brighter inside, fainter and pulled onto the arm ridge outside, with a share
+        // spread evenly by area so the galaxy has an outskirt and the arms never end as two bare streamers
+        for (let i = 0; i < 250; i++) {
+          let rr = 0;
+          if (rnd() < 0.30) {
+            rr = Math.sqrt(0.09 + rnd() * (0.9604 - 0.09));
+          } else {
+            for (let tries = 0; tries < 8; tries++) {
+              rr = -0.36 * Math.log(1 - rnd() * 0.98);
+              if (rr >= 0.10 && rr <= 0.98) break;
+              rr = 0.10 + 0.8408 * rnd();
+            }
+          }
+          const sp = 0.30 + 0.58 * Math.min(1, rr / 0.6);             // the lean grows with radius
+          let th = 0, w = 0;
+          for (let tries = 0; tries < 7; tries++) {
+            th = rnd() * 6.283;
+            w = (1 - sp) + sp * Math.pow(Math.max(0, Math.cos(ARMS * (th - phase(rr) - base0[0]))), 1.4);
+            if (rnd() < w) break;
+          }
+          put(Math.cos(th) * rr, Math.sin(th) * rr, FLAT, {
+            size: 0.56 + 0.34 * rnd(),
+            b: (0.13 + 0.19 * rnd()) * (0.45 + 0.95 * Math.exp(-rr / 0.58)) * (0.6 + 0.7 * w),
+            warm: rnd() < 0.28,
+          });
+        }
+        // THE HALO. a few rounder, fainter stars so the disc has no hard rim
+        for (let i = 0; i < 22; i++) {
+          const rr = 0.4 + 0.4 * rnd(), th = rnd() * 6.283;
+          put(Math.cos(th) * rr, Math.sin(th) * rr, 0.5, {
+            size: 0.54 + 0.3 * rnd(), b: 0.07 + 0.11 * rnd(), warm: rnd() < 0.4,
+          });
+        }
+        return out;
+      })();
+      // how tall this galaxy actually draws, as a share of rx: measured off the motes, never guessed
+      const VF = motes.reduce((a, m) => Math.max(a, Math.abs(m.ay)), 0);   // 0.391 as built
+      // what survives the first line is the nucleus: the disc scatters and its middle stays
+      motes.slice().sort((m, n) => m.r - n.r).slice(0, KEEP).forEach((m, k) => { m.keep = true; m.ring = (k / KEEP) * Math.PI * 2; });
       let W = 0, H = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
       function size() {
         dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -479,7 +585,10 @@
         ctx.globalCompositeOperation = 'lighter';
         const foot = answerFoot(); if (!(foot > 0) || !beatRun) return;
         const band = Math.max(80, H - foot);
-        const cx = W / 2, cy = foot + band * 0.45, rx = Math.min(W * 0.3, 460), ry = Math.max(40, Math.min(120, band * 0.26));
+        // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
+        const cx = W / 2, cy = foot + band * 0.58;            // low in the band, so the disc can run wide and be cut by the fold
+        const vf = VF;                                       // measured off the motes at build time
+        const rx = Math.max(150, Math.min(W * 0.22, 330, (cy - foot - 26) / vf)), ry = rx;
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
         const e1 = line(0), e2 = line(1), e3 = line(2);
         const landPx = beatRun * LAND, rise = runway - landPx;
@@ -494,8 +603,9 @@
           let x = cx + m.ax * rx + wob, y = cy + m.ay * ry + wob2, a = m.b, r = m.size;
           a *= m.keep ? mix(twinkle, 1, e2) : twinkle;
           if (!m.keep) {
-            // 1. deciding what to build: most of the field falls away
-            y += e1 * (40 + 150 * m.fall); x += e1 * (m.ax * 30); a *= 1 - e1;
+            // 1. deciding what to build: the disc scatters outward and falls away
+            const d = Math.hypot(m.ax, m.ay) || 1;
+            x += e1 * ((m.ax / d) * (30 + 90 * m.fall)); y += e1 * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall); a *= 1 - e1;
           } else {
             // 2. a person stays in control: the survivors gather round one steady point
             const ringR = mix(38, 6, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.6;
@@ -504,7 +614,7 @@
             // 3. good enough to ship: they condense into the star, which lifts and fades as the photographs rise
             y = mix(y, liftTo, lift); a *= 1 - lift;
           }
-          dot(sW, x, y, r, a);
+          dot(m.warm ? sWarm : sW, x, y, r, a);
         });
         // the steady point, then the star
         const coreY = mix(cy, liftTo, lift), coreA = (0.25 + 0.75 * Math.max(e2 * 0.6, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0);
