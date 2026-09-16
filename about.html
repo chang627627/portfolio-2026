@@ -586,9 +586,9 @@
         const foot = answerFoot(); if (!(foot > 0) || !beatRun) return;
         const band = Math.max(80, H - foot);
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
-        const cx = W / 2, cy = foot + band * 0.58;            // low in the band, so the disc can run wide and be cut by the fold
+        const cx = W / 2, cy = foot + band * 0.60;            // low in the band, so the disc can run wide and be cut by the fold
         const vf = VF;                                       // measured off the motes at build time
-        const rx = Math.max(150, Math.min(W * 0.22, 330, (cy - foot - 26) / vf)), ry = rx;
+        const rx = Math.max(180, Math.min(W * 0.33, 520, (cy - foot - 26) / vf)), ry = rx;
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
         const e1 = line(0), e2 = line(1), e3 = line(2);
         const landPx = beatRun * LAND, rise = runway - landPx;
