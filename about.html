@@ -510,9 +510,7 @@
         ctx.clearRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'lighter';
         const foot = titleFoot(); if (!(foot > 0) || !beatRun) return;
-        const band = Math.max(80, H - foot);
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
-        // the disc hangs a fixed GAP under the answer and may run past the fold, so it reads big without drifting down
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
         // IT IS COMPOSED IN THE BAND UNDER THE STATEMENT AND STAYS THERE (2026-09-15, per user "So the galaxy do
         // not need to have the vertical move"). It used to hang close under the statement at rest and then slide
