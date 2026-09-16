@@ -122,18 +122,42 @@
        blurred gradient read as a stray light. The card stands on its shadow alone. */
     .deck-card::before { display: none; }
 
-    /* THE ANSWER WENT BACK TO THE BIO (2026-09-15, per user "maybe add [the three calls] back to the background
-       part. So the galaxy do not need to have the vertical move"). The hero is the statement alone again, the
-       sentence reads once, in Background's first paragraph where it lived before, and the hold now carries only
-       the galaxy: nothing readable moves during it. The .story-answer / .story-beat / .story-sr rules went with
-       the markup; the glyph light that swept each line as it landed went with them. */
+    /* THE STATEMENT HANDS OVER TO ITS OWN ANSWER (2026-09-15, per user "maybe we can bring back deciding what to
+       build ... and hide 'I'm Chang Mou, a product designer working on what AI can't design yet' or remove when
+       show these three line"). The two are one sentence: the statement asks what a model cannot do, the three
+       lines answer it. Holding both on screen at once made the answer read as a subtitle, so they are SEQUENTIAL
+       now and the scroll does the turn between them.
+       THE STATEMENT IS NEVER FADED OR MOVED. It sits in normal flow above the pin and leaves by being scrolled
+       past, which is the only way text is allowed to go on this site: any moment where it sits at 40% against
+       lines at 60% is a moment where neither is readable, and that family (the bio illumination, the two-tone
+       hero sub) has been stripped out of this site twice.
+       The three lines then arrive one at a time INTO THE PLACE IT VACATED: their block foot is pinned to the
+       same viewport y the statement's foot had, which is also what keeps the galaxy's band constant, so the
+       galaxy never moves through the whole sequence. */
+    .story-answer { margin: 0 auto 160px; max-width: 880px; text-align: center; font-size: 36px; line-height: 1.2; letter-spacing: -0.025em; color: var(--text); }
+    .story-answer .line { display: block; overflow: hidden; padding-bottom: 0.04em; }
+    .story-answer .line-inner { display: inline-block; opacity: 0; transform: translateY(100%); animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.3s + var(--d) * 0.12s); }
+    /* phones and reduced motion never get the hold, so the answer just follows the statement in flow */
+    @media (max-width: 768px) {
+      .story-answer { font-size: 24px; line-height: 1.25; margin-top: -20px; margin-bottom: 48px; padding: 0 24px; }
+      .story-answer .line-inner { text-wrap: balance; }
+      .story-answer .line + .line { margin-top: 8px; }
+    }
     /* The statement renders at the site's inner-page title size (2026-09-15). `.page-hero h1` (0,1,1) in
        style.css caps it at 56px and outranks `.page-title` (0,1,0), which asks for 64px, so About's statement
        rendered a tier below Play's since both rules existed. Play fixed the same collision on 2026-09-12. */
     @media (min-width: 769px) {
       .page-hero .page-title { font-size: clamp(40px, 5.5vw, 64px); line-height: 1.12; letter-spacing: -0.03em; }
     }
-    .story-on .story-stage { position: sticky; top: 0; }
+    /* the stage is a full screen so the lines can be placed at an exact viewport y inside it */
+    .story-on .story-stage { position: sticky; top: 0; height: 100vh; }
+    .story-on .story-answer { position: absolute; left: 0; right: 0; top: 0; padding-left: 24px; padding-right: 24px; z-index: 1; }
+    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); transition: color var(--dur-slow) var(--ease-out); }
+    /* the light sweep splits each line into per-glyph spans and keeps the whole sentence beside them for
+       screen readers. LOAD-BEARING: without this rule that copy renders, and every line reads twice. */
+    .story-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    /* the statement shares the stage with the canvas, so it has to out-stack it */
+    .story-on .page-hero { position: relative; z-index: 1; }
     /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
        canvas of the site's motes under the statement. Everything a model can make is a loose field; across the hold
        most of it falls away, the rest gathers around one steady point, condenses into a single star, and that star
@@ -141,9 +165,8 @@
        the hold now that the answer has gone back to the bio, so its three stages are paced by the scroll alone. The
        canvas sits under the text and is drawn by the story engine; phones and reduced motion never get it. */
     .story-field { display: none; }
-    .story-on .story-field { display: block; position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.9s; }
+    .story-on .story-field { display: block; position: absolute; left: 0; top: -160px; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.9s; }
     .story-on .story-field.is-lit { opacity: 1; }
-    .story-on .story-stage .page-hero { position: relative; z-index: 1; }
     /* THE FIRST SCREEN IS THE STATEMENT ALONE, AND THE PHOTOGRAPHS WAIT FOR THE TEXT (2026-09-15, per user "the first
        sight I only want to see I'm Chang Mou, a product designer working on what AI can't design yet." then "hold the
        photos back until the last line lands"). The photo peek at the fold, held still with a scroll-driven translate
@@ -287,8 +310,9 @@
     </div>
   </nav>
 
-  <!-- About Hero (inside .story-pin: on desktop the statement holds while the galaxy beneath it runs its
-       three stages, then the photographs rise to meet it and the hold releases) -->
+  <!-- About Hero. The statement is PINNED and never moves: it fades out in place, and only once it is fully
+       gone do the three lines arrive in the space it held. Scrolling it away was tried first and read as
+       distracting (2026-09-16, per user "do not make [it] move. make it fade out"). -->
   <div class="story-pin">
    <div class="story-stage">
   <section class="page-hero">
@@ -297,6 +321,11 @@
       <span class="line" style="--d:1"><span class="line-inner">working on what AI can't design yet.</span></span>
     </h1>
   </section>
+    <p class="story-answer">
+      <span class="line" style="--d:2"><span class="line-inner story-beat">Deciding what to build,</span></span>
+      <span class="line" style="--d:3"><span class="line-inner story-beat">where a person stays in control,</span></span>
+      <span class="line" style="--d:4"><span class="line-inner story-beat">and what is actually good enough to ship.</span></span>
+    </p>
    </div>
   </div>
 
@@ -314,15 +343,69 @@
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const pin = document.querySelector('.story-pin');
     const stage = pin && pin.querySelector('.story-stage');
-    if (!stage) return;
+    const beats = stage ? [].slice.call(stage.querySelectorAll('.story-beat')) : [];
+    if (!stage || beats.length < 2) return;
+    const hero = document.querySelector('.page-hero');
+    if (!hero) return;
     document.documentElement.classList.add('story-on');
-    const BEATS = 1.0;    // screens of scroll the galaxy's three stages take (0.5 until 2026-09-15, doubled per user "too short")
-    const SPAN = 0.32;    // the share of that run each stage takes to complete
-    const STEP = 0.27;    // the share of that run between one stage's start and the next
-    const LEAD = 0.08;    // the first stage starts this far into the run
+    // THE LIGHT PASSES OVER EACH LINE AS IT LANDS (2026-09-15, per user "can you make [the three lines] more visual" then
+    // "do" on the recommendation). The site's own light: the white two-layer halo that sweeps the home headline once at
+    // load. Each line is split into glyph spans (desktop + motion-safe only; a hidden copy keeps the sentence whole for
+    // screen readers), and the moment a line has fully landed a single glow travels across it left to right and clears.
+    // Nothing moves, nothing is hidden or dimmed: the line is already readable when the light passes.
+    const SWEEP_MS = 650;   // how long the light takes to cross a line
+    const SIGMA = 60;       // px: the width of the pool of light
+    beats.forEach(b => {
+      const text = b.textContent, vis = document.createElement('span'), sr = document.createElement('span');
+      vis.setAttribute('aria-hidden', 'true');
+      for (const ch of text) {
+        if (ch === ' ') { vis.appendChild(document.createTextNode(' ')); continue; }
+        const g = document.createElement('span'); g.className = 'story-glyph'; g.textContent = ch; vis.appendChild(g);
+      }
+      sr.className = 'story-sr'; sr.textContent = text;
+      b.textContent = ''; b.appendChild(vis); b.appendChild(sr);
+      b._glyphs = [].slice.call(vis.querySelectorAll('.story-glyph'));
+      b._armed = null;      // null until the first paint, so a line already landed at load does not flash
+    });
+    function sweep(b) {
+      const gs = b._glyphs; if (!gs || !gs.length) return;
+      if (b._sweep) cancelAnimationFrame(b._sweep);
+      const xs = gs.map(g => { const r = g.getBoundingClientRect(); return r.left + r.width / 2; });
+      const x0 = xs[0] - 3 * SIGMA, x1 = xs[xs.length - 1] + 3 * SIGMA, t0 = performance.now();
+      const clear = () => gs.forEach(g => { g.style.color = ''; g.style.textShadow = ''; });
+      const step = now => {
+        const u = Math.min(1, (now - t0) / SWEEP_MS), k = 0.5 - 0.5 * Math.cos(Math.PI * u), x = x0 + (x1 - x0) * k;
+        gs.forEach((g, i) => {
+          const d = xs[i] - x, I = Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
+          if (I < 0.01) { if (g.style.textShadow) { g.style.color = ''; g.style.textShadow = ''; } return; }
+          const c = Math.round(240 + 15 * I);
+          g.style.color = 'rgb(' + c + ', ' + c + ', ' + c + ')';
+          g.style.textShadow = '0 0 6px rgba(255, 255, 255, ' + (0.35 * I).toFixed(3) + '), 0 0 22px rgba(255, 255, 255, ' + (0.30 * I).toFixed(3) + ')';
+        });
+        if (u < 1) b._sweep = requestAnimationFrame(step); else { b._sweep = 0; clear(); }
+      };
+      b._sweep = requestAnimationFrame(step);
+    }
+    // PACING (2026-09-16, per user "I think they are too fast. I can not see the process", and wanting each line
+    // to arrive with its own galaxy event rather than alongside it). Three changes: the run is half again as long
+    // so a stage takes 378px of scroll instead of 288; STEP is now larger than SPAN, so the stages no longer
+    // overlap and each reads as its own event with a beat of quiet between; and the LINE lands in the first 42%
+    // of its stage while the GALAXY takes the whole of it, so you read the line and then watch the field do what
+    // it says. LAND is unchanged at 0.94, so the photographs' rise and the runway maths are untouched.
+    const BEATS = 1.5;    // screens of scroll the galaxy's three stages take (0.5, then 1.0 per user "too short", now 1.5)
+    const SPAN = 0.28;    // the share of that run each galaxy stage takes to complete
+    const TEXT = 0.42;    // a line lands this far into its own stage: read first, then watch
+    const STEP = 0.30;    // the share of that run between one stage's start and the next: larger than SPAN, so they do not blur together
+    // THE STATEMENT FADES, IT DOES NOT MOVE, AND IT IS GONE BEFORE ANY LINE BEGINS. The gap between FADE_AT +
+    // FADE_RUN (0.16) and LEAD (0.18) is the whole point: there is never an instant with two texts both part
+    // lit, which is the failure that killed the bio illumination and the two-tone hero sub. In between, the
+    // field is alone on screen for a beat, the question asked and withdrawn before the answer starts.
+    const FADE_AT = 0.04; // the statement holds this long before it begins to go
+    const FADE_RUN = 0.12;// and takes this much of the run to reach zero
+    const LEAD = 0.18;    // the first stage starts this far into the run, after the statement has fully gone
     const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last stage has finished here
     const GAP = 110;      // px between the statement and the photographs when the hold releases
-    let beatRun = 0, runway = 0, visible = true, onShow = null;
+    let beatRun = 0, runway = 0, FOOT = 0, last = -1, raf = 0, visible = true, onShow = null;
     // THE PHOTOGRAPHS WAIT OUT THE GALAXY, THEN RISE TO MEET THE STATEMENT (2026-09-15, per user "hold the photos back
     // until the last line lands", then "too much space" at the black band that left between the text and the rising row).
     // The hold is two parts: the galaxy runs its three stages over `beatRun`, then the statement stays pinned while the
@@ -331,7 +414,17 @@
     // the screen height, and it grew by the height of the answer when the answer went back to the bio. No scroll-driven
     // transform anywhere: a translate-held peek drew the photos over the statement in the owner's browser.
     function offsetIn(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
-    function titleFoot() { const t = stage.querySelector('.page-title'); return t ? offsetIn(t, stage) + t.offsetHeight : NaN; }
+    // THE ANCHOR. The statement lives in normal flow at the top of the page, so the document y of its foot is
+    // also the viewport y it occupies on the first screen. Everything hangs off that one number: the three
+    // lines land with their block foot on it, the galaxy composes in the band below it, and the photographs
+    // rise to GAP under it. That is what lets the statement hand over to the lines without anything moving.
+    function statementFoot() { const t = hero.querySelector('.page-title'); return t ? offsetIn(t, stage) + t.offsetHeight : NaN; }
+    // the lines sit at an exact viewport y inside the full-screen stage: their block foot on the anchor
+    function placeAnswer(foot) {
+      const a = stage.querySelector('.story-answer'); if (!a || !(foot > 0)) return;
+      a.style.paddingTop = '0px';
+      a.style.paddingTop = Math.max(0, Math.round(foot - a.offsetHeight)) + 'px';
+    }
     function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
       const cards = ds ? ds.querySelectorAll('.deck-card') : [];
@@ -340,27 +433,56 @@
       const off = offsetIn(card, ds);                      // offsets inside the stage only: the stage itself is sticky, so never read it
       if (!(off >= 0)) return;
       const lift = 0.02 * card.offsetHeight + 1;           // the centre card's 1.04 focus scale paints its top this far above its box
-      const target = foot + GAP + runway + lift - off;     // the deck-pin's document top: the card's painted top is GAP under the statement at release
+      const target = pin.offsetTop + runway + foot + GAP + lift - off; // the deck-pin's document top: the card's painted top is GAP under the anchor at release (the pin no longer starts at document 0, so its own offset is in here)
       dp.style.marginTop = '0px';
       let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
       for (let k = 0; k < 2; k++) { const err = dp.offsetTop - target; if (Math.abs(err) < 0.5) break; m -= err; dp.style.marginTop = m + 'px'; } // the deck's own negative margin collapses through the pin; correct for it
     }
     function layout() {
-      const H = window.innerHeight, foot = titleFoot();
+      const H = window.innerHeight;
+      FOOT = statementFoot();
       beatRun = Math.round(H * BEATS);
-      const rise = foot > 0 ? Math.max(0, H - (foot + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the statement
+      const rise = FOOT > 0 ? Math.max(0, H - (FOOT + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the anchor
       runway = Math.round(beatRun * LAND + rise);
       if (runway < beatRun) runway = beatRun;
-      pin.style.height = (stage.offsetHeight + runway) + 'px';
-      placeDeck(foot);
+      placeAnswer(FOOT);
+      pin.style.height = (H + runway) + 'px';   // the stage is one full screen now
+      placeDeck(FOOT);
+      last = -1; kick();
       if (onShow) onShow();
     }
     function scrolled() { return Math.max(0, -pin.getBoundingClientRect().top); }
     function progress() { return runway ? Math.min(1, scrolled() / runway) : 0; }
+    function paint(p) {
+      const q = beatRun ? (p * runway) / beatRun : 0; // the stages run on their own stretch at the start of the hold
+      const fu = Math.min(1, Math.max(0, (q - FADE_AT) / FADE_RUN));
+      hero.style.opacity = (1 - fu * fu * (3 - 2 * fu)).toFixed(3);
+      // ONE LINE IN FOCUS AT A TIME (2026-09-16, per user "do not highlight three. when animation comes just
+      // show the focus on the line related to it"). While the galaxy is working, the line whose stage is
+      // running holds the page's white and the ones already spoken step back to the bio's own grey, so the
+      // eye is always on the line the field is illustrating. They are stepped back, never dimmed out of
+      // readability: --text-soft is 7.5:1 and is the tier the whole About bio is set in. Once the last stage
+      // is done the three are equal again, so the block the photographs rise to meet reads as one answer.
+      // the handoff is on the new line's LANDING, not its stage's start: switching on the start left a beat
+      // where the old line had stepped back and the new one had not arrived, so nothing held the focus
+      const act = q < LEAD ? -1 : q >= LAND ? -1 : Math.min(2, Math.max(0, Math.floor((q - LEAD - SPAN * TEXT) / STEP)));
+      beats.forEach((b, i) => { b.style.color = (act < 0 || i === act) ? '' : 'var(--text-soft)'; });
+      beats.forEach((b, i) => {
+        const u = Math.min(1, Math.max(0, (q - LEAD - i * STEP) / (SPAN * TEXT))), e = u * u * (3 - 2 * u);
+        b.style.opacity = e.toFixed(3);
+        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';
+        if (b._armed === null) b._armed = e < 1;          // first paint: a line already landed stays quiet
+        else if (e >= 1 && b._armed) { b._armed = false; sweep(b); }
+        else if (e < 0.5) b._armed = true;                // it plays again if the reader scrolls back and it lands again
+      });
+    }
+    function frame() { raf = 0; const p = progress(); if (p !== last) { last = p; paint(p); } }
+    function kick() { if (!raf && visible) raf = requestAnimationFrame(frame); }
+    window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', layout, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
-    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible && onShow) onShow(); }, { rootMargin: '100px' }).observe(pin);
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { kick(); if (onShow) onShow(); } }, { rootMargin: '100px' }).observe(pin);
     layout();
     // MANY INTO ONE: the field of motes that is now the whole of the hold (see the CSS note)
     (function field() {
@@ -495,21 +617,32 @@
       // how tall this galaxy actually draws, as a share of rx: measured off the motes, never guessed
       const VF = motes.reduce((a, m) => Math.max(a, Math.abs(m.ay)), 0);   // 0.391 as built
       // what survives the first line is the nucleus: the disc scatters and its middle stays
-      motes.slice().sort((m, n) => m.r - n.r).slice(0, KEEP).forEach((m, k) => { m.keep = true; m.ring = (k / KEEP) * Math.PI * 2; });
-      let W = 0, H = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
+      motes.slice().sort((m, n) => m.r - n.r).slice(0, KEEP).forEach((m, k) => {
+        m.keep = true;
+        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 1.15;   // even base, jittered so it is a cluster and not an orbit
+        m.rr = 0.40 + 0.95 * (m.ph / 6.2832);                        // and its own distance out
+      });
+      const OVER = 160;   // the canvas reaches this far above the stage, so a short screen cannot clip the galaxy's top
+      let W = 0, H = 0, CH = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
       function size() {
         dpr = Math.min(2, window.devicePixelRatio || 1);
-        W = stage.clientWidth; H = window.innerHeight;
-        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
-        cv.style.width = W + 'px'; cv.style.height = H + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        W = stage.clientWidth; H = window.innerHeight; CH = H + OVER;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(CH * dpr);
+        cv.style.width = W + 'px'; cv.style.height = CH + 'px';
         shown = -1;
       }
       function dot(spr, x, y, r, a) { if (a < 0.015) return; const sz = r * 5.2; ctx.globalAlpha = Math.min(1, a); ctx.drawImage(spr, x - sz / 2, y - sz / 2, sz, sz); }
       function draw(sc, t) {
-        ctx.clearRect(0, 0, W, H);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.clearRect(0, 0, W, CH);
+        // EVERY COORDINATE BELOW IS A VIEWPORT COORDINATE. The canvas rides a stage that is in flow until it
+        // sticks, so drawing in the canvas's own space would slide the galaxy up the screen while the statement
+        // is being scrolled away. Offsetting by the canvas's screen position pins the galaxy to the viewport for
+        // the whole sequence: the words above it change, the object does not move.
+        const cTop = cv.getBoundingClientRect().top;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, Math.round(-cTop * dpr));
         ctx.globalCompositeOperation = 'lighter';
-        const foot = titleFoot(); if (!(foot > 0) || !beatRun) return;
+        const foot = FOOT; if (!(foot > 0) || !beatRun) return;
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
         // IT IS COMPOSED IN THE BAND UNDER THE STATEMENT AND STAYS THERE (2026-09-15, per user "So the galaxy do
@@ -542,7 +675,7 @@
             x += e1 * ((m.ax / d) * (30 + 90 * m.fall)); y += e1 * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall); a *= 1 - e1;
           } else {
             // 2. a person stays in control: the survivors gather round one steady point
-            const ringR = mix(38, 6, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.6;
+            const ringR = mix(92 * m.rr, 8, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.6;
             x = mix(x, rxp, e2); y = mix(y, ryp, e2);
             a = mix(a, 0.85, e2) * (1 - 0.85 * e3); r = mix(r, 1.1, e2);
             // 3. good enough to ship: they condense into the star, which lifts and fades as the photographs rise
@@ -562,6 +695,7 @@
           }
         }
         ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       }
       function frame(now) {
         loop = 0;
@@ -580,9 +714,9 @@
       new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px' }).observe(pin);
       requestAnimationFrame(() => cv.classList.add('is-lit'));
       start();
-      cv._field = () => ({ W, H, shown, runway, beatRun }); cv._draw = draw;
+      cv._field = () => ({ W, H, CH, shown, runway, beatRun, cTop: Math.round(cv.getBoundingClientRect().top) }); cv._draw = draw;
     })();
-    pin._story = () => ({ runway, beatRun, progress: progress(), titleFoot: titleFoot() }); // for probing
+    pin._story = () => ({ runway, beatRun, progress: progress(), foot: FOOT, pinTop: pin.offsetTop, beats: beats.map(b => b.style.opacity) }); // for probing
   })();
 </script>
 
@@ -627,7 +761,7 @@
   <section class="about-vertical">
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Background</span></div>
-      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design. I work on AI products, and specifically on the parts a model cannot take off your hands: deciding what to build, where a person stays in control, and what is actually good enough to ship.</p>
+      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design, working on AI products.</p>
       <p>I run my own research and build my own prototypes: in Figma when that is the right tool, in real code when a spec would lose too much, so the team gets <span style="color: var(--text)">a working build to extend, not a spec to translate</span>.</p>
       <p>I want to make people's lives better, and in this work that usually means taking something away rather than adding it. Those calls come before the data does, and taste is what you have instead. The model gives the hours back, and judgment is what they are for. <span style="color: var(--text)">Designers get more powerful in the AI era, not less.</span></p>
       <p>Outside of work, I cook, walk the city on foot, read widely, vibe code some gimmicks, and spend time with friends. I listen to a lot of music, and more of my ideas come from it than from any designer. Nothing stays in its own field for long, and <span style="color: var(--text)">design is where it all connects</span>.</p>
