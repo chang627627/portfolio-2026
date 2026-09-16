@@ -170,10 +170,28 @@
        while the galaxy is working, all three return to --text before the photographs arrive, and phones and
        reduced motion never see it at all. This one token is the whole dial if it ever wants nudging. */
     .story-on .story-answer { --spoken: #2b2b2b; }
-    /* the statement is a sibling of the canvas now, so it needs to out-stack it. Its bottom padding goes, so
-       the hold begins the moment the statement clears the top of the screen rather than 160px later: the
-       reader pays for reading the statement, never for waiting after it. */
+    /* the statement is a sibling of the canvas now, so it needs to out-stack it */
     .story-on .page-hero { position: relative; z-index: 1; padding-bottom: 0; }
+    /* IT LEAVES SLOWER THAN THE PAGE (2026-09-16, per user "I think it currently disappear too fast"). It used
+       to go at exactly page speed, so the most important sentence on the site was gone in 343px and then the
+       reader sat in a 3,200px hold. Now it drifts down against the scroll at LAG of its rate, so it takes
+       343 / (1 - LAG) px to clear, and the script pads the hero by exactly the difference so it still finishes
+       precisely as the stage sticks: no fade, no overlap, and the hold is unchanged.
+       THIS IS A CSS SCROLL TIMELINE, NOT A PER-FRAME TRANSFORM, and that is the whole point. A JS translate
+       would counter-move an element against its own scrolling and land one frame behind the compositor every
+       time, which is exactly the shiver the canvas had. The home hero's --g2-lift does the same thing the
+       same way. Longhands with animation-duration: auto, per the documented shorthand trap; unsupported
+       browsers and reduced motion simply keep the statement leaving at page speed. */
+    @keyframes hero-lag { to { transform: translateY(var(--story-drift, 0px)); } }
+    @supports (animation-timeline: scroll()) {
+      @media (prefers-reduced-motion: no-preference) {
+        .story-on .page-hero {
+          animation-name: hero-lag; animation-duration: auto; animation-timing-function: linear;
+          animation-fill-mode: both; animation-timeline: scroll(root block);
+          animation-range: 0 var(--story-exit, 0px);
+        }
+      }
+    }
     /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
        canvas of the site's motes under the statement. Everything a model can make is a loose field; across the hold
        most of it falls away, the rest gathers around one steady point, condenses into a single star, and that star
@@ -429,9 +447,21 @@
       let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
       for (let k = 0; k < 2; k++) { const err = dp.offsetTop - target; if (Math.abs(err) < 0.5) break; m -= err; dp.style.marginTop = m + 'px'; } // the deck's own negative margin collapses through the pin; correct for it
     }
+    // how much slower than the page the statement leaves: 0 is page speed, 0.5 takes twice as long to clear
+    const LAG = 0.5;
+    const lagOK = window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()');
     function layout() {
       const H = window.innerHeight;
+      hero.style.paddingBottom = '';                       // measure the statement's own foot before padding it
       FOOT = statementFoot();
+      if (lagOK) {
+        // pad the hero so the pin starts exactly where the lagging statement finishes clearing the top
+        const exit = Math.round(FOOT / (1 - LAG));
+        hero.style.paddingBottom = (exit - FOOT) + 'px';
+        const r = document.documentElement.style;
+        r.setProperty('--story-exit', exit + 'px');
+        r.setProperty('--story-drift', Math.round(exit * LAG) + 'px');
+      }
       beatRun = Math.round(H * BEATS);
       const rise = FOOT > 0 ? Math.max(0, H - (FOOT + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the anchor
       runway = Math.round(beatRun * LAND + rise);
