@@ -367,7 +367,7 @@
     // other three quarters, which takes the readable stretch from 219px to 492px, and takes the share of the
     // whole hold spent with a line simply sitting there from 33% to 50%. Most of the extra scroll is reading
     // time, not more animation.
-    const BEATS = 2.4;    // screens of scroll the galaxy's three stages take (0.5, then 1.0, then 1.5, all per user "too short")
+    const BEATS = 2.8;    // screens of scroll the galaxy's three stages take (0.5, 1.0, 1.5, 2.4, now 2.8: each raise per user, the last to give each mote's own share of its stage room to be seen)
     const SPAN = 0.30;    // the share of that run each galaxy stage takes to complete
     const TEXT = 0.24;    // a line lands this far into its own stage and holds for the rest: read, then watch
     const STEP = 0.36;    // the share of that run between one stage's start and the next
@@ -603,6 +603,23 @@
         m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.30;
         m.rr = 0.90 + 0.16 * (m.ph / 6.2832);
       });
+      // EVERY MOTE GETS ITS OWN CLOCK (2026-09-16, per user "I think animation need to be more sophisticated").
+      // The three stages used to drive all 509 motes off one eased value each, so the field moved in perfect
+      // unison and read as a single object being tweened rather than as many things behaving. Each mote now
+      // carries its own place in the queue, and the ORDER MEANS SOMETHING rather than being random:
+      //   o1, the scatter: OUTSIDE FIRST, so the field erodes inward and the survivors are the last standing
+      //   o2, the gather:  NEAREST FIRST, so the ring builds from the ones already close and the far ones arrive late
+      //   o3, the close:   random, so the last few reach the centre unevenly instead of shutting like an iris
+      (() => {
+        const far = motes.slice().sort((a, b) => b.r - a.r);            // outermost first
+        far.forEach((m, k) => { m.o1 = Math.min(1, k / (far.length - 1) * 0.82 + m.fall * 0.18); });
+        const keep = motes.filter(m => m.keep).sort((a, b) => a.r - b.r); // nearest first
+        keep.forEach((m, k) => {
+          m.o2 = keep.length > 1 ? k / (keep.length - 1) : 0;
+          m.o3 = (m.ph / 6.2832);
+          m.turn = 0.45 + 0.55 * m.fall;                                 // how far round it winds on the way in
+        });
+      })();
       const OVER = 160;   // the canvas reaches this far above the stage, so a short screen cannot clip the galaxy's top
       let W = 0, H = 0, CH = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
       function size() {
@@ -639,6 +656,13 @@
         const rx = Math.max(180, Math.min((bandRest * FILL) / (2 * vf), W * 0.46, 780)), ry = rx;
         const cy = title + bandRest * MID;
         const e1 = line(0), e2 = line(1), e3 = line(2);
+        // EACH MOTE RUNS ITS OWN SHARE OF ITS STAGE. `stag` turns a stage's progress into one mote's, starting
+        // it `d` of the way through a window `sp` wide: at sp 0.58 the first mote is done before the last has
+        // begun to move. This is the single change that stops 509 things looking like one thing.
+        const SP1 = 0.58, SP2 = 0.55, SP3 = 0.42;
+        const stag = (E, d, sp) => smooth((E - d * sp) / (1 - sp));
+        // a gentle overshoot so a mote settles onto the ring instead of sliding to a halt on it
+        const settle = v => { const p = v - 1; return 1 + 2.10 * p * p * p + 1.10 * p * p; };
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
         const liftTo = foot + 44;                             // the star lifts back toward the statement before it goes
@@ -648,20 +672,37 @@
           const wob = 1.0 * Math.sin(t * 0.45 + m.ph), wob2 = 0.8 * Math.cos(t * 0.37 + m.ph * 1.3);
           let twinkle = 0.72 + 0.62 * Math.sin(t * m.tw + m.ph * 2.1);      // dips near dark, peaks above its own brightness
           if (m.spark) { const f = Math.sin(t * m.sr + m.ph); twinkle += 1.1 * Math.pow(Math.max(0, f), 14); } // a few catch the light briefly
-          let x = cx + m.ax * rx + wob, y = cy + m.ay * ry + wob2, a = m.b, r = m.size;
-          a *= m.keep ? mix(twinkle, 1, e2) : twinkle;
+          const sx = m.ax * rx, sy = m.ay * ry;
+          let x = cx + sx + wob, y = cy + sy + wob2, a = m.b, r = m.size;
           if (!m.keep) {
-            // 1. deciding what to build: the disc scatters outward and falls away
+            // 1. DECIDING WHAT TO BUILD: the field erodes from the outside in, each mote losing its light a
+            // little before it loses its place (aFade leads the motion) and then ACCELERATING away rather
+            // than easing out, so it reads as being let go rather than blown off.
+            const u1 = stag(e1, m.o1, SP1);
+            const push = u1 * u1 * (0.55 + 0.45 * u1);
             const d = Math.hypot(m.ax, m.ay) || 1;
-            x += e1 * ((m.ax / d) * (30 + 90 * m.fall)); y += e1 * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall); a *= 1 - e1;
+            x += push * ((m.ax / d) * (30 + 90 * m.fall));
+            y += push * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall);
+            a *= twinkle * (1 - Math.min(1, u1 * 1.35));
           } else {
-            // 2. a person stays in control: the survivors gather round one steady point
-            // rounder than the disc it came from (0.6 to 0.82): the galaxy is seen at an angle, the ring the
-            // survivors make is the one thing on this page that should read as a circle
-            const ringR = mix(92 * m.rr, 8, e3), rxp = cx + Math.cos(m.ring + t * 0.2) * ringR, ryp = cy + Math.sin(m.ring + t * 0.2) * ringR * 0.82;
-            x = mix(x, rxp, e2); y = mix(y, ryp, e2);
-            a = mix(a, 0.85, e2) * (1 - 0.85 * e3); r = mix(r, 1.1, e2);
-            // 3. good enough to ship: they condense into the star, which lifts and fades as the photographs rise
+            // 2. WHERE A PERSON STAYS IN CONTROL: the survivors SPIRAL in rather than sliding along a straight
+            // line. The path is interpolated in polar coordinates around the centre, so angle and radius move
+            // separately; `swirl` bows the angle out and back (it returns to zero at the end, so the mote still
+            // lands exactly on its place in the ring) and `settle` overshoots the radius slightly and comes
+            // back, which is what makes it look like something arriving rather than something being placed.
+            const u2 = stag(e2, m.o2, SP2), u3 = stag(e3, m.o3, SP3);
+            const R0 = Math.hypot(sx, sy), th0 = Math.atan2(sy, sx);
+            const ringR = mix(92 * m.rr, 8, u3), th1 = m.ring + t * 0.2;
+            const dth = ((th1 - th0 + Math.PI) % 6.2832 + 6.2832) % 6.2832 - Math.PI;   // the short way round
+            const th = th0 + dth * u2 + m.turn * 1.15 * Math.sin(Math.PI * u2);
+            const R = mix(R0, ringR, settle(u2));
+            x = cx + Math.cos(th) * R + wob;
+            y = cy + Math.sin(th) * R * mix(1, 0.82, u2) + wob2;
+            // it flares as it lands, so the ring is visibly BUILT one mote at a time
+            const flare = Math.exp(-Math.pow((u2 - 0.90) / 0.09, 2));
+            a = mix(a, 0.85, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.85 * flare);
+            r = mix(r, 1.1, u2);
+            // 3. GOOD ENOUGH TO SHIP: they close on the star, which lifts and fades as the photographs rise
             y = mix(y, liftTo, lift); a *= 1 - lift;
           }
           dot(m.warm ? sWarm : sW, x, y, r, a);
