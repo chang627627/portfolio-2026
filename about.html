@@ -151,16 +151,19 @@
     }
     /* the stage is a full screen so the lines can be placed at an exact viewport y inside it */
     .story-on .story-stage { position: sticky; top: 0; height: 100vh; }
-    /* ONE PLACE, ONE LINE (2026-09-16, per user "they can appear at the same position"). Only one line is
-       ever on screen, so they do not need a slot each: all three are absolutely stacked in the same box,
-       whose foot the script pins to the statement's own foot. Each one therefore arrives exactly where the
-       statement's last line was, and nothing on the page ever shifts. */
-    .story-on .story-answer { position: absolute; left: 0; right: 0; z-index: 1; }
-    .story-on .story-answer .line { position: absolute; left: 0; right: 0; top: 0; }
-    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
-    /* the light sweep splits each line into per-glyph spans and keeps the whole sentence beside them for
-       screen readers. LOAD-BEARING: without this rule that copy renders, and every line reads twice. */
-    .story-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+    /* THE THREE STAY ON SCREEN TOGETHER (2026-09-16, per user "I still think show three line together is the
+       better idea. But you need to make the passed line darker"), each in its own slot, the block's foot
+       pinned by the script to the statement's own foot. The one-at-a-time version that briefly replaced this
+       is in git at 23dcad3. */
+    .story-on .story-answer { position: absolute; left: 0; right: 0; top: 0; padding-left: 24px; padding-right: 24px; z-index: 1; }
+    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); transition: color var(--dur-slow) var(--ease-out); }
+    /* THE TIER A LINE STEPS BACK TO once it has been spoken. This is DELIBERATELY BELOW the WCAG floor
+       (1.39:1 against the page, where AA for text this size is 3:1) and it is the owner's explicit call,
+       made after --text-soft #a0a0a0 and then #6a6a6a both left the spoken lines competing for attention:
+       "Fuck accessibility. Just make it dark." The mitigations, such as they are: the dimming exists only
+       while the galaxy is working, all three return to --text before the photographs arrive, and phones and
+       reduced motion never see it at all. This one token is the whole dial if it ever wants nudging. */
+    .story-on .story-answer { --spoken: #2b2b2b; }
     /* the statement shares the stage with the canvas, so it has to out-stack it */
     .story-on .page-hero { position: relative; z-index: 1; }
     /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
@@ -353,62 +356,28 @@
     const hero = document.querySelector('.page-hero');
     if (!hero) return;
     document.documentElement.classList.add('story-on');
-    // THE LIGHT PASSES OVER EACH LINE AS IT LANDS (2026-09-15, per user "can you make [the three lines] more visual" then
-    // "do" on the recommendation). The site's own light: the white two-layer halo that sweeps the home headline once at
-    // load. Each line is split into glyph spans (desktop + motion-safe only; a hidden copy keeps the sentence whole for
-    // screen readers), and the moment a line has fully landed a single glow travels across it left to right and clears.
-    // Nothing moves, nothing is hidden or dimmed: the line is already readable when the light passes.
-    const SWEEP_MS = 650;   // how long the light takes to cross a line
-    const SIGMA = 60;       // px: the width of the pool of light
-    beats.forEach(b => {
-      const text = b.textContent, vis = document.createElement('span'), sr = document.createElement('span');
-      vis.setAttribute('aria-hidden', 'true');
-      for (const ch of text) {
-        if (ch === ' ') { vis.appendChild(document.createTextNode(' ')); continue; }
-        const g = document.createElement('span'); g.className = 'story-glyph'; g.textContent = ch; vis.appendChild(g);
-      }
-      sr.className = 'story-sr'; sr.textContent = text;
-      b.textContent = ''; b.appendChild(vis); b.appendChild(sr);
-      b._glyphs = [].slice.call(vis.querySelectorAll('.story-glyph'));
-      b._armed = null;      // null until the first paint, so a line already landed at load does not flash
-    });
-    function sweep(b) {
-      const gs = b._glyphs; if (!gs || !gs.length) return;
-      if (b._sweep) cancelAnimationFrame(b._sweep);
-      const xs = gs.map(g => { const r = g.getBoundingClientRect(); return r.left + r.width / 2; });
-      const x0 = xs[0] - 3 * SIGMA, x1 = xs[xs.length - 1] + 3 * SIGMA, t0 = performance.now();
-      const clear = () => gs.forEach(g => { g.style.color = ''; g.style.textShadow = ''; });
-      const step = now => {
-        const u = Math.min(1, (now - t0) / SWEEP_MS), k = 0.5 - 0.5 * Math.cos(Math.PI * u), x = x0 + (x1 - x0) * k;
-        gs.forEach((g, i) => {
-          const d = xs[i] - x, I = Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
-          if (I < 0.01) { if (g.style.textShadow) { g.style.color = ''; g.style.textShadow = ''; } return; }
-          const c = Math.round(240 + 15 * I);
-          g.style.color = 'rgb(' + c + ', ' + c + ', ' + c + ')';
-          g.style.textShadow = '0 0 6px rgba(255, 255, 255, ' + (0.35 * I).toFixed(3) + '), 0 0 22px rgba(255, 255, 255, ' + (0.30 * I).toFixed(3) + ')';
-        });
-        if (u < 1) b._sweep = requestAnimationFrame(step); else { b._sweep = 0; clear(); }
-      };
-      b._sweep = requestAnimationFrame(step);
-    }
-    // PACING (2026-09-16, per user "I think they are too fast. I can not see the process", and wanting each line
-    // to arrive with its own galaxy event rather than alongside it). Three changes: the run is half again as long
-    // so a stage takes 378px of scroll instead of 288; STEP is now larger than SPAN, so the stages no longer
-    // overlap and each reads as its own event with a beat of quiet between; and the LINE lands in the first 42%
-    // of its stage while the GALAXY takes the whole of it, so you read the line and then watch the field do what
-    // it says. LAND is unchanged at 0.94, so the photographs' rise and the runway maths are untouched.
-    const BEATS = 1.5;    // screens of scroll the galaxy's three stages take (0.5, then 1.0 per user "too short", now 1.5)
-    const SPAN = 0.28;    // the share of that run each galaxy stage takes to complete
-    const TEXT = 0.42;    // a line lands this far into its own stage: read first, then watch
-    const STEP = 0.34;    // the share of that run between one stage's start and the next: larger than SPAN, so a line can leave before the next arrives
-    const OUT_RUN = 0.05; // and this is how long it takes to go, starting the moment its own stage completes
+    // (the light that swept each line left to right as it landed was removed 2026-09-16, per user "I do not
+    // need that subtle sweep left to right glow effect"; with it went the glyph splitter, the per-glyph spans
+    // and the visually hidden .story-sr copy they needed, so the lines are plain text again)
+    // LENGTH, AND WHERE IT GOES (2026-09-16, per user "I think it is too short. i can not see the information
+    // clear enough. Need to make the scroll process longer", the third time this has been asked). Measured
+    // first rather than guessed: of the 1,986px hold, a line sat FULLY READABLE for only 219px, 11% of it, the
+    // rest being arrivals, departures and the galaxy's own stages. So this lengthens the run AND rebalances
+    // it. A line now lands in a quarter of its stage instead of nearly half (TEXT 0.42 to 0.24) and keeps the
+    // other three quarters, which takes the readable stretch from 219px to 492px, and takes the share of the
+    // whole hold spent with a line simply sitting there from 33% to 50%. Most of the extra scroll is reading
+    // time, not more animation.
+    const BEATS = 2.4;    // screens of scroll the galaxy's three stages take (0.5, then 1.0, then 1.5, all per user "too short")
+    const SPAN = 0.30;    // the share of that run each galaxy stage takes to complete
+    const TEXT = 0.24;    // a line lands this far into its own stage and holds for the rest: read, then watch
+    const STEP = 0.36;    // the share of that run between one stage's start and the next
     // THE STATEMENT FADES, IT DOES NOT MOVE, AND IT IS GONE BEFORE ANY LINE BEGINS. The gap between FADE_AT +
     // FADE_RUN (0.16) and LEAD (0.18) is the whole point: there is never an instant with two texts both part
     // lit, which is the failure that killed the bio illumination and the two-tone hero sub. In between, the
     // field is alone on screen for a beat, the question asked and withdrawn before the answer starts.
-    const FADE_AT = 0.04; // the statement holds this long before it begins to go
-    const FADE_RUN = 0.12;// and takes this much of the run to reach zero
-    const LEAD = 0.18;    // the first stage starts this far into the run, after the statement has fully gone
+    const FADE_AT = 0.02; // the statement holds this long before it begins to go
+    const FADE_RUN = 0.06;// and takes this much of the run to reach zero (the shares shrank when BEATS grew: this is still 130px)
+    const LEAD = 0.13;    // the first stage starts this far into the run, well after the statement has fully gone
     const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last stage has finished here
     const GAP = 110;      // px between the statement and the photographs when the hold releases
     let beatRun = 0, runway = 0, FOOT = 0, last = -1, raf = 0, visible = true, onShow = null;
@@ -428,10 +397,8 @@
     // the lines sit at an exact viewport y inside the full-screen stage: their block foot on the anchor
     function placeAnswer(foot) {
       const a = stage.querySelector('.story-answer'); if (!a || !(foot > 0)) return;
-      const l = a.querySelector('.line'); if (!l) return;
-      const h = l.offsetHeight;                              // they all sit in the same box, so one line is the height
-      a.style.height = h + 'px';
-      a.style.top = Math.max(0, Math.round(foot - h)) + 'px'; // its foot on the anchor: where the statement's last line was
+      a.style.paddingTop = '0px';
+      a.style.paddingTop = Math.max(0, Math.round(foot - a.offsetHeight)) + 'px'; // the block's foot on the anchor
     }
     function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
@@ -465,25 +432,24 @@
       const q = beatRun ? (p * runway) / beatRun : 0; // the stages run on their own stretch at the start of the hold
       const fu = Math.min(1, Math.max(0, (q - FADE_AT) / FADE_RUN));
       hero.style.opacity = (1 - fu * fu * (3 - 2 * fu)).toFixed(3);
-      // ONE LINE AT A TIME, THE OTHER TWO NOT THERE AT ALL (2026-09-16, per user "maybe show one line at a
-      // time and hide other two", the end of a thread that ran --text-soft, then #6a6a6a, then "need to be
-      // fucking darker"). Going to zero is the right answer rather than a darker grey: there is no dim text
-      // on the page at any point, so the readability question the whole About page has been fighting since
-      // the bio illumination simply does not arise. Each line arrives, holds while its own galaxy stage
-      // runs, and leaves the moment that stage completes, in place and by fading only. STEP is wider than
-      // SPAN + OUT_RUN so a line is fully gone before the next begins to arrive: verified, never two at once.
-      // THE LAST LINE DOES NOT LEAVE, and the other two never come back (per user "no need to show three at
-      // the same time"): the page ends the hold on the call it closes with, not on a recap.
+      // THE THREE BUILD UP AND STAY, WITH ONE IN FOCUS (2026-09-16, per user "I still think show three line
+      // together is the better idea. But you need to make the passed line darker. Fuck accessibility."). Each
+      // line arrives in its own slot and does not leave; the one whose galaxy stage is running holds the
+      // page's white and the ones already spoken drop to --spoken, which is deliberately below the contrast
+      // floor because he asked for it twice and then a third time. THE FOCUS NEVER RESETS: once the last
+      // stage is done the first two stay dark and the third keeps the white (per user "no need to highlight
+      // three again at the end"), so the hold ends on the call it closes with and the photographs rise to
+      // meet that, not a recap.
       const sm = v => { v = Math.min(1, Math.max(0, v)); return v * v * (3 - 2 * v); };
+      // the focus hands over on the new line's LANDING, not its stage's start: switching on the start left a
+      // stretch where the old line had gone dark and the new one had not arrived, so nothing held the eye
+      const act = q < LEAD ? -1 : Math.min(2, Math.max(0, Math.floor((q - LEAD - SPAN * TEXT) / STEP)));
       beats.forEach((b, i) => {
         const at = LEAD + i * STEP;
-        const e = sm((q - at) / (SPAN * TEXT));              // arrives
-        const gone = i < 2 ? sm((q - at - SPAN) / OUT_RUN) : 0; // and leaves when its own stage is done
-        b.style.opacity = (e * (1 - gone)).toFixed(3);
-        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';   // only the arrival moves; leaving and returning are pure fades
-        if (b._armed === null) b._armed = e < 1;          // first paint: a line already landed stays quiet
-        else if (e >= 1 && b._armed) { b._armed = false; sweep(b); }
-        else if (e < 0.5) b._armed = true;                // it plays again if the reader scrolls back and it lands again
+        const e = sm((q - at) / (SPAN * TEXT));              // arrives, and stays
+        b.style.opacity = e.toFixed(3);
+        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';
+        b.style.color = (act < 0 || i === act) ? '' : 'var(--spoken)';
       });
     }
     function frame() { raf = 0; const p = progress(); if (p !== last) { last = p; paint(p); } }
