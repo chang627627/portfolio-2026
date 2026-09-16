@@ -122,20 +122,11 @@
        blurred gradient read as a stray light. The card stands on its shadow alone. */
     .deck-card::before { display: none; }
 
-    /* THE ANSWER UNDER THE STATEMENT (2026-09-15). The four beats use the statement's own line
-       reveal at load (delays continue from the statement's two lines); on desktop + motion-safe the
-       script adds .story-on, which parks the hero for half a screen of scroll and hands the beats
-       to the scroll instead. A JS failure, phones and reduced motion keep the still answer. */
-    /* A QUIET LEAD-IN, THREE CALLS A TIER UP (2026-09-15, per user "can [the answer] have a better way to present?"
-       then "DO", from a rendered five-direction pass). The four lines were one tier (27px white), so the question read
-       as a fourth answer. The lead-in is now the bio's grey tier at 22px and the three calls are white at 36px, 16px
-       below it: the page steps 64 / 36 / 22 and the calls widen line by line, so the block lands on the last one.
-       Same words, same centring, same scroll beats; the lead-in arrives grey and stays grey, nothing dims. */
-    /* (the lead-in "The parts a model cannot take off your hands:" was deleted the same evening, per user "can we delete"
-       it: the answer is the three calls alone, at the tier they had under it) */
-    .story-answer { margin: 40px auto 0; max-width: 880px; font-size: 36px; line-height: 1.2; letter-spacing: -0.025em; color: var(--text); }
-    .story-answer .line { display: block; overflow: hidden; padding-bottom: 0.04em; }
-    .story-answer .line-inner { display: inline-block; opacity: 0; transform: translateY(100%); animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.3s + var(--d) * 0.12s); }
+    /* THE ANSWER WENT BACK TO THE BIO (2026-09-15, per user "maybe add [the three calls] back to the background
+       part. So the galaxy do not need to have the vertical move"). The hero is the statement alone again, the
+       sentence reads once, in Background's first paragraph where it lived before, and the hold now carries only
+       the galaxy: nothing readable moves during it. The .story-answer / .story-beat / .story-sr rules went with
+       the markup; the glyph light that swept each line as it landed went with them. */
     /* The statement renders at the site's inner-page title size (2026-09-15). `.page-hero h1` (0,1,1) in
        style.css caps it at 56px and outranks `.page-title` (0,1,0), which asks for 64px, so About's statement
        rendered a tier below Play's since both rules existed. Play fixed the same collision on 2026-09-12. */
@@ -144,27 +135,20 @@
     }
     .story-on .story-stage { position: sticky; top: 0; }
     /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
-       canvas of the site's motes under the statement. Everything a model can make is a loose field; as the lines land,
-       most of it falls away (deciding what to build), the rest gathers around one steady point (a person stays in
-       control), condenses into a single star (good enough to ship), and that star lifts and fades as the photographs
-       rise. The canvas sits under the text and is drawn by the story engine; phones and reduced motion never get it. */
+       canvas of the site's motes under the statement. Everything a model can make is a loose field; across the hold
+       most of it falls away, the rest gathers around one steady point, condenses into a single star, and that star
+       lifts and fades as the photographs rise: many into one, the page's own idea of subtraction. It is the whole of
+       the hold now that the answer has gone back to the bio, so its three stages are paced by the scroll alone. The
+       canvas sits under the text and is drawn by the story engine; phones and reduced motion never get it. */
     .story-field { display: none; }
     .story-on .story-field { display: block; position: absolute; left: 0; top: 0; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.9s; }
     .story-on .story-field.is-lit { opacity: 1; }
     .story-on .story-stage .page-hero { position: relative; z-index: 1; }
-    .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); }
-    .story-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
     /* THE FIRST SCREEN IS THE STATEMENT ALONE, AND THE PHOTOGRAPHS WAIT FOR THE TEXT (2026-09-15, per user "the first
        sight I only want to see I'm Chang Mou, a product designer working on what AI can't design yet." then "hold the
        photos back until the last line lands"). The photo peek at the fold, held still with a scroll-driven translate
        on the sticky deck stage, is gone: it also drew the photos over the statement in the owner's browser. The deck
        is in plain layout, pushed down by the story engine so the photographs come up only after the hold releases. */
-    @media (max-width: 768px) {
-      .story-answer { font-size: 24px; line-height: 1.25; margin-top: 28px; }
-      .story-answer .line-inner { text-wrap: balance; }
-      .story-answer .line + .line { margin-top: 8px; }
-    }
-
     /* Scroll-driven deck (2026-09-12): the row no longer drifts and cannot be dragged.
        The stage parks in the middle of the screen and one full set of photographs
        passes the centre across the runway below it, then the page carries on down.
@@ -312,86 +296,41 @@
       <span class="line" style="--d:0"><span class="line-inner">I'm Chang Mou, a product designer</span></span>
       <span class="line" style="--d:1"><span class="line-inner">working on what AI can't design yet.</span></span>
     </h1>
-    <!-- the answer to the statement, moved here from the bio's first paragraph (2026-09-15, per user) -->
-    <p class="story-answer">
-      <span class="line" style="--d:2"><span class="line-inner story-beat">Deciding what to build,</span></span>
-      <span class="line" style="--d:3"><span class="line-inner story-beat">where a person stays in control,</span></span>
-      <span class="line" style="--d:4"><span class="line-inner story-beat">and what is actually good enough to ship.</span></span>
-    </p>
   </section>
    </div>
   </div>
 
 <script>
-  // THE ANSWER ARRIVES WITH THE SCROLL (2026-09-15, per user: merge the statement with the bio's
-  // "the parts a model cannot take off your hands" sentence "through the parallax scrolling, like the
-  // storytelling"). On desktop the statement holds still for half a screen of scrolling while the four
-  // beats of its answer rise into place beneath it, one after another, each staying fully white once it
-  // has landed (nothing readable ever moves or dims); then the page releases into the photo deck, so the
-  // opening reads as one sequence: the claim, the answer, the photographs. Scroll back and the beats
-  // recede in reverse. Phones and reduced motion keep the plain statement and answer, no hold.
+  // THE STATEMENT HOLDS WHILE THE GALAXY ANSWERS IT (2026-09-15, per user "maybe add [the three calls]
+  // back to the background part. So the galaxy do not need to have the vertical move"). The answer that
+  // used to rise under the statement in three beats is back in Background's first paragraph, so the hero
+  // is the statement alone and NOTHING READABLE MOVES DURING THE HOLD: on desktop the statement parks for
+  // the length of the hold while the field of motes beneath it scatters, gathers and condenses into one
+  // star, then the photographs rise to meet the statement and the two leave together. The galaxy's three
+  // stages are paced by the scroll alone now; the constants below still set that pace. Scroll back and it
+  // runs in reverse. Phones and reduced motion keep the plain statement, no hold, no field.
   (function () {
     if (!matchMedia('(min-width: 769px)').matches) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const pin = document.querySelector('.story-pin');
     const stage = pin && pin.querySelector('.story-stage');
-    const beats = stage ? [].slice.call(stage.querySelectorAll('.story-beat')) : [];
-    if (!stage || beats.length < 2) return;
+    if (!stage) return;
     document.documentElement.classList.add('story-on');
-    // THE LIGHT PASSES OVER EACH LINE AS IT LANDS (2026-09-15, per user "can you make [the three lines] more visual" then
-    // "do" on the recommendation). The site's own light: the white two-layer halo that sweeps the home headline once at
-    // load. Each line is split into glyph spans (desktop + motion-safe only; a hidden copy keeps the sentence whole for
-    // screen readers), and the moment a line has fully landed a single glow travels across it left to right and clears.
-    // Nothing moves, nothing is hidden or dimmed: the line is already readable when the light passes.
-    const SWEEP_MS = 650;   // how long the light takes to cross a line
-    const SIGMA = 60;       // px: the width of the pool of light
-    beats.forEach(b => {
-      const text = b.textContent, vis = document.createElement('span'), sr = document.createElement('span');
-      vis.setAttribute('aria-hidden', 'true');
-      for (const ch of text) {
-        if (ch === ' ') { vis.appendChild(document.createTextNode(' ')); continue; }
-        const g = document.createElement('span'); g.className = 'story-glyph'; g.textContent = ch; vis.appendChild(g);
-      }
-      sr.className = 'story-sr'; sr.textContent = text;
-      b.textContent = ''; b.appendChild(vis); b.appendChild(sr);
-      b._glyphs = [].slice.call(vis.querySelectorAll('.story-glyph'));
-      b._armed = null;      // null until the first paint, so a line already landed at load does not flash
-    });
-    function sweep(b) {
-      const gs = b._glyphs; if (!gs || !gs.length) return;
-      if (b._sweep) cancelAnimationFrame(b._sweep);
-      const xs = gs.map(g => { const r = g.getBoundingClientRect(); return r.left + r.width / 2; });
-      const x0 = xs[0] - 3 * SIGMA, x1 = xs[xs.length - 1] + 3 * SIGMA, t0 = performance.now();
-      const clear = () => gs.forEach(g => { g.style.color = ''; g.style.textShadow = ''; });
-      const step = now => {
-        const u = Math.min(1, (now - t0) / SWEEP_MS), k = 0.5 - 0.5 * Math.cos(Math.PI * u), x = x0 + (x1 - x0) * k;
-        gs.forEach((g, i) => {
-          const d = xs[i] - x, I = Math.exp(-(d * d) / (2 * SIGMA * SIGMA));
-          if (I < 0.01) { if (g.style.textShadow) { g.style.color = ''; g.style.textShadow = ''; } return; }
-          const c = Math.round(240 + 15 * I);
-          g.style.color = 'rgb(' + c + ', ' + c + ', ' + c + ')';
-          g.style.textShadow = '0 0 6px rgba(255, 255, 255, ' + (0.35 * I).toFixed(3) + '), 0 0 22px rgba(255, 255, 255, ' + (0.30 * I).toFixed(3) + ')';
-        });
-        if (u < 1) b._sweep = requestAnimationFrame(step); else { b._sweep = 0; clear(); }
-      };
-      b._sweep = requestAnimationFrame(step);
-    }
-    const BEATS = 1.0;    // screens of scroll the three lines take to arrive (0.5 until 2026-09-15, doubled per user "too short" once the mote field answered them)
-    const SPAN = 0.32;    // the share of that run each line takes to arrive
-    const STEP = 0.27;    // the share of that run between one line's start and the next
-    const LEAD = 0.08;    // the first line starts this far into the run
-    const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last line has landed here
-    const GAP = 110;      // px between the answer's last line and the photographs when the hold releases
-    let beatRun = 0, runway = 0, last = -1, raf = 0, visible = true;
-    // THE PHOTOGRAPHS WAIT FOR THE TEXT, THEN RISE TO MEET IT (2026-09-15, per user "hold the photos back until the last
-    // line lands", then "too much space" at the black band that left between the answer and the rising row). The hold is
-    // two parts: the three lines land over `beatRun`, then the statement stays pinned while the deck, in plain layout,
-    // scrolls up from the bottom edge until its highest photograph sits GAP under the answer; only then does the hold
-    // release, and the text and the photographs leave together. The hold's length is the lines' run plus that rise, so
-    // it grows with the screen height. No scroll-driven transform anywhere: a translate-held peek drew the photos over
-    // the statement in the owner's browser.
+    const BEATS = 1.0;    // screens of scroll the galaxy's three stages take (0.5 until 2026-09-15, doubled per user "too short")
+    const SPAN = 0.32;    // the share of that run each stage takes to complete
+    const STEP = 0.27;    // the share of that run between one stage's start and the next
+    const LEAD = 0.08;    // the first stage starts this far into the run
+    const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last stage has finished here
+    const GAP = 110;      // px between the statement and the photographs when the hold releases
+    let beatRun = 0, runway = 0, visible = true, onShow = null;
+    // THE PHOTOGRAPHS WAIT OUT THE GALAXY, THEN RISE TO MEET THE STATEMENT (2026-09-15, per user "hold the photos back
+    // until the last line lands", then "too much space" at the black band that left between the text and the rising row).
+    // The hold is two parts: the galaxy runs its three stages over `beatRun`, then the statement stays pinned while the
+    // deck, in plain layout, scrolls up from the bottom edge until its highest photograph sits GAP under the statement;
+    // only then does the hold release, and the two leave together. Its length is that run plus the rise, so it grows with
+    // the screen height, and it grew by the height of the answer when the answer went back to the bio. No scroll-driven
+    // transform anywhere: a translate-held peek drew the photos over the statement in the owner's browser.
     function offsetIn(el, anc) { let y = 0, n = el; while (n && n !== anc) { y += n.offsetTop; n = n.offsetParent; } return n === anc ? y : NaN; }
-    function answerFoot() { const ls = stage.querySelectorAll('.story-answer .line'), l = ls[ls.length - 1]; return l ? offsetIn(l, stage) + l.offsetHeight : NaN; }
     function titleFoot() { const t = stage.querySelector('.page-title'); return t ? offsetIn(t, stage) + t.offsetHeight : NaN; }
     function placeDeck(foot) {
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
@@ -401,43 +340,29 @@
       const off = offsetIn(card, ds);                      // offsets inside the stage only: the stage itself is sticky, so never read it
       if (!(off >= 0)) return;
       const lift = 0.02 * card.offsetHeight + 1;           // the centre card's 1.04 focus scale paints its top this far above its box
-      const target = foot + GAP + runway + lift - off;     // the deck-pin's document top: the card's painted top is GAP under the answer at release
+      const target = foot + GAP + runway + lift - off;     // the deck-pin's document top: the card's painted top is GAP under the statement at release
       dp.style.marginTop = '0px';
       let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
       for (let k = 0; k < 2; k++) { const err = dp.offsetTop - target; if (Math.abs(err) < 0.5) break; m -= err; dp.style.marginTop = m + 'px'; } // the deck's own negative margin collapses through the pin; correct for it
     }
     function layout() {
-      const H = window.innerHeight, foot = answerFoot();
+      const H = window.innerHeight, foot = titleFoot();
       beatRun = Math.round(H * BEATS);
-      const rise = foot > 0 ? Math.max(0, H - (foot + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the answer
+      const rise = foot > 0 ? Math.max(0, H - (foot + GAP)) : 0; // how far the photographs travel from the bottom edge to GAP under the statement
       runway = Math.round(beatRun * LAND + rise);
       if (runway < beatRun) runway = beatRun;
       pin.style.height = (stage.offsetHeight + runway) + 'px';
       placeDeck(foot);
-      last = -1; kick();
+      if (onShow) onShow();
     }
     function scrolled() { return Math.max(0, -pin.getBoundingClientRect().top); }
     function progress() { return runway ? Math.min(1, scrolled() / runway) : 0; }
-    function paint(p) {
-      const q = beatRun ? Math.min(1, (p * runway) / beatRun) : 0; // the lines run on their own stretch at the start of the hold
-      beats.forEach((b, i) => {
-        const u = Math.min(1, Math.max(0, (q - LEAD - i * STEP) / SPAN)), e = u * u * (3 - 2 * u);
-        b.style.opacity = e.toFixed(3);
-        b.style.transform = 'translateY(' + (60 * (1 - e)).toFixed(1) + '%)';
-        if (b._armed === null) b._armed = e < 1;          // first paint: a line already landed stays quiet
-        else if (e >= 1 && b._armed) { b._armed = false; sweep(b); }
-        else if (e < 0.5) b._armed = true;                // it plays again if the reader scrolls back and it lands again
-      });
-    }
-    function frame() { raf = 0; const p = progress(); if (p !== last) { last = p; paint(p); } }
-    function kick() { if (!raf && visible) raf = requestAnimationFrame(frame); }
-    window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', layout, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
-    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) kick(); }, { rootMargin: '100px' }).observe(pin);
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible && onShow) onShow(); }, { rootMargin: '100px' }).observe(pin);
     layout();
-    // MANY INTO ONE: the field of motes that answers the three lines (see the CSS note)
+    // MANY INTO ONE: the field of motes that is now the whole of the hold (see the CSS note)
     (function field() {
       const cv = document.createElement('canvas');
       cv.className = 'story-field'; cv.setAttribute('aria-hidden', 'true');
@@ -584,33 +509,27 @@
       function draw(sc, t) {
         ctx.clearRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'lighter';
-        const foot = answerFoot(); if (!(foot > 0) || !beatRun) return;
+        const foot = titleFoot(); if (!(foot > 0) || !beatRun) return;
         const band = Math.max(80, H - foot);
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
         // the disc hangs a fixed GAP under the answer and may run past the fold, so it reads big without drifting down
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
-        // AT REST IT HANGS UNDER THE STATEMENT, THEN MOVES DOWN AND EXPANDS TO MAKE ROOM FOR THE LINES
-        // (2026-09-15, per user "still gap is too big. you can make the galaxy move down and expand at the same
-        // time"): at scroll 0 its top sits GAP_TOP under the statement itself, so the first screen has no void;
-        // by the time the first line starts to arrive it has slid down to GAP_TOP under the answer and grown to
-        // full size, spilling past the fold. One move, driven by the same scroll as the lines.
-        const GAP_TOP = 40, SPILL = 420, vf = VF;            // vf is measured off the motes at build time
-        const cx = W / 2, title = titleFoot() > 0 ? titleFoot() : foot;
-        // AT REST it is composed in the space under the statement: its height is FILL of that band and its centre
-        // sits at MID of it, a little above the middle so the air reads even. ON SCROLL it moves down and expands
-        // to full size, clearing the band the three lines land in and spilling past the fold.
+        // IT IS COMPOSED IN THE BAND UNDER THE STATEMENT AND STAYS THERE (2026-09-15, per user "So the galaxy do
+        // not need to have the vertical move"). It used to hang close under the statement at rest and then slide
+        // down and expand, to clear the band the three answer lines landed in; with the answer back in the bio
+        // there is nothing to clear, so the geometry is fixed: its height is FILL of the band between the
+        // statement and the fold and its centre sits at MID of that band, a little above the middle so the air
+        // reads even. Only the light moves during the hold.
+        const vf = VF;                                       // measured off the motes at build time
+        const cx = W / 2, title = foot;
         const FILL = 0.62, MID = 0.52;
         const bandRest = Math.max(120, H - title);
-        const rxRest = (bandRest * FILL) / (2 * vf);
-        const cyRest = title + bandRest * MID;
-        const rxFull = Math.max(180, Math.min(W * 0.46, 780, (H + SPILL - foot - GAP_TOP) / (2 * vf)));
-        const open = smooth(q / (LEAD * 1.6));                // fully down and out before the first line lands
-        const rx = mix(Math.min(rxRest, rxFull), rxFull, open), ry = rx;
-        const cy = mix(cyRest, foot + GAP_TOP + rxFull * vf, open);
+        const rx = Math.max(180, Math.min((bandRest * FILL) / (2 * vf), W * 0.46, 780)), ry = rx;
+        const cy = title + bandRest * MID;
         const e1 = line(0), e2 = line(1), e3 = line(2);
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
-        const liftTo = foot + 44;
+        const liftTo = foot + 44;                             // the star lifts back toward the statement before it goes
         motes.forEach((m, i) => {
           // the field twinkles rather than crawls (2026-09-15, per user "twinkle"): a little drift, most of the life in
           // brightness, and a survivor stops twinkling as it gathers, so the point it forms reads as steady
@@ -664,7 +583,7 @@
       start();
       cv._field = () => ({ W, H, shown, runway, beatRun }); cv._draw = draw;
     })();
-    pin._story = () => ({ runway, beatRun, progress: progress(), beats: beats.map(b => b.style.opacity) }); // for probing
+    pin._story = () => ({ runway, beatRun, progress: progress(), titleFoot: titleFoot() }); // for probing
   })();
 </script>
 
@@ -709,7 +628,7 @@
   <section class="about-vertical">
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Background</span></div>
-      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design, working on AI products.</p>
+      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design. I work on AI products, and specifically on the parts a model cannot take off your hands: deciding what to build, where a person stays in control, and what is actually good enough to ship.</p>
       <p>I run my own research and build my own prototypes: in Figma when that is the right tool, in real code when a spec would lose too much, so the team gets <span style="color: var(--text)">a working build to extend, not a spec to translate</span>.</p>
       <p>I want to make people's lives better, and in this work that usually means taking something away rather than adding it. Those calls come before the data does, and taste is what you have instead. The model gives the hours back, and judgment is what they are for. <span style="color: var(--text)">Designers get more powerful in the AI era, not less.</span></p>
       <p>Outside of work, I cook, walk the city on foot, read widely, vibe code some gimmicks, and spend time with friends. I listen to a lot of music, and more of my ideas come from it than from any designer. Nothing stays in its own field for long, and <span style="color: var(--text)">design is where it all connects</span>.</p>
