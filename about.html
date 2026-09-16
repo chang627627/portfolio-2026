@@ -595,12 +595,18 @@
         // by the time the first line starts to arrive it has slid down to GAP_TOP under the answer and grown to
         // full size, spilling past the fold. One move, driven by the same scroll as the lines.
         const GAP_TOP = 40, SPILL = 420, vf = VF;            // vf is measured off the motes at build time
-        const cx = W / 2, title = titleFoot();
+        const cx = W / 2, title = titleFoot() > 0 ? titleFoot() : foot;
+        // AT REST it is composed in the space under the statement: its height is FILL of that band and its centre
+        // sits at MID of it, a little above the middle so the air reads even. ON SCROLL it moves down and expands
+        // to full size, clearing the band the three lines land in and spilling past the fold.
+        const FILL = 0.62, MID = 0.52;
+        const bandRest = Math.max(120, H - title);
+        const rxRest = (bandRest * FILL) / (2 * vf);
+        const cyRest = title + bandRest * MID;
         const rxFull = Math.max(180, Math.min(W * 0.46, 780, (H + SPILL - foot - GAP_TOP) / (2 * vf)));
         const open = smooth(q / (LEAD * 1.6));                // fully down and out before the first line lands
-        const rx = mix(rxFull * 0.62, rxFull, open), ry = rx;
-        const top = mix((title > 0 ? title : foot) + GAP_TOP, foot + GAP_TOP, open);
-        const cy = top + rx * vf;
+        const rx = mix(Math.min(rxRest, rxFull), rxFull, open), ry = rx;
+        const cy = mix(cyRest, foot + GAP_TOP + rxFull * vf, open);
         const e1 = line(0), e2 = line(1), e3 = line(2);
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
