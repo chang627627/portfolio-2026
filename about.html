@@ -503,7 +503,7 @@
     window.addEventListener('resize', layout, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
-    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { kick(); if (onShow) onShow(); } }, { rootMargin: '100px' }).observe(pin);
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { kick(); if (onShow) onShow(); } }, { rootMargin: '100px 0px ' + (FADE_RUN + 100) + 'px 0px' }).observe(pin); // the pin starts FADE_RUN down the page, below the fold on short screens, but the galaxy is on screen from the first frame
     layout();
     // MANY INTO ONE: the field of motes that is now the whole of the hold (see the CSS note)
     (function field() {
@@ -835,7 +835,7 @@
       size();
       window.addEventListener('resize', () => { size(); start(); }, { passive: true });
       window.addEventListener('scroll', start, { passive: true });
-      new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px' }).observe(pin);
+      new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px 0px ' + (FADE_RUN + 100) + 'px 0px' }).observe(pin);
       requestAnimationFrame(() => cv.classList.add('is-lit'));
       start();
       cv._field = () => ({ W, H, shown, runway, beatRun, motes: motes.length, keep: motes.filter(m => m.keep).length }); cv._draw = draw;
