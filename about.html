@@ -134,7 +134,7 @@
        The three lines then arrive one at a time INTO THE PLACE IT VACATED: their block foot is pinned to the
        same viewport y the statement's foot had, which is also what keeps the galaxy's band constant, so the
        galaxy never moves through the whole sequence. */
-    .story-answer { margin: 0 auto 160px; max-width: 880px; text-align: center; font-size: 36px; line-height: 1.2; letter-spacing: -0.025em; color: var(--text); }
+    .story-answer { margin: 0 auto 160px; max-width: 960px; text-align: center; font-size: clamp(34px, 5.5vw, 54px); line-height: 1.2; letter-spacing: -0.025em; color: var(--text); }
     .story-answer .line { display: block; overflow: hidden; padding-bottom: 0.04em; }
     .story-answer .line-inner { display: inline-block; opacity: 0; transform: translateY(100%); animation: revealLine 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards; animation-delay: calc(0.3s + var(--d) * 0.12s); }
     /* phones and reduced motion never get the hold, so the answer just follows the statement in flow */
@@ -155,6 +155,12 @@
        better idea. But you need to make the passed line darker"), each in its own slot, the block's foot
        pinned by the script to the statement's own foot. The one-at-a-time version that briefly replaced this
        is in git at 23dcad3. */
+    /* 36px to 54px (2026-09-16, per user "make [the three lines] text bigger", then "why the fuck you do not
+       make the text size larger"). 54 is the CEILING, not a taste pick: the longest line, "and what is
+       actually good enough to ship.", measures 16.19px of width per px of type, and the measure is 960 less
+       the 24px side padding, so it wraps above ~56. The vw term in the clamp is what keeps it from wrapping
+       on desktop windows narrower than 960, where the container, not the cap, sets the limit. The block grows
+       upward from its pinned foot, so it takes the space from the empty band above, never from the galaxy. */
     .story-on .story-answer { position: absolute; left: 0; right: 0; top: 0; padding-left: 24px; padding-right: 24px; z-index: 1; }
     .story-on .story-answer .story-beat { animation: none; opacity: 0; transform: translateY(60%); transition: color var(--dur-slow) var(--ease-out); }
     /* THE TIER A LINE STEPS BACK TO once it has been spoken. This is DELIBERATELY BELOW the WCAG floor
@@ -378,7 +384,7 @@
     const FADE_AT = 0.02; // the statement holds this long before it begins to go
     const FADE_RUN = 0.06;// and takes this much of the run to reach zero (the shares shrank when BEATS grew: this is still 130px)
     const LEAD = 0.13;    // the first stage starts this far into the run, well after the statement has fully gone
-    const LAND = LEAD + 2 * STEP + SPAN; // 0.94: the last stage has finished here
+    const LAND = LEAD + 2 * STEP + SPAN; // 1.15 at the current constants: the last stage has finished here
     const GAP = 110;      // px between the statement and the photographs when the hold releases
     let beatRun = 0, runway = 0, FOOT = 0, last = -1, raf = 0, visible = true, onShow = null;
     // THE PHOTOGRAPHS WAIT OUT THE GALAXY, THEN RISE TO MEET THE STATEMENT (2026-09-15, per user "hold the photos back
@@ -595,13 +601,27 @@
       // what survives the first line is the nucleus: the disc scatters and its middle stays
       motes.slice().sort((m, n) => m.r - n.r).slice(0, KEEP).forEach((m, k) => {
         m.keep = true;
-        // ORGANISED, AND VISIBLY SO (2026-09-16, per user "control visual should looks more organized like
-        // circle something. Right now it is not obvious"). The jitter was +/-33 degrees against a 13.8 degree
-        // spacing, which destroyed the order outright and left a loose scatter: the stage is "where a person
-        // stays in control", so it has to READ as order forming around one point. It is now +/-8.6 degrees,
-        // under the spacing, and a thin annulus rather than a wide band: a ring, breathing, not a diagram.
-        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.30;
-        m.rr = 0.90 + 0.16 * (m.ph / 6.2832);
+        // WHAT THE SURVIVORS FORM IS A SMALL GALAXY, NOT A RING (2026-09-16, per user "the way it form this
+        // one is too quick and disconnected with rest. not smooth at all. star or galaxy never form in that
+        // way"). He is right on the physics and on the continuity: nothing in nature arranges itself into a
+        // hollow evenly spaced circle around a point, and a ring also throws away every bit of structure the
+        // object had a moment earlier. What survives now re-forms as a MINIATURE OF THE SAME OBJECT: two arms
+        // on the same kind of log spiral the big galaxy uses, radii spread across a disc and weighted inward
+        // rather than all pinned to one annulus, and differential rotation so the inside sweeps faster than
+        // the outside and the arms wind as it turns, which is the one behaviour every real galaxy has.
+        // That keeps the "organised, circular" reading he asked for earlier while making it a thing that
+        // could form, and it ties stage 2 back to stage 1 instead of replacing it.
+        // IT IS A CIRCLE (2026-09-16, per user twice: "control visual should looks more organized like circle
+        // something", then "it need to be a circle something. should look organized"). A two-armed spiral disc
+        // was built in between, chasing his separate note that a galaxy never forms as a hollow ring, and with
+        // 26 motes it read as a loose squiggle: the physics was better and the READING was worse, which is not
+        // the trade to make on a page whose whole point is that judgment comes before the data. A ring around
+        // a centre is defensible anyway, since that is exactly what a planetary ring is. What survives from the
+        // realism pass is the part that was actually right: the arrival. The motes still curve in and settle
+        // asymptotically instead of snapping, and they still arrive one after another.
+        m.rad = 0.92 + 0.10 * (m.ph / 6.2832);                          // a thin annulus: a circle, not a disc
+        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.30;      // even, jittered under the spacing
+        m.spin = 0.16;                                                  // ONE shared rate: differential rotation shears a circle apart
       });
       // EVERY MOTE GETS ITS OWN CLOCK (2026-09-16, per user "I think animation need to be more sophisticated").
       // The three stages used to drive all 509 motes off one eased value each, so the field moved in perfect
@@ -618,6 +638,19 @@
           m.o2 = keep.length > 1 ? k / (keep.length - 1) : 0;
           m.o3 = (m.ph / 6.2832);
           m.turn = 0.45 + 0.55 * m.fall;                                 // how far round it winds on the way in
+        });
+        // THE SCATTER'S PHYSICS, PER MOTE. Three independent axes, each from a random the mote already
+        // carries, so the sky and VF are byte-identical: a radial throw, a TANGENTIAL kick, and its own
+        // fall. The tangential term is what gives the path curvature; the separate fall is what breaks a
+        // real defect, that scaling the radial distance and the fall by the SAME m.fall sent every mote
+        // near the horizontal axis away at exactly 45 degrees, measured, whatever its randoms were.
+        motes.forEach(m => {
+          const d = Math.hypot(m.ax, m.ay) || 1;
+          m.nx = m.ax / d; m.ny = m.ay / d;                               // also saves a hypot per mote per frame
+          m.tx = -m.ny;    m.ty = m.nx;
+          m.vout = 30 + 90 * m.fall;                                      // radial throw
+          m.vtan = ((m.ph / 6.2832) - 0.5) * 46;                          // sideways, its own random
+          m.gfall = 40 + 150 * ((m.sr - 0.5) / 0.8);                      // and its own weight
         });
       })();
       const OVER = 160;   // the canvas reaches this far above the stage, so a short screen cannot clip the galaxy's top
@@ -659,10 +692,18 @@
         // EACH MOTE RUNS ITS OWN SHARE OF ITS STAGE. `stag` turns a stage's progress into one mote's, starting
         // it `d` of the way through a window `sp` wide: at sp 0.58 the first mote is done before the last has
         // begun to move. This is the single change that stops 509 things looking like one thing.
-        const SP1 = 0.58, SP2 = 0.55, SP3 = 0.42;
+        const SP1 = 0.58, SP2 = 0.66, SP3 = 0.42, LAG = 0.12;   // SP2 raised so the circle assembles over more of its stage
         const stag = (E, d, sp) => smooth((E - d * sp) / (1 - sp));
-        // a gentle overshoot so a mote settles onto the ring instead of sliding to a halt on it
-        const settle = v => { const p = v - 1; return 1 + 2.10 * p * p * p + 1.10 * p * p; };
+        // STAGE 1 TAKES THE RAW RAMP, NOT line(0). `stag` smooths, and line() had ALREADY smoothed, so the
+        // scatter was running smooth(smooth(x)): a mote due to be 24% through its window sat at 1.3%, which
+        // cancelled most of the stagger it was given. Stages 2 and 3 keep line()'s easing, because settle()
+        // and the spiral want an eased parameter; stage 1 carries its curve in the physics instead.
+        const raw1 = (q - LEAD) / SPAN;
+        // IT SETTLES IN, IT DOES NOT SNAP. This was an ease-out-BACK with a 1.10 overshoot, which lands a mote
+        // decisively and is exactly the wrong verb for accretion: matter falling inward slows as it arrives,
+        // it does not overshoot and bounce. A long ease-out is asymptotic, so the last of the approach is
+        // almost still and the formation reads as coming to rest rather than clicking into place.
+        const settle = v => { const p = 1 - v; return 1 - p * p * p; };
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
         const liftTo = foot + 44;                             // the star lifts back toward the statement before it goes
@@ -675,15 +716,19 @@
           const sx = m.ax * rx, sy = m.ay * ry;
           let x = cx + sx + wob, y = cy + sy + wob2, a = m.b, r = m.size;
           if (!m.keep) {
-            // 1. DECIDING WHAT TO BUILD: the field erodes from the outside in, each mote losing its light a
-            // little before it loses its place (aFade leads the motion) and then ACCELERATING away rather
-            // than easing out, so it reads as being let go rather than blown off.
-            const u1 = stag(e1, m.o1, SP1);
-            const push = u1 * u1 * (0.55 + 0.45 * u1);
-            const d = Math.hypot(m.ax, m.ay) || 1;
-            x += push * ((m.ax / d) * (30 + 90 * m.fall));
-            y += push * ((m.ay / d) * (20 + 60 * m.fall) + 30 + 90 * m.fall);
-            a *= twinkle * (1 - Math.min(1, u1 * 1.35));
+            // 1. DECIDING WHAT TO BUILD: the field erodes from the outside in. THE LIGHT STILL LEADS THE
+            // MOTION, but as a DELAY on moving rather than a steeper fade: the old pairing put the alpha at
+            // zero by u1 0.741, when the ease-in throw had delivered only 48.5% of its travel, so only a
+            // tenth of a mote's displacement was ever drawn above half brightness and the reader watched
+            // 769 motes dim roughly in place instead of leave. Now it is IMPULSE THEN DRAG sideways and a
+            // constant acceleration downward, which is what being let go looks like; a sustained
+            // accelerating push is what being blown off looks like, and that was the wrong verb.
+            const u1 = Math.min(1, Math.max(0, (raw1 - m.o1 * SP1) / (1 - SP1)));
+            const k = Math.max(0, (u1 - LAG) / (1 - LAG));
+            const gl = 1 - (1 - k) * (1 - k) * (1 - k), dr = k * k;
+            x += gl * (m.nx * m.vout + m.tx * m.vtan);
+            y += gl * (m.ny * m.vout * 0.66 + m.ty * m.vtan) + dr * m.gfall;
+            a *= twinkle * (1 - Math.min(1, u1 * 1.12));
           } else {
             // 2. WHERE A PERSON STAYS IN CONTROL: the survivors SPIRAL in rather than sliding along a straight
             // line. The path is interpolated in polar coordinates around the centre, so angle and radius move
@@ -692,23 +737,29 @@
             // back, which is what makes it look like something arriving rather than something being placed.
             const u2 = stag(e2, m.o2, SP2), u3 = stag(e3, m.o3, SP3);
             const R0 = Math.hypot(sx, sy), th0 = Math.atan2(sy, sx);
-            const ringR = mix(92 * m.rr, 8, u3), th1 = m.ring + t * 0.2;
+            const ringR = mix(92 * m.rad, 8, u3), th1 = m.ring + t * m.spin;   // its own orbit, inner sweeping faster
             const dth = ((th1 - th0 + Math.PI) % 6.2832 + 6.2832) % 6.2832 - Math.PI;   // the short way round
             const th = th0 + dth * u2 + m.turn * 1.15 * Math.sin(Math.PI * u2);
             const R = mix(R0, ringR, settle(u2));
             x = cx + Math.cos(th) * R + wob;
             y = cy + Math.sin(th) * R * mix(1, 0.82, u2) + wob2;
             // it flares as it lands, so the ring is visibly BUILT one mote at a time
-            const flare = Math.exp(-Math.pow((u2 - 0.90) / 0.09, 2));
-            a = mix(a, 0.85, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.85 * flare);
+            const flare = Math.exp(-Math.pow((u2 - 0.86) / 0.20, 2));   // wider and gentler: a brightening as it arrives, not a pop
+            a = mix(a, 0.85, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.35 * flare);
             r = mix(r, 1.1, u2);
             // 3. GOOD ENOUGH TO SHIP: they close on the star, which lifts and fades as the photographs rise
             y = mix(y, liftTo, lift); a *= 1 - lift;
           }
+          // THE TEXT EDGE IS A HARD FLOOR, not a measured outcome. Before the scatter had real physics the
+          // field only ever moved DOWN, so nothing had tested the top; now motes are thrown and the measured
+          // clearance runs 16 to 46px across seven viewports. That is positive but thin enough that a longer
+          // statement or a different face could eat it, so the last 24px above the foot fade to nothing: the
+          // galaxy cannot paint on the words whatever the tuning does later.
+          a *= Math.min(1, Math.max(0, (y - foot) / 24));
           dot(m.warm ? sWarm : sW, x, y, r, a);
         });
         // the steady point, then the star
-        const coreY = mix(cy, liftTo, lift), coreA = (0.25 + 0.75 * Math.max(e2 * 0.6, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0);
+        const coreY = mix(cy, liftTo, lift), coreA = (0.06 + 0.94 * Math.max(e2 * e2 * 0.8, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0); // lit by what arrives, not waiting there
         if (coreA > 0.01) {
           dot(sWarm, cx, coreY, 3.2 + 3 * e3, coreA * 0.35);
           dot(sW, cx, coreY, 1.4 + 1.2 * e3, coreA);
@@ -738,7 +789,7 @@
       new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px' }).observe(pin);
       requestAnimationFrame(() => cv.classList.add('is-lit'));
       start();
-      cv._field = () => ({ W, H, CH, shown, runway, beatRun, cTop: Math.round(cv.getBoundingClientRect().top) }); cv._draw = draw;
+      cv._field = () => ({ W, H, CH, shown, runway, beatRun, motes: motes.length, keep: motes.filter(m => m.keep).length, cTop: Math.round(cv.getBoundingClientRect().top) }); cv._draw = draw;
     })();
     pin._story = () => ({ runway, beatRun, progress: progress(), foot: FOOT, pinTop: pin.offsetTop, beats: beats.map(b => b.style.opacity) }); // for probing
   })();
