@@ -214,6 +214,10 @@
        A category label is the quietest tier in a caption, never the second loudest.
        The pill stays: this is a value change, not the metadata line that was killed. */
     .feature-card .card-tag--type { color: rgba(255, 255, 255, 0.70); background: rgba(255, 255, 255, 0.10); }
+    /* NOVA's partner credits are wordmarks, not award badges: 20px keeps them
+       legible while placing them a tier below the awards on the other cards. */
+    .project-card[href="nova.html"] .card-awards img { height: 20px; }
+    @media (max-width: 768px) { .project-card[href="nova.html"] .card-awards img { height: 13px; } }
     /* HOVER. The thumbnail keeps its original zoom from style.css; what is
        added back here is the oklch hue glow the row build silently lost (its
        rule is scoped to .project-grid, which stopped matching once the JS
@@ -622,6 +626,7 @@
 
       <a href="pollen.html" class="project-card" style="--plate-light: #D6E6F5; --plate-deep: #C8D8EC; --plate-base: #DCE8F3;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
+          <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"><img src="images/ny-product-design-silver-160.png" alt="NY Product Design Award Silver 2025"><img src="images/european-product-design-award.png" alt="European Product Design Award"></div>
           <img src="images/pollennav-card.webp" srcset="images/pollennav-card-960.webp 960w, images/pollennav-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
         </div>
         <div class="project-info">
@@ -646,6 +651,7 @@
 
       <a href="storybloom.html" class="project-card" style="--plate-light: #EEE3F0;">
         <div class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
+          <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026-160.png" alt="NY Product Design Award Silver 2026"></div>
           <img src="images/storybloom-card.png?v=4" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
         </div>
         <div class="project-info">
@@ -659,7 +665,11 @@
 
       <a href="coffee.html" class="project-card" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD;">
         <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
-          <img src="images/coffeechat-card.webp" srcset="images/coffeechat-card-960.webp 960w, images/coffeechat-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
+          <!-- Product Hunt's own badge for the launch, saved locally rather than
+               hotlinked off api.producthunt.com. Litespace was #1 Product of the
+               Day on 2 Feb 2023 (and #5 of the week); the award is the product's,
+               not this feature's. -->
+          <div class="card-awards"><img src="images/producthunt-1-litespace.svg" alt="Product Hunt, #1 Product of the Day"></div><img src="images/coffeechat-card.webp" srcset="images/coffeechat-card-960.webp 960w, images/coffeechat-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
@@ -671,7 +681,14 @@
 
       <a href="nova.html" class="project-card" style="--plate-light: #FFFFFF;">
         <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative;">
-          <img class="card-still--swap" src="images/nova-card.webp" srcset="images/nova-card-960.webp 960w, images/nova-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+          <!-- Partner credits, the same top-left slot the award badges use.
+               Both are transparent PNGs with strong colour (CCA teal, UNICEF
+               blue), so they read on this card's flat white plate. They sit
+               BELOW the award-badge height on purpose: those are compact marks
+               and these are wordmarks, so 26px buys far more width (192px, 23%
+               of the plate), and a partner credit is context where an award is
+               a claim. -->
+          <div class="card-awards"><img src="images/logo-cca-color.png" alt="California College of the Arts"><img src="images/logo-unicef-color.png" alt="UNICEF"></div><img class="card-still--swap" src="images/nova-card.webp" srcset="images/nova-card-960.webp 960w, images/nova-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
