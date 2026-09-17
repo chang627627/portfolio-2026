@@ -411,15 +411,21 @@
     // other three quarters, which takes the readable stretch from 219px to 492px, and takes the share of the
     // whole hold spent with a line simply sitting there from 33% to 50%. Most of the extra scroll is reading
     // time, not more animation.
-    const BEATS = 2.8;    // screens of scroll the galaxy's three stages take (0.5, 1.0, 1.5, 2.4, now 2.8: each raise per user, the last to give each mote's own share of its stage room to be seen)
+    // LESS DEAD AIR, SAME LENGTH (2026-09-17, per user "too rigid, not smooth", then "do both"). Measured by
+    // drawing the galaxy every 10px of the hold: each stage eases to a full stop, the per-mote stagger stretches
+    // that ending, and STEP 0.36 left a gap after it, so 720px of the 3,219px hold at 1440x900 scrolled with
+    // the field effectively still (280 + 330 + 110) plus 250 before the first stage. The stages stay separate
+    // events, but the next one now begins as the last one settles (STEP just under SPAN), LEAD halves, and
+    // BEATS rises by exactly what that saves, so the hold is the same length and the old dead air is motion.
+    const BEATS = 3.35;   // screens of scroll the galaxy's three stages take (0.5, 1.0, 1.5, 2.4, 2.8, now 3.35: the last keeps the hold's length while the gaps between stages close)
     const SPAN = 0.30;    // the share of that run each galaxy stage takes to complete
     const TEXT = 0.24;    // a line lands this far into its own stage and holds for the rest: read, then watch
-    const STEP = 0.36;    // the share of that run between one stage's start and the next
+    const STEP = 0.29;    // the share of that run between one stage's start and the next: just under SPAN, so the next begins as the last settles
     // THE STATEMENT IS GONE BEFORE THE HOLD EVEN BEGINS, because the hold begins where it ends: the pin
     // starts at the statement's foot, so the stage sticks at the exact scroll where the last of the statement
     // clears the top of the screen. Nothing fades, nothing is ever half lit against something else.
-    const LEAD = 0.08;    // the first stage starts this far into the run, leaving the field alone for a beat first
-    const LAND = LEAD + 2 * STEP + SPAN; // 1.15 at the current constants: the last stage has finished here
+    const LEAD = 0.04;    // the first stage starts this far into the run, leaving the field alone for a beat first (was 0.08, 250px of stillness)
+    const LAND = LEAD + 2 * STEP + SPAN; // 0.92 at the current constants: the last stage has finished here
     const GAP = 110;      // px between the statement and the photographs when the hold releases
     let beatRun = 0, runway = 0, FOOT = 0, last = -1, raf = 0, visible = true, onShow = null;
     // THE PHOTOGRAPHS WAIT OUT THE GALAXY, THEN RISE TO MEET THE STATEMENT (2026-09-15, per user "hold the photos back
@@ -480,7 +486,32 @@
       if (onShow) onShow();
     }
     function scrolled() { return Math.max(0, -pin.getBoundingClientRect().top); }
-    function progress() { return runway ? Math.min(1, scrolled() / runway) : 0; }
+    // ONE SPRING FOR THE WHOLE HOLD (2026-09-17, per user "the galaxy's scrolling is too rigid, not smooth"). The
+    // galaxy used to chase the scroll at 0.2 per frame, which is about 75ms of lag at 60Hz and 40ms at 120Hz, so
+    // it was glued to the hand: every wheel notch showed as a step and it froze mid-move the moment the scroll
+    // stopped. The three lines were not eased at all, so the two ran on different clocks. Now one critically
+    // damped spring follows the scroll, in real time rather than per frame, and both the lines and the field
+    // read it: the animation trails the hand and glides to rest after it stops. THE PAGE ITSELF SCROLLS
+    // NATIVELY; nothing here touches the wheel (the scroll friction reverted on 2026-09-13 stays dead).
+    // Both rAF loops call follow() every frame; it steps once per frame timestamp, so it never double-steps.
+    const SPRING = 16;    // rad/s: settles to 2% in about 0.36s. Higher is tighter to the hand, lower is floatier
+    let eased = -1, vel = 0, springAt = 0, lastTarget = 0;
+    function follow(now) {
+      const target = scrolled();
+      const jump = Math.abs(target - lastTarget) > window.innerHeight; lastTarget = target;
+      // snap on the first frame, after a pause, and on a jump of a whole screen (Home, End, an anchor, a
+      // restored scroll), so the galaxy never plays three stages backwards to catch up
+      if (eased < 0 || !springAt || jump) { eased = target; vel = 0; springAt = now; return false; }
+      const dt = Math.min(0.05, Math.max(0, (now - springAt) / 1000));
+      if (dt > 0) {
+        springAt = now;
+        const x = eased - target, k = vel + SPRING * x, ex = Math.exp(-SPRING * dt);  // the exact step, stable at any frame rate
+        eased = target + (x + k * dt) * ex; vel = (vel - k * SPRING * dt) * ex;
+      }
+      if (Math.abs(eased - target) < 0.25 && Math.abs(vel) < 2) { eased = target; vel = 0; return false; }
+      return true;
+    }
+    function progress() { return runway ? Math.min(1, Math.max(0, eased) / runway) : 0; }
     function paint(p) {
       const q = beatRun ? (p * runway) / beatRun : 0; // the stages run on their own stretch at the start of the hold
       // THE THREE BUILD UP AND STAY, WITH ONE IN FOCUS (2026-09-16, per user "I still think show three line
@@ -503,13 +534,13 @@
         b.style.color = (act < 0 || i === act) ? '' : 'var(--spoken)';
       });
     }
-    function frame() { raf = 0; const p = progress(); if (p !== last) { last = p; paint(p); } }
+    function frame(now) { raf = 0; const moving = follow(now); const p = progress(); if (p !== last) { last = p; paint(p); } if (moving) kick(); }
     function kick() { if (!raf && visible) raf = requestAnimationFrame(frame); }
     window.addEventListener('scroll', kick, { passive: true });
     window.addEventListener('resize', layout, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
     window.addEventListener('load', () => requestAnimationFrame(() => requestAnimationFrame(layout))); // the deck markup is parsed after this script
-    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { kick(); if (onShow) onShow(); } }, { rootMargin: '100px 0px ' + (FADE_RUN + 100) + 'px 0px' }).observe(pin); // the pin starts FADE_RUN down the page, below the fold on short screens, but the galaxy is on screen from the first frame
+    new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { springAt = 0; kick(); if (onShow) onShow(); } }, { rootMargin: '100px 0px ' + (FADE_RUN + 100) + 'px 0px' }).observe(pin); // the pin starts FADE_RUN down the page, below the fold on short screens, but the galaxy is on screen from the first frame
     layout();
     // MANY INTO ONE: the field of motes that is now the whole of the hold (see the CSS note)
     (function field() {
@@ -527,10 +558,24 @@
         g.fillStyle = gr; g.fillRect(0, 0, SPR, SPR); return s;
       };
       const sW = sprite(WHITE.join(',')), sWarm = sprite(WARM.join(','));
+      // A SOFT GLOW, no hard centre, for the nucleus at rest and the bloom around the star (2026-09-17, per user
+      // "bolder"). The galaxy was built with no haze on purpose, so this is kept to those two places, small and dim:
+      // light where the light actually is, never a fill across the disc.
+      const sGlow = (() => {
+        const s = document.createElement('canvas'); s.width = s.height = 128;
+        const g = s.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+        gr.addColorStop(0, 'rgba(255,246,232,1)'); gr.addColorStop(0.22, 'rgba(255,244,228,0.5)');
+        gr.addColorStop(0.55, 'rgba(255,240,222,0.12)'); gr.addColorStop(1, 'rgba(255,240,222,0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return s;
+      })();
       const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
       const mix = (a, b, t) => a + (b - a) * t;
 
-      const KEEP = 26;                           // how many survive the first line
+      // 26 to 110 (2026-09-17, per user "the visual can be bolder... right now it is too subtle"): at 26 the ring was
+      // a dotted outline 186px across, 0.06% of the screen, under 54px lines. 110 survivors on a ring the width
+      // of a text line sit about 13px apart, close enough to read as a circle of light rather than a dotted one.
+      // They are still the innermost motes, so the nucleus and the inside of the bulge are what stay.
+      const KEEP = 110;                          // how many survive the first line
       // A GALAXY OF CLUMPS. A tilted disc seen at an angle, built from four populations and nothing else:
       // a nucleus dense enough that its light piles up into one graded core, the warm old bulge around it,
       // two arms made of star forming clumps strung along one log spiral with real gaps between them, and a
@@ -664,8 +709,8 @@
         // a centre is defensible anyway, since that is exactly what a planetary ring is. What survives from the
         // realism pass is the part that was actually right: the arrival. The motes still curve in and settle
         // asymptotically instead of snapping, and they still arrive one after another.
-        m.rad = 0.92 + 0.10 * (m.ph / 6.2832);                          // a thin annulus: a circle, not a disc
-        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.30;      // even, jittered under the spacing
+        m.rad = 0.97 + 0.03 * (m.ph / 6.2832);                          // a thin annulus: a circle, not a disc (narrower now the ring is 2.4x wider, so it stays a line: about 7px of wobble at 1440x900)
+        m.ring = (k / KEEP) * Math.PI * 2 + (m.fall - 0.5) * 0.7 * (Math.PI * 2 / KEEP);   // even, jittered under the spacing (a fixed 0.30 rad was five neighbours wide at 110 and clumped the ring)
         m.spin = 0.16;                                                  // ONE shared rate: differential rotation shears a circle apart
       });
       // EVERY MOTE GETS ITS OWN CLOCK (2026-09-16, per user "I think animation need to be more sophisticated").
@@ -698,13 +743,13 @@
           m.gfall = 40 + 150 * ((m.sr - 0.5) / 0.8);                      // and its own weight
         });
       })();
-      let W = 0, H = 0, dpr = 1, shown = -1, t0 = performance.now(), loop = 0;
+      let W = 0, H = 0, dpr = 1, t0 = performance.now(), loop = 0;
       function size() {
         dpr = Math.min(2, window.devicePixelRatio || 1);
         W = document.documentElement.clientWidth; H = window.innerHeight;   // it is fixed: it IS the viewport
         cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
         cv.style.width = W + 'px'; cv.style.height = H + 'px';
-        shown = -1;
+        springAt = 0;                                      // a new size snaps rather than animating across it
       }
       function dot(spr, x, y, r, a) { if (a < 0.015) return; const sz = r * 5.2; ctx.globalAlpha = Math.min(1, a); ctx.drawImage(spr, x - sz / 2, y - sz / 2, sz, sz); }
       function draw(sc, t) {
@@ -747,6 +792,21 @@
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
         const liftTo = foot + 44;                             // the star lifts back toward the statement before it goes
+        // BOLDER (2026-09-17, per user "the visual can be bolder... right now it is too subtle"). Measured at
+        // 1440x900: the field lit 1.1% of the screen at rest, and the ending shrank to a 186px ring and a 57px star
+        // under 54px lines, so the two beats that carry the argument were the smallest things on the page. By
+        // size and light only; colour on this field has been turned down twice.
+        const GROW = 1.4;                                     // every mote 40% larger
+        const RING = Math.min(rx * 0.56, 300);                // the ring about the width of a text line (225px radius at 1440x900, was 92)
+        // THE NUCLEUS GLOWS while it is full, and the glow empties as its motes leave for the ring; the star's
+        // own bloom takes over at the end, so there is one light in the middle from the first frame to the last
+        const nucleus = 0.15 * (1 - smooth(e2 * 1.25));
+        if (nucleus > 0.004) {
+          const G = Math.min(rx * 0.34, 180);
+          ctx.save(); ctx.translate(cx, cy); ctx.rotate(TILT); ctx.globalAlpha = nucleus;
+          ctx.drawImage(sGlow, -G, -G * 0.62, G * 2, G * 1.24);
+          ctx.restore();
+        }
         motes.forEach((m, i) => {
           // the field twinkles rather than crawls (2026-09-15, per user "twinkle"): a little drift, most of the life in
           // brightness, and a survivor stops twinkling as it gathers, so the point it forms reads as steady
@@ -754,7 +814,7 @@
           let twinkle = 0.72 + 0.62 * Math.sin(t * m.tw + m.ph * 2.1);      // dips near dark, peaks above its own brightness
           if (m.spark) { const f = Math.sin(t * m.sr + m.ph); twinkle += 1.1 * Math.pow(Math.max(0, f), 14); } // a few catch the light briefly
           const sx = m.ax * rx, sy = m.ay * ry;
-          let x = cx + sx + wob, y = cy + sy + wob2, a = m.b, r = m.size;
+          let x = cx + sx + wob, y = cy + sy + wob2, a = Math.pow(m.b, 0.72), r = m.size * GROW;   // the faint lifted most: 0.24 becomes 0.36, 0.9 stays 0.93
           if (!m.keep) {
             // 1. DECIDING WHAT TO BUILD: the field erodes from the outside in. THE LIGHT STILL LEADS THE
             // MOTION, but as a DELAY on moving rather than a steeper fade: the old pairing put the alpha at
@@ -777,7 +837,7 @@
             // back, which is what makes it look like something arriving rather than something being placed.
             const u2 = stag(e2, m.o2, SP2), u3 = stag(e3, m.o3, SP3);
             const R0 = Math.hypot(sx, sy), th0 = Math.atan2(sy, sx);
-            const ringR = mix(92 * m.rad, 8, u3), th1 = m.ring + t * m.spin;   // its own orbit, inner sweeping faster
+            const ringR = mix(RING * m.rad, 8, u3), th1 = m.ring + t * m.spin;   // its own orbit, inner sweeping faster
             const dth = ((th1 - th0 + Math.PI) % 6.2832 + 6.2832) % 6.2832 - Math.PI;   // the short way round
             const th = th0 + dth * u2 + m.turn * 1.15 * Math.sin(Math.PI * u2);
             const R = mix(R0, ringR, settle(u2));
@@ -785,8 +845,8 @@
             y = cy + Math.sin(th) * R * mix(1, 0.82, u2) + wob2;
             // it flares as it lands, so the ring is visibly BUILT one mote at a time
             const flare = Math.exp(-Math.pow((u2 - 0.86) / 0.20, 2));   // wider and gentler: a brightening as it arrives, not a pop
-            a = mix(a, 0.85, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.35 * flare);
-            r = mix(r, 1.1, u2);
+            a = mix(a, 0.95, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.35 * flare);
+            r = mix(r, 1.25 * GROW, u2);
             // 3. GOOD ENOUGH TO SHIP: they close on the star, which lifts and fades as the photographs rise
             y = mix(y, liftTo, lift); a *= 1 - lift;
           }
@@ -801,12 +861,29 @@
         // the steady point, then the star
         const coreY = mix(cy, liftTo, lift), coreA = (0.06 + 0.94 * Math.max(e2 * e2 * 0.8, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0); // lit by what arrives, not waiting there
         if (coreA > 0.01) {
-          dot(sWarm, cx, coreY, 3.2 + 3 * e3, coreA * 0.35);
-          dot(sW, cx, coreY, 1.4 + 1.2 * e3, coreA);
-          if (e3 > 0.05) { // four thin rays once it is a star
-            const len = (8 + 22 * e3) * (1 + 0.12 * Math.sin(t * 1.4));
-            ctx.globalAlpha = coreA * 0.6 * e3; ctx.strokeStyle = 'rgba(255,255,255,1)'; ctx.lineWidth = 1;
-            ctx.beginPath(); ctx.moveTo(cx - len, coreY); ctx.lineTo(cx + len, coreY); ctx.moveTo(cx, coreY - len); ctx.lineTo(cx, coreY + len); ctx.stroke();
+          // the star is the payoff, so it is sized like one (2026-09-17): a bloom that grows as the ring closes,
+          // a larger point, and rays of up to about 90px that fade to their tips like the site's own sparks. The
+          // bloom and the upward ray are held off the statement's foot, so the lift never paints on the words.
+          const clear = Math.min(1, Math.max(0, (coreY - foot - 40) / 60));
+          const Rg = 26 + 58 * e3;
+          const ba = coreA * (0.12 + 0.30 * e3) * clear;
+          if (ba > 0.004) { ctx.globalAlpha = ba; ctx.drawImage(sGlow, cx - Rg, coreY - Rg, Rg * 2, Rg * 2); }
+          dot(sWarm, cx, coreY, 4 + 4.5 * e3, coreA * 0.45);
+          dot(sW, cx, coreY, 1.9 + 2.1 * e3, coreA);
+          if (e3 > 0.05) { // four rays once it is a star, brightest at the centre
+            const len = (14 + 76 * e3) * (1 + 0.10 * Math.sin(t * 1.4));
+            const up = Math.min(len, Math.max(0, coreY - foot - 12));
+            const ra = Math.min(1, coreA * 0.85 * e3);
+            ctx.globalAlpha = 1; ctx.lineWidth = 1.2;
+            const ray = (dx, dy, L) => {
+              if (L < 3) return;
+              const g = ctx.createLinearGradient(cx, coreY, cx + dx * L, coreY + dy * L);
+              g.addColorStop(0, 'rgba(255,255,255,' + ra.toFixed(3) + ')');
+              g.addColorStop(0.3, 'rgba(255,248,238,' + (ra * 0.4).toFixed(3) + ')');
+              g.addColorStop(1, 'rgba(255,248,238,0)');
+              ctx.strokeStyle = g; ctx.beginPath(); ctx.moveTo(cx, coreY); ctx.lineTo(cx + dx * L, coreY + dy * L); ctx.stroke();
+            };
+            ray(1, 0, len); ray(-1, 0, len); ray(0, 1, len); ray(0, -1, up);
           }
         }
         ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
@@ -814,10 +891,8 @@
       function frame(now) {
         loop = 0;
         if (!visible) { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); return; } // fixed now, so a stopped loop must not leave its last frame on screen
-        const target = scrolled();
-        shown = shown < 0 ? target : shown + (target - shown) * 0.2;
-        if (Math.abs(target - shown) < 0.3) shown = target;
-        draw(Math.min(shown, runway + 1), (now - t0) / 1000);
+        if (follow(now)) kick();                           // the story engine's spring: the lines and the field share one clock
+        draw(Math.min(Math.max(0, eased), runway + 1), (now - t0) / 1000);
         loop = requestAnimationFrame(frame);
       }
       const start = () => { if (!loop && visible) loop = requestAnimationFrame(frame); };
@@ -828,7 +903,7 @@
       new IntersectionObserver(es => { if (es[es.length - 1].isIntersecting) start(); }, { rootMargin: '100px 0px ' + (FADE_RUN + 100) + 'px 0px' }).observe(pin);
       requestAnimationFrame(() => cv.classList.add('is-lit'));
       start();
-      cv._field = () => ({ W, H, shown, runway, beatRun, motes: motes.length, keep: motes.filter(m => m.keep).length }); cv._draw = draw;
+      cv._field = () => ({ W, H, eased, vel, target: scrolled(), runway, beatRun, motes: motes.length, keep: motes.filter(m => m.keep).length }); cv._draw = draw;
     })();
     pin._story = () => ({ runway, beatRun, progress: progress(), foot: FOOT, pinTop: pin.offsetTop, beats: beats.map(b => b.style.opacity) }); // for probing
   })();
