@@ -4902,6 +4902,15 @@ footer {
   .footer-links {
     gap: 24px;
   }
+
+  /* GitHub is desktop only (2026-09-20, per user). A fifth link put the row at 334px
+     against a 272px content box at 320px wide, and html{overflow-x:hidden} swallows
+     the scrollbar, so it clipped the last link with no visible symptom. */
+  /* Scoped through .footer-links because the bare class (0,1,0) loses to
+     .footer-links a (0,1,1), which sets display: inline-flex. */
+  .footer-links a.footer-link--desktop-only {
+    display: none;
+  }
 }
 
 /* ============================================================
