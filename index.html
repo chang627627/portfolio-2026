@@ -1001,6 +1001,13 @@
       } else {
         running = false; cancelAnimationFrame(raf);
         P.length = 0; seeded = false; ambAcc = 0; curPrev = null; ox = 0; oy = 0;
+        // Re-arm the fade. The field is dropped here and re-seeded in ONE frame on the
+        // way back (all AMB_N motes at once), so leaving the layer at opacity 1 made
+        // them appear instantly: scroll past the hero and return, or refresh with the
+        // scroll restored below it and come back up, and the dust popped in. The
+        // canvas is off screen at this point, so setting it to 0 is invisible, and it
+        // commits long before the return, which is what lets the transition run.
+        shown = false; dust.style.opacity = '0';
         dctx.setTransform(DPR, 0, 0, DPR, 0, 0);
         if (dustDirty) { dctx.clearRect(0, 0, heroW, heroH); dustDirty = false; }
       }
