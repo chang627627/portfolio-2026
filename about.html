@@ -104,11 +104,13 @@
          makes them a shelf rather than a row, and leaning alone crosses only the top
          corners, well clear of the type. */
       margin: 0;
-      /* Pivot at the foot, so every book keeps its bottom on the same shelf line. A
-         bottom-corner pivot was tried first and lifted each book's far side a little
-         more than the last, which fanned the whole row upward to the right. */
-      transform-origin: bottom center;
-      transform: rotate(var(--lean, 0deg));
+      /* NO transform here, deliberately: the lean and the hover both live on the two
+         faces below, so this box never moves and is the only thing that hit-tests.
+         With the transform on the figure itself, hovering lifted it 16px (scale grows
+         up from the foot, so it cannot compensate) and the bottom strip of every book
+         slid out from under the pointer, which dropped the hover, which dropped the
+         book back onto the pointer: a blink, measured at ~640 points per book in a
+         band at y 225-243 of a 240px cover. A stable hit box makes that impossible. */
     }
     /* The lean comes from the book's place in the row, not from a value written on it,
        so a new book leans without anyone choosing an angle. Inline --lean on a figure
@@ -134,9 +136,9 @@
          no transparent PNG for it to draw a box around. */
       outline: 1px solid rgba(255, 255, 255, 0.08);
       outline-offset: -1px;
+      pointer-events: none; /* the figure's own box owns the hover, see .book */
     }
     .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .book-note { display: none; } /* the 2026-09-12 lines, kept but never rendered */
 
     /* The note sits on the book itself, over its cover. That is what sets the length:
        at 160px wide a cover holds about five lines at 12px, so each note is cut to
@@ -170,14 +172,24 @@
       .book-note { transition: opacity var(--dur-base) var(--ease-out); }
     }
 
+    /* Both faces carry the same transform and are both inset:0, so they stay in step
+       without needing a wrapper, and the figcaption stays a direct child of its figure.
+       A leaning book pivots at its foot, so the bottoms sit on one shelf line. */
+    .book-cover,
+    .book-note {
+      transform-origin: bottom center;
+      transform: rotate(var(--lean, 0deg));
+    }
     @media (hover: hover) {
       /* Stands up, lifts clear of the row, and comes over its neighbours. */
-      .book:hover { transform: translateY(-16px) rotate(0deg) scale(1.08); z-index: 3; }
+      .book:hover .book-cover,
+      .book:hover .book-note { transform: translateY(-16px) rotate(0deg) scale(1.08); }
+      .book:hover { z-index: 3; }
       .book:hover .book-cover { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.62); }
     }
     @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-      .book { transition: transform var(--dur-slow) var(--ease-out); }
-      .book-cover { transition: box-shadow var(--dur-slow) var(--ease-out); }
+      .book-note { transition: transform var(--dur-slow) var(--ease-out); }
+      .book-cover { transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out); }
     }
     .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
     @media (max-width: 768px) {
