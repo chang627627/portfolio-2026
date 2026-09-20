@@ -951,7 +951,14 @@ nav:not(.side-nav)::after {
 
 @media (hover: hover) {
   .chat-toggle:hover {
-    background: rgba(255, 255, 255, 0.1);
+    /* OPAQUE, not a white wash (2026-09-20, per user: the button looked like it went
+       transparent on hover). This was rgba(255,255,255,0.1), which reads as a subtle
+       lift only when the thing behind it is the dark page. The toggle is position:
+       fixed and rides over everything, so parked on the footer's gradient that 10%
+       wash turned it into a window onto the gradient. #232323 is what the old value
+       composited to over #0a0a0a, so it looks the same on the dark page and now holds
+       up everywhere else too. */
+    background: #232323;
     color: var(--text);
   }
 }
