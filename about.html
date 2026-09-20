@@ -74,17 +74,14 @@
     .ai-fold-body { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; }
     /* Books, back as a shelf (2026-09-19, per user): five fronts, no side view. The
        3D turn and the spine faces it needed are gone with it, so this is flat CSS now.
-       The arrangement carries it instead - the books lean against each other, the
-       way a half-full shelf slumps toward its gap, and the book you point at stands
-       back up and lifts clear. Page-scoped because the shelf lives only here, so
+       The arrangement carries it instead - the books lean against each other, the way
+       a half-full shelf slumps toward its gap. Page-scoped because the shelf lives only
+       here, so
        style.css keeps its version and its .media-grid / .media-item / .media-figure /
        .media-note rules are now orphaned there, harmless. Removing the section's inline
        display:none also hands the 280px content-to-footer gap back to
        .media-section--end, so the .testimonials override that stood in for it while
-       Books was hidden is gone with it.
-       Hover only, deliberately: About already spends its scroll on the statement hold
-       and the photo-deck pass, and a third scroll-driven device one section below a
-       turning carousel of real images would be that carousel's cousin. */
+       Books was hidden is gone with it. */
     .shelf {
       display: flex;
       align-items: flex-end;
@@ -104,13 +101,10 @@
          makes them a shelf rather than a row, and leaning alone crosses only the top
          corners, well clear of the type. */
       margin: 0;
-      /* NO transform here, deliberately: the lean and the hover both live on the two
-         faces below, so this box never moves and is the only thing that hit-tests.
-         With the transform on the figure itself, hovering lifted it 16px (scale grows
-         up from the foot, so it cannot compensate) and the bottom strip of every book
-         slid out from under the pointer, which dropped the hover, which dropped the
-         book back onto the pointer: a blink, measured at ~640 points per book in a
-         band at y 225-243 of a 240px cover. A stable hit box makes that impossible. */
+      /* The lean lives on .book-cover below rather than here. That split was the fix
+         for a hover blink (a lifting figure slid out from under its own pointer); with
+         the hover gone it no longer matters, but it is left as it is rather than
+         churned back, and it keeps this box still if a hover ever returns. */
     }
     /* The lean comes from the book's place in the row, not from a value written on it,
        so a new book leans without anyone choosing an angle. Inline --lean on a figure
@@ -136,61 +130,21 @@
          no transparent PNG for it to draw a box around. */
       outline: 1px solid rgba(255, 255, 255, 0.08);
       outline-offset: -1px;
-      pointer-events: none; /* the figure's own box owns the hover, see .book */
-    }
-    .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
-
-    /* The note sits on the book itself, over its cover. That is what sets the length:
-       at 160px wide a cover holds about five lines at 12px, so each note is cut to
-       roughly 100 characters. The scrim is translucent over a small blur, so the
-       cover's own colour still reads behind the words and you can see which book you
-       are being told about. */
-    .book-note {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      display: flex;
-      align-items: center;
-      margin: 0;
-      padding: 18px 16px;
-      border-radius: 4px;
-      background: rgba(10, 10, 10, 0.86);
-      backdrop-filter: blur(3px);
-      outline: 1px solid rgba(255, 255, 255, 0.08); /* the cover's edge, kept while the note is up */
-      outline-offset: -1px;
-      color: var(--text);
-      font-size: 12px;
-      line-height: 1.5;
-      opacity: 0;
-      pointer-events: none;
-    }
-    @media (hover: hover) {
-      .book:hover .book-note { opacity: 1; }
-    }
-    /* The note answers the pointer, so it takes --dur-base, not the lift's --dur-slow. */
-    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-      .book-note { transition: opacity var(--dur-base) var(--ease-out); }
-    }
-
-    /* Both faces carry the same transform and are both inset:0, so they stay in step
-       without needing a wrapper, and the figcaption stays a direct child of its figure.
-       A leaning book pivots at its foot, so the bottoms sit on one shelf line. */
-    .book-cover,
-    .book-note {
+      /* The lean itself. It sits on the cover rather than the figure so the figure's
+         box stays still; a leaning book pivots at its foot, so the bottoms keep to one
+         shelf line. */
       transform-origin: bottom center;
       transform: rotate(var(--lean, 0deg));
     }
-    @media (hover: hover) {
-      /* Stands up, lifts clear of the row, and comes over its neighbours. */
-      .book:hover .book-cover,
-      .book:hover .book-note { transform: translateY(-16px) rotate(0deg) scale(1.08); }
-      .book:hover { z-index: 3; }
-      .book:hover .book-cover { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.62); }
-    }
-    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-      .book-note { transition: transform var(--dur-slow) var(--ease-out); }
-      .book-cover { transition: transform var(--dur-slow) var(--ease-out), box-shadow var(--dur-slow) var(--ease-out); }
-    }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    /* Nothing happens when you point at a book (2026-09-20, per user "cancel the hover
+       state"): no lift, no straightening, no scrim, no note. The shelf is six leaning
+       covers and that is all. The six lines are kept in the markup and never rendered,
+       the same way the section's earlier notes were kept on 2026-09-12 - this is the
+       second time a hover treatment has been removed from Books, so do not re-propose
+       one. */
+    .book-note { display: none; }
     .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
     @media (max-width: 768px) {
       .ai-session { padding: 24px 20px; gap: 18px; }
