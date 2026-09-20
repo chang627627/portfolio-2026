@@ -499,7 +499,20 @@
     // rise to GAP under it. That is what lets the statement hand over to the lines without anything moving.
     // the statement is in normal flow at the top of the page, so the document y of its foot is also the
     // viewport y it occupies on the first screen: the one anchor the lines, the galaxy and the deck all use
-    function statementFoot() { const t = hero.querySelector('.page-title'); if (!t) return NaN; const r = t.getBoundingClientRect(); return Math.round(r.bottom + window.scrollY); }
+    // Document y of the statement's foot, measured from the OFFSET chain, not from a
+    // rect. It used to be `rect.bottom + scrollY`, which is only correct at scroll 0:
+    // the hero sits inside a sticky stage and is translated by hero-hold, so once the
+    // page has moved, rect.bottom no longer tracks the statement's layout position and
+    // the sum inflates with the scroll. Any layout() while scrolled - a resize, or
+    // fonts.ready landing after the browser restored a mid-page scroll - then padded
+    // the answer down by that much and left a screen of empty black above it.
+    // offsetTop is immune: it is layout, so neither scrolling nor the transform moves it.
+    function statementFoot() {
+      const t = hero.querySelector('.page-title'); if (!t) return NaN;
+      let y = 0, n = t;
+      while (n) { y += n.offsetTop; n = n.offsetParent; }
+      return Math.round(y + t.offsetHeight);
+    }
     // the lines sit at an exact viewport y inside the full-screen stage: their block foot on the anchor
     function placeAnswer(foot) {
       const a = stage.querySelector('.story-answer'); if (!a || !(foot > 0)) return;
