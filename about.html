@@ -72,16 +72,113 @@
     .ai-fold::details-content { height: 0; overflow: clip; transition: height var(--dur-slow) var(--ease-out), content-visibility var(--dur-slow) allow-discrete; }
     .ai-fold[open]::details-content { height: auto; }
     .ai-fold-body { display: flex; flex-direction: column; gap: 22px; padding-top: 22px; }
-    /* Books: five covers, and nothing happens when you point at one (2026-09-12,
-       per user "delete hover effect"). The per-cover lines are kept in the markup
-       but never rendered, so the shelf is the covers alone. The layout rule stays
-       because the flex sizing is what makes the row of five work. */
-    .media-figure { flex: 1; min-width: 0; margin: 0; }
-    .media-note { display: none; }
-    /* Books is hidden (2026-09-13), so "People I've worked with" closes the page on
-       desktop and takes over the 280px content-to-footer gap every page uses, which
-       .media-section--end used to carry. Phones keep style.css's 80px. */
-    @media (min-width: 769px) { .testimonials { padding-bottom: 280px; } }
+    /* Books, back as a shelf (2026-09-19, per user): five fronts, no side view. The
+       3D turn and the spine faces it needed are gone with it, so this is flat CSS now.
+       The arrangement carries it instead - the books lean against each other, the
+       way a half-full shelf slumps toward its gap, and the book you point at stands
+       back up and lifts clear. Page-scoped because the shelf lives only here, so
+       style.css keeps its version and its .media-grid / .media-item / .media-figure /
+       .media-note rules are now orphaned there, harmless. Removing the section's inline
+       display:none also hands the 280px content-to-footer gap back to
+       .media-section--end, so the .testimonials override that stood in for it while
+       Books was hidden is gone with it.
+       Hover only, deliberately: About already spends its scroll on the statement hold
+       and the photo-deck pass, and a third scroll-driven device one section below a
+       turning carousel of real images would be that carousel's cousin. */
+    .shelf {
+      display: flex;
+      align-items: flex-end;
+      width: 100%;
+    }
+    .book {
+      position: relative;
+      /* The books share the row out between them, so the shelf always fills the column
+         and adding one is a <figure> and nothing else: no width to retune. The cap
+         stops three or four books from growing into posters. */
+      flex: 1 1 0;
+      min-width: 0;
+      max-width: 220px;
+      aspect-ratio: 2 / 3;
+      /* The books touch at the foot and nothing overlaps: every cover puts its title
+         somewhere different, so any overlap at all clipped somebody's. Leaning is what
+         makes them a shelf rather than a row, and leaning alone crosses only the top
+         corners, well clear of the type. */
+      margin: 0;
+      /* Pivot at the foot, so every book keeps its bottom on the same shelf line. A
+         bottom-corner pivot was tried first and lifted each book's far side a little
+         more than the last, which fanned the whole row upward to the right. */
+      transform-origin: bottom center;
+      transform: rotate(var(--lean, 0deg));
+    }
+    /* The lean comes from the book's place in the row, not from a value written on it,
+       so a new book leans without anyone choosing an angle. Inline --lean on a figure
+       still wins if one ever needs steering by hand. */
+    .book:nth-child(5n + 1) { --lean: -2.5deg; }
+    .book:nth-child(5n + 2) { --lean: 1.5deg; }
+    .book:nth-child(5n + 3) { --lean: -1deg; }
+    .book:nth-child(5n + 4) { --lean: 2.5deg; }
+    .book:nth-child(5n + 5) { --lean: -2deg; }
+    .book-cover {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      box-shadow: 0 16px 34px rgba(0, 0, 0, 0.5);
+      /* Hairline per the shared image-outline rule (see .play-card img in style.css):
+         a black shadow on a #0a0a0a page is invisible, so it only ever read where it
+         fell on a neighbour, and a dark cover's outer edge had nothing separating it
+         from the background. outline, not border, so it draws on top of the image and
+         follows the radius; the negative offset keeps it inside the box. Safe here
+         where it is not on the home grid: every cover is an opaque JPEG, so there is
+         no transparent PNG for it to draw a box around. */
+      outline: 1px solid rgba(255, 255, 255, 0.08);
+      outline-offset: -1px;
+    }
+    .book-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .book-note { display: none; } /* the 2026-09-12 lines, kept but never rendered */
+
+    /* The note sits on the book itself, over its cover. That is what sets the length:
+       at 160px wide a cover holds about five lines at 12px, so each note is cut to
+       roughly 100 characters. The scrim is translucent over a small blur, so the
+       cover's own colour still reads behind the words and you can see which book you
+       are being told about. */
+    .book-note {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      margin: 0;
+      padding: 18px 16px;
+      border-radius: 4px;
+      background: rgba(10, 10, 10, 0.86);
+      backdrop-filter: blur(3px);
+      outline: 1px solid rgba(255, 255, 255, 0.08); /* the cover's edge, kept while the note is up */
+      outline-offset: -1px;
+      color: var(--text);
+      font-size: 12px;
+      line-height: 1.5;
+      opacity: 0;
+      pointer-events: none;
+    }
+    @media (hover: hover) {
+      .book:hover .book-note { opacity: 1; }
+    }
+    /* The note answers the pointer, so it takes --dur-base, not the lift's --dur-slow. */
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      .book-note { transition: opacity var(--dur-base) var(--ease-out); }
+    }
+
+    @media (hover: hover) {
+      /* Stands up, lifts clear of the row, and comes over its neighbours. */
+      .book:hover { transform: translateY(-16px) rotate(0deg) scale(1.08); z-index: 3; }
+      .book:hover .book-cover { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.62); }
+    }
+    @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+      .book { transition: transform var(--dur-slow) var(--ease-out); }
+      .book-cover { transition: box-shadow var(--dur-slow) var(--ease-out); }
+    }
     .ai-session-foot a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255,255,255,0.35); text-underline-offset: 3px; }
     @media (max-width: 768px) {
       .ai-session { padding: 24px 20px; gap: 18px; }
@@ -1124,29 +1221,36 @@
     </div>
   </section>
 
-  <!-- Books & Podcasts. Hidden 2026-09-13 per user ("hide books"); markup kept. -->
-  <section class="media-section media-section--end" style="display: none;">
+  <!-- Books, back as a shelf 2026-09-19 (per user, from a reference of spines with
+       vertical titles): side on at rest, and pointing at one turns it to its cover.
+       The covers carry their full alt: nothing else on the shelf names the book. The
+       notes are the 2026-09-12 drafts, still kept and still unrendered. -->
+  <section class="media-section media-section--end">
     <div class="section-meta"><span class="section-label-text">Books I'm reading lately</span></div>
-    <div class="media-grid">
-      <figure class="media-figure">
-        <div class="media-item book"><img src="images/book-1.jpg" alt="The Worlds I See by Dr. Fei-Fei Li"></div>
-        <figcaption class="media-note">Where human-centered AI stops being a slogan. The person-in-the-loop rule my products ship with starts here.</figcaption>
+    <div class="shelf">
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-1.jpg" alt="The Worlds I See by Dr. Fei-Fei Li" width="395" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">My person-in-the-loop rule came from this book. Human-centered AI as a constraint, not a slogan.</figcaption>
       </figure>
-      <figure class="media-figure">
-        <div class="media-item book"><img src="images/book-2.jpg" alt="The Creative Act by Rick Rubin"></div>
-        <figcaption class="media-note">Editing is the creative act. It is why my case studies show the versions I didn't ship.</figcaption>
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-2.jpg" alt="The Creative Act by Rick Rubin" width="408" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">Editing is the creative act. It is why I show the versions I did not ship.</figcaption>
       </figure>
-      <figure class="media-figure">
-        <div class="media-item book"><img src="images/book-3.jpg" alt="The Book of Elon by Eric Jorgenson"></div>
-        <figcaption class="media-note">First principles over convention. Question the requirement before meeting it, delete the part before optimizing it.</figcaption>
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-3.jpg" alt="The Book of Elon by Eric Jorgenson" width="388" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">I learned to question the requirement before meeting it, and delete the part before optimizing it.</figcaption>
       </figure>
-      <figure class="media-figure">
-        <div class="media-item book"><img src="images/book-4.jpg" alt="Why Greatness Cannot Be Planned"></div>
-        <figcaption class="media-note">Objectives are a trap; interesting stepping stones are not. It is how a v2 got built before anyone asked for it.</figcaption>
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-4.jpg" alt="Why Greatness Cannot Be Planned by Kenneth O. Stanley and Joel Lehman" width="398" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">Objectives are a trap and stepping stones are not. It is why I build the version nobody asked for yet.</figcaption>
       </figure>
-      <figure class="media-figure">
-        <div class="media-item book"><img src="images/book-5.jpg" alt="BOOM: Bubbles and the End of Stagnation"></div>
-        <figcaption class="media-note">Why bubbles are how hard things get built. A useful lens for designing inside the AI moment.</figcaption>
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-5.jpg" alt="Boom: Bubbles and the End of Stagnation by Byrne Hobart and Tobias Huber" width="400" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">Bubbles are how hard things get built. It is the lens I bring to the AI moment I am designing inside.</figcaption>
+      </figure>
+      <figure class="book">
+        <div class="book-cover"><img src="images/book-6.jpg" alt="Machines of Loving Grace: The Quest for Common Ground Between Humans and Robots by John Markoff" width="394" height="600" loading="lazy" decoding="async"></div>
+        <figcaption class="book-note">Machines that replace people, or machines that extend them. I design on the second side of that line.</figcaption>
       </figure>
     </div>
   </section>
