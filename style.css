@@ -1956,6 +1956,21 @@ footer {
   gap: 32px;
 }
 
+/* The footer row is four links on every device, but not the SAME four. Resume lives
+   in the fixed header, which is only visible on desktop - on a phone the nav collapses
+   to a hamburger (.nav-links goes opacity 0 / pointer-events none), so the header is no
+   longer an always-present copy and the footer has to carry Resume itself. GitHub steps
+   aside there, because a fifth link overflows a 320px viewport and
+   html{overflow-x:hidden} hides that rather than showing a scrollbar.
+   Both selectors are scoped through .footer-links because a bare class (0,1,0) loses to
+   .footer-links a (0,1,1), which sets display: inline-flex. */
+@media (max-width: 768px) {
+  .footer-links a.footer-link--desktop-only { display: none; }
+}
+@media (min-width: 769px) {
+  .footer-links a.footer-link--mobile-only { display: none; }
+}
+
 .footer-links a {
   font-size: 14px;
   font-weight: 400;
@@ -4901,15 +4916,6 @@ footer {
 
   .footer-links {
     gap: 24px;
-  }
-
-  /* GitHub is desktop only (2026-09-20, per user). A fifth link put the row at 334px
-     against a 272px content box at 320px wide, and html{overflow-x:hidden} swallows
-     the scrollbar, so it clipped the last link with no visible symptom. */
-  /* Scoped through .footer-links because the bare class (0,1,0) loses to
-     .footer-links a (0,1,1), which sets display: inline-flex. */
-  .footer-links a.footer-link--desktop-only {
-    display: none;
   }
 }
 
