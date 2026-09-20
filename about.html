@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=270">
+  <link rel="stylesheet" href="style.css?v=271">
   <style>
     /* One real session, in the content-card family (surface, radius, 32px, no
        border) so it sits like the testimonial cards below it. */
@@ -202,24 +202,13 @@
       .ai-fold-body { gap: 18px; padding-top: 18px; }
     }
 
-    /* Photo deck depth (2026-09-12): the row bends into a shallow drum. Each card turns
-       toward the centre and recedes by its signed distance from it (--pos, written per
-       frame by the deck engine, -1 at the left edge to 1 at the right). Nothing else
-       changes: the wings keep their colour (a saturation fade was built and removed the
-       same hour, per user "do not darken the far away image"). Page-scoped because the
-       deck exists only here, and scoped to desktop + motion-safe so the stylesheet's
-       mobile grid and reduced-motion resets stay in charge everywhere else. */
-    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
-      .deck .deck-card {
-        --pos: 0;
-        --arc: 20deg;      /* how far a card at the edge turns toward the centre */
-        --recede: 120px;   /* how far a card at the edge sits behind the centre */
-        transform:
-          translateZ(calc(-1 * var(--recede) * max(var(--pos), -1 * var(--pos))))
-          rotateY(calc(var(--pos) * var(--arc)))
-          scale(calc(0.82 + 0.22 * var(--focus)));
-      }
-    }
+    /* The drum is retired (2026-09-20, per user: the deck is the flat 4x2 grid at every
+       width now). This block used to bend the row into a shallow drum, turning each card
+       toward the centre by its signed distance from it (--pos) and scaling it by --focus,
+       both written per frame by the deck engine. It is gone rather than disabled: left in
+       place its transform outranked the stylesheet's grid reset, because a page <style>
+       beats the linked sheet at equal specificity, and every card sat at the drum's
+       resting scale(0.82). Recoverable from git with the engine it drove. */
     /* No hover effect on the deck (2026-09-13, per user "cancel the hover effect of
        carousel"): the card under the cursor no longer tilts toward it, and the
        stylesheet's leftover grab cursor from the drag era is reset, since the deck
@@ -337,13 +326,18 @@
        passes the centre across the runway below it, then the page carries on down.
        Desktop and motion-safe only: phones keep the static grid, and a reader who
        asks for less motion keeps a still, scrollable row. */
-    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
-      .deck-pin { position: relative; margin-top: -84px; }
+    /* The pin and the sticky stage went with the drum (2026-09-20). .deck-pin is now a
+       plain wrapper the story engine still positions, so the grid keeps arriving under
+       the statement; it just no longer sticks or scrolls anything sideways. */
+    @media (min-width: 769px) {
+      .deck-pin { position: relative; }
+      /* position: relative is LOAD-BEARING, not leftover styling: the story engine
+         places the grid with offsetIn(card, stage), which walks the offsetParent chain
+         and returns NaN if it never reaches the stage. Static, the stage is not an
+         offsetParent, placeDeck bails, and the photographs land thousands of px below
+         the statement instead of GAP under it. */
+      .deck-stage { position: relative; }
       .deck-pin .deck { margin-top: 0; }
-      .deck-stage { position: sticky; }
-      /* hidden, not scroll: the track is still scrolled programmatically, but a
-         horizontal trackpad gesture can no longer fight the scroll-driven position */
-      .deck .deck-track { overflow-x: hidden; cursor: default; touch-action: auto; }
     }
 
     /* ---- Aesthetics pass, 2026-09-12 ----------------------------------------
@@ -562,10 +556,12 @@
       const dp = document.querySelector('.deck-pin'), ds = dp && dp.querySelector('.deck-stage');
       const cards = ds ? ds.querySelectorAll('.deck-card') : [];
       if (!ds || cards.length < 3 || !(foot > 0)) return;
-      const card = cards[cards.length / 3];               // the resting card of the middle set: the highest one, it is scaled up
-      const off = offsetIn(card, ds);                      // offsets inside the stage only: the stage itself is sticky, so never read it
+      let card = null;                                     // the top-left photograph of the grid: the first one actually rendered
+      for (const c of cards) { if (c.offsetHeight > 0) { card = c; break; } } // cards 9+ are display:none, the two duplicate sets
+      if (!card) return;
+      const off = offsetIn(card, ds);
       if (!(off >= 0)) return;
-      const lift = 0.02 * card.offsetHeight + 1;           // the centre card's 1.04 focus scale paints its top this far above its box
+      const lift = 0;                                      // no focus scale on the grid, so its painted top is its box top
       const target = pin.offsetTop + runway + foot + GAP + lift - off; // the deck-pin's document top: the card's painted top is GAP under the anchor at release (the pin no longer starts at document 0, so its own offset is in here)
       dp.style.marginTop = '0px';
       let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
@@ -1483,11 +1479,11 @@
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Mobile (≤768px): render the static 4×8 grid via CSS — no pin, no scroll drive.
-  if (window.matchMedia('(max-width: 768px)').matches) {
-    track.classList.add('is-ready');
-    return;
-  }
+  // Every width renders the static 4x2 grid via CSS now (2026-09-20, per user) — no
+  // pin, no scroll drive, no drum. Everything below this point is the retired engine,
+  // kept in place so the behaviour is one `return` away if it is ever wanted back.
+  track.classList.add('is-ready');
+  return;
 
   const deckEl = document.querySelector('.deck') || track;
   const pin = document.querySelector('.deck-pin');

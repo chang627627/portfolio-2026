@@ -2220,6 +2220,54 @@ footer {
    each photo's measured darkest region. The deck is a wall of images again.
    Recoverable from git if ever wanted, along with the placement-scan script. */
 
+/* The photo deck is a static 4x2 grid of the 8 photographs at EVERY width
+   (2026-09-20, per user: "make the photos on web like mobile did ... I think current
+   version is too fancy"). This was the phone-only layout; desktop had a scroll-driven
+   pinned drum that turned one set past the centre. These rules used to live inside the
+   768px query - lifting them out is what retires the drum, and the engine in about.html
+   now bails at every width instead of only on phones. The markup still triples the 8
+   cards for the old infinite loop, so the two duplicate sets are hidden below. */
+.deck {
+  perspective: none;
+  -webkit-mask-image: none;
+          mask-image: none;
+  overflow: visible;
+  /* Same measure as every other section on the page (2026-09-20, per user): this is
+     the .about-vertical / .testimonials / .media-section box verbatim, where the +48px
+     on max-width carries the 24px side rail so the content measure stays exactly 960px.
+     The grid ran full bleed before, which was right for a drum spanning the viewport
+     and wrong for a static grid sitting above a 960px column. */
+  max-width: calc(var(--max-width) + 48px);
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 24px 64px;
+  /* no pull-up: -84px was there to seat the drum under the heading, and the grid
+     carries its own spacing */
+  margin-top: 0;
+}
+.deck-track {
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0;
+  overflow: visible;
+  transform-style: flat;
+  opacity: 1;
+  cursor: default;
+  touch-action: auto;
+}
+.deck-card {
+  flex: 0 0 calc(25% - 3px);
+  aspect-ratio: 1 / 1;
+  transform: none;
+  opacity: 1;
+  filter: none;
+  border-radius: var(--radius);
+}
+/* show only the first real set of 8; hide the 2 duplicate sets */
+.deck-card:nth-child(n + 9) { display: none; }
+.deck-card::before,
+.deck-card::after { display: none; }
+
 /* prefers-reduced-motion: lock to static centered row (no drift, no tilt, no halo pulse) */
 @media (prefers-reduced-motion: reduce) {
   .deck-track {
@@ -4766,39 +4814,6 @@ footer {
     padding: 120px 24px 48px;
   }
 
-  /* Photo deck collapses to the static 4×2 grid on mobile (JS drift/drag is skipped) */
-  .deck {
-    perspective: none;
-    -webkit-mask-image: none;
-            mask-image: none;
-    overflow: visible;
-    padding: 0 0 64px;
-    /* reset the desktop pull-up — the mobile hero is much shorter, so -84px
-       would drag the grid up into the heading */
-    margin-top: 0;
-  }
-  .deck-track {
-    flex-wrap: wrap;
-    gap: 4px;
-    padding: 0;
-    overflow: visible;
-    transform-style: flat;
-    opacity: 1;
-    cursor: default;
-    touch-action: auto;
-  }
-  .deck-card {
-    flex: 0 0 calc(25% - 3px);
-    aspect-ratio: 1 / 1;
-    transform: none;
-    opacity: 1;
-    filter: none;
-    border-radius: var(--radius);
-  }
-  /* show only the first real set of 8; hide the 2 duplicate sets */
-  .deck-card:nth-child(n + 9) { display: none; }
-  .deck-card::before,
-  .deck-card::after { display: none; }
 
   .about-photos,
   .about-vertical,
