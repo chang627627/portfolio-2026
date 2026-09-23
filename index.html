@@ -117,8 +117,12 @@
     .hero h1 .line:nth-child(2) .line-inner { font-style: italic; }
     /* Stardust canvas: created at script time on desktop only, so phones,
        touch and reduced-motion never get the element at all. Fades up from
-       its first drawn frame rather than popping on first paint. */
-    .hero-dust { position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 0.6s ease-out; }
+       its first drawn frame rather than popping on first paint.
+       width/height 100% are LOAD-BEARING: a canvas is a replaced element, so
+       inset: 0 alone leaves it at its intrinsic size, which is the backing
+       store (hero x DPR). Without them a retina screen showed the canvas at
+       2x, only its top-left quarter in view, every mote doubled. */
+    .hero-dust { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; opacity: 0; transition: opacity 0.6s ease-out; }
     /* descriptions in the long-read tier (#a0a0a0), the same step About uses */
     .project-grid .project-info p { color: var(--text-soft); }
 
@@ -528,11 +532,13 @@
            headline (the .hero .status-dot lookup was waiting for it). -->
       <a class="status-tag" href="mailto:changmou627627@gmail.com"><span class="status-dot"></span><span class="status-label" aria-live="polite">Open to new opportunities</span><span class="arrow">&#8599;</span></a>
       <script>
-        // THE PILL ALSO COPIES THE EMAIL (2026-09-22, per user "do both"). A mailto alone does nothing useful for a
-        // recruiter on webmail (it opens an unconfigured Mail app or nothing), so a click also puts the address on
-        // the clipboard and the pill itself says so for about two seconds; the mailto still opens a mail app for
-        // anyone who has one. The pill keeps its width while the shorter label shows, so nothing around it moves.
-        // Without the Clipboard API (or outside a secure context) it is simply the mailto it was.
+        // THE PILL COPIES THE EMAIL (2026-09-22, per user "do both"). A mailto alone does nothing useful for a
+        // recruiter on webmail (it opens an unconfigured Mail app or nothing), so a click puts the address on the
+        // clipboard and the pill itself says so for about two seconds. IT ONLY COPIES (per user "when email copied do
+        // not navigate to somewhere else. just copied"): the click is cancelled, so no mail app opens on top of the
+        // confirmation. The mailto stays in the href as the fallback: if the copy is refused the click goes on to it,
+        // and without the Clipboard API (or outside a secure context) it is simply the mailto it was. The pill keeps
+        // its width while the shorter label shows, so nothing around it moves.
         (function () {
           // (the confirmation is one icon, not two: the arrow itself turns into a check, and the label reads plain
           // "Email copied", per user "change the arrow sign into click sign in that arrow sign's language". The font's
@@ -551,6 +557,7 @@
           const EMAIL = 'changmou627627@gmail.com', REST = label.textContent, ICON = arrow.textContent;
           let timer = 0;
           pill.addEventListener('click', e => {
+            e.preventDefault();                             // copy only; the mailto is the fallback below
             if (e.detail) pill.blur();                      // a mouse click leaves no focus ring behind; a keyboard press keeps focus
             navigator.clipboard.writeText(EMAIL).then(() => {
               if (!timer) { pill.style.minWidth = pill.offsetWidth + 'px'; pill.style.justifyContent = 'center'; }
@@ -559,7 +566,7 @@
               pill.classList.add('is-copied');
               clearTimeout(timer);
               timer = setTimeout(() => { label.textContent = REST; arrow.textContent = ICON; pill.classList.remove('is-copied'); pill.style.minWidth = ''; pill.style.justifyContent = ''; timer = 0; }, 2200);
-            }, () => {});
+            }, () => { location.href = pill.href; });      // copy refused: fall back to the mailto
           });
         })();
       </script>
@@ -798,11 +805,13 @@
       </div>
     </section>
     <script>
-      // "SAY HELLO" ALSO COPIES THE EMAIL (2026-09-22, per user "do both"). The link keeps its mailto for anyone with a
-      // mail app; a click also puts the address on the clipboard, and a small line fades in under the word for two
-      // seconds to say so, since the word itself cannot change (its letters carry the light). The line exists only
-      // after a click. The aria-label on the link fixes a screen reader naming it "S a y h e l l o", one letter span
-      // at a time. Without the Clipboard API (or outside a secure context) it is simply the mailto it was.
+      // "SAY HELLO" COPIES THE EMAIL (2026-09-22, per user "do both"). A click puts the address on the clipboard, and a
+      // small line fades in under the word for two seconds to say so, since the word itself cannot change (its letters
+      // carry the light). The line exists only after a click. IT ONLY COPIES (per user "when email copied do not
+      // navigate to somewhere else. just copied"): the click is cancelled, so no mail app opens over the confirmation;
+      // the mailto stays in the href as the fallback if the copy is refused. The aria-label on the link fixes a screen
+      // reader naming it "S a y h e l l o", one letter span at a time. Without the Clipboard API (or outside a secure
+      // context) it is simply the mailto it was.
       (function () {
         const link = document.querySelector('.say-hello .footer-big-text'), box = link && link.parentElement;
         if (!box || !navigator.clipboard || !window.isSecureContext) return;
@@ -813,7 +822,8 @@
           'opacity:0;transition:opacity 0.4s var(--ease-out);pointer-events:none;';
         box.appendChild(note);
         let timer = 0;
-        link.addEventListener('click', () => {
+        link.addEventListener('click', e => {
+          e.preventDefault();                             // copy only; the mailto is the fallback below
           navigator.clipboard.writeText('changmou627627@gmail.com').then(() => {
             note.textContent = 'Email copied';
             // level with the footer links row, in its empty middle between the (c) line and the links, well clear of the
@@ -823,7 +833,7 @@
             note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
             clearTimeout(timer);
             timer = setTimeout(() => { note.style.transitionDuration = '0.4s'; note.style.opacity = '0'; }, 2000);
-          }, () => {});
+          }, () => { location.href = link.href; });      // copy refused: fall back to the mailto
         });
       })();
     </script>

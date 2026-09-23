@@ -598,11 +598,13 @@
       </div>
     </section>
     <script>
-      // "SAY HELLO" ALSO COPIES THE EMAIL (2026-09-22, per user "do both"). The link keeps its mailto for anyone with a
-      // mail app; a click also puts the address on the clipboard, and a small line fades in under the word for two
-      // seconds to say so, since the word itself cannot change (its letters carry the light). The line exists only
-      // after a click. The aria-label on the link fixes a screen reader naming it "S a y h e l l o", one letter span
-      // at a time. Without the Clipboard API (or outside a secure context) it is simply the mailto it was.
+      // "SAY HELLO" COPIES THE EMAIL (2026-09-22, per user "do both"). A click puts the address on the clipboard, and a
+      // small line fades in under the word for two seconds to say so, since the word itself cannot change (its letters
+      // carry the light). The line exists only after a click. IT ONLY COPIES (per user "when email copied do not
+      // navigate to somewhere else. just copied"): the click is cancelled, so no mail app opens over the confirmation;
+      // the mailto stays in the href as the fallback if the copy is refused. The aria-label on the link fixes a screen
+      // reader naming it "S a y h e l l o", one letter span at a time. Without the Clipboard API (or outside a secure
+      // context) it is simply the mailto it was.
       (function () {
         const link = document.querySelector('.say-hello .footer-big-text'), box = link && link.parentElement;
         if (!box || !navigator.clipboard || !window.isSecureContext) return;
@@ -613,7 +615,8 @@
           'opacity:0;transition:opacity 0.4s var(--ease-out);pointer-events:none;';
         box.appendChild(note);
         let timer = 0;
-        link.addEventListener('click', () => {
+        link.addEventListener('click', e => {
+          e.preventDefault();                             // copy only; the mailto is the fallback below
           navigator.clipboard.writeText('changmou627627@gmail.com').then(() => {
             note.textContent = 'Email copied';
             // level with the footer links row, in its empty middle between the (c) line and the links, well clear of the
@@ -623,7 +626,7 @@
             note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
             clearTimeout(timer);
             timer = setTimeout(() => { note.style.transitionDuration = '0.4s'; note.style.opacity = '0'; }, 2000);
-          }, () => {});
+          }, () => { location.href = link.href; });      // copy refused: fall back to the mailto
         });
       })();
     </script>
