@@ -204,8 +204,12 @@
     const TILT = [0, 0.14];             // looking down onto the prism, radians: none in the side view, a little once it is 3D
     const PERSP = [0, 1 / 1100];        // perspective strength: none in the side view (so the back triangle sits exactly behind
                                         // the front one instead of showing as a smaller triangle inside it), full once it is 3D
-    const SPREAD = [0.2, 0.82];         // the fan's full angle at the start and end of the hold, radians (the start was 0.05, a
-                                        // single faint line, until 2026-09-22: at 0.2 the six colours read on the first screen)
+    const SPREAD = [0, 0.82];           // the fan's full angle at the start and end of the hold, radians. STARTS AS ONE LINE
+                                        // (2026-09-23, per user "do not split the beam initially. make it a line something. i want
+                                        // to reflect the word 'stretch'"): the six rays lie on one another, so the light leaves the
+                                        // prism as a single thin near-white line, and scrolling stretches it open into the spectrum,
+                                        // the statement's "stretch my range" acted out. (It was 0.05 until 2026-09-22, then 0.2 so
+                                        // the colours read on the first screen.) The end state is unchanged.
     const FAN_DIP = 0.26;               // the fan's centre, below horizontal, radians
     const FLOW = 70;                    // px per second the light travels along the beams
     const SPRING = 16;                  // rad/s: how tightly the drawn scene follows the scroll (the About galaxy's spring;
@@ -298,7 +302,9 @@
         // a flat band 3 to 21px wide with a round cap, and the six caps piled up into a white blob at the exit.
         // Same six rays, same angles, same colours: only the shape of the glow changed. A soft halo wedge twice
         // as wide sits under the core so the edges are not hard.
-        const wEnd = 2 + L * (0.02 + 0.05 * e), a0 = 0.2 + 0.12 * e;
+        // At the start the six sit on one another as a thin line (a few px wide at its far end, not ~30) at half
+        // strength each, so the stacked line is not blinding; both reach their old end values as the fan opens.
+        const wEnd = 2 + L * (0.004 + 0.066 * e), a0 = (0.2 + 0.12 * e) * (0.5 + 0.5 * e);
         const wedge = (w0, w1, a) => {
           const g = ctx.createLinearGradient(exit[0], exit[1], ex, ey);
           g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${a.toFixed(3)})`);
@@ -315,10 +321,10 @@
         for (let k = 0; k < n; k++) {
           const seed = i * 97 + k;
           const s = ((flow * (0.8 + 0.4 * hash(seed + 3)) + hash(seed) * L) % L);
-          const w = (hash(seed + 1) - 0.5) * (2 + s * (0.02 + 0.05 * e)); // the band widens as it travels
+          const w = (hash(seed + 1) - 0.5) * (2 + s * (0.004 + 0.066 * e)); // the band widens as it travels, and as the fan opens
           const fade = Math.pow(1 - s / L, 0.7) * (0.35 + 0.65 * Math.min(1, s / 30));
           const soft = hash(seed + 5) < 0.2; // one in five is out of focus: larger, dimmer, so the fan has depth
-          dot(fanSprites[i], exit[0] + Math.cos(th) * s + nx * w, exit[1] + Math.sin(th) * s + ny * w, soft ? 2.6 + 1.6 * hash(seed + 2) : 0.9 + 0.8 * hash(seed + 2), fade * (soft ? 0.18 : 0.55 + 0.35 * e));
+          dot(fanSprites[i], exit[0] + Math.cos(th) * s + nx * w, exit[1] + Math.sin(th) * s + ny * w, soft ? 2.6 + 1.6 * hash(seed + 2) : 0.9 + 0.8 * hash(seed + 2), fade * (soft ? 0.18 : 0.55 + 0.35 * e) * (0.55 + 0.45 * e));
         }
       });
       // where the six rays meet on the exit face: a white-hot point with a warm halo
@@ -340,7 +346,7 @@
         // colour by the exit, bowed a few px apart in the middle, so the split visibly begins inside (finish pass)
         const mx = (entry[0] + exit[0]) / 2, my = (entry[1] + exit[1]) / 2, px = -(exit[1] - entry[1]), py = exit[0] - entry[0], pl = Math.hypot(px, py) || 1;
         FAN.forEach((c, i) => {
-          const off = (i / (FAN.length - 1) - 0.5) * 9, qx = mx + px / pl * off, qy = my + py / pl * off;
+          const off = (i / (FAN.length - 1) - 0.5) * 9 * e, qx = mx + px / pl * off, qy = my + py / pl * off; // one thread until the fan opens
           const g3 = ctx.createLinearGradient(entry[0], entry[1], exit[0], exit[1]);
           g3.addColorStop(0, 'rgba(255, 248, 236, 0.45)'); g3.addColorStop(0.5, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.3)`); g3.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.5)`);
           ctx.strokeStyle = g3; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(entry[0], entry[1]); ctx.quadraticCurveTo(qx, qy, exit[0], exit[1]); ctx.stroke();
