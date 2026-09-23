@@ -419,6 +419,12 @@
     @media (max-width: 768px) {
       .hero::after { height: 48px; background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 0%, #0a0a0a 85%); }
     }
+    /* THE COPIED STATE HAS NO HOVER (2026-09-22, per user "the click sign should be in the middle and have no hover in
+       this state"): while the pill says "Email copied" it holds its resting border and fill, the check is not nudged
+       (the hover's 2px up-and-right nudge is what lifted it off centre; at rest it sits within 0.3px of the text's
+       middle), and no focus ring shows. */
+    .hero .status-tag.is-copied { border-color: rgba(255, 255, 255, 0.22); background: rgba(10, 10, 12, 0.45); outline: none; }
+    .hero .status-tag.is-copied .arrow { transform: none; transition: none; }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
@@ -528,16 +534,31 @@
         // anyone who has one. The pill keeps its width while the shorter label shows, so nothing around it moves.
         // Without the Clipboard API (or outside a secure context) it is simply the mailto it was.
         (function () {
+          // (the confirmation is one icon, not two: the arrow itself turns into a check, and the label reads plain
+          // "Email copied", per user "change the arrow sign into click sign in that arrow sign's language". The font's
+          // own "✓" was a calligraphic fallback glyph with tapered strokes, so the check is DRAWN from the arrow's
+          // measured parts instead: Neue Montreal's ↗ is straight monoline strokes 0.072em thick with square ends
+          // and a sharp 90-degree corner, in a 0.527em square ink box on a 0.587em advance; the check is two such
+          // strokes meeting at the same sharp right angle, at the arrow's 45 degrees, centred on that box and scaled
+          // 1.3 so its ink spans the arrow's own height (0.11 to 0.60em above the baseline against the arrow's 0.087 to
+          // 0.614; at 1.12 it read visibly smaller). Units are em x 1000 on the arrow's own 0.614em ascent, so it inherits the
+          // arrow's 11px, colour and 0.7 opacity and keeps the pill's width.)
+          const CHECK = '<svg viewBox="0 0 587 614" width="0.587em" height="0.614em" aria-hidden="true" style="overflow:visible">' +
+            '<path d="M-15.9 246.9 L190.4 453.2 L602.9 40.7" fill="none" stroke="currentColor" stroke-width="72" stroke-linecap="butt" stroke-linejoin="miter"/></svg>';
           const pill = document.currentScript.previousElementSibling, label = pill && pill.querySelector('.status-label');
-          if (!pill || !label || !navigator.clipboard || !window.isSecureContext) return;
-          const EMAIL = 'changmou627627@gmail.com', REST = label.textContent;
+          const arrow = pill && pill.querySelector('.arrow');
+          if (!pill || !label || !arrow || !navigator.clipboard || !window.isSecureContext) return;
+          const EMAIL = 'changmou627627@gmail.com', REST = label.textContent, ICON = arrow.textContent;
           let timer = 0;
-          pill.addEventListener('click', () => {
+          pill.addEventListener('click', e => {
+            if (e.detail) pill.blur();                      // a mouse click leaves no focus ring behind; a keyboard press keeps focus
             navigator.clipboard.writeText(EMAIL).then(() => {
               if (!timer) { pill.style.minWidth = pill.offsetWidth + 'px'; pill.style.justifyContent = 'center'; }
-              label.textContent = 'Email copied ✓';
+              label.textContent = 'Email copied';
+              arrow.innerHTML = CHECK;
+              pill.classList.add('is-copied');
               clearTimeout(timer);
-              timer = setTimeout(() => { label.textContent = REST; pill.style.minWidth = ''; pill.style.justifyContent = ''; timer = 0; }, 2200);
+              timer = setTimeout(() => { label.textContent = REST; arrow.textContent = ICON; pill.classList.remove('is-copied'); pill.style.minWidth = ''; pill.style.justifyContent = ''; timer = 0; }, 2200);
             }, () => {});
           });
         })();
