@@ -1909,6 +1909,9 @@ footer {
   color: var(--text);
   text-decoration: none;
   line-height: 1;
+  /* room for the descender (2026-09-22): with line-height 1 the box ended exactly on the bar's hairline, so the
+     "y" hung 6-10px through it at every desktop width; 0.1em clears it by about half that again */
+  padding-bottom: 0.1em;
   letter-spacing: -0.04em;
   cursor: pointer;
   transform: translateY(20px);
@@ -2022,7 +2025,7 @@ footer {
 
 .footer-copy {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.92); /* was 0.8, which measured 3.9-4.0:1 on the rendered amber glow (AA needs 4.5 at 13px); now the links' value (2026-09-22) */
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
 }
 
@@ -4938,6 +4941,15 @@ footer {
 
   .footer-links {
     gap: 24px;
+  }
+
+  /* A 44px tap area for each link without moving the row (2026-09-22): the links are 22px tall, so an invisible
+     box reaches 11px above and below and half the 24px gap to each side, so neighbours meet but never overlap.
+     ::before is free here; ::after is the hover underline. */
+  .footer-links a::before {
+    content: '';
+    position: absolute;
+    inset: -11px -12px;
   }
 }
 

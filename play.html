@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=272">
+  <link rel="stylesheet" href="style.css?v=273">
   <style>
     /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
        border, the image carries the radius and its hairline, text hangs
@@ -696,9 +696,24 @@
             // word (it sat just under the word at first; moved down per user "do not get too close")
             const row = document.querySelector('.page-end .footer-links');
             if (row && row.offsetHeight) { const r = row.getBoundingClientRect(), b = box.getBoundingClientRect(); note.style.top = Math.round(r.top + r.height / 2 - b.top - note.offsetHeight / 2) + 'px'; }
+            // In a narrow desktop window the centred note ran into the (c) line and the links (6px either side at 769px
+            // wide), so there it takes the (c) line's place for its two seconds and the line steps aside (2026-09-22)
+            const copy = document.querySelector('.page-end .footer-copy');
+            let swap = false;
+            note.style.left = '0'; note.style.textAlign = 'center';
+            if (copy && copy.offsetWidth && row && row.offsetHeight) {
+              const rg = document.createRange(); rg.selectNodeContents(note);
+              const n = rg.getBoundingClientRect(), c = copy.getBoundingClientRect(), r = row.getBoundingClientRect();
+              swap = n.left - c.right < 32 || r.left - n.right < 32;
+              if (swap) { note.style.left = Math.round(c.left - box.getBoundingClientRect().left) + 'px'; note.style.textAlign = 'left'; }
+            }
+            if (copy) { copy.style.transition = 'opacity 0.16s'; copy.style.opacity = swap ? '0' : ''; }
             note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
             clearTimeout(timer);
-            timer = setTimeout(() => { note.style.transitionDuration = '0.4s'; note.style.opacity = '0'; }, 2000);
+            timer = setTimeout(() => {
+              note.style.transitionDuration = '0.4s'; note.style.opacity = '0';
+              if (copy) { copy.style.transition = 'opacity 0.4s'; copy.style.opacity = ''; }
+            }, 2000);
           }, () => { location.href = link.href; });      // copy refused: fall back to the mailto
         });
       })();
@@ -1181,7 +1196,7 @@
       const LIFE = [3.6, 6.0], RISE = [22, 38], MAX = 560; // room for a let-go whale on top of the ambient field
       const SHAPE_POINT = 0.55, SHAPE_BOKEH = 0.3; // the rest sparks
       const METEOR = [10, 20];       // seconds between shooting stars
-      let W = 0, H = 0, bTop = 0, bBot = 0, running = false, raf = 0, last = 0, T = 0, acc = 0, seeded = false, nextMeteor = 0;
+      let W = 0, H = 0, bTop = 0, bBot = 0, wTop = 0, running = false, raf = 0, last = 0, T = 0, acc = 0, seeded = false, nextMeteor = 0;
       const motes = [], meteors = [];
       cv._parts = motes; // for probing
       const rnd = (a, b) => a + Math.random() * (b - a);
@@ -1275,6 +1290,9 @@
       const WHALE = [34, 50];                 // seconds between whale starts (a desktop crossing takes about 27s, so 7 to 23s of empty band between them; a phone crossing about 18s, so 16 to 32s; was 45 to 75, then 28 to 45 with the 18s crossing)
       let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
       let rScale = 1; // the stars grow a little on phones, where the whale is half the size (set per spawn)
+      // The sparks' rays scale with the animal (2026-09-22): they were sized for a 500px whale, so on a 206px phone
+      // whale each cross spanned about a fifth of the body and it read as a scatter of stars (set per spawn)
+      let rayK = 1;
       function catmull(pts, per, closed) {
         const out = [], n = pts.length;
         for (let i = 0; i < (closed ? n : n - 1); i++) {
@@ -1311,7 +1329,7 @@
         const r = spark ? 1.8 : kind === 'anchor' ? rnd(1.5, 1.7) : kind === 'anchor2' ? rnd(1.3, 1.5) : kind === 'outline' ? rnd(1.0, 1.4) : kind === 'outline3' ? rnd(0.55, 0.75) : rnd(0.8, 1.1);
         const b = spark ? 1 : kind === 'anchor' ? rnd(0.9, 1) : kind === 'anchor2' ? rnd(0.72, 0.82) : kind === 'outline' ? rnd(0.66, 0.92) : kind === 'outline3' ? rnd(0.3, 0.45) : rnd(0.26, 0.4); // lifted a tier on 2026-09-11 per user "a little too dark"
         return { s: p[0], t: p[1], part, kind, shape: spark ? 2 : 0, r: r * WHALE_R * rScale, b: dim * b, k: interior ? 1 : 0,
-          c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
+          c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8) * rayK, rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
           x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
       }
       function flukeAngle(age) { // the hinged fluke's turn, the wave's slope at the stalk
@@ -1357,6 +1375,7 @@
         const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
         if (L < 120) return;
         rScale = phone ? 1.25 : 1;
+        rayK = Math.min(1, L / 500);
         const swim = phone ? 16 : W_SWIM; // a narrower band, a shorter crossing
         const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
         const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], ka = (L / 460) * (L / 460);
@@ -1374,8 +1393,18 @@
         catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => { if (clear(p)) list.push(whaleMote(p, 'mouth', 'body')); });
         W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
         // on a phone the whale is over half the width, so its ends may start and finish past the edges
-        const cx0 = phone ? 0.4 * L : 0.55 * L + 20, cx1 = phone ? W - 0.4 * L : W - 0.55 * L - 60;
-        whale = { born: T, dir, L, arc, swim, cx0, cx1, cyEnd: bTop + 30 + 0.142 * L + arc, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
+        // Centred on the page both ways (2026-09-22): the margins were 20px left and 60px right, so every crossing
+        // ran 20px left of the centred word; the travel length, and so the speed, is unchanged.
+        const cx0 = phone ? 0.4 * L : 0.55 * L + 40, cx1 = phone ? W - 0.4 * L : W - 0.55 * L - 40;
+        // Vertically it sits in the middle of the lit band (2026-09-22): it used to hang 30px under the band's top,
+        // so its back rode the glow's near-black edge (10-16px of room) while 90-137px stayed empty down to the word.
+        // Over a crossing, with the wave, the arc and the flap, the whale spans cyEnd - arc - 0.18L to cyEnd + 0.263L
+        // (measured); equal room above and below it, between the band's top and the cap tops of "Say hello", gives
+        // the line below. The caps sit 0.147em under the word's box; on phones the word is hidden, so the band
+        // ends at its line.
+        const txt = document.querySelector('.say-hello .footer-big-text');
+        const inkTop = txt && txt.offsetParent ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
+        whale = { born: T, dir, L, arc, swim, cx0, cx1, cyEnd: (bTop + inkTop + arc - 0.083 * L) / 2, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
         nextWhale = T + rnd(WHALE[0], WHALE[1]);
         list.forEach(m => { // each ember ignites at the glow's edge under its place and rises into it, nose first
           const a = whalePoint(m, 0);
@@ -1491,7 +1520,7 @@
         let b1 = 0.34;
         const el = stopSel && document.querySelector(stopSel);
         if (el) b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04);
-        bTop = 0; bBot = H * b1;
+        bTop = 0; bBot = H * b1; wTop = bBot + H * 0.04;
         if (whale) { whale = null; nextWhale = T + 3; }
       }
       cv._draw = draw; // for probing: step the simulation without waiting on frames
