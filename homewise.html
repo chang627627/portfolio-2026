@@ -706,9 +706,39 @@
     <!-- Say hello -->
     <section class="say-hello">
       <div class="footer-big">
-        <a href="mailto:changmou627627@gmail.com" class="footer-big-text"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+        <a href="mailto:changmou627627@gmail.com" class="footer-big-text" aria-label="Say hello by email"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
       </div>
     </section>
+    <script>
+      // "SAY HELLO" ALSO COPIES THE EMAIL (2026-09-22, per user "do both"). The link keeps its mailto for anyone with a
+      // mail app; a click also puts the address on the clipboard, and a small line fades in under the word for two
+      // seconds to say so, since the word itself cannot change (its letters carry the light). The line exists only
+      // after a click. The aria-label on the link fixes a screen reader naming it "S a y h e l l o", one letter span
+      // at a time. Without the Clipboard API (or outside a secure context) it is simply the mailto it was.
+      (function () {
+        const link = document.querySelector('.say-hello .footer-big-text'), box = link && link.parentElement;
+        if (!box || !navigator.clipboard || !window.isSecureContext) return;
+        const note = document.createElement('div');
+        note.setAttribute('role', 'status');
+        note.style.cssText = 'position:absolute;left:0;right:0;top:calc(100% + 32px);z-index:4;text-align:center;font-size:13px;' +
+          'letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-shadow:0 1px 4px rgba(0,0,0,0.4);' +
+          'opacity:0;transition:opacity 0.4s var(--ease-out);pointer-events:none;';
+        box.appendChild(note);
+        let timer = 0;
+        link.addEventListener('click', () => {
+          navigator.clipboard.writeText('changmou627627@gmail.com').then(() => {
+            note.textContent = 'Email copied';
+            // level with the footer links row, in its empty middle between the (c) line and the links, well clear of the
+            // word (it sat just under the word at first; moved down per user "do not get too close")
+            const row = document.querySelector('.page-end .footer-links');
+            if (row && row.offsetHeight) { const r = row.getBoundingClientRect(), b = box.getBoundingClientRect(); note.style.top = Math.round(r.top + r.height / 2 - b.top - note.offsetHeight / 2) + 'px'; }
+            note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
+            clearTimeout(timer);
+            timer = setTimeout(() => { note.style.transitionDuration = '0.4s'; note.style.opacity = '0'; }, 2000);
+          }, () => {});
+        });
+      })();
+    </script>
 
     <!-- Footer -->
     <footer>
