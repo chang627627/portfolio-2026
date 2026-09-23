@@ -45,7 +45,7 @@ Chang Mou
 San Francisco, CA | changmou627627@gmail.com | LinkedIn: linkedin.com/in/chang-mou/
 
 Summary:
-Award-winning product designer focused on building intuitive, human-centered products across SaaS, AI products, emerging technology, and social impact. With 3.5+ years of experience, delivering measurable gains in user adoption, retention, and business growth through research-led decision making, rapid iteration, and strategic prototyping. Experienced in AI-assisted workflows and scalable design systems, collaborates closely with product and engineering teams to move ideas from concept to production.
+Award-winning product designer focused on building intuitive, human-centered products across SaaS, AI products, emerging technology, and social impact. With 4+ years of experience, delivering measurable gains in user adoption, retention, and business growth through research-led decision making, rapid iteration, and strategic prototyping. Experienced in AI-assisted workflows and scalable design systems, collaborates closely with product and engineering teams to move ideas from concept to production.
 
 Experience:
 

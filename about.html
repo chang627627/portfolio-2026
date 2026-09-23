@@ -233,7 +233,7 @@
     /* IT FADES IN PLACE, SLOWLY (2026-09-16, per user "maybe let [the statement] fade out but slower"). It
        drifted up at half page speed before; now it holds perfectly still and fades over --story-exit of scroll,
        and the script pads the hero by exactly that distance so it is fully gone the moment the stage sticks,
-       before any line begins. Two animations on one timeline: hero-hold translates the hero down by exactly
+       before any line begins. [The hold described next was replaced by sticky on 2026-09-22, see below.] Two animations on one timeline: hero-hold translates the hero down by exactly
        the scroll (linear, so it cancels the page's movement and the words never move), and hero-fade eases
        the opacity out, holding near full at the start so the sentence is still read before it goes.
        THIS IS A CSS SCROLL TIMELINE, NOT A PER-FRAME TRANSFORM, and that is the whole point: a JS translate
@@ -241,16 +241,28 @@
        time, which is exactly the shiver the canvas had. Longhands with animation-duration: auto, per the
        documented shorthand trap; unsupported browsers and reduced motion keep the statement leaving at page
        speed. The one dial is FADE_RUN in the story script. */
-    @keyframes hero-hold { to { transform: translateY(var(--story-exit, 0px)); } }
+    /* HELD BY STICKY, NOT BY A COUNTER-TRANSLATE (2026-09-22, per user "when scroll down, [the statement] is
+       shaking"). It used to be held still by `hero-hold`, a scroll-timeline translate that moved the hero down
+       by exactly the scroll. Measured frame by frame the statement sat at exactly 200px, so the page believed it
+       was still, but the translate and the scroll are two things the renderer has to land in the same frame, and
+       when they miss by a frame or round a fractional scroll differently the words shiver. Now the statement is
+       `position: sticky` at its own resting top, which the browser holds in step with the scroll itself; only
+       the fade is still a scroll timeline, and opacity cannot shake. For the statement to stay stuck through the
+       whole fade its hero's content has to run on past the fade (a spacer, `--story-hold`), and the pin is pulled
+       back up by the statement's foot (JS) so it still starts exactly where the fade ends. The hero ignores the
+       pointer because its spacer now lies over the top of the pin; the statement itself still takes it. */
     @keyframes hero-fade { to { opacity: 0; } }
     @supports (animation-timeline: scroll()) {
       @media (prefers-reduced-motion: no-preference) {
         .story-on .page-hero {
-          animation-name: hero-hold, hero-fade; animation-duration: auto, auto;
-          animation-timing-function: linear, cubic-bezier(0.45, 0, 0.55, 1);
+          animation-name: hero-fade; animation-duration: auto;
+          animation-timing-function: cubic-bezier(0.45, 0, 0.55, 1);
           animation-fill-mode: both; animation-timeline: scroll(root block);
           animation-range: 0 var(--story-exit, 0px);
+          pointer-events: none;
         }
+        .story-on .page-hero .page-title { position: sticky; top: var(--story-top, 200px); pointer-events: auto; }
+        .story-on .page-hero::after { content: ''; display: block; height: var(--story-hold, 0px); }
       }
     }
     /* MANY INTO ONE (2026-09-15, per user "can we add a metaphor here like prism did in the play page?" then "do 1"): a
@@ -390,6 +402,21 @@
       25% { opacity: 1; }
       100% { opacity: 1; translate: 0 0; }
     }
+
+    /* ---- Text pass, 2026-09-22 (per user "all five"). ----------------------------
+       THE BIO'S PARAGRAPHS READ AS FOUR: they were 8px apart, less than a line's own
+       leading, so the four ran together as one block. The type stays 16px: a 20px bio
+       shipped with this pass and was cancelled the same day ("do not use bigger size
+       bio"). */
+    .about-block p { margin-bottom: 16px; }
+    @media (min-width: 769px) {
+      .about-block p { margin-bottom: 20px; }
+    }
+    /* THE LIST RULES MATCH THE QUOTES' RULES: the Experience, Education and Recognition
+       rows were ruled in #1a1a1a, the card fill, while the testimonials directly below
+       use the site hairline. */
+    .experience-list li { border-bottom-color: rgba(255, 255, 255, 0.08); }
+    .experience-list li:first-child { border-top-color: rgba(255, 255, 255, 0.08); }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
@@ -507,11 +534,15 @@
     // fonts.ready landing after the browser restored a mid-page scroll - then padded
     // the answer down by that much and left a screen of empty black above it.
     // offsetTop is immune: it is layout, so neither scrolling nor the transform moves it.
+    // (2026-09-22) The statement is sticky now, and a sticky box's offsetTop DOES move with the scroll, so the
+    // foot is measured from the hero, which never sticks: its top, its padding, the statement's margin and height.
     function statementFoot() {
       const t = hero.querySelector('.page-title'); if (!t) return NaN;
-      let y = 0, n = t;
+      let y = 0, n = hero;
       while (n) { y += n.offsetTop; n = n.offsetParent; }
-      return Math.round(y + t.offsetHeight);
+      const hs = getComputedStyle(hero);
+      return Math.round(y + (parseFloat(hs.paddingTop) || 0) + (parseFloat(hs.borderTopWidth) || 0)
+        + (parseFloat(getComputedStyle(t).marginTop) || 0) + t.offsetHeight);
     }
     // the lines sit at an exact viewport y inside the full-screen stage: their block foot on the anchor
     function placeAnswer(foot) {
@@ -539,12 +570,17 @@
     const lagOK = window.CSS && CSS.supports && CSS.supports('animation-timeline', 'scroll()');
     function layout() {
       const H = window.innerHeight;
-      hero.style.paddingBottom = '';                       // measure the statement's own foot before padding it
+      hero.style.paddingBottom = '';
+      hero.style.removeProperty('--story-hold'); pin.style.marginTop = '';
       FOOT = statementFoot();
       if (lagOK) {
-        // pad the hero so the pin starts exactly where the held statement finishes fading
+        // the statement sticks at its own resting top; the hero's content runs on to exit + FOOT so it stays
+        // stuck until the fade is over, and the pin is pulled back up by FOOT so it still starts exactly at exit
         const exit = Math.max(FOOT + 1, FADE_RUN);
-        hero.style.paddingBottom = (exit - FOOT) + 'px';
+        const t = hero.querySelector('.page-title');
+        hero.style.setProperty('--story-top', (FOOT - t.offsetHeight) + 'px');
+        hero.style.setProperty('--story-hold', exit + 'px');
+        pin.style.marginTop = (-FOOT) + 'px';
         document.documentElement.style.setProperty('--story-exit', exit + 'px');
       }
       beatRun = Math.round(H * BEATS);
@@ -567,13 +603,19 @@
     // NATIVELY; nothing here touches the wheel (the scroll friction reverted on 2026-09-13 stays dead).
     // Both rAF loops call follow() every frame; it steps once per frame timestamp, so it never double-steps.
     const SPRING = 16;    // rad/s: settles to 2% in about 0.36s. Higher is tighter to the hand, lower is floatier
-    let eased = -1, vel = 0, springAt = 0, lastTarget = 0;
+    // THE SPRING ALSO CARRIES THE FADE (2026-09-22): its target is the pin-relative position, which is NEGATIVE
+    // while the statement fades (down to -pinTop at the top of the page), so the galaxy's tip and turn during
+    // the fade ride the same clock as its three stages. Everything that reads the hold clamps at 0, so the
+    // lines and the stages see exactly what they saw before. `primed` replaces the old eased < 0 sentinel,
+    // which a negative position would have tripped every frame.
+    let eased = 0, vel = 0, springAt = 0, lastTarget = 0, primed = false;
+    function position() { return Math.max(-pin.offsetTop, -pin.getBoundingClientRect().top); }
     function follow(now) {
-      const target = scrolled();
+      const target = position();
       const jump = Math.abs(target - lastTarget) > window.innerHeight; lastTarget = target;
       // snap on the first frame, after a pause, and on a jump of a whole screen (Home, End, an anchor, a
       // restored scroll), so the galaxy never plays three stages backwards to catch up
-      if (eased < 0 || !springAt || jump) { eased = target; vel = 0; springAt = now; return false; }
+      if (!primed || !springAt || jump) { eased = target; vel = 0; springAt = now; primed = true; return false; }
       const dt = Math.min(0.05, Math.max(0, (now - springAt) / 1000));
       if (dt > 0) {
         springAt = now;
@@ -668,6 +710,7 @@
         const put = (ex, ey, flat, o) => {
           const py = ey * flat;
           out.push(Object.assign({
+            ex, ey, fl: flat,                    // its place in the disc plane, kept so the disc can tip and turn
             ax: ex * ca - py * sa, ay: ex * sa + py * ca,
             r: Math.min(1.4, Math.hypot(ex, ey)),
             ph: rnd() * 6.28, fall: rnd(), tw: 0.6 + 1.4 * rnd(),
@@ -806,15 +849,25 @@
         // fall. The tangential term is what gives the path curvature; the separate fall is what breaks a
         // real defect, that scaling the radial distance and the fall by the SAME m.fall sent every mote
         // near the horizontal axis away at exactly 45 degrees, measured, whatever its randoms were.
+        // (the radial and tangential directions are taken per frame from the mote's turned position, since
+        // the disc has tipped and turned by the time it scatters)
         motes.forEach(m => {
-          const d = Math.hypot(m.ax, m.ay) || 1;
-          m.nx = m.ax / d; m.ny = m.ay / d;                               // also saves a hypot per mote per frame
-          m.tx = -m.ny;    m.ty = m.nx;
           m.vout = 30 + 90 * m.fall;                                      // radial throw
           m.vtan = ((m.ph / 6.2832) - 0.5) * 46;                          // sideways, its own random
           m.gfall = 40 + 150 * ((m.sr - 0.5) / 0.8);                      // and its own weight
         });
       })();
+      // IT TIPS AND TURNS WHILE THE STATEMENT FADES (2026-09-22, per user "do 1"). The first screen of scroll used
+      // to leave the galaxy exactly as it was, so the first thing a visitor did got the least response. Now, as the
+      // statement fades, the disc turns in its own plane and tips a little toward the viewer, the grammar of Play's
+      // prism turning with the scroll. It turns the way a real spiral does, arms trailing, and slightly faster
+      // inside than out, so the arms wind a touch as it goes; and it arrives rounder, closer to the plane of the
+      // ring it later forms. At the top of the page it is exactly the galaxy it was; it reaches its full turn as
+      // the pin sticks and holds it through the three stages. Dials: TURN (radians), TIP (share of the way to
+      // face-on), FILL_MAX (the most of the band under the statement it may take once tipped).
+      const TURN = 0.55, TIP = 0.30, FILL_MAX = 0.82;
+      const TCA = Math.cos(TILT), TSA = Math.sin(TILT);
+      const UX = new Float32Array(motes.length), UY = new Float32Array(motes.length);
       let W = 0, H = 0, dpr = 1, t0 = performance.now(), loop = 0;
       function size() {
         dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -824,13 +877,27 @@
         springAt = 0;                                      // a new size snaps rather than animating across it
       }
       function dot(spr, x, y, r, a) { if (a < 0.015) return; const sz = r * 5.2; ctx.globalAlpha = Math.min(1, a); ctx.drawImage(spr, x - sz / 2, y - sz / 2, sz, sz); }
-      function draw(sc, t) {
+      function draw(sc, t, pre) {
         // EVERY COORDINATE BELOW IS A VIEWPORT COORDINATE, and the canvas is fixed, so that is simply the
         // canvas's own space. Nothing anywhere compensates for scroll: that is what stops it shivering.
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.clearRect(0, 0, W, H);
         ctx.globalCompositeOperation = 'lighter';
         const foot = FOOT; if (!(foot > 0) || !beatRun) return;
+        // how far through the fade: 0 at the top of the page, 1 once the pin sticks (the probe's two-argument
+        // call draws the turned galaxy, since any hold position is past the fade)
+        const tp = smooth(pre === undefined ? 1 : pre);
+        const phi = -TURN * tp, tau = TIP * tp;
+        let vfNow = 0;
+        for (let i = 0; i < motes.length; i++) {
+          const m = motes[i];
+          const turn = phi * (1.2 - 0.4 * Math.min(1, m.r));  // inside turns a little faster: the arms wind as it goes
+          const c = Math.cos(turn), s = Math.sin(turn);
+          const x1 = m.ex * c - m.ey * s, y1 = (m.ex * s + m.ey * c) * (m.fl + (1 - m.fl) * tau);
+          const ux = x1 * TCA - y1 * TSA, uy = x1 * TSA + y1 * TCA;
+          UX[i] = ux; UY[i] = uy;
+          const ay = uy < 0 ? -uy : uy; if (ay > vfNow) vfNow = ay;
+        }
         // the disc is mapped square (rx = ry): its own FLAT gives the angle, so it is never squashed twice
         const q = sc / beatRun, line = i => smooth((q - LEAD - i * STEP) / SPAN);
         // IT IS COMPOSED IN THE BAND UNDER THE STATEMENT AND STAYS THERE (2026-09-15, per user "So the galaxy do
@@ -839,11 +906,16 @@
         // there is nothing to clear, so the geometry is fixed: its height is FILL of the band between the
         // statement and the fold and its centre sits at MID of that band, a little above the middle so the air
         // reads even. Only the light moves during the hold.
-        const vf = VF;                                       // measured off the motes at build time
+        const vf = vfNow;                                    // measured off the motes every frame, as turned (VF at rest)
         const cx = W / 2, title = foot;
-        const FILL = 0.62, MID = 0.52;
+        // FILL 0.62 to 0.70 (2026-09-22, per user "do 1,2,3"): the galaxy at rest is about 13% bigger. Tipping still
+        // stops at FILL_MAX of the band, so by the time the pin sticks it is back to about the size it had before.
+        const FILL = 0.70, MID = 0.52;
         const bandRest = Math.max(120, H - title);
-        const rx = Math.max(180, Math.min((bandRest * FILL) / (2 * vf), W * 0.46, 780)), ry = rx;
+        // as it tips it grows taller at the same width; it may take up to FILL_MAX of the band, and only past
+        // that does it narrow, so at the top of the page this is exactly the old size
+        const fillNow = Math.min(FILL_MAX, FILL * vf / VF);
+        const rx = Math.max(180, Math.min((bandRest * fillNow) / (2 * vf), W * 0.46, 780)), ry = rx;
         const cy = title + bandRest * MID;
         const e1 = line(0), e2 = line(1), e3 = line(2);
         // EACH MOTE RUNS ITS OWN SHARE OF ITS STAGE. `stag` turns a stage's progress into one mote's, starting
@@ -876,7 +948,8 @@
         if (nucleus > 0.004) {
           const G = Math.min(rx * 0.34, 180);
           ctx.save(); ctx.translate(cx, cy); ctx.rotate(TILT); ctx.globalAlpha = nucleus;
-          ctx.drawImage(sGlow, -G, -G * 0.62, G * 2, G * 1.24);
+          const asp = 0.62 + 0.38 * tau;                   // the glow rounds out with the disc as it tips
+          ctx.drawImage(sGlow, -G, -G * asp, G * 2, G * 2 * asp);
           ctx.restore();
         }
         motes.forEach((m, i) => {
@@ -885,7 +958,7 @@
           const wob = 1.0 * Math.sin(t * 0.45 + m.ph), wob2 = 0.8 * Math.cos(t * 0.37 + m.ph * 1.3);
           let twinkle = 0.72 + 0.62 * Math.sin(t * m.tw + m.ph * 2.1);      // dips near dark, peaks above its own brightness
           if (m.spark) { const f = Math.sin(t * m.sr + m.ph); twinkle += 1.1 * Math.pow(Math.max(0, f), 14); } // a few catch the light briefly
-          const sx = m.ax * rx, sy = m.ay * ry;
+          const ux = UX[i], uy = UY[i], sx = ux * rx, sy = uy * ry;
           let x = cx + sx + wob, y = cy + sy + wob2, a = Math.pow(m.b, 0.72), r = m.size * GROW;   // the faint lifted most: 0.24 becomes 0.36, 0.9 stays 0.93
           if (!m.keep) {
             // 1. DECIDING WHAT TO BUILD: the field erodes from the outside in. THE LIGHT STILL LEADS THE
@@ -898,9 +971,17 @@
             const u1 = Math.min(1, Math.max(0, (raw1 - m.o1 * SP1) / (1 - SP1)));
             const k = Math.max(0, (u1 - LAG) / (1 - LAG));
             const gl = 1 - (1 - k) * (1 - k) * (1 - k), dr = k * k;
-            x += gl * (m.nx * m.vout + m.tx * m.vtan);
-            y += gl * (m.ny * m.vout * 0.66 + m.ty * m.vtan) + dr * m.gfall;
-            a *= twinkle * (1 - Math.min(1, u1 * 1.12));
+            if (gl > 0) {
+              const d = Math.hypot(ux, uy) || 1, nx = ux / d, ny = uy / d;   // outward from where it now sits
+              x += gl * (nx * m.vout - ny * m.vtan);
+              y += gl * (ny * m.vout * 0.66 + nx * m.vtan) + dr * m.gfall;
+            }
+            // THE FALL IS SEEN (2026-09-22, per user "do 1,2,3"). The light used to fade from the moment a mote was
+            // let go, so at half brightness it had done three quarters of its outward throw but only 14% of its
+            // drop: the drop happened in the dark and the scatter read as evaporating. It now keeps full light
+            // until 45% of its own window and fades over the rest, so at half brightness about half the drop is
+            // done and the stars are seen falling away. It is still gone by the end of its window.
+            a *= twinkle * (1 - smooth((u1 - 0.45) / 0.55));
           } else {
             // 2. WHERE A PERSON STAYS IN CONTROL: the survivors SPIRAL in rather than sliding along a straight
             // line. The path is interpolated in polar coordinates around the centre, so angle and radius move
@@ -937,13 +1018,19 @@
           // a larger point, and rays of up to about 90px that fade to their tips like the site's own sparks. The
           // bloom and the upward ray are held off the statement's foot, so the lift never paints on the words.
           const clear = Math.min(1, Math.max(0, (coreY - foot - 40) / 60));
-          const Rg = 26 + 58 * e3;
-          const ba = coreA * (0.12 + 0.30 * e3) * clear;
+          // THE STAR FLARES ONCE AS IT COMPLETES (2026-09-22, per user "do 1,2,3"), so "good enough to ship" lands on a
+          // moment instead of a smooth growth: keyed to scroll, peaking exactly where the ring finishes closing
+          // (which is also where the star starts to lift and the photographs enter), quick to rise and slower to
+          // settle, like the footer whale's settle click. A pure function of scroll, so it plays back on the way up.
+          const r3 = (q - LEAD - 2 * STEP) / SPAN;             // stage 3's own progress, unsmoothed: 1 is completion
+          const fl = r3 < 1 ? Math.exp(-Math.pow((r3 - 1) / 0.035, 2)) : Math.exp(-Math.pow((r3 - 1) / 0.11, 2));
+          const Rg = (26 + 58 * e3) * (1 + 0.55 * fl);
+          const ba = Math.min(1, coreA * (0.12 + 0.30 * e3) * (1 + 0.9 * fl)) * clear;
           if (ba > 0.004) { ctx.globalAlpha = ba; ctx.drawImage(sGlow, cx - Rg, coreY - Rg, Rg * 2, Rg * 2); }
-          dot(sWarm, cx, coreY, 4 + 4.5 * e3, coreA * 0.45);
-          dot(sW, cx, coreY, 1.9 + 2.1 * e3, coreA);
+          dot(sWarm, cx, coreY, (4 + 4.5 * e3) * (1 + 0.35 * fl), coreA * 0.45 * (1 + 0.6 * fl));
+          dot(sW, cx, coreY, (1.9 + 2.1 * e3) * (1 + 0.35 * fl), coreA);
           if (e3 > 0.05) { // four rays once it is a star, brightest at the centre
-            const len = (14 + 76 * e3) * (1 + 0.10 * Math.sin(t * 1.4));
+            const len = (14 + 76 * e3) * (1 + 0.10 * Math.sin(t * 1.4)) * (1 + 0.35 * fl);
             const up = Math.min(len, Math.max(0, coreY - foot - 12));
             const ra = Math.min(1, coreA * 0.85 * e3);
             ctx.globalAlpha = 1; ctx.lineWidth = 1.2;
@@ -964,7 +1051,8 @@
         loop = 0;
         if (!visible) { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H); return; } // fixed now, so a stopped loop must not leave its last frame on screen
         if (follow(now)) kick();                           // the story engine's spring: the lines and the field share one clock
-        draw(Math.min(Math.max(0, eased), runway + 1), (now - t0) / 1000);
+        const pt = pin.offsetTop;                          // the fade runs over the scroll before the pin sticks
+        draw(Math.min(Math.max(0, eased), runway + 1), (now - t0) / 1000, pt > 0 ? Math.min(1, Math.max(0, 1 + eased / pt)) : 1);
         loop = requestAnimationFrame(frame);
       }
       const start = () => { if (!loop && visible) loop = requestAnimationFrame(frame); };
@@ -1022,7 +1110,7 @@
   <section class="about-vertical">
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Background</span></div>
-      <p>I'm Chang, a product designer in San Francisco with a Master's in Interaction Design<span class="bio-wide">, working on AI products.</span><span class="bio-phone">. I work on AI products, and specifically on the parts a model cannot take off your hands: deciding what to build, where a person stays in control, and what is actually good enough to ship.</span></p>
+      <p>I'm based in San Francisco<span class="bio-wide">, hold a Master's in Interaction Design, and work on AI products.</span><span class="bio-phone"> and hold a Master's in Interaction Design. I work on AI products, and specifically on the parts a model cannot take off your hands: deciding what to build, where a person stays in control, and what is actually good enough to ship.</span></p>
       <p>I run my own research and build my own prototypes: in Figma when that is the right tool, in real code when a spec would lose too much, so the team gets <span style="color: var(--text)">a working build to extend, not a spec to translate</span>.</p>
       <p>I want to make people's lives better, and in this work that usually means taking something away rather than adding it. Those calls come before the data does, and taste is what you have instead. The model gives the hours back, and judgment is what they are for. <span style="color: var(--text)">Designers get more powerful in the AI era, not less.</span></p>
       <p>Outside of work, I cook, walk the city on foot, read widely, vibe code some gimmicks, and spend time with friends. I listen to a lot of music, and more of my ideas come from it than from any designer. Nothing stays in its own field for long, and <span style="color: var(--text)">design is where it all connects</span>.</p>
@@ -1093,24 +1181,28 @@
     </div>
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Experience</span></div>
+      <!-- Company first (2026-09-22): the white slot carries what tells the rows apart.
+           .exp-role / .exp-company are the primary / secondary slots, as in Education and
+           Recognition, not literal labels. Years only, no "Present" (per user): PM Accelerator
+           started in 2025, so it reads 2025 – 2026. -->
       <ul class="experience-list">
         <li>
-          <div class="exp-row"><span class="exp-role">Product Design Expert</span><span class="exp-company">Mercor</span><span class="exp-date">2026</span></div>
+          <div class="exp-row"><span class="exp-role">Mercor</span><span class="exp-company">Product Design Expert</span><span class="exp-date">2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Product Designer</span><span class="exp-company">PM Accelerator</span><span class="exp-date">2026</span></div>
+          <div class="exp-row"><span class="exp-role">PM Accelerator</span><span class="exp-company">Product Designer</span><span class="exp-date">2025 – 2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Product Designer</span><span class="exp-company">UNICEF</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">UNICEF</span><span class="exp-company">Product Designer</span><span class="exp-date">2025</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Product Designer</span><span class="exp-company">Litespace</span><span class="exp-date">2023 – 2024</span></div>
+          <div class="exp-row"><span class="exp-role">Litespace</span><span class="exp-company">Product Designer</span><span class="exp-date">2023 – 2024</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Product Designer</span><span class="exp-company">Asset Layer</span><span class="exp-date">2021 – 2022</span></div>
+          <div class="exp-row"><span class="exp-role">Asset Layer</span><span class="exp-company">Product Designer</span><span class="exp-date">2021 – 2022</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Product Designer</span><span class="exp-company">BC & Alberta Guide Dogs</span><span class="exp-date">2020</span></div>
+          <div class="exp-row"><span class="exp-role">BC & Alberta Guide Dogs</span><span class="exp-company">Product Designer</span><span class="exp-date">2020</span></div>
         </li>
       </ul>
     </div>
@@ -1130,21 +1222,24 @@
     </div>
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Recognition</span></div>
+      <!-- Strongest first (2026-09-22), and each design award names the project that won
+           it, as plain text (links were tried and removed the same day, per user). The
+           mapping is the case studies' own Recognition rows: PollenNav took iF 2026, Red
+           Dot 2025, NYPDA Silver 2025 and EPDA 2025; StoryBloom took Red Dot 2026 and NYPDA
+           Silver 2026. Silver moved into the award name so the row does not read as a top
+           win. -->
       <ul class="experience-list">
         <li>
-          <div class="exp-row"><span class="exp-role">Wall of Portfolios</span><span class="exp-company">Featured</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">Red Dot Design Award</span><span class="exp-company">PollenNav, StoryBloom</span><span class="exp-date">2025, 2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">iF Design Award</span><span class="exp-company">Winner</span><span class="exp-date">2026</span></div>
+          <div class="exp-row"><span class="exp-role">iF Design Award</span><span class="exp-company">PollenNav</span><span class="exp-date">2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Red Dot Design Award</span><span class="exp-company">Winner</span><span class="exp-date">2025, 2026</span></div>
+          <div class="exp-row"><span class="exp-role">NY Product Design Awards, Silver</span><span class="exp-company">PollenNav, StoryBloom</span><span class="exp-date">2025, 2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">NY Product Design Awards</span><span class="exp-company">Silver Winner</span><span class="exp-date">2025, 2026</span></div>
-        </li>
-        <li>
-          <div class="exp-row"><span class="exp-role">European Product Design Award</span><span class="exp-company">Winner</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">European Product Design Award</span><span class="exp-company">PollenNav</span><span class="exp-date">2025</span></div>
         </li>
         <li>
           <div class="exp-row"><span class="exp-role">ULI Market Street Reimagined Competition</span><span class="exp-company">Exhibited at Ferry Building</span><span class="exp-date">2025</span></div>
@@ -1154,6 +1249,9 @@
         </li>
         <li>
           <div class="exp-row"><span class="exp-role">CCA IxD Departmental Scholarship</span><span class="exp-company">Recipient</span><span class="exp-date">2024 – 2025</span></div>
+        </li>
+        <li>
+          <div class="exp-row"><span class="exp-role">Wall of Portfolios</span><span class="exp-company">Featured</span><span class="exp-date">2025</span></div>
         </li>
       </ul>
     </div>
@@ -1189,7 +1287,7 @@
           <img class="testimonial-avatar" src="images/avatar-isabel.jpg" alt="Isabel Wei">
           <div>
             <p class="testimonial-name">Isabel Wei</p>
-            <p class="testimonial-role">PM at HouSmart</p>
+            <p class="testimonial-role">PM at HouSmart (PM Accelerator)</p>
           </div>
         </div>
       </div>
