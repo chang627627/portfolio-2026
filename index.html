@@ -429,6 +429,14 @@
        middle), and no focus ring shows. */
     .hero .status-tag.is-copied { border-color: rgba(255, 255, 255, 0.22); background: rgba(10, 10, 12, 0.45); outline: none; }
     .hero .status-tag.is-copied .arrow { transform: none; transition: none; }
+    /* NO GREEN DOT IN THE COPIED STATE (2026-09-22, per user "why emailed copied in the hero section need attached with
+       the green dot"): the dot means "available", which belongs to "Open to new opportunities", and next to "Email
+       copied" it read as a status light for the copy, which the check already confirms. It is COLLAPSED, not
+       display:none, on purpose: taking it out of display and back restarts its animations, and the class list still
+       carries dot-ignite, so the load flare would replay every time the pill reset. Zero width plus a margin that
+       cancels its 8px flex gap lets "Email copied" and the check centre in the held pill width; opacity needs
+       !important to beat the running pulse animation. */
+    .hero .status-tag.is-copied .status-dot { width: 0; margin-right: -8px; opacity: 0 !important; }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
