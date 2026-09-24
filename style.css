@@ -986,6 +986,7 @@ nav:not(.side-nav)::after {
   }
 }
 
+
 .chat-panel {
   position: fixed;
   bottom: 280px;
@@ -1147,6 +1148,42 @@ nav:not(.side-nav)::after {
 @keyframes chatBlink {
   0%, 60%, 100% { opacity: 0.35; }
   30% { opacity: 1; }
+}
+
+/* THE CHAT THINKS IN STARDUST (2026-09-24, Work, Play and About; the case studies keep the dots
+   above). Three of the site's own motes, the ONE MOTE numbers: a ~1.8px hard core in a 10px box
+   whose glow falls to 0.55 at the edge of the core and 0.16 by 45%, and one pool of light crossing
+   them left to right every 1.4s, the "Say hello" idle sweep at chat scale. Reduced motion: still, at
+   0.55. When the reply starts, each streamed piece fades in once over 160ms and stays. */
+.chat-msg.typing.typing--motes {
+  opacity: 1;
+  padding: 7px 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.chat-msg.typing.typing--motes span {
+  width: 10px;
+  height: 10px;
+  margin: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 9%, rgba(255, 255, 255, 0.55) 10%, rgba(255, 255, 255, 0.16) 45%, rgba(255, 255, 255, 0) 70%);
+  opacity: 0.55;
+  animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chat-msg.typing.typing--motes span { animation: chatMote 1.4s ease-in-out infinite; }
+  .chat-msg.typing.typing--motes span:nth-child(2) { animation-delay: 0.16s; }
+  .chat-msg.typing.typing--motes span:nth-child(3) { animation-delay: 0.32s; }
+  .chat-piece { animation: chatPiece 160ms var(--ease-out) both; }
+}
+@keyframes chatMote {
+  0%, 55%, 100% { opacity: 0.35; transform: scale(1); }
+  22% { opacity: 1; transform: scale(1.3); }
+}
+@keyframes chatPiece {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .chat-msg.user {
@@ -4749,7 +4786,11 @@ footer {
     font-size: 28px;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    /* visibility follows the fade (2026-09-24): with opacity and pointer-events alone the closed
+       overlay's four links stayed in the Tab order, invisible, sitting on top of the page. On close
+       visibility waits out the 0.3s fade; on open it switches at once. */
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0s linear 0.3s;
     z-index: 100;
     overflow: hidden;
   }
@@ -4757,6 +4798,8 @@ footer {
   .nav-links.open {
     opacity: 1;
     pointer-events: all;
+    visibility: visible;
+    transition-delay: 0s;
   }
 
   .nav-links a {
@@ -5491,4 +5534,30 @@ body {
   .case-nav-link { max-width: none; }
   .case-nav-link--next { justify-self: start; text-align: left; }
   .case-nav-title { font-size: 28px; }
+}
+
+/* THE CHAT BUTTON LIVES IN THE GUTTER BETWEEN 769 AND 1527px (2026-09-24, per user "do" on the
+   craft audit). At 48px, 40px in from the edge, it sat over the last ~40px of the 1344px content
+   column at every width up to about 1520: on Work and Play it covered right-aligned years, line
+   ends and, for part of the scroll, the Whisper XR carousel's next arrow (a click there opened the
+   chat). Moving it down or into the corner did not help, because the overlap is horizontal. At
+   36px and 8px from the edge it sits past the column's right edge (1396 vs 1392 at 1440, 1236 vs
+   1232 at 1280). Above 1527 the gutter is wide enough for the original button. Everything that
+   hangs off it moves with it so the stack stays one column: the teaser (its tail recentred on the
+   button), the panel and the case studies' back-to-top button. It sits at the END of the file on
+   purpose: the base .chat-panel and .back-to-top rules come later than the chat block, so a band
+   rule placed beside them lost to them at equal specificity. The same ordering is why the panel
+   used to stay at bottom 280 below 1136px while the button dropped to 96; the second block fixes it. */
+@media (min-width: 769px) and (max-width: 1527px) {
+  .chat-toggle { width: 36px; height: 36px; right: 8px; }
+  .chat-toggle svg { width: 16px; height: 16px; }
+  .back-to-top { right: 8px; bottom: 268px; width: 36px; height: 36px; padding: 0; }
+  .back-to-top svg { width: 16px; height: 16px; }
+  .chat-teaser { right: 8px; bottom: 268px; }
+  .chat-teaser::after { right: 12px; }
+  .chat-panel { right: 8px; bottom: 268px; }
+}
+@media (min-width: 769px) and (max-width: 1135px) {
+  .chat-teaser,
+  .chat-panel { bottom: 144px; }
 }

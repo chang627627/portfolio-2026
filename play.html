@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=273">
+  <link rel="stylesheet" href="style.css?v=274">
   <style>
     /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
        border, the image carries the radius and its hairline, text hangs
@@ -122,6 +122,81 @@
     .prism-on .play-prism { display: block; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1s ease-out 0.5s; }
     .prism-on .play-prism.is-lit { opacity: 1; }
     .prism-on .prism-stage .page-hero { position: relative; z-index: 1; }
+
+    /* ---- Craft pass, 2026-09-24 (per user "do" on the curated.design / Mobbin research) ----
+
+       THE HEADER STAYS READABLE OVER THE ART. The band's scrim ran 0.55 to 0, which left the
+       grey links on a mid-grey over the near-white pieces (The Last Human Gestures, Scope,
+       Octocrab): 79 of 280 samples under 4.5:1, Work/About/Resume at 1.0-1.1:1 between scroll
+       1800 and 2700. Held at 0.88 for the top 42% of the band and then faded, it measured 0 of
+       280 under 4.5:1 (minimum 5.86:1). Play's hero is black, so at rest it cannot be seen; it
+       only shows when artwork passes under the bar. Page-scoped: on Home it would paint over the
+       gold crown. */
+    nav:not(.side-nav)::after { background: linear-gradient(to bottom, rgba(10, 10, 10, 0.88) 0%, rgba(10, 10, 10, 0.88) 42%, rgba(10, 10, 10, 0) 100%); }
+
+    /* KEYBOARD STATES. The resting hairline on videos (0,1,1) was beating the global focus ring,
+       and the facade buttons' ring was clipped by .play-video's overflow, so both drew nothing.
+       The facade ring is inset for that reason. Zoomable images are focusable buttons now. */
+    .play-card video:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; }
+    .yt-facade:focus-visible, .build-go:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; }
+    .play-grid .play-card img[tabindex]:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; }
+
+    /* THE BUILDS. Robot Operator Console and Fish Ocean are code, not films, so on desktop they
+       move at rest: a silent loop that loads only while the card is on screen and is dropped when
+       it leaves, over a poster of its own first frame (the loop fades in once it is actually
+       playing, so it never blinks in). The disc says what a click does: the film's triangle on
+       Robot, RUN on Fish Ocean, which opens the real build on the lightbox stage. The script adds
+       .builds-on to <html> only at desktop width, so phones and a failed script keep the film
+       cards exactly as they were. */
+    .build-stage { display: none; background: #000; }
+    .builds-on .build-stage { display: block; }
+    .builds-on .build-film:not(.is-on) { display: none !important; } /* !important: the film carries an inline display:block */
+    .build-stage .build-poster,
+    .build-stage .build-loop { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 0 !important; outline: none; cursor: default; }
+    .play-grid .play-card .build-stage .build-poster { border-radius: 0 !important; outline: none; }
+    .build-stage .build-loop { opacity: 0; transition: opacity 400ms var(--ease-out); pointer-events: none; }
+    .build-stage .build-loop.is-playing { opacity: 1; }
+    .build-go { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; display: block; }
+    @media (hover: hover) { .build-go:hover .yt-facade__play { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
+    .build-go:active .yt-facade__play { transform: translate(-50%, -50%) scale(0.96); }
+    .build-run { color: rgba(240, 240, 240, 0.95); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 62px; text-align: center; text-indent: 0.12em; }
+    .build-run::after { content: none !important; }
+
+    /* THE STAGE. The lightbox doubles as a stage for a live build: the app runs in an iframe at
+       its own aspect, as large as the window allows, over its poster until the app has loaded;
+       after 8s without a load the poster stays with a link out. Closing unloads the app. */
+    .lightbox .lightbox-stage { position: relative; width: min(calc(100vw - 160px), calc((100vh - 112px) * (var(--ratio, 1.6)))); aspect-ratio: var(--ratio, 1.6); border-radius: 8px; overflow: hidden; background: #000 center / cover no-repeat; outline: 1px solid rgba(255, 255, 255, 0.08); outline-offset: -1px; cursor: default; }
+    .lightbox .lightbox-stage[hidden] { display: none; }
+    .lightbox.is-stage { cursor: default; }
+    .lightbox.is-stage #lightboxImg { display: none; }
+    .lightbox-stage__frame { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 160ms var(--ease-out); transform-origin: 0 0; }
+    .lightbox-stage.is-live .lightbox-stage__frame { opacity: 1; transition-duration: 240ms; }
+    .lightbox .lightbox-stage__open { position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%); display: none; }
+    .lightbox-stage.is-slow:not(.is-live) .lightbox-stage__open { display: inline-flex; }
+    .lightbox-reset { top: 72px; }
+    .lightbox-reset[hidden] { display: none; }
+    .lightbox-reset svg { width: 16px; height: 16px; }
+
+    /* THE MORPH (see the lightbox script). The root is opted out so nothing but the piece is captured; the
+       group moves on the site's ease-out, 300ms open and 220ms close; both snapshots cover-fit their box and
+       only the full image is shown, so a cropped card image opens out of its crop. The lightbox image's own
+       0.97 settle is switched off while a morph runs, or the two would fight. */
+    @media (prefers-reduced-motion: no-preference) {
+      html.vt-piece { view-transition-name: none; }
+      html.vt-piece .lightbox img { transition: none !important; transform: none !important; }
+      ::view-transition-group(play-piece) { animation-duration: 300ms; animation-timing-function: var(--ease-out); }
+      html.vt-piece-close::view-transition-group(play-piece) { animation-duration: 220ms; }
+      ::view-transition-old(play-piece),
+      ::view-transition-new(play-piece) { animation: none; width: 100%; height: 100%; object-fit: cover; overflow: hidden; border-radius: 8px; }
+      html.vt-piece-open::view-transition-old(play-piece) { opacity: 0; }
+      html.vt-piece-close::view-transition-new(play-piece) { opacity: 0; }
+    }
+    /* "SAY HELLO" TAKES FOCUS PROPERLY (2026-09-24): the ring hugs the word (it was a 1344x222 box that also covered
+       the chat button), and a keyboard user who reaches it before the scroll reveal gets the word, lit, instead of an
+       invisible link. The sweep writes each letter's opacity inline, so the lit state needs !important. */
+    .footer-big-text { width: fit-content; margin-inline: auto; }
+    .footer-big-text:focus-visible { opacity: 1; transform: none; }
+    .footer-big-text:focus-visible .letter { opacity: 1 !important; }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
@@ -479,9 +554,9 @@
           <img decoding="async" src="images/mj4-desert.jpg" alt="Moebius-inspired sci-fi landscape" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
           <img decoding="async" src="images/mj5-architecture.jpg" alt="Minimal surreal architecture" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
           <img decoding="async" src="images/mj6-city.jpg" alt="Futuristic neon city" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <video src="images/mj7-shoe.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
-          <video src="images/mj8-gradient.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
-          <video src="images/mj9-portrait.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+          <video src="images/mj7-shoe-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+          <video src="images/mj8-gradient-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+          <video src="images/mj9-portrait-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
         </div>
       </div>
       <div class="play-card" style="--mo:9">
@@ -496,7 +571,12 @@
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
           <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity and Claude Code.</p>
         </div>
-        <video src="images/robot-console.mp4" controls preload="none" poster="images/robot-console-poster.jpg" playsinline width="1280" height="716" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
+        <div class="play-video build-stage" style="aspect-ratio: 1280 / 716">
+          <img class="build-poster" src="images/robot-console-loop-poster.jpg" alt="" width="1280" height="716" loading="lazy" decoding="async">
+          <video class="build-loop" data-loop="images/robot-console-loop.mp4" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+          <button class="build-go" type="button" aria-label="Play the film: Robot Operator Console"><span class="yt-facade__play" aria-hidden="true"></span></button>
+        </div>
+        <video class="build-film" src="images/robot-console.mp4" controls preload="none" poster="images/robot-console-poster.jpg" playsinline width="1280" height="716" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
       <div class="play-card" style="--mo:10">
         <div class="play-info">
@@ -552,7 +632,7 @@
           <p>A team 3D adventure built in Unity. As game designer, I shaped levels and mechanics where players shapeshift between humans, wolves, and seagulls to solve puzzles.</p>
         </div>
         <div class="play-video">
-          <iframe loading="lazy" title="UN/FOLD" src="https://player.vimeo.com/video/486270690?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <button class="yt-facade" type="button" data-embed="https://player.vimeo.com/video/486270690?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0" aria-label="Play: UN/FOLD"><img class="yt-facade__poster" src="images/unfold-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
       </div>
@@ -609,9 +689,12 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
           <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
-          <a href="https://mince-lemon-30902005.figma.site/" target="_blank" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
-        <div class="play-video">
+        <div class="play-video build-stage" style="aspect-ratio: 16 / 9">
+          <img class="build-poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async">
+          <button class="build-go build-go--run" type="button" data-run="https://mince-lemon-30902005.figma.site/" data-ratio="1280 / 800" data-fit="1280x800" data-title="Futuristic Starship Cockpit, running live" aria-label="Run Futuristic Starship Cockpit live"><span class="yt-facade__play build-run" aria-hidden="true">Run</span></button>
+        </div>
+        <div class="play-video build-film">
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=8&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
@@ -619,9 +702,13 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
-          <a href="https://fish-ocean-gray.vercel.app/" target="_blank" rel="noopener" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
-        <video src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
+        <div class="play-video build-stage" style="aspect-ratio: 1280 / 804">
+          <img class="build-poster" src="images/fish-ocean-loop-poster.jpg" alt="" width="1280" height="804" loading="lazy" decoding="async">
+          <video class="build-loop" data-loop="images/fish-ocean-loop.mp4" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
+          <button class="build-go build-go--run" type="button" data-run="https://fish-ocean-gray.vercel.app/" data-ratio="1280 / 804" data-title="Fish Ocean, running live" aria-label="Run Fish Ocean live"><span class="yt-facade__play build-run" aria-hidden="true">Run</span></button>
+        </div>
+        <video class="build-film" src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
       <div class="play-card" style="--mo:14">
         <div class="play-info">
@@ -652,7 +739,7 @@
           <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
         </div>
         <div class="play-video">
-          <iframe loading="lazy" title="I Believe in a Thing Called Love" src="https://player.vimeo.com/video/441663647?background=0&autoplay=0&title=0&byline=0&portrait=0" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          <button class="yt-facade" type="button" data-embed="https://player.vimeo.com/video/441663647?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0" aria-label="Play: I Believe in a Thing Called Love"><img class="yt-facade__poster" src="images/ibelieve-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
             </div>
@@ -660,9 +747,16 @@
   </section>
 
   <!-- Lightbox -->
-  <div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Enlarged image">
     <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
-    <img loading="lazy" decoding="async" id="lightboxImg" src="" alt="">
+    <button class="lightbox-close lightbox-reset" id="lightboxReset" aria-label="Restart" title="Restart" hidden>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+    </button>
+    <img decoding="async" id="lightboxImg" src="" alt="">
+    <div class="lightbox-stage" id="lightboxStage" hidden>
+      <iframe class="lightbox-stage__frame" title="" allow="fullscreen"></iframe>
+      <a class="lightbox-stage__open play-link" href="#" target="_blank" rel="noopener">Open full size <span class="arrow">↗</span></a>
+    </div>
   </div>
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
@@ -770,11 +864,25 @@
     ).join('');
   }
 
-  document.querySelector('.hamburger').addEventListener('click', function() {
-    this.classList.toggle('active');
-    document.querySelector('.nav-links').classList.toggle('open');
-    document.body.classList.toggle('menu-open');
-  });
+  // Phone menu (2026-09-24): the button says whether the menu is open and which element it controls,
+  // and Escape closes it and hands focus back to the button.
+  (function () {
+    const btn = document.querySelector('.hamburger'), links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    links.id = links.id || 'site-menu';
+    btn.setAttribute('aria-controls', links.id);
+    btn.setAttribute('aria-expanded', 'false');
+    const set = (open) => {
+      btn.classList.toggle('active', open);
+      links.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', () => set(!links.classList.contains('open')));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
+    });
+  })();
 
   const footerText = document.querySelector('.footer-big-text');
   if (footerText) {
@@ -892,34 +1000,232 @@
 </script>
 
 <script>
-  // Lightbox
+  // Lightbox (2026-09-24): a real dialog. Zoomable images take keyboard focus as buttons
+  // (Enter or Space opens), the rest of the page goes inert while it is open, focus moves to
+  // Close and comes back to the piece that opened it. The same lightbox is also the stage for a
+  // live build (window.playStage), which runs the app in an iframe and unloads it on close.
   (function() {
     const lightbox = document.getElementById('lightbox');
     const lightboxImg = document.getElementById('lightboxImg');
     const lightboxClose = document.getElementById('lightboxClose');
+    const reset = document.getElementById('lightboxReset');
+    const stage = document.getElementById('lightboxStage');
     if (!lightbox) return;
+    const frame = stage.querySelector('.lightbox-stage__frame');
+    const openLink = stage.querySelector('.lightbox-stage__open');
+    let opener = null, stageUrl = '', slowTimer = 0, unloadTimer = 0;
 
-    document.querySelectorAll('.play-card img:not(.yt-facade__poster)').forEach(img => {
-      img.addEventListener('click', (e) => {
-        e.stopPropagation();
-        lightboxImg.src = img.src;
-        lightboxImg.alt = img.alt;
-        lightbox.classList.add('open');
-        lightbox.setAttribute('aria-hidden', 'false');
-        document.documentElement.style.overflow = 'hidden'; // lock the viewport: html carries overflow-x: hidden, so a body lock never reached it (fixed 2026-09-15)
+    function show(label) {
+      clearTimeout(unloadTimer);
+      lightbox.setAttribute('aria-label', label);
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden'; // lock the viewport: html carries overflow-x: hidden, so a body lock never reached it (fixed 2026-09-15)
+      [...document.body.children].forEach(el => { if (el !== lightbox && el.tagName !== 'SCRIPT') el.inert = true; });
+      lightboxClose.focus({ preventScroll: true });
+    }
+
+    // THE PIECE GROWS OUT OF ITS CARD AND BACK (2026-09-24, per user "do"). A same-document view
+    // transition with the root opted out, so the page stays live and only the piece moves: on open
+    // the card's image carries the name and hands it to the lightbox image, on close the reverse.
+    // Only the full image is drawn during the move (cover-fit), so a cropped card opens out of its
+    // crop and closes back into it. No View Transitions, reduced motion, or an image that has not
+    // decoded within 300ms: today's fade.
+    const html = document.documentElement;
+    const calmMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const canMorph = () => !!document.startViewTransition && !calmMotion.matches;
+    let morphToken = 0;
+    function morph(kind, from, to, update) {
+      const token = ++morphToken;
+      from.style.viewTransitionName = 'play-piece';
+      html.classList.remove('vt-piece-open', 'vt-piece-close');
+      html.classList.add('vt-piece', 'vt-piece-' + kind);
+      const t = document.startViewTransition(() => {
+        from.style.viewTransitionName = '';
+        to.style.viewTransitionName = 'play-piece';
+        update();
       });
-    });
+      t.finished.finally(() => {
+        to.style.viewTransitionName = '';
+        if (token === morphToken) html.classList.remove('vt-piece', 'vt-piece-open', 'vt-piece-close');
+      });
+    }
 
     function closeLightbox() {
+      if (!lightbox.classList.contains('open')) return;
+      const back = opener;
+      if (canMorph() && back && back.tagName === 'IMG' && !lightbox.classList.contains('is-stage') && back.isConnected && back.getClientRects().length) {
+        morph('close', lightboxImg, back, closeNow);
+        return;
+      }
+      closeNow();
+    }
+
+    function closeNow() {
+      if (!lightbox.classList.contains('open')) return;
       lightbox.classList.remove('open');
       lightbox.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
+      [...document.body.children].forEach(el => { el.inert = false; });
+      if (lightbox.classList.contains('is-stage')) {
+        clearTimeout(slowTimer);
+        stage.classList.remove('is-live', 'is-slow');
+        // let the overlay's 160ms fade finish on the poster, then unload the app
+        unloadTimer = setTimeout(() => {
+          frame.src = 'about:blank';
+          stage.hidden = true; reset.hidden = true;
+          lightbox.classList.remove('is-stage');
+        }, 200);
+      }
+      if (opener) opener.focus({ preventScroll: true });
+      opener = null;
     }
+
+    function openImage(img) {
+      opener = img;
+      clearTimeout(unloadTimer);
+      if (lightbox.classList.contains('is-stage')) { frame.src = 'about:blank'; stage.hidden = true; reset.hidden = true; lightbox.classList.remove('is-stage'); }
+      lightboxImg.src = img.currentSrc || img.src;
+      lightboxImg.alt = img.alt;
+      const label = 'Enlarged image' + (img.alt ? ': ' + img.alt : '');
+      if (!canMorph()) { show(label); return; }
+      const decoded = lightboxImg.decode ? lightboxImg.decode().then(() => true, () => false) : Promise.resolve(false);
+      Promise.race([decoded, new Promise((r) => setTimeout(() => r(false), 300))]).then((ready) => {
+        if (opener !== img) return; // superseded while decoding
+        if (ready) morph('open', img, lightboxImg, () => show(label)); else show(label);
+      });
+    }
+
+    // An app with a fixed design size (Starship's instrument panels need 1280px) is rendered at
+    // that size and scaled down to the stage, never up; others fill the stage.
+    let fit = null;
+    const fitFrame = () => {
+      if (!fit) { frame.style.width = frame.style.height = frame.style.transform = ''; return; }
+      const k = Math.min(1, stage.clientWidth / fit.w);
+      frame.style.width = fit.w + 'px'; frame.style.height = fit.h + 'px';
+      frame.style.transform = 'scale(' + k + ')';
+    };
+    window.addEventListener('resize', () => { if (lightbox.classList.contains('is-stage')) fitFrame(); }, { passive: true });
+
+    // opts: { url, title, poster, ratio, fit: 'WxH', opener }
+    window.playStage = function (opts) {
+      opener = opts.opener || null;
+      clearTimeout(unloadTimer); clearTimeout(slowTimer);
+      stageUrl = opts.url;
+      lightbox.classList.add('is-stage');
+      stage.style.setProperty('--ratio', opts.ratio || '1.6');
+      stage.style.backgroundImage = opts.poster ? 'url("' + opts.poster + '")' : 'none';
+      stage.classList.remove('is-live', 'is-slow');
+      openLink.href = opts.url;
+      frame.title = opts.title || '';
+      stage.hidden = false; reset.hidden = false;
+      const m = /^(\d+)x(\d+)$/.exec(opts.fit || '');
+      fit = m ? { w: +m[1], h: +m[2] } : null;
+      fitFrame();
+      frame.src = stageUrl;
+      slowTimer = setTimeout(() => stage.classList.add('is-slow'), 8000);
+      show(opts.title || 'Live build');
+      fitFrame(); // again now the lightbox is displayed and the stage has its width
+    };
+    let revealTimer = 0;
+    frame.addEventListener('load', () => {
+      if (!stageUrl || frame.getAttribute('src') !== stageUrl) return; // the about:blank unload also fires load
+      clearTimeout(slowTimer);
+      // wait 300ms before revealing: a page whose own background is white (Starship) shows a
+      // white panel for a frame or three before it draws, and the poster should cover that
+      clearTimeout(revealTimer);
+      revealTimer = setTimeout(() => {
+        if (frame.getAttribute('src') === stageUrl && lightbox.classList.contains('open')) stage.classList.add('is-live');
+      }, 300);
+    });
+    reset.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!stageUrl || !lightbox.classList.contains('is-stage') || !lightbox.classList.contains('open')) return;
+      stage.classList.remove('is-live');
+      frame.src = stageUrl; // setting src, even to the same URL, reloads it, and works across origins
+    });
+    stage.addEventListener('click', (e) => e.stopPropagation()); // clicks on the stage are not clicks on the backdrop
+
+    document.querySelectorAll('.play-card img:not(.yt-facade__poster):not(.build-poster)').forEach(img => {
+      const card = img.closest('.play-card');
+      const title = card && card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : '';
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      const alt = img.alt || '';
+      img.setAttribute('aria-label', 'Enlarge: ' + (!title || alt.toLowerCase().startsWith(title.toLowerCase()) ? alt || title : alt ? title + ', ' + alt : title));
+      img.addEventListener('click', (e) => { e.stopPropagation(); openImage(img); });
+      img.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openImage(img); }
+      });
+    });
 
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    });
+  })();
+
+  // The builds (2026-09-24): on desktop the two code builds move at rest and their disc says
+  // what a click does. The loop's source is set only while the card is on screen and removed
+  // when it leaves (so the decode is dropped); it fades in on its first real frame. Robot plays
+  // its film in place; Fish Ocean runs live on the lightbox stage. Phones, reduced motion and a
+  // failed script keep the film cards.
+  (function() {
+    const stages = [...document.querySelectorAll('.build-stage')];
+    if (!stages.length) return;
+    const desktop = window.matchMedia('(min-width: 769px)');
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const apply = () => document.documentElement.classList.toggle('builds-on', desktop.matches);
+    apply();
+    desktop.addEventListener('change', apply);
+
+    const unload = (v) => {
+      if (!v.getAttribute('src')) return;
+      v.classList.remove('is-playing');
+      v.pause(); v.removeAttribute('src'); v.load();
+    };
+    let io = null;
+    if ('IntersectionObserver' in window) {
+      io = new IntersectionObserver((entries) => entries.forEach((e) => {
+        const v = e.target;
+        if (!e.isIntersecting || !desktop.matches || calm.matches) { unload(v); return; }
+        if (e.intersectionRatio >= 0.35) {
+          if (!v.getAttribute('src')) v.src = v.dataset.loop;
+          v.play().catch(() => {});
+        }
+      }), { rootMargin: '100px 0px', threshold: [0, 0.35] });
+    }
+
+    stages.forEach((stage) => {
+      const card = stage.closest('.play-card');
+      const loop = stage.querySelector('.build-loop');
+      const go = stage.querySelector('.build-go');
+      if (loop) {
+        loop.addEventListener('playing', () => loop.classList.add('is-playing'));
+        loop.addEventListener('error', () => unload(loop));
+        if (io) io.observe(loop);
+      }
+      go.addEventListener('click', () => {
+        if (go.dataset.run && window.playStage) {
+          window.playStage({
+            url: go.dataset.run,
+            title: go.dataset.title,
+            ratio: go.dataset.ratio,
+            fit: go.dataset.fit,
+            poster: stage.querySelector('.build-poster').getAttribute('src'),
+            opener: go,
+          });
+          return;
+        }
+        const film = card.querySelector('.build-film');
+        if (!film) return;
+        if (loop) { if (io) io.unobserve(loop); unload(loop); }
+        stage.remove();
+        film.classList.add('is-on');
+        film.focus({ preventScroll: true });
+        film.play().catch(() => {});
+      });
     });
   })();
 
@@ -1068,13 +1374,76 @@
     appendMessage('user', message);
     chatHistory.push({ role: 'user', content: message });
 
+    // Thinking (2026-09-24): three of the site's motes with one pool of light crossing them,
+    // in place of three grey dots. Replaced by the reply's first words when they arrive.
     const typing = document.createElement('div');
-    typing.className = 'chat-msg assistant typing';
+    typing.className = 'chat-msg assistant typing typing--motes';
+    typing.setAttribute('aria-label', 'Thinking');
     typing.innerHTML = '<span></span><span></span><span></span>';
     chatMessages.appendChild(typing);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
+    // The reply writes itself in as the model streams it (opt-in stream: true on /api/chat).
+    // Each piece fades in once and stays; the thread only follows the reply if the reader
+    // is already at the bottom. Anything that fails before the first words arrive falls back
+    // to the plain JSON request, which is exactly what this widget did before. So does a stream
+    // that breaks part way (an error event, a dropped connection, no closing event): the half
+    // reply is taken back down, the motes return, and the full answer comes from the JSON path,
+    // so a partial answer is never shown or saved as if it were complete.
+    const nearBottom = () => chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 32;
+    let text = '', bubble = null;
+    const retract = () => { if (bubble) { bubble.replaceWith(typing); bubble = null; } text = ''; };
+    const streamReply = async () => {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory, stream: true }),
+      });
+      if (!res.ok || !res.body || !(res.headers.get('content-type') || '').includes('text/event-stream')) return null;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '', finished = false, broken = false;
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf('\n\n')) >= 0) {
+          const line = buf.slice(0, i).split('\n').find((l) => l.startsWith('data:'));
+          buf = buf.slice(i + 2);
+          if (!line) continue;
+          let d; try { d = JSON.parse(line.slice(5)); } catch (e) { continue; }
+          if (d.t) {
+            const follow = nearBottom();
+            if (!bubble) {
+              bubble = document.createElement('div');
+              bubble.className = 'chat-msg assistant';
+              bubble.setAttribute('aria-busy', 'true');
+              typing.replaceWith(bubble);
+            }
+            const piece = document.createElement('span');
+            piece.className = 'chat-piece';
+            piece.textContent = d.t;
+            bubble.appendChild(piece);
+            text += d.t;
+            if (follow) chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+          if (d.done) finished = true;
+          if (d.error) broken = true;
+        }
+      }
+      if (broken || !finished || !text) { retract(); return null; }
+      bubble.removeAttribute('aria-busy');
+      return text;
+    };
+
     try {
+      let reply = null;
+      try { reply = await streamReply(); } catch (e) { retract(); reply = null; }
+      if (reply) {
+        chatHistory.push({ role: 'assistant', content: reply });
+        return;
+      }
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

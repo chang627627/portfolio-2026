@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
   hits.push(now);
   globalThis.__chatRate.set(ip, hits);
 
-  const { message, history } = req.body || {};
+  const { message, history, stream } = req.body || {};
   if (!message || typeof message !== 'string') return res.status(400).json({ error: 'Message is required' });
   if (message.length > 2000) return res.status(400).json({ error: 'Message too long' });
 
@@ -117,6 +117,91 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
   }
   messages.push({ role: 'user', content: message });
 
+  // House rule enforced mechanically, as luna.js does: the prompt forbids em dashes but the model
+  // still slips one in now and then, so dashes become commas before a reply leaves the server.
+  const noDashes = (t) => t.replace(/\s*[\u2014\u2013]\s*/g, ', ');
+
+  // STREAMING, OPT-IN (2026-09-24). A request with stream: true gets the reply as server-sent
+  // events while the model writes it: `data: {"t":"..."}` per piece of text, then
+  // `data: {"done":true}` (or `data: {"error":"..."}`). Pages that do not ask for it keep the
+  // JSON path below, unchanged. The dash rule has to hold across chunk boundaries, so any
+  // trailing whitespace or dash is held back until the next piece shows what follows it.
+  if (stream === true) {
+    let upstream;
+    try {
+      upstream = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 512,
+          system: SYSTEM_PROMPT,
+          messages,
+          stream: true,
+        }),
+      });
+    } catch (err) {
+      console.error('Error:', err);
+      return res.status(500).json({ error: 'Something went wrong' });
+    }
+    if (!upstream.ok || !upstream.body) {
+      const err = await upstream.text().catch(() => '');
+      console.error('Anthropic API error:', upstream.status, err);
+      return res.status(500).json({ error: 'AI service error' });
+    }
+
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
+    res.setHeader('X-Accel-Buffering', 'no');
+    if (res.flushHeaders) res.flushHeaders();
+    const send = (obj) => res.write('data: ' + JSON.stringify(obj) + '\n\n');
+
+    const reader = upstream.body.getReader();
+    const decoder = new TextDecoder();
+    let buf = '', carry = '', failed = false, stopped = false;
+    const emit = (text, final) => {
+      let t = carry + text;
+      carry = '';
+      if (!final) {
+        const tail = t.match(/[\s\u2014\u2013]*$/)[0];
+        if (tail) { carry = tail; t = t.slice(0, t.length - tail.length); }
+      }
+      t = noDashes(t);
+      if (t) send({ t });
+    };
+    try {
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf('\n\n')) >= 0) {
+          const block = buf.slice(0, i);
+          buf = buf.slice(i + 2);
+          const line = block.split('\n').find((l) => l.startsWith('data:'));
+          if (!line) continue;
+          let evt;
+          try { evt = JSON.parse(line.slice(5).trim()); } catch (e) { continue; }
+          if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') emit(evt.delta.text, false);
+          else if (evt.type === 'message_stop') stopped = true;
+          else if (evt.type === 'error') { failed = true; console.error('Anthropic stream error:', evt.error); }
+        }
+      }
+    } catch (err) {
+      failed = true;
+      console.error('Stream error:', err);
+    }
+    emit('', true);
+    // a stream that ended without its message_stop was cut off, not finished
+    send(failed || !stopped ? { error: 'AI service error' } : { done: true });
+    return res.end();
+  }
+
   try {
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -140,7 +225,7 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
     }
 
     const data = await response.json();
-    const reply = data.content[0].text;
+    const reply = noDashes(data.content[0].text);
     return res.status(200).json({ reply });
   } catch (err) {
     console.error('Error:', err);

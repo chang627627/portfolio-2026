@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
   <link rel="preload" href="/fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/style.css?v=273">
+  <link rel="stylesheet" href="/style.css?v=274">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -111,12 +111,23 @@
     }
 
     // Hamburger (standard pattern) — the overlay nav still works on a 404.
-    const hamburger = document.querySelector('.hamburger');
-    if (hamburger) hamburger.addEventListener('click', function () {
-      this.classList.toggle('active');
-      document.querySelector('.nav-links').classList.toggle('open');
-      document.body.classList.toggle('menu-open');
-    });
+    // phone menu (2026-09-24): aria-expanded, aria-controls, Escape closes and returns focus
+    const hamburger = document.querySelector('.hamburger'), navLinks = document.querySelector('.nav-links');
+    if (hamburger && navLinks) {
+      navLinks.id = navLinks.id || 'site-menu';
+      hamburger.setAttribute('aria-controls', navLinks.id);
+      hamburger.setAttribute('aria-expanded', 'false');
+      const setMenu = (open) => {
+        hamburger.classList.toggle('active', open);
+        navLinks.classList.toggle('open', open);
+        document.body.classList.toggle('menu-open', open);
+        hamburger.setAttribute('aria-expanded', String(open));
+      };
+      hamburger.addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && navLinks.classList.contains('open')) { setMenu(false); hamburger.focus(); }
+      });
+    }
   </script>
 </body>
 </html>

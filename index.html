@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=273">
+  <link rel="stylesheet" href="style.css?v=274">
   <!-- Work-card motion. Scoped to this page (.card-loop exists only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -437,6 +437,43 @@
        cancels its 8px flex gap lets "Email copied" and the check centre in the held pill width; opacity needs
        !important to beat the running pulse animation. */
     .hero .status-tag.is-copied .status-dot { width: 0; margin-right: -8px; opacity: 0 !important; }
+    /* THE HEADER LINKS STAY READABLE OVER THE GOLD (2026-09-24, craft pass). At the top of this page the links sit
+       on the dawn's gold crown, where #a0a0a0 measured 2.6 (Play), 2.7 (About) and 3.0:1 (Resume) against the
+       pixels next to the strokes. The colour stays (it is what keeps them secondary to the white current page) and
+       the band's scrim stays (a stronger one paints black over the crown); a dark halo tight to the glyphs darkens
+       only the gold right beside them, and brings all three to 4.6-5.1:1 (1 CSS px ring, DPR 2). On the dark
+       sections below it is invisible. */
+    .nav-links a,
+    .logo { text-shadow: 0 0 1px rgba(10, 10, 10, 1), 0 0 2px rgba(10, 10, 10, 0.9), 0 0 6px rgba(10, 10, 10, 0.8), 0 0 14px rgba(10, 10, 10, 0.6); }
+    /* The wordmark takes the same halo (2026-09-24, per user "do"): scrolled over the light plates (StoryBloom,
+       Coffee Chat, NOVA's white) "Chang Mou" fell to 2.2-2.7:1. */
+    /* A WRAPPED CHIP ROW BREAKS 2+2, NEVER 3+1 (2026-09-24, per user "do"). Below 1440 the caption column narrows
+       (382px at 1366, 280-296 at 1024-1280) and four-pill rows wrapped with one pill alone on the second line. The
+       pills are untouched; the script only adds this class to a row that has actually wrapped into 3+1. */
+    .feature-card .card-meta.card-meta--pairs { display: grid; grid-template-columns: repeat(2, max-content); }
+    /* A ROW TAKES KEYBOARD FOCUS THE WAY IT TAKES THE HAND (2026-09-24, craft pass). Hover changes six things on a row
+       (the travelling rule, the title, the plate's hue glow, the still's zoom and shadow); focus changed one, a 2px box
+       around the whole 1344px row including the empty caption column. Focus now gets the rule, the title and the glow,
+       outside the hover query so a keyboard on a touch laptop gets them too, and the ring moves onto the plate. The
+       still's zoom stays hover-only: the stills are frozen. */
+    .feature .feature-card:focus-visible { outline: none; }
+    .feature .feature-card:focus-visible .project-img { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; }
+    .feature .feature-card:focus-visible .project-info::before { transform: scaleX(1); }
+    .feature .feature-card:focus-visible .project-info h3 { color: #fff; transition-delay: 60ms; }
+    @supports (color: oklch(from white l c h)) {
+      .feature .feature-card:focus-visible .project-img {
+        box-shadow:
+          inset 0 0 0 1px rgba(12, 18, 22, 0.08),
+          0 0 34px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14),
+          0 0 72px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.07);
+      }
+    }
+    /* "SAY HELLO" TAKES FOCUS PROPERLY (2026-09-24): the ring hugs the word (it was a 1344x222 box that also covered
+       the chat button), and a keyboard user who reaches it before the scroll reveal gets the word, lit, instead of an
+       invisible link. The sweep writes each letter's opacity inline, so the lit state needs !important. */
+    .footer-big-text { width: fit-content; margin-inline: auto; }
+    .footer-big-text:focus-visible { opacity: 1; transform: none; }
+    .footer-big-text:focus-visible .letter { opacity: 1 !important; }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
@@ -715,7 +752,7 @@
       </a>
 
       <a href="countersign.html" class="project-card" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
-        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop.webp?v=5" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop-gate.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
@@ -728,7 +765,7 @@
       <a href="storybloom.html" class="project-card" style="--plate-light: #EEE3F0;">
         <div class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
           <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026-160.png" alt="NY Product Design Award Silver 2026"></div>
-          <img src="images/storybloom-card.png?v=4" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+          <img src="images/storybloom-card.png?v=4" srcset="images/storybloom-card-960.png 960w, images/storybloom-card-1280.png 1280w, images/storybloom-card.png?v=4 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="StoryBloom" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
         </div>
         <div class="project-info">
           <div class="project-info-left">
@@ -963,10 +1000,14 @@
       dctx.globalCompositeOperation = 'lighter';
       needSize = false;
     };
-    // the hero's box moves when the webfont lands and on resize; the tick
-    // also compares offset sizes so a late reflow is caught within 60ms
+    // the hero's box moves when the webfont lands and on resize. A ResizeObserver catches any
+    // late reflow (2026-09-24): the tick used to read offsetWidth/offsetHeight every frame, right
+    // after the specular engine had written inline styles, which forced a layout on every frame
+    // at rest (362 per 5s). Browsers without it keep the old per-frame comparison.
     window.addEventListener('resize', () => { needSize = true; }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { needSize = true; });
+    const watchSize = 'ResizeObserver' in window;
+    if (watchSize) new ResizeObserver(() => { needSize = true; }).observe(heroEl);
     const POOLS = [
       ['--g2-yellow-x', '--g2-yellow-y', 255, 214, 0],
       ['--g2-warm-x',   '--g2-warm-y',   255, 130, 70],
@@ -1111,7 +1152,7 @@
     const loop = (t) => {
       if (!running) return;
       raf = requestAnimationFrame(loop);
-      if (needSize || heroEl.offsetWidth !== Math.round(heroW) || heroEl.offsetHeight !== Math.round(heroH)) sizeDust();
+      if (needSize || (!watchSize && (heroEl.offsetWidth !== Math.round(heroW) || heroEl.offsetHeight !== Math.round(heroH)))) sizeDust();
       if (t - lastPoolT >= 60) { lastPoolT = t; readPools(); }
       dustFrame(t);
     };
@@ -1457,11 +1498,25 @@
     ).join('');
   }
 
-  document.querySelector('.hamburger').addEventListener('click', function() {
-    this.classList.toggle('active');
-    document.querySelector('.nav-links').classList.toggle('open');
-    document.body.classList.toggle('menu-open');
-  });
+  // Phone menu (2026-09-24): the button says whether the menu is open and which element it controls,
+  // and Escape closes it and hands focus back to the button.
+  (function () {
+    const btn = document.querySelector('.hamburger'), links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    links.id = links.id || 'site-menu';
+    btn.setAttribute('aria-controls', links.id);
+    btn.setAttribute('aria-expanded', 'false');
+    const set = (open) => {
+      btn.classList.toggle('active', open);
+      links.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', () => set(!links.classList.contains('open')));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
+    });
+  })();
 
   // SELECTED WORK hairline draws itself in on first view. The collapsed state
   // lives behind .rule-wipe and is added here, so a JS failure leaves the line
@@ -1695,13 +1750,24 @@
       });
       return;
     }
+    // The loop fades in only once its first frame is decoded (2026-09-24, craft pass). Adding
+    // is-playing with the src made the crossfade run on an empty image: NOVA's plate went blank
+    // white for about 340ms at 10Mbps, and Homewise and Countersign cut in hard. Both handlers
+    // re-check that the card is still on screen and still wants this src before showing it.
+    var onScreen = new WeakMap();
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var card = e.target.closest('.project-card');
         var loop = e.target.classList.contains('card-loop') ? e.target : null;
+        onScreen.set(e.target, e.isIntersecting);
         if (e.isIntersecting) {
-          if (loop && !loop.getAttribute('src')) loop.src = loop.dataset.loop;
-          card.classList.add('is-playing');
+          if (!loop) { card.classList.add('is-playing'); return; }
+          if (!loop.getAttribute('src')) loop.src = loop.dataset.loop;
+          var want = loop.getAttribute('src');
+          var show = function () {
+            if (onScreen.get(loop) && loop.getAttribute('src') === want) card.classList.add('is-playing');
+          };
+          if (loop.decode) loop.decode().then(show, show); else show();
         } else {
           card.classList.remove('is-playing');
           if (loop) loop.removeAttribute('src');
@@ -1709,6 +1775,33 @@
       });
     }, { rootMargin: '100px 0px', threshold: 0.35 });
     targets.forEach(function (t) { io.observe(t); });
+  })();
+</script>
+
+<script>
+  // Chip rows (2026-09-24): a four-pill row that wraps into 3+1 is set as a 2+2 grid instead, so no pill sits
+  // alone on the second line. Re-checked when fonts land and whenever the rows change size.
+  (function () {
+    const rows = () => [].slice.call(document.querySelectorAll('.feature .feature-card .card-meta'));
+    const balance = () => rows().forEach((m) => {
+      const tags = [].slice.call(m.children);
+      m.classList.remove('card-meta--pairs');
+      if (tags.length !== 4 || !m.offsetWidth) return;
+      const tops = tags.map((t) => t.offsetTop);
+      const last = Math.max.apply(null, tops);
+      if (last === tops[0] || tops.filter((t) => t === last).length !== 1) return;
+      m.classList.add('card-meta--pairs');
+      if (m.scrollWidth > m.clientWidth + 1) m.classList.remove('card-meta--pairs'); // two pills side by side must fit
+    });
+    let raf = 0;
+    const soon = () => { cancelAnimationFrame(raf); raf = requestAnimationFrame(balance); };
+    const start = () => {
+      balance();
+      if ('ResizeObserver' in window) { const ro = new ResizeObserver(soon); rows().forEach((m) => ro.observe(m.parentElement)); }
+      else window.addEventListener('resize', soon, { passive: true });
+    };
+    const ready = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
+    ready.then(() => (document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', start) : start()));
   })();
 </script>
 
@@ -1828,14 +1921,76 @@
     appendMessage('user', message);
     chatHistory.push({ role: 'user', content: message });
 
-    // Show typing indicator
+    // Thinking (2026-09-24): three of the site's motes with one pool of light crossing them,
+    // in place of three grey dots. Replaced by the reply's first words when they arrive.
     const typing = document.createElement('div');
-    typing.className = 'chat-msg assistant typing';
+    typing.className = 'chat-msg assistant typing typing--motes';
+    typing.setAttribute('aria-label', 'Thinking');
     typing.innerHTML = '<span></span><span></span><span></span>';
     chatMessages.appendChild(typing);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
+    // The reply writes itself in as the model streams it (opt-in stream: true on /api/chat).
+    // Each piece fades in once and stays; the thread only follows the reply if the reader
+    // is already at the bottom. Anything that fails before the first words arrive falls back
+    // to the plain JSON request, which is exactly what this widget did before. So does a stream
+    // that breaks part way (an error event, a dropped connection, no closing event): the half
+    // reply is taken back down, the motes return, and the full answer comes from the JSON path,
+    // so a partial answer is never shown or saved as if it were complete.
+    const nearBottom = () => chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < 32;
+    let text = '', bubble = null;
+    const retract = () => { if (bubble) { bubble.replaceWith(typing); bubble = null; } text = ''; };
+    const streamReply = async () => {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory, stream: true }),
+      });
+      if (!res.ok || !res.body || !(res.headers.get('content-type') || '').includes('text/event-stream')) return null;
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buf = '', finished = false, broken = false;
+      for (;;) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buf += decoder.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf('\n\n')) >= 0) {
+          const line = buf.slice(0, i).split('\n').find((l) => l.startsWith('data:'));
+          buf = buf.slice(i + 2);
+          if (!line) continue;
+          let d; try { d = JSON.parse(line.slice(5)); } catch (e) { continue; }
+          if (d.t) {
+            const follow = nearBottom();
+            if (!bubble) {
+              bubble = document.createElement('div');
+              bubble.className = 'chat-msg assistant';
+              bubble.setAttribute('aria-busy', 'true');
+              typing.replaceWith(bubble);
+            }
+            const piece = document.createElement('span');
+            piece.className = 'chat-piece';
+            piece.textContent = d.t;
+            bubble.appendChild(piece);
+            text += d.t;
+            if (follow) chatMessages.scrollTop = chatMessages.scrollHeight;
+          }
+          if (d.done) finished = true;
+          if (d.error) broken = true;
+        }
+      }
+      if (broken || !finished || !text) { retract(); return null; }
+      bubble.removeAttribute('aria-busy');
+      return text;
+    };
+
     try {
+      let reply = null;
+      try { reply = await streamReply(); } catch (e) { retract(); reply = null; }
+      if (reply) {
+        chatHistory.push({ role: 'assistant', content: reply });
+        return;
+      }
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
