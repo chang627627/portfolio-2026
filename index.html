@@ -437,16 +437,6 @@
        cancels its 8px flex gap lets "Email copied" and the check centre in the held pill width; opacity needs
        !important to beat the running pulse animation. */
     .hero .status-tag.is-copied .status-dot { width: 0; margin-right: -8px; opacity: 0 !important; }
-    /* THE HEADER LINKS STAY READABLE OVER THE GOLD (2026-09-24, craft pass). At the top of this page the links sit
-       on the dawn's gold crown, where #a0a0a0 measured 2.6 (Play), 2.7 (About) and 3.0:1 (Resume) against the
-       pixels next to the strokes. The colour stays (it is what keeps them secondary to the white current page) and
-       the band's scrim stays (a stronger one paints black over the crown); a dark halo tight to the glyphs darkens
-       only the gold right beside them, and brings all three to 4.6-5.1:1 (1 CSS px ring, DPR 2). On the dark
-       sections below it is invisible. */
-    .nav-links a,
-    .logo { text-shadow: 0 0 1px rgba(10, 10, 10, 1), 0 0 2px rgba(10, 10, 10, 0.9), 0 0 6px rgba(10, 10, 10, 0.8), 0 0 14px rgba(10, 10, 10, 0.6); }
-    /* The wordmark takes the same halo (2026-09-24, per user "do"): scrolled over the light plates (StoryBloom,
-       Coffee Chat, NOVA's white) "Chang Mou" fell to 2.2-2.7:1. */
     /* A WRAPPED CHIP ROW BREAKS 2+2, NEVER 3+1 (2026-09-24, per user "do"). Below 1440 the caption column narrows
        (382px at 1366, 280-296 at 1024-1280) and four-pill rows wrapped with one pill alone on the second line. The
        pills are untouched; the script only adds this class to a row that has actually wrapped into 3+1. */
