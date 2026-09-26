@@ -518,15 +518,18 @@
     .ask-answer b { font-weight: 400; color: var(--text); }
     .ask-answer a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.3); text-underline-offset: 4px; transition: text-decoration-color var(--dur-base) var(--ease-out); }
     @media (hover: hover) { .ask-answer a:hover { text-decoration-color: rgba(255, 255, 255, 0.9); } }
-    .ask-answer .w { opacity: 0; transition: opacity 0.35s var(--ease-out); }
+    /* who wrote the answer: a chip's answer is Chang's own words and appears at once; a typed question is answered
+       live by Claude, which streams in, speaks about Chang, not as Chang, and is labelled on this line */
+    .ask-by { display: none; margin-top: 10px; font-size: 14px; color: var(--text-muted); }
+    .ask-by.on { display: block; animation: ask-by-in 0.4s var(--ease-out); }
+    @keyframes ask-by-in { from { opacity: 0; } }
     .ask-to { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 16px; opacity: 0; transform: translateY(6px); transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out); }
     .ask-to:empty { display: none; }
     .ask-to.on { opacity: 1; transform: none; }
     .ask-answer .ask-to a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.35); text-underline-offset: 5px; }
     .ask-to a span { display: inline-block; margin-left: 6px; transition: transform var(--dur-base) var(--ease-out); }
     @media (hover: hover) { .ask-answer .ask-to a:hover { text-decoration-color: #fff; } .ask-to a:hover span { transform: translateX(3px); } }
-    .ask-answer .w.on { opacity: 1; }
-    /* the site's mote, in place of a sparkle: it glows while the answer streams and rests after */
+    /* the site's mote, in place of a sparkle: it glows while Claude's answer streams in and rests after */
     .ask-mote {
       position: absolute; left: 4px; top: 0.62em; width: 7px; height: 7px; border-radius: 50%;
       background: #fff; box-shadow: 0 0 8px 2px rgba(255, 220, 190, 0.55), 0 0 22px 6px rgba(160, 120, 255, 0.25); opacity: 0.55;
@@ -539,7 +542,8 @@
        The script never builds the bar there; this hides it if a desktop window is narrowed after load */
     @media (max-width: 768px) { .ask-bar { display: none; } }
     @media (prefers-reduced-motion: reduce) {
-      .ask-fold, .ask-answer .w { transition: none; }
+      .ask-fold { transition: none; }
+      .ask-by.on { animation: none; }
       .ask-answer.is-streaming .ask-mote { animation: none; }
     }
   </style>
@@ -1949,33 +1953,27 @@
       '<div class="ask-chips" role="group" aria-label="Suggested questions">' + Q.map(function (q) {
         return '<button class="ask-chip" type="button" data-q="' + q.id + '" aria-pressed="' + (q.id === 'all') + '">' + q.label + '</button>';
       }).join('') + '</div>' +
-      '<p class="ask-answer" aria-live="polite"><span class="ask-mote" aria-hidden="true"></span><span class="ask-words"></span><span class="ask-to"></span></p>';
+      '<p class="ask-answer" aria-live="polite"><span class="ask-mote" aria-hidden="true"></span><span class="ask-words"></span><span class="ask-by">Answered by Claude</span><span class="ask-to"></span></p>';
     work.insertBefore(bar, work.firstChild);
 
     var form = bar.querySelector('.ask-form'), input = bar.querySelector('.ask-input');
-    var answer = bar.querySelector('.ask-answer'), words = bar.querySelector('.ask-words'), goTo = bar.querySelector('.ask-to');
+    var answer = bar.querySelector('.ask-answer'), words = bar.querySelector('.ask-words'), goTo = bar.querySelector('.ask-to'), by = bar.querySelector('.ask-by');
     var chips = [].slice.call(bar.querySelectorAll('.ask-chip'));
-    var streamTimer = null, typeTimer = null;
+    var typeTimer = null;
 
-    // **bold** and [id] inside an answer; everything else is plain words
-    function render(text, stream) {
-      clearInterval(streamTimer);
-      goTo.innerHTML = '';
+    // **bold** and [id] inside an answer; everything else is plain words. These are Chang's own answers, so they
+    // appear at once and cancel any live answer still arriving: only Claude's answers stream in
+    function render(text) {
+      if (asking) { asking.abort(); asking = null; }
+      answer.classList.remove('is-streaming');
+      goTo.innerHTML = ''; by.classList.remove('on');
       var toks = text.match(/\*\*[^*]+\*\*|\[[a-z]+\][^\s]*|\S+/g) || [];
       words.innerHTML = toks.map(function (t) {
         var m = /^\[([a-z]+)\](.*)$/.exec(t);
-        if (m) return '<span class="w"><a href="' + byId[m[1]].getAttribute('href') + '" data-to="' + m[1] + '">' + NAME[m[1]] + '</a>' + m[2] + '</span>';
-        if (/^\*\*/.test(t)) return '<span class="w"><b>' + t.slice(2, -2) + '</b></span>';
-        return '<span class="w">' + t + '</span>';
+        if (m) return '<a href="' + byId[m[1]].getAttribute('href') + '" data-to="' + m[1] + '">' + NAME[m[1]] + '</a>' + m[2];
+        if (/^\*\*/.test(t)) return '<b>' + t.slice(2, -2) + '</b>';
+        return t;
       }).join(' ');
-      var ws = [].slice.call(words.querySelectorAll('.w'));
-      if (!stream || reduce) { ws.forEach(function (w) { w.classList.add('on'); }); answer.classList.remove('is-streaming'); return; }
-      answer.classList.add('is-streaming');
-      var k = 0;
-      streamTimer = setInterval(function () {
-        if (k < ws.length) { ws[k++].classList.add('on'); return; }
-        clearInterval(streamTimer); answer.classList.remove('is-streaming');
-      }, 42);
     }
     // a name in the answer brings its row into view instead of leaving the page
     words.addEventListener('click', function (e) {
@@ -2026,7 +2024,7 @@
         asks: /\b(play|playground|experiments?|experimental|side (?:projects?|work)|hobby projects?|fun projects?|art|artwork|illustrations?|midjourney|gpt image|image generation|3d|animation|animated|films?|videos?|motion|renders?|unity|vr|virtual reality|new craft society)\b/i },
       about: { href: 'about.html', label: 'Go to the About page', says: /\b(?:the )?About page\b/g,
         asks: /\b(about (?:you|chang)|who are you|who is chang|background|bio|biography|experience|work history|career|jobs?|employers?|education|school|degree|masters?|university|college|studied|hobby|hobbies|outside (?:of )?work|free time|books?|reading|testimonials?|references?|recommendations?|colleagues|personality)\b/i },
-      resume: { href: resumeLink ? resumeLink.getAttribute('href') : '', label: 'Open my resume', ext: true, says: /\bmy resume\b/gi,
+      resume: { href: resumeLink ? resumeLink.getAttribute('href') : '', label: 'Open my resume', ext: true, says: /\b(?:Chang['’]s|my) resume\b/gi,
         asks: /\b(resume|r\u00e9sum\u00e9|cv|curriculum vitae)\b/i }
     };
     var PAGE_ORDER = ['play', 'about', 'resume'];
@@ -2047,7 +2045,7 @@
     };
 
     function press(id) { chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.q === id)); }); }
-    function runQuery(q, stream) { press(q.id); showOnly(q.ids); render(q.text, stream); }
+    function runQuery(q) { press(q.id); showOnly(q.ids); render(q.text); }
 
     // a suggested question types itself into the line first
     function typeThen(text, then) {
@@ -2062,12 +2060,12 @@
     chips.forEach(function (b) {
       b.addEventListener('click', function () {
         var q = Q.filter(function (x) { return x.id === b.dataset.q; })[0];
-        typeThen(q.id === 'all' ? '' : q.label.replace(/^[A-Z](?![A-Z])/, function (c) { return c.toLowerCase(); }), function () { runQuery(q, true); });
+        typeThen(q.id === 'all' ? '' : q.label.replace(/^[A-Z](?![A-Z])/, function (c) { return c.toLowerCase(); }), function () { runQuery(q); });
       });
     });
     // a window narrowed to phone width hides the bar, so no row may stay folded away behind it
     phone.addEventListener('change', function (e) {
-      if (e.matches) { clearInterval(typeTimer); input.value = ''; runQuery(Q[0], false); }
+      if (e.matches) { clearInterval(typeTimer); input.value = ''; runQuery(Q[0]); }
     });
 
     // A typed question: one of the suggested questions if it names one (instant, no request), otherwise Claude
@@ -2092,21 +2090,20 @@
       var terms = t.split(' ').filter(function (w) { return w.length > 1 && ['me', 'the', 'and', 'for', 'with', 'show', 'about', 'what', 'your', 'any', 'work', 'projects', 'project'].indexOf(w) < 0; });
       var hits = Object.keys(byId).filter(function (id) { var kw = ' ' + KW[id] + ' '; return terms.some(function (w) { return kw.indexOf(' ' + w + ' ') >= 0; }); });
       showOnly(hits.length ? hits : Object.keys(byId));
-      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**', true); return; }
+      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**'); return; }
       var names = hits.map(function (id) { return '[' + id + ']'; });
-      render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.', true);
+      render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.');
     }
     var asking = null;
     async function askClaude(raw, t) {
       if (asking) asking.abort();
       var ctl = asking = new AbortController();
-      clearInterval(streamTimer);
       words.textContent = '';
-      goTo.innerHTML = '';
+      goTo.innerHTML = ''; by.classList.remove('on');
       answer.classList.add('is-streaming');
       if (!withinLimit()) {
         answer.classList.remove('is-streaming');
-        render('That is ten questions for today. Write to **changmou627627@gmail.com** and I will answer the rest myself.', true);
+        render('That is ten questions for today. Write to **changmou627627@gmail.com** and I will answer the rest myself.');
         return;
       }
       var acc = '';
@@ -2140,7 +2137,7 @@
         if (ctl.signal.aborted) return;
         answer.classList.remove('is-streaming');
         keywordFallback(raw, t, 'I could not reach the AI just now.');
-        setGoTo(pagesAsked(raw), 600);
+        setGoTo(pagesAsked(raw), 150);
         return;
       }
       if (ctl !== asking) return;
@@ -2163,17 +2160,18 @@
         words.innerHTML = words.innerHTML.replace(PAGES[k].says, function (m) { return '<a href="' + PAGES[k].href + '"' + (PAGES[k].ext ? ' target="_blank" rel="noopener"' : '') + '>' + m + '</a>'; });
       });
       setGoTo(said.concat(pagesAsked(raw)), 150);
+      by.classList.add('on');   // a live answer says who wrote it
     }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var raw = input.value.trim(), t = raw.toLowerCase().replace(/[^a-z0-9&\s]/g, ' ').replace(/\s+/g, ' ').trim();
-      if (!t) { runQuery(Q[0], true); return; }
+      if (!t) { runQuery(Q[0]); return; }
       var named = Q.filter(function (q) { return q.alias.indexOf(t) >= 0 || q.label.toLowerCase() === t; })[0];
-      if (named) { runQuery(named, true); return; }
+      if (named) { runQuery(named); return; }
       var page = PAGE_ORDER.filter(function (k) { return INSTANT[k].alias.indexOf(t) >= 0 && PAGES[k].href; })[0];
       if (page) {
-        press(null); showOnly(Object.keys(byId)); render(INSTANT[page].text, true);
-        setGoTo([page], (INSTANT[page].text.split(' ').length + 2) * 42);
+        press(null); showOnly(Object.keys(byId)); render(INSTANT[page].text);
+        setGoTo([page], 150);
         return;
       }
       press(null);
@@ -2188,7 +2186,7 @@
       bar.scrollIntoView({ block: 'center', behavior: reduce ? 'instant' : 'smooth' });
     });
 
-    render(Q[0].text, false);   // at rest it reads as the overview of the six
+    render(Q[0].text);   // at rest it reads as the overview of the six
   })();
 </script>
 
