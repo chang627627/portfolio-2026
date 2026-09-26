@@ -978,6 +978,18 @@
     // along; it reads the engine's published window.__heroCur.
     const FOLLOW = false;
     const LEAN_X = 80, LEAN_Y = 24, WAKE_S = 2 * 170 * 170, WAKE_K = 0.16;
+    // THE OPENING UPDRAFT (2026-09-25, per user "the stardust in the hero's motion at the
+    // opening can be more obvious"). The ambient rise is ~12px/s and every mote used to be
+    // born nearly at rest, taking a second or two to reach it, so the first screen showed a
+    // field drifting at ~3px/s: it read as still. Now the seeded motes start at the drift
+    // speed, and for the first few seconds the rise runs faster, 1 + OPEN_BOOST times at
+    // the first frame, easing back to the ambient pace with time constant OPEN_TAU (x2.2
+    // at 2s, x1.1 by 5s). Vertical only, so the random walk is never amplified into a
+    // wiggle, and each mote takes its own share (m.lift; the soft far bokeh least), so it
+    // reads as dust rising with depth, not the layer sliding up. Once per page load, from
+    // the first frame the hero is on screen; a return after scrolling away does not replay it.
+    const OPEN_BOOST = 4, OPEN_TAU = 1400, TERM_VY = 0.003 / (1 - 0.985);
+    let openT = 0;
     const P = [];
     let heroW = 1, heroH = 1, needSize = true, running = false, raf = 0;
     let dustDirty = false, lastDustT = 0, lastPoolT = -1e4, ambAcc = 0, seeded = false, shown = false;
@@ -1040,7 +1052,7 @@
     };
     // n motes born in a box (sw x sh) around x,y, drifting with velocity vx,vy
     // plus a random spread, living ttl ms (jittered +/-30%)
-    const shed = (x, y, sw, sh, n, vx, vy, spread, ttl, buoy, age0) => {
+    const shed = (x, y, sw, sh, n, vx, vy, spread, ttl, buoy, age0, amb) => {
       if (!poolsRead) return;
       const c = tint(x, y);
       for (let k = 0; k < n; k++) {
@@ -1056,26 +1068,40 @@
           buoy: (buoy || 0.012) * (kind === 1 ? 0.6 : 1),                       // out-of-focus dust drifts slower
           rays: kind === 2 ? 5 + Math.random() * 4 : 0, rot: Math.random() < 0.5 ? 0 : Math.PI / 4,
           ph: Math.random() * 6.2832, c,
+          lift: amb ? (kind === 1 ? 0.45 + Math.random() * 0.3 : 0.7 + Math.random() * 0.6) : 0,
         };
-        if (age0) m.age = Math.random() * m.ttl;                              // seeding: born mid-life
+        if (age0) { m.age = Math.random() * m.ttl; if (amb) m.vy = -TERM_VY * (kind === 1 ? 0.6 : 1); }   // seeding: born mid-life, already drifting
         if (P.length >= MAX) P.shift();
         P.push(m);
       }
     };
     // one ambient mote at a random point of the hero (a little past the side
     // edges, so a lean never exposes a bare strip): slow lift, long life
-    const ambientOne = (age0) => shed(-40 + Math.random() * (heroW + 80), -20 + Math.random() * (heroH + 40), 0, 0, 1,
-                                      (Math.random() - 0.5) * 0.10, -(0.02 + Math.random() * 0.05), 0.05, AMB_TTL, 0.003, age0);
+    // (the first seeding also fills a band below the hero, so the updraft lifts dust up
+    // into view rather than leaving the bottom thin while the field rises)
+    // While the updraft runs, part of the new dust is born in a band just under the hero's
+    // bottom edge instead (low), so the dust lifted out of the bottom is replaced from below.
+    const ambientOne = (age0, below, low) => shed(-40 + Math.random() * (heroW + 80),
+                                      low ? heroH - 20 + Math.random() * 160 : -20 + Math.random() * (heroH + 40 + (below || 0)), 0, 0, 1,
+                                      (Math.random() - 0.5) * 0.10, -(0.02 + Math.random() * 0.05), 0.05, AMB_TTL, 0.003, age0, true);
     const dustFrame = (t) => {
       const dt = lastDustT ? Math.min(50, t - lastDustT) : 16; lastDustT = t;
       if (poolsRead) {
         // keep the field populated: seed it once so the first frame is not
         // empty, then top it up at a steady rate
-        if (!seeded) { seeded = true; for (let i = 0; i < AMB_N; i++) ambientOne(true); }
+        if (!seeded) {
+          seeded = true;
+          const first = !openT, below = first ? 160 : 0;
+          const n = first ? Math.round(AMB_N * (heroH + 200) / (heroH + 40)) : AMB_N;
+          for (let i = 0; i < n; i++) ambientOne(true, below);
+          if (first) openT = t;
+        }
         ambAcc += AMB_RATE * dt / 1000;
-        while (ambAcc >= 1) { ambAcc -= 1; ambientOne(false); }
+        const openNow = openT ? OPEN_BOOST * Math.exp(-(t - openT) / OPEN_TAU) : 0;
+        while (ambAcc >= 1) { ambAcc -= 1; ambientOne(false, 0, Math.random() < 0.6 * openNow / (1 + openNow)); }
       }
       const k = dt / 16.7, damp = Math.pow(0.985, k);
+      const open = openT ? OPEN_BOOST * Math.exp(-(t - openT) / OPEN_TAU) : 0;
       const hand = FOLLOW ? (window.__heroCur || null) : null;
       const tx = hand ? (hand.x / heroW - 0.5) * LEAN_X : 0, ty = hand ? (hand.y / heroH - 0.5) * LEAN_Y : 0;
       ox += (tx - ox) * Math.min(1, 0.08 * k); oy += (ty - oy) * Math.min(1, 0.08 * k);
@@ -1098,7 +1124,7 @@
         }
         m.vx = m.vx * damp + (Math.random() - 0.5) * 0.04 * k;
         m.vy = m.vy * damp - m.buoy * k;             // buoyant: stardust rises
-        m.x += m.vx * k; m.y += m.vy * k;
+        m.x += m.vx * k; m.y += m.vy * k * (1 + open * m.lift);
         const a = (u < 0.12 ? u / 0.12 : 1 - (u - 0.12) / 0.88) * m.b;   // quick in, long out
         const c = m.c, rgb = c[0] + ',' + c[1] + ',' + c[2];
         if (m.kind === 1) {
@@ -1148,6 +1174,7 @@
     };
     // the beam's trail comes in through here
     window.__heroDust = { shed };
+    dust._parts = P;                                   // probe: the live motes
     // Only burn frames while the hero is on screen; off-screen, drop the
     // field so nothing stale returns
     new IntersectionObserver(([e]) => {
