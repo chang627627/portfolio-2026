@@ -476,6 +476,11 @@
        question line below answers through the same Claude endpoint. The markup and script stay, and the other pages
        keep their chat. */
     .chat-toggle, .chat-teaser, .chat-panel { display: none !important; }
+    /* The chip row under each project is retired (2026-09-26, per user "do it"): Ask the work's suggested questions now
+       do what those tags did, grouping the work by type, domain and status, and two layers of pills read as clutter.
+       Each row is the title, the year and the description beside the image. The markup stays, so this one rule is the
+       whole change and the undo. */
+    #work .card-meta { display: none; }
     .ask-bar { max-width: 1344px; margin: 0 auto 112px; }
     .ask-head {
       display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
