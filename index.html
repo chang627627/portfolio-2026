@@ -490,7 +490,8 @@
     }
     .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.4); }
     /* the type borrows the rows' own sizes, so the section reads as a way into the work, not a second headline:
-       the line is the project-title size, the answer the description size */
+       the line is the project-title size, the answer the description size. The chips and the arrow button take the
+       site's 8px button corner, like the hero's pill; only the mote beside the answer is round, as every mote is */
     .ask-form label { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; color: var(--text-muted); white-space: nowrap; }
     .ask-input {
       flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 0;
@@ -498,7 +499,7 @@
     }
     .ask-input::placeholder { color: rgba(255, 255, 255, 0.22); }
     .ask-go {
-      flex: none; width: 44px; height: 44px; border-radius: 50%;
+      flex: none; width: 44px; height: 44px; border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.22); background: transparent; color: var(--text);
       display: grid; place-items: center; cursor: pointer;
       transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);
@@ -508,7 +509,7 @@
     .ask-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
     .ask-chip {
       font: inherit; font-size: 14px; color: var(--text-soft); background: transparent; cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.14); border-radius: 999px; padding: 7px 14px;
+      border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius); padding: 7px 14px;
       display: inline-flex; align-items: baseline; gap: 8px;
       transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
     }
