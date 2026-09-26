@@ -482,25 +482,19 @@
        whole change and the undo. */
     #work .card-meta { display: none; }
     .ask-bar { max-width: 1344px; margin: 0 auto 112px; }
-    .ask-head {
-      display: flex; justify-content: space-between; align-items: baseline; gap: 24px;
-      font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted);
-    }
-    .ask-head b { font-weight: 400; color: var(--text); }
-    .ask-head kbd {
-      font: inherit; font-size: 11px; letter-spacing: 0; color: var(--text-soft);
-      border: 1px solid rgba(255, 255, 255, 0.16); border-radius: 4px; padding: 1px 6px; margin-left: 10px;
-    }
+    .ask-head { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
     .ask-form {
       position: relative; display: flex; align-items: center; gap: 16px;
       margin-top: 20px; padding: 6px 0 14px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
       transition: border-color var(--dur-base) var(--ease-out);
     }
     .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.4); }
-    .ask-form label { font-size: clamp(30px, 3.4vw, 48px); letter-spacing: -0.03em; color: var(--text-muted); white-space: nowrap; }
+    /* the type borrows the rows' own sizes, so the section reads as a way into the work, not a second headline:
+       the line is the project-title size, the answer the description size, the counts the size of the text beside them */
+    .ask-form label { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; color: var(--text-muted); white-space: nowrap; }
     .ask-input {
       flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 0;
-      font: inherit; font-size: clamp(30px, 3.4vw, 48px); letter-spacing: -0.03em; color: var(--text); caret-color: var(--text);
+      font: inherit; font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; color: var(--text); caret-color: var(--text);
     }
     .ask-input::placeholder { color: rgba(255, 255, 255, 0.22); }
     .ask-go {
@@ -518,19 +512,19 @@
       display: inline-flex; align-items: baseline; gap: 8px;
       transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
     }
-    .ask-chip i { font-style: normal; font-size: 11px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+    .ask-chip i { font-style: normal; color: var(--text-muted); font-variant-numeric: tabular-nums; }
     @media (hover: hover) { .ask-chip:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.34); } }
     .ask-chip[aria-pressed="true"] { color: #0a0a0a; background: #f0f0f0; border-color: #f0f0f0; }
     .ask-chip[aria-pressed="true"] i { color: rgba(10, 10, 10, 0.55); }
     .ask-answer {
-      position: relative; margin: 28px 0 0; padding-left: 28px; max-width: 980px; min-height: 1.5em;
-      font-size: clamp(19px, 1.7vw, 24px); line-height: 1.5; letter-spacing: -0.01em; color: var(--text-soft); text-wrap: pretty;
+      position: relative; margin: 28px 0 0; padding-left: 22px; max-width: 980px; min-height: 1.55em;
+      font-size: 16px; line-height: 1.55; color: var(--text-soft); text-wrap: pretty;
     }
     .ask-answer b { font-weight: 400; color: var(--text); }
     .ask-answer a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.3); text-underline-offset: 4px; transition: text-decoration-color var(--dur-base) var(--ease-out); }
     @media (hover: hover) { .ask-answer a:hover { text-decoration-color: rgba(255, 255, 255, 0.9); } }
     .ask-answer .w { opacity: 0; transition: opacity 0.35s var(--ease-out); }
-    .ask-to { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 16px; font-size: 17px; letter-spacing: 0; opacity: 0; transform: translateY(6px); transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out); }
+    .ask-to { display: flex; flex-wrap: wrap; gap: 10px 28px; margin-top: 16px; opacity: 0; transform: translateY(6px); transition: opacity 0.4s var(--ease-out), transform 0.5s var(--ease-out); }
     .ask-to:empty { display: none; }
     .ask-to.on { opacity: 1; transform: none; }
     .ask-answer .ask-to a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.35); text-underline-offset: 5px; }
@@ -546,7 +540,8 @@
     @keyframes ask-mote { 0%, 100% { opacity: 0.45; transform: scale(0.85); } 50% { opacity: 1; transform: scale(1.15); } }
     /* rows that do not match fold away; this class carries the fold's timing */
     .ask-fold { transition: height 0.6s var(--ease-out), opacity 0.35s ease, margin-bottom 0.6s var(--ease-out); }
-    /* Desktop only (2026-09-26, per user "ask the work do not show on mobile"): phones get the card grid as before. */
+    /* Desktop only (2026-09-26, per user "ask the work do not show on mobile"): phones get the card grid as before.
+       The script never builds the bar there; this hides it if a desktop window is narrowed after load */
     @media (max-width: 768px) { .ask-bar { display: none; } }
     @media (prefers-reduced-motion: reduce) {
       .ask-fold, .ask-answer .w { transition: none; }
@@ -1916,6 +1911,8 @@
   (function () {
     var work = document.getElementById('work');
     if (!work) return;
+    var phone = matchMedia('(max-width: 768px)');
+    if (phone.matches) return;   // desktop only: phones keep the plain grid
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     var ID = { 'homewise.html': 'homewise', 'pollen.html': 'pollennav', 'countersign.html': 'countersign', 'storybloom.html': 'storybloom', 'coffee.html': 'coffee', 'nova.html': 'nova' };
     var cards = [].slice.call(document.querySelectorAll('#work .project-card')).filter(function (c) { return ID[c.getAttribute('href')] && getComputedStyle(c).display !== 'none'; });
@@ -1947,12 +1944,10 @@
       { id: 'kids', label: 'Made for kids', ids: ['storybloom', 'nova'], alias: ['kid', 'kids', 'children', 'child', 'family', 'parents', 'made for kids'],
         text: 'Two, **built around a child\'s day.** [storybloom] turns how today felt into an illustrated bedtime story for ages 3 to 8. [nova] balances a child\'s independence with a parent\'s reassurance, tested with 20+ parents and kids.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
-    var years = cards.map(function (c) { var y = c.querySelector('.project-year'); return y ? +y.textContent : 0; }).filter(Boolean);
-
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
     bar.innerHTML =
-      '<div class="ask-head"><span><b>Ask the work</b></span><span>' + cards.length + ' case studies · ' + Math.min.apply(null, years) + ' to ' + Math.max.apply(null, years) + '<kbd aria-hidden="true">/</kbd></span></div>' +
+      '<div class="ask-head">Ask the work</div>' +
       '<form class="ask-form" role="search" autocomplete="off"><label for="askInput">Show me</label>' +
         '<input class="ask-input" id="askInput" type="text" spellcheck="false" enterkeyhint="search" placeholder="anything, or ask a question">' +
         '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button></form>' +
@@ -2074,6 +2069,10 @@
         var q = Q.filter(function (x) { return x.id === b.dataset.q; })[0];
         typeThen(q.id === 'all' ? '' : q.label.replace(/^[A-Z](?![A-Z])/, function (c) { return c.toLowerCase(); }), function () { runQuery(q, true); });
       });
+    });
+    // a window narrowed to phone width hides the bar, so no row may stay folded away behind it
+    phone.addEventListener('change', function (e) {
+      if (e.matches) { clearInterval(typeTimer); input.value = ''; runQuery(Q[0], false); }
     });
 
     // A typed question: one of the suggested questions if it names one (instant, no request), otherwise Claude
