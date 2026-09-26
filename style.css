@@ -851,6 +851,12 @@ nav:not(.side-nav)::after {
 }
 
 /* Chat Widget */
+/* Chang's AI, the floating chat, is hidden on every page (2026-09-26, per user "hide the chang's AI", on the
+   home page first, then "on other page as well"): Ask the work on the home page answers through the same
+   Claude endpoint (api/chat.js). Each page keeps its widget markup and script, so deleting this one rule
+   brings the chat back everywhere. */
+.chat-toggle, .chat-teaser, .chat-panel { display: none !important; }
+
 .chat-teaser {
   position: fixed;
   bottom: 280px;

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=274">
+  <link rel="stylesheet" href="style.css?v=275">
   <!-- Work-card motion. Scoped to this page (.card-loop exists only
        here), so it stays inline rather than bumping style.css across nine pages.
        Same reasoning as homewise.html's inline flow-chart block. -->
@@ -472,10 +472,6 @@
        brings them back). A typed question that is not about a tag goes to the real chat (api/chat.js), so the AI
        part is not theatre. Built by the script after the row builder; without JS the page is exactly as before. -->
   <style>
-    /* Chang's AI, the floating chat, is hidden on the home page (2026-09-26, per user "hide the chang's AI"): the
-       question line below answers through the same Claude endpoint. The markup and script stay, and the other pages
-       keep their chat. */
-    .chat-toggle, .chat-teaser, .chat-panel { display: none !important; }
     /* The chip row under each project is retired (2026-09-26, per user "do it"): Ask the work's suggested questions now
        do what those tags did, grouping the work by type, domain and status, and two layers of pills read as clutter.
        Each row is the title, the year and the description beside the image. The markup stays, so this one rule is the
