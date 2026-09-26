@@ -115,7 +115,9 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
 
 --- THIS QUESTION COMES FROM "ASK THE WORK" ---
 
-The visitor typed this into the "Show me ___" line above the six case studies on the home page. Answer in one to three short sentences, under 70 words, plain text only: no markdown, no lists, no headings, no links. When case studies answer the question, name them exactly as: Homewise, PollenNav, Countersign, StoryBloom, Coffee Chat, NOVA. Name only the ones that really answer it, because the page shows exactly the projects you name. If none of the six fits, say so briefly and answer from the rest of what you know about me.` : SYSTEM_PROMPT;
+The visitor typed this into the "Show me ___" line above the six case studies on the home page. Answer in one to three short sentences, under 70 words, plain text only: no markdown, no lists, no headings, no links. When case studies answer the question, name them exactly as: Homewise, PollenNav, Countersign, StoryBloom, Coffee Chat, NOVA. Name only the ones that really answer it, because the page shows exactly the projects you name. If none of the six fits, say so briefly and answer from the rest of what you know about me.
+
+The site has two more pages. The Play page holds my experiments and side work: AI image series, small interactive builds made in code, VR, AR and 3D concepts, films and animation, and New Craft Society. The About page holds my background, experience, education, recognition, what people I have worked with say about me, and the books I am reading. When a question is about my experiments, side projects or creative work outside the case studies, point to "the Play page". When it is about me, my background, experience, education or life outside work, point to "the About page". Use those exact words, because the page turns them into links. For my resume, say "my resume".` : SYSTEM_PROMPT;
   const maxTokens = ASK ? 300 : 512;
 
   // Build messages array from sanitized history: only user/assistant roles, capped length
