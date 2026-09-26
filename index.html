@@ -468,7 +468,7 @@
   <!-- ASK THE WORK (2026-09-26, per user "how about the merge AI-native query one with current home version"): the
        AI-native direction from lab/work-ask.html merged onto the current home page. Hero, footer, rows and thumbnails
        are untouched; above the rows sits one line to ask the work. A suggested question types itself in, a short
-       answer streams in naming the projects that match, and the rows that do not match fold away ("Everything"
+       answer streams in naming the projects that match, and the rows that do not match fold away ("All"
        brings them back). A typed question that is not about a tag goes to the real chat (api/chat.js), so the AI
        part is not theatre. Built by the script after the row builder; without JS the page is exactly as before. -->
   <style>
@@ -490,7 +490,7 @@
     }
     .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.4); }
     /* the type borrows the rows' own sizes, so the section reads as a way into the work, not a second headline:
-       the line is the project-title size, the answer the description size, the counts the size of the text beside them */
+       the line is the project-title size, the answer the description size */
     .ask-form label { font-size: clamp(28px, 2.64vw, 38px); letter-spacing: -0.025em; color: var(--text-muted); white-space: nowrap; }
     .ask-input {
       flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 0;
@@ -512,10 +512,8 @@
       display: inline-flex; align-items: baseline; gap: 8px;
       transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
     }
-    .ask-chip i { font-style: normal; color: var(--text-muted); font-variant-numeric: tabular-nums; }
     @media (hover: hover) { .ask-chip:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.34); } }
     .ask-chip[aria-pressed="true"] { color: #0a0a0a; background: #f0f0f0; border-color: #f0f0f0; }
-    .ask-chip[aria-pressed="true"] i { color: rgba(10, 10, 10, 0.55); }
     .ask-answer {
       position: relative; margin: 28px 0 0; padding-left: 22px; max-width: 980px; min-height: 1.55em;
       font-size: 16px; line-height: 1.55; color: var(--text-soft); text-wrap: pretty;
@@ -1931,7 +1929,7 @@
     };
     // every answer is a fact already on the home page or in the case study it names; [id] renders the project's name
     var Q = [
-      { id: 'all', label: 'Everything', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
+      { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
         text: 'Six case studies, 2023 to 2026. Two **AI agents that stop for a person,** [homewise] and [countersign]; two **award winning mobile apps,** [pollennav] and [storybloom]; a feature **shipped to hybrid teams,** [coffee]; and **AR glasses for children,** [nova].' },
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
         text: 'Two, and both **stop for a person.** [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
@@ -1952,7 +1950,7 @@
         '<input class="ask-input" id="askInput" type="text" spellcheck="false" enterkeyhint="search" placeholder="anything, or ask a question">' +
         '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button></form>' +
       '<div class="ask-chips" role="group" aria-label="Suggested questions">' + Q.map(function (q) {
-        return '<button class="ask-chip" type="button" data-q="' + q.id + '" aria-pressed="' + (q.id === 'all') + '"><span>' + q.label + '</span><i>' + q.ids.length + '</i></button>';
+        return '<button class="ask-chip" type="button" data-q="' + q.id + '" aria-pressed="' + (q.id === 'all') + '">' + q.label + '</button>';
       }).join('') + '</div>' +
       '<p class="ask-answer" aria-live="polite"><span class="ask-mote" aria-hidden="true"></span><span class="ask-words"></span><span class="ask-to"></span></p>';
     work.insertBefore(bar, work.firstChild);
