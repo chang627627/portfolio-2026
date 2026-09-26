@@ -28,7 +28,7 @@ module.exports = async function handler(req, res) {
   hits.push(now);
   globalThis.__chatRate.set(ip, hits);
 
-  const { message, history, stream } = req.body || {};
+  const { message, history, stream, surface } = req.body || {};
   if (!message || typeof message !== 'string') return res.status(400).json({ error: 'Message is required' });
   if (message.length > 2000) return res.status(400).json({ error: 'Message too long' });
 
@@ -107,6 +107,17 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
 - TickerPulse (2025): AI trading terminal monitoring real time news sentiment for explainable, actionable trader alerts. Its final design wireframes are in a carousel on the Play page; it no longer has a standalone case study page, so do not direct visitors to one.
 - Litespace Coffee Chat (2023): shipped B2B SaaS feature, 63% opt in and 200+ chats in month one. Full case study on the site; it ends with a live 2026 rebuild of the flow as a conversational agent named Luna, a working prototype visitors can click through on the case study page (desktop only). Luna's scripted flow covers booking and rescheduling; off-script typed questions are answered live by Claude Haiku through a separate serverless endpoint, and Luna remembers reflections between visits in the visitor's own browser.`;
 
+  // ASK THE WORK (2026-09-26): the home page's "Show me ___" line above the six case studies sends
+  // surface: 'ask'. Same knowledge and voice, but a one-line answer that names the case studies it
+  // means, because the page folds its rows down to the projects the answer names.
+  const ASK = surface === 'ask';
+  const system = ASK ? SYSTEM_PROMPT + `
+
+--- THIS QUESTION COMES FROM "ASK THE WORK" ---
+
+The visitor typed this into the "Show me ___" line above the six case studies on the home page. Answer in one to three short sentences, under 70 words, plain text only: no markdown, no lists, no headings, no links. When case studies answer the question, name them exactly as: Homewise, PollenNav, Countersign, StoryBloom, Coffee Chat, NOVA. Name only the ones that really answer it, because the page shows exactly the projects you name. If none of the six fits, say so briefly and answer from the rest of what you know about me.` : SYSTEM_PROMPT;
+  const maxTokens = ASK ? 300 : 512;
+
   // Build messages array from sanitized history: only user/assistant roles, capped length
   const messages = [];
   if (history && Array.isArray(history)) {
@@ -138,8 +149,8 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
         },
         body: JSON.stringify({
           model: 'claude-haiku-4-5-20251001',
-          max_tokens: 512,
-          system: SYSTEM_PROMPT,
+          max_tokens: maxTokens,
+          system,
           messages,
           stream: true,
         }),
@@ -212,8 +223,8 @@ AI's first pass drifts toward generic, so it never gets the last word. It runs t
       },
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
-        max_tokens: 512,
-        system: SYSTEM_PROMPT,
+        max_tokens: maxTokens,
+        system,
         messages,
       }),
     });
