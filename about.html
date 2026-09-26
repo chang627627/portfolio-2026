@@ -163,34 +163,6 @@
           rgba(0, 0, 0, 0.14) 100%);
     }
 
-    /* The books are shelved as you arrive (2026-09-25, per user "do 1 and 2"). The first
-       time the shelf is on screen they go in one at a time, left to right: each comes down
-       onto the shelf and tilts into its lean in ONE smooth motion, and it ends on exactly
-       the resting shelf above, so the lean you see is the lean they had before. About a
-       second in all, once, a one-shot event rather than a scroll scrub so it always plays
-       in full. NO BOUNCE, per user "do not have weird shaking": the first build set each
-       book down upright, tipped it, knocked it back toward upright and let it settle, so
-       every book rocked twice and neighbours rocked in opposite directions, which read as
-       the shelf shaking. Every value here now moves one way only, down and into the lean,
-       easing out. The script after the shelf adds .shelf--waiting only when it will also
-       run the arrival, so without JS, on phones (the section is hidden there anyway) and
-       under reduced motion the books simply stand. --n is written per book by that
-       script, so adding a book is still one <figure>. */
-    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
-      .shelf--waiting .book-cover {
-        opacity: 0;
-        transform: translateY(-16px) rotate(0deg);
-      }
-      .shelf--shelving .book-cover {
-        animation: book-shelve 560ms cubic-bezier(0.22, 1, 0.36, 1) both;
-        animation-delay: calc(var(--n, 0) * 80ms);
-      }
-    }
-    @keyframes book-shelve {
-      from { opacity: 0; transform: translateY(-16px) rotate(0deg); }
-      to { opacity: 1; transform: translateY(0) rotate(var(--lean, 0deg)); }
-    }
-
     /* Nothing happens when you point at a book (2026-09-20, per user "cancel the hover
        state"): no lift, no straightening, no scrim, no note. The shelf is six leaning
        covers and that is all. The six lines are kept in the markup and never rendered,
@@ -1366,8 +1338,8 @@
     </div>
   </section>
 
-  <!-- Books, back as a shelf 2026-09-19: six covers leaning on each other, shelved one
-       by one as you arrive (2026-09-25), on the page's own black, nothing on hover.
+  <!-- Books, back as a shelf 2026-09-19: six covers leaning on each other, still, on
+       the page's own black, nothing on hover.
        The covers carry their full alt: nothing else on the shelf names the book. The
        notes are the 2026-09-12 drafts, still kept and still unrendered. -->
   <section class="media-section media-section--end">
@@ -1399,33 +1371,6 @@
       </figure>
     </div>
   </section>
-  <script>
-    // Shelve the books the first time the shelf is on screen (see .shelf--waiting in the
-    // page styles). It runs right after the shelf is parsed so the books are hidden
-    // before they could ever be seen standing, and it only hides them when it can also
-    // bring them back: desktop, motion allowed, IntersectionObserver present.
-    (function () {
-      var shelf = document.querySelector('.shelf');
-      if (!shelf || !('IntersectionObserver' in window)) return;
-      if (!matchMedia('(min-width: 769px) and (prefers-reduced-motion: no-preference)').matches) return;
-      var books = shelf.querySelectorAll('.book');
-      books.forEach(function (b, i) { b.style.setProperty('--n', i); });
-      shelf.classList.add('shelf--waiting');
-      var io = new IntersectionObserver(function (es) {
-        if (es[es.length - 1].intersectionRatio < 0.55) return;
-        io.disconnect();
-        var left = books.length;
-        shelf.addEventListener('animationend', function done(e) {
-          if (!e.target.classList.contains('book-cover') || --left) return;
-          shelf.removeEventListener('animationend', done);
-          shelf.classList.remove('shelf--shelving');
-        });
-        shelf.classList.remove('shelf--waiting');
-        shelf.classList.add('shelf--shelving');
-      }, { threshold: [0, 0.55, 1] });
-      io.observe(shelf);
-    })();
-  </script>
 
 
   <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
