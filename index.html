@@ -478,15 +478,15 @@
        whole change and the undo. */
     #work .card-meta { display: none; }
     .ask-bar { max-width: 1344px; margin: 0 auto 112px; }
-    .ask-head { font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
     .ask-form {
       position: relative; display: flex; align-items: center; gap: 16px;
-      margin-top: 9px; padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
       transition: border-color var(--dur-base) var(--ease-out);
     }
     .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.4); }
-    /* One optical gap, 24px of visible space, between the label's caps and the line's caps, the rule and the chips,
-       and the chips and the answer's caps: the 9px and 17px margins are that 24 minus each text's own leading, measured.
+    /* No label above the line (per user: the section shows the work as well as answering questions, so "Ask the work"
+       named only half of it). One optical gap, 24px of visible space, between the rule and the chips and between the
+       chips and the answer's caps: the 17px margin is that 24 minus the answer's own leading, measured.
        The type borrows the rows' own sizes, so the section reads as a way into the work, not a second headline:
        the line is the project-title size, the answer the description size. The chips and the arrow button take the
        site's 8px button corner, like the hero's pill; only the mote beside the answer is round, as every mote is */
@@ -522,8 +522,11 @@
     .ask-answer b { font-weight: 400; color: var(--text); }
     .ask-answer a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.3); text-underline-offset: 4px; transition: text-decoration-color var(--dur-base) var(--ease-out); }
     @media (hover: hover) { .ask-answer a:hover { text-decoration-color: rgba(255, 255, 255, 0.9); } }
-    /* who wrote the answer: a chip's answer is Chang's own words and appears at once; a typed question is answered
-       live by Claude, which streams in, speaks about Chang, not as Chang, and is labelled on this line */
+    /* each word fades in as the answer types out, the same for every answer */
+    .ask-answer .w { opacity: 0; transition: opacity 0.35s var(--ease-out); }
+    .ask-answer .w.on { opacity: 1; }
+    /* who wrote it: a typed question is answered live by Claude, which speaks about Chang, not as Chang, and says so
+       on this line once it has finished */
     .ask-by { display: none; margin-top: 10px; font-size: 14px; color: var(--text-muted); }
     .ask-by.on { display: block; animation: ask-by-in 0.4s var(--ease-out); }
     @keyframes ask-by-in { from { opacity: 0; } }
@@ -533,7 +536,7 @@
     .ask-answer .ask-to a { color: var(--text); text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.35); text-underline-offset: 5px; }
     .ask-to a span { display: inline-block; margin-left: 6px; transition: transform var(--dur-base) var(--ease-out); }
     @media (hover: hover) { .ask-answer .ask-to a:hover { text-decoration-color: #fff; } .ask-to a:hover span { transform: translateX(3px); } }
-    /* the site's mote, in place of a sparkle: it glows while Claude's answer streams in and rests after. It sits inside
+    /* the site's mote, in place of a sparkle: it glows while an answer types out and rests after. It sits inside
        the section, its left edge on the same edge as the label, the line and the chips, and the answer follows it */
     .ask-mote {
       position: absolute; left: 0; top: 0.62em; width: 7px; height: 7px; border-radius: 50%;
@@ -547,7 +550,7 @@
        The script never builds the bar there; this hides it if a desktop window is narrowed after load */
     @media (max-width: 768px) { .ask-bar { display: none; } }
     @media (prefers-reduced-motion: reduce) {
-      .ask-fold { transition: none; }
+      .ask-fold, .ask-answer .w { transition: none; }
       .ask-by.on { animation: none; }
       .ask-answer.is-streaming .ask-mote { animation: none; }
     }
@@ -1951,7 +1954,6 @@
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
     bar.innerHTML =
-      '<div class="ask-head">Ask the work</div>' +
       '<form class="ask-form" role="search" autocomplete="off"><label for="askInput">Show me</label>' +
         '<input class="ask-input" id="askInput" type="text" spellcheck="false" enterkeyhint="search" placeholder="anything, or ask a question">' +
         '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button></form>' +
@@ -1966,20 +1968,45 @@
     var chips = [].slice.call(bar.querySelectorAll('.ask-chip'));
     var typeTimer = null;
 
-    // **bold** and [id] inside an answer; everything else is plain words. These are Chang's own answers, so they
-    // appear at once and cancel any live answer still arriving: only Claude's answers stream in
-    function render(text) {
-      if (asking) { asking.abort(); asking = null; }
-      answer.classList.remove('is-streaming');
-      goTo.innerHTML = ''; by.classList.remove('on');
-      var toks = text.match(/\*\*[^*]+\*\*|\[[a-z]+\][^\s]*|\S+/g) || [];
-      words.innerHTML = toks.map(function (t) {
+    // ONE WAY OF APPEARING (per user "no matter ai or pre-written text should look the same" and "do not just
+    // immediately show, which looks cheap"): every answer, Chang's own or Claude's, is laid out as words and shown one
+    // word at a time at one pace while the mote glows. Claude's words join the line as they arrive, so a fast reply
+    // types at the same speed as a written one. Starting another answer cancels whatever is still arriving.
+    var PACE = 42, typer = null, shown = 0, complete = true, whenDone = null;
+    function wordsIn() { return words.querySelectorAll('.w'); }
+    function setWords(list, isComplete) {
+      words.innerHTML = list.map(function (h, i) { return '<span class="w' + (i < shown ? ' on' : '') + '">' + h + '</span>'; }).join(' ');
+      complete = isComplete;
+      if (reduce) { shown = list.length; [].forEach.call(wordsIn(), function (w) { w.classList.add('on'); }); if (complete) finishTyping(); }
+    }
+    function stopTyping() { clearInterval(typer); typer = null; whenDone = null; answer.classList.remove('is-streaming'); }
+    function finishTyping() { var then = whenDone; stopTyping(); if (then) then(); }
+    function startTyping(then) {
+      stopTyping(); shown = 0; complete = false; whenDone = then || null;
+      answer.classList.add('is-streaming');
+      if (!reduce) typer = setInterval(function () {
+        var ws = wordsIn();
+        if (shown < ws.length) { ws[shown++].classList.add('on'); return; }
+        if (complete) finishTyping();
+      }, PACE);
+    }
+    // **bold** and [id] inside one of Chang's answers; everything else is plain words
+    function writtenWords(text) {
+      return (text.match(/\*\*[^*]+\*\*|\[[a-z]+\][^\s]*|\S+/g) || []).map(function (t) {
         var m = /^\[([a-z]+)\](.*)$/.exec(t);
         if (m) return '<a href="' + byId[m[1]].getAttribute('href') + '" data-to="' + m[1] + '">' + NAME[m[1]] + '</a>' + m[2];
         if (/^\*\*/.test(t)) return '<b>' + t.slice(2, -2) + '</b>';
         return t;
-      }).join(' ');
+      });
     }
+    function render(text, then) {
+      if (asking) { asking.abort(); asking = null; }
+      goTo.innerHTML = ''; by.classList.remove('on');
+      startTyping(then);
+      setWords(writtenWords(text), true);
+    }
+    // the resting overview is simply there when the page loads
+    function rest(text) { stopTyping(); shown = Infinity; setWords(writtenWords(text), true); }
     // a name in the answer brings its row into view instead of leaving the page
     words.addEventListener('click', function (e) {
       var a = e.target.closest('a[data-to]');
@@ -2091,27 +2118,50 @@
       } catch (e) {}
       return true;
     }
-    function keywordFallback(raw, t, note) {
+    function keywordFallback(raw, t, note, then) {
       var terms = t.split(' ').filter(function (w) { return w.length > 1 && ['me', 'the', 'and', 'for', 'with', 'show', 'about', 'what', 'your', 'any', 'work', 'projects', 'project'].indexOf(w) < 0; });
       var hits = Object.keys(byId).filter(function (id) { var kw = ' ' + KW[id] + ' '; return terms.some(function (w) { return kw.indexOf(' ' + w + ' ') >= 0; }); });
       showOnly(hits.length ? hits : Object.keys(byId));
-      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**'); return; }
+      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**', then); return; }
       var names = hits.map(function (id) { return '[' + id + ']'; });
-      render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.');
+      render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.', then);
+    }
+    // Claude's words, with the case studies it names and the pages it points to already links, one entry per word
+    // (a two-word name stays one entry, so it appears whole)
+    var LINKED = /\b(?:(?:Litespace )?Coffee Chat|Homewise|PollenNav|Countersign|StoryBloom|NOVA|(?:the )?(?:Play|About) page|(?:Chang['\u2019]s|my) resume)\b/g;
+    function linkFor(p) {
+      var id = NAME_ID[p];
+      if (id && byId[id]) return '<a href="' + byId[id].getAttribute('href') + '" data-to="' + id + '">' + p + '</a>';
+      var k = PAGE_ORDER.filter(function (k) { PAGES[k].says.lastIndex = 0; return PAGES[k].href && PAGES[k].says.test(p); })[0];
+      return k ? '<a href="' + PAGES[k].href + '"' + (PAGES[k].ext ? ' target="_blank" rel="noopener"' : '') + '>' + p + '</a>' : p;
+    }
+    function claudeWords(text) {
+      var marked = escHtml(text).replace(LINKED, function (m) { return '\u0001' + m.replace(/ /g, '\u0002') + '\u0003'; });
+      return (marked.match(/\S+/g) || []).map(function (w) {
+        return w.replace(/\u0001([^\u0003]*)\u0003/g, function (_, p) { return linkFor(p.replace(/\u0002/g, ' ')); });
+      });
     }
     var asking = null;
     async function askClaude(raw, t) {
       if (asking) asking.abort();
       var ctl = asking = new AbortController();
-      words.textContent = '';
       goTo.innerHTML = ''; by.classList.remove('on');
-      answer.classList.add('is-streaming');
       if (!withinLimit()) {
-        answer.classList.remove('is-streaming');
         render('That is ten questions for today. Write to **changmou627627@gmail.com** and I will answer the rest myself.');
         return;
       }
       var acc = '';
+      // when Claude's last word is shown, the rows fold to the case studies it named, its page links appear, and the
+      // answer says who wrote it
+      startTyping(function () {
+        var named = [];
+        acc.replace(NAMES, function (m) { var id = NAME_ID[m]; if (id && byId[id] && named.indexOf(id) < 0) named.push(id); return m; });
+        showOnly(named.length ? named : Object.keys(byId));
+        var said = PAGE_ORDER.filter(function (k) { PAGES[k].says.lastIndex = 0; return PAGES[k].href && PAGES[k].says.test(acc); });
+        setGoTo(said.concat(pagesAsked(raw)), 150);
+        by.classList.add('on');
+      });
+      setWords([], false);
       try {
         var res = await fetch('/api/chat', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, signal: ctl.signal,
@@ -2119,7 +2169,7 @@
         });
         var type = res.headers.get('content-type') || '';
         if (!res.ok) throw new Error('status ' + res.status);
-        if (type.indexOf('text/event-stream') < 0) { var j = await res.json(); if (!j.reply) throw new Error('no reply'); acc = j.reply; words.textContent = acc; }
+        if (type.indexOf('text/event-stream') < 0) { var j = await res.json(); if (!j.reply) throw new Error('no reply'); acc = j.reply; setWords(claudeWords(acc), false); }
         else {
           var reader = res.body.getReader(), dec = new TextDecoder(), buf = '', failed = false, finished = false;
           for (;;) {
@@ -2131,7 +2181,7 @@
               var line = buf.slice(0, i); buf = buf.slice(i + 2);
               if (line.indexOf('data:') !== 0) continue;
               var evt; try { evt = JSON.parse(line.slice(5).trim()); } catch (e) { continue; }
-              if (evt.t) { acc += evt.t; words.textContent = acc; }
+              if (evt.t) { acc += evt.t; setWords(claudeWords(acc), false); }
               else if (evt.done) finished = true;
               else if (evt.error) failed = true;
             }
@@ -2140,32 +2190,13 @@
         }
       } catch (e) {
         if (ctl.signal.aborted) return;
-        answer.classList.remove('is-streaming');
-        keywordFallback(raw, t, 'I could not reach the AI just now.');
-        setGoTo(pagesAsked(raw), 150);
+        keywordFallback(raw, t, 'I could not reach the AI just now.', function () { setGoTo(pagesAsked(raw), 150); });
         return;
       }
       if (ctl !== asking) return;
       asking = null;
-      answer.classList.remove('is-streaming');
       history.push({ role: 'user', content: raw }, { role: 'assistant', content: acc });
-      // the case studies the answer names become links to their rows, and the rest of the rows fold away
-      var named = [];
-      words.innerHTML = escHtml(acc).replace(NAMES, function (m) {
-        var id = NAME_ID[m];
-        if (!id || !byId[id]) return m;
-        if (named.indexOf(id) < 0) named.push(id);
-        return '<a href="' + byId[id].getAttribute('href') + '" data-to="' + id + '">' + m + '</a>';
-      });
-      showOnly(named.length ? named : Object.keys(byId));
-      var said = PAGE_ORDER.filter(function (k) { PAGES[k].says.lastIndex = 0; return PAGES[k].href && PAGES[k].says.test(acc); });
-      PAGE_ORDER.forEach(function (k) {
-        if (!PAGES[k].href) return;
-        PAGES[k].says.lastIndex = 0;
-        words.innerHTML = words.innerHTML.replace(PAGES[k].says, function (m) { return '<a href="' + PAGES[k].href + '"' + (PAGES[k].ext ? ' target="_blank" rel="noopener"' : '') + '>' + m + '</a>'; });
-      });
-      setGoTo(said.concat(pagesAsked(raw)), 150);
-      by.classList.add('on');   // a live answer says who wrote it
+      setWords(claudeWords(acc), true);   // the typer shows the last words, then runs the step above
     }
     form.addEventListener('submit', function (e) {
       e.preventDefault();
@@ -2175,8 +2206,8 @@
       if (named) { runQuery(named); return; }
       var page = PAGE_ORDER.filter(function (k) { return INSTANT[k].alias.indexOf(t) >= 0 && PAGES[k].href; })[0];
       if (page) {
-        press(null); showOnly(Object.keys(byId)); render(INSTANT[page].text);
-        setGoTo([page], 150);
+        press(null); showOnly(Object.keys(byId));
+        render(INSTANT[page].text, function () { setGoTo([page], 150); });
         return;
       }
       press(null);
@@ -2191,7 +2222,7 @@
       bar.scrollIntoView({ block: 'center', behavior: reduce ? 'instant' : 'smooth' });
     });
 
-    render(Q[0].text);   // at rest it reads as the overview of the six
+    rest(Q[0].text);   // at rest it reads as the overview of the six
   })();
 </script>
 
