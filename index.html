@@ -1937,10 +1937,10 @@
         text: 'Two, both **mobile apps.** [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
       { id: 'shipped', label: 'Shipped products', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
         text: 'Two **shipped with real teams.** [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
+      { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
+        text: 'Three, **for the browser:** [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
       { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
-        text: 'Three, **for the pocket and the face:** [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' },
-      { id: 'kids', label: 'Made for kids', ids: ['storybloom', 'nova'], alias: ['kid', 'kids', 'children', 'child', 'family', 'parents', 'made for kids'],
-        text: 'Two, **built around a child\'s day.** [storybloom] turns how today felt into an illustrated bedtime story for ages 3 to 8. [nova] balances a child\'s independence with a parent\'s reassurance, tested with 20+ parents and kids.' }
+        text: 'Three, **for the pocket and the face:** [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
@@ -2095,7 +2095,7 @@
       var terms = t.split(' ').filter(function (w) { return w.length > 1 && ['me', 'the', 'and', 'for', 'with', 'show', 'about', 'what', 'your', 'any', 'work', 'projects', 'project'].indexOf(w) < 0; });
       var hits = Object.keys(byId).filter(function (id) { var kw = ' ' + KW[id] + ' '; return terms.some(function (w) { return kw.indexOf(' ' + w + ' ') >= 0; }); });
       showOnly(hits.length ? hits : Object.keys(byId));
-      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **made for kids.**', true); return; }
+      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**', true); return; }
       var names = hits.map(function (id) { return '[' + id + ']'; });
       render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.', true);
     }
