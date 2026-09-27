@@ -31,8 +31,9 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - The gap from the last content to the footer is 280px on desktop and 80px on phones, on every page.
 
 ### Footer (the ten pages with `.page-end`: every page except the decks, 404 and og-gen)
-- `.page-end` holds the glow (the hero's dawn reflected, indigo at the top to amber at the bottom; the bottom stop stays warm), the `.say-hello` band (302px top padding on desktop, 180px on phones) and the bar.
+- `.page-end` holds the glow (the hero's dawn reflected, indigo at the top to amber at the bottom; the bottom stop stays warm), the `.say-hello` band (500px top padding on desktop, 180px on phones) and the bar.
 - Stardust embers rise from the glow's edge and cool as they rise; the pointer is ignored. The one event: a humpback whale made of the same motes forms, swims across the band above "Say hello" (25s desktop, 16s phones, alternating direction), then lets go into dust. Its edge stays loose stipple.
+- Under the whale, the Golden Gate in International Orange (#C0362C), a 3D model of the real bridge (legs, portal struts, saddle housings, both cables, hangers every 50 ft, the arched roadway and truss, from the Chief Engineer's 1937 report) seen side-on from 12 km, turned 28 degrees, drawn 1.4 times taller than true; the towers frame "Say hello" (58% of the width apart, at most 920px), the roadway runs 0.35em above the word's cap line (`BR_GAP`), and the purple is the fog: it fades from 30% under the tower tops to gone 30% under the roadway, and the towers rise out of it as the page reaches its end. The whale's floor is the tower tops. Built once per layout into its own layer (`buildBridge`), masked by the fog only when the scroll moves (`drawBridge`); `?fx=-bridge` hides it.
 - "Say hello" (desktop only): letter spans with an ambient light sweep plus a cursor spotlight limited to the word's box. A click copies the email and shows "Email copied"; the mailto is only the fallback.
 - Bar: "© 2026 Chang Mou · Designed in the fog · 11:21 pm" (live San Francisco time, desktop only). Links: desktop LinkedIn / Email / GitHub / X; phones LinkedIn / Email / Resume / X.
 
@@ -71,7 +72,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - Comment mode (C) is shared through `api/comments.js` on the private Blob store, one immutable blob per comment. Pins are keyed by slide index, so inserting a slide moves them.
 
 ### Other files
-`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=275` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
+`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=276` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
 
 ## Design system
 - Type: Neue Montreal, self-hosted `@font-face` in style.css (Fontshare delisted it), weight 400 everywhere; the one italic is hero line 2. Set `font-weight: 400` on every heading or browsers fake bold. Home size ladder: 104 hero, 38 titles, 16 body, 14, 13; new elements take a size from it.
