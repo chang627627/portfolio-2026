@@ -500,7 +500,7 @@
       10%, 88% { opacity: 1; }
       100% { transform: translateX(66%); opacity: 0; }
     }
-    .ask-form:focus-within .ask-light { visibility: hidden; }
+    .ask-form:focus-within .ask-light, .ask-bar:not(.is-idle) .ask-light { visibility: hidden; }
     /* No label above the line (per user: the section shows the work as well as answering questions, so "Ask the work"
        named only half of it). One optical gap, 24px of visible space, between the rule and the chips and between the
        chips and the answer's caps: the 17px margin is that 24 minus the answer's own leading, measured.
@@ -2094,16 +2094,22 @@
       resume: { alias: ['resume', 'cv', 'my resume', 'your resume', 'r\u00e9sum\u00e9'], text: 'Here is **my resume,** one page.' }
     };
 
-    function press(id) { chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.q === id)); }); }
+    function press(id) { chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.q === id)); }); syncIdle(); }
+    // at rest: "All" pressed and nothing in the line. Only then does the light run (per user: "only [when] the All chip
+    // is highlighted the glow animation is active. Otherwise, if there is something else in the chat, do not use the glow")
+    var allChip = bar.querySelector('.ask-chip[data-q="all"]');
+    function idle() { return !input.value.trim() && allChip.getAttribute('aria-pressed') === 'true'; }
+    function syncIdle() { bar.classList.toggle('is-idle', idle()); }
+    input.addEventListener('input', syncIdle);
     function runQuery(q) { press(q.id); showOnly(q.ids); render(q.text); }
 
     // a suggested question types itself into the line first
     function typeThen(text, then) {
       clearInterval(typeTimer);
-      if (reduce) { input.value = text; then(); return; }
+      if (reduce) { input.value = text; syncIdle(); then(); return; }
       input.value = ''; var i = 0;
       typeTimer = setInterval(function () {
-        input.value = text.slice(0, ++i);
+        input.value = text.slice(0, ++i); syncIdle();
         if (i >= text.length) { clearInterval(typeTimer); setTimeout(then, 120); }
       }, 26);
     }
@@ -2247,7 +2253,7 @@
     function sweep() {
       clearTimeout(sweepTimer);
       if (!onScreen) return;
-      if (form.matches(':focus-within') || answer.classList.contains('is-streaming')) { sweepTimer = setTimeout(sweep, 1500); return; }
+      if (!idle() || form.matches(':focus-within') || answer.classList.contains('is-streaming')) { sweepTimer = setTimeout(sweep, 1500); return; }
       light.classList.remove('run'); void light.offsetWidth; light.classList.add('run');
       sweepTimer = setTimeout(sweep, SWEEP_EVERY);
     }
@@ -2260,6 +2266,7 @@
     }
 
     rest(Q[0].text);   // at rest it reads as the overview of the six
+    syncIdle();
   })();
 </script>
 
