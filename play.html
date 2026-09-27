@@ -93,6 +93,7 @@
 
     .play-info h3 { line-height: 1.2; letter-spacing: -0.01em; }
     .play-info p { color: var(--text-soft); }
+    .play-card .play-info-top { align-items: center; }
     .play-card .play-year { font-size: 13px; font-variant-numeric: tabular-nums; }
     .play-card .play-info { margin-top: 14px; }
     .play-card .play-video,
@@ -242,8 +243,11 @@
   // keep the plain statement: no pin, no prism.
   (function () {
     // (a still of the prism for phones was built and removed on 2026-09-22, per user "no need prism on phone")
-    if (!matchMedia('(min-width: 769px)').matches) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Desktop means a wide window AND a mouse, checked live (2026-09-27, per user "why the fuck there is a prism on
+    // mobile"): the gate was width only and read once at load, so a phone held sideways (844px and up) got the prism,
+    // and a page opened wide kept the prism and its hold after narrowing to phone width.
+    const DESK = matchMedia('(min-width: 769px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)');
+    if (!DESK.matches) return;
     const pin = document.querySelector('.prism-pin');
     const stage = pin && pin.querySelector('.prism-stage');
     const title = stage && stage.querySelector('.page-title');
@@ -306,6 +310,7 @@
     let W = 0, H = 0, runway = 0, titleBottom = 0, target = 0, shown = -1, visible = true, raf = 0, t0 = performance.now();
     let vel = 0, at = 0, lastT = 0;                     // the spring's velocity (px/s), last step time and last target (px)
     function layout() {
+      if (!DESK.matches) return;
       const dpr = Math.min(2, window.devicePixelRatio || 1);
       W = stage.clientWidth; H = stage.clientHeight;
       cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
@@ -470,7 +475,7 @@
 
     function frame(now) {
       raf = 0;
-      if (!visible) return;
+      if (!visible || !DESK.matches) return;
       target = progress();
       // ONE CRITICALLY DAMPED SPRING, IN REAL TIME (2026-09-22): the About galaxy's follow, so both pages feel the same
       // and the feel no longer depends on the display's refresh rate. It snaps on the first frame, after being off
@@ -490,6 +495,10 @@
     }
     function start() { if (!raf && visible) raf = requestAnimationFrame(frame); }
     window.addEventListener('resize', layout, { passive: true });
+    DESK.addEventListener('change', () => { // off: plain statement, no hold; back on: rebuilt at the new size
+      document.documentElement.classList.toggle('prism-on', DESK.matches);
+      if (DESK.matches) { layout(); start(); } else pin.style.height = '';
+    });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout); // the statement's height moves when the face lands
     layout();
     new IntersectionObserver(es => { visible = es[es.length - 1].isIntersecting; if (visible) { at = 0; start(); } }, { rootMargin: '100px' }).observe(stage);
@@ -525,6 +534,13 @@
           <p>An octagonal crab drawn in ASCII. Glyphs and dither become pearl armor, neon claws, and a glowing core. Made with GPT Image 2.</p>
         </div>
         <img loading="lazy" decoding="async" width="1254" height="1254" src="images/gpt2-mech-crab.jpg" alt="Octocrab — pearl-white sci-fi crab creature with neon claws and a glowing core" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--mo:4">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Perfect Copy</h3><span class="play-year">2026</span></div>
+          <p>What happens when improvement becomes erasure. A single imperfect flower is repeatedly copied, refined, and optimized until it becomes cleaner, brighter, and more ideal, but increasingly less itself. The work asks what progress should preserve, and whether some imperfections are not defects at all, but the very things that make something distinct. Made with GPT Image 2.5.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="1374" height="1145" src="images/perfect-copy.webp" alt="Perfect Copy, a contact sheet of 35 photocopies of one poppy, from a grainy black and white scan to a flawless pink flower and, at the last copy, a white one drained of color" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:4;display:none">
         <div class="play-info">
@@ -635,6 +651,13 @@
           <p>A future archive of irreplaceable human behavior. Hesitation, waiting, wandering, and daydreaming reframed as qualities worth preserving in the age of AI. Made with GPT Image 2.</p>
         </div>
         <img width="1024" height="1536" src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--mo:5">
+        <div class="play-info">
+          <div class="play-info-top"><h3>The Rib</h3><span class="play-year">2026</span></div>
+          <p>Creation begins with separation. Drawn from the story of Genesis, the work captures the moment when one becomes two, when something once whole gives rise to another life with a form and presence of its own. The distance between them introduces loneliness, vulnerability, and the possibility of loss, but it also makes connection possible. Only when there is an “I” and a “you” can there be someone else to love. Made with GPT Image 2.5.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="1024" height="1536" src="images/the-rib.webp" alt="The Rib, a painting of a pale man under a gold halo whose opened ribs stream out as ribbons and petals into a woman drifting away over deep blue" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--mo:6">
         <div class="play-info">

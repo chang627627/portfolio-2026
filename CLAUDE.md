@@ -44,8 +44,8 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 
 ### Play (`play.html`)
 - Statement "Where I explore new tools, experiment, and stretch my range as a generalist." It stays plain: the reveal and nothing else.
-- Desktop, motion-safe: a Canvas 2D prism under the statement during a one-screen sticky hold. It starts as a flat side view with a single line of light, then turns into 3D as you scroll while the light stretches into six rays; the exit face faces the viewer.
-- Grid: two masonry columns (`minmax(0, 1fr)`) of boxless cards, the columns within a few percent of each other and both ending on a film. Phone order is independent, set by inline `--mo:N`. Visible: Scope, Octocrab, Midjourney, Luma, Robot Operator Console, New Craft Society, TickerPulse*, Market Street Booklet Kit, Missing Pavilion, UN/FOLD, The Last Human Gestures, No Signal Summer*, Whisper XR*, Futuristic Starship Cockpit, Fish Ocean, Mirror, Running Dog, About the Teddy Bear, I Believe in a Thing Called Love (* desktop only). Hidden with markup kept: Buffering Ocean, Golden Flux, Redbrick Coffee, Escape Velocity.
+- Desktop (769px and wider with a mouse, checked live, so phones held sideways and narrowed windows never get it), motion-safe: a Canvas 2D prism under the statement during a one-screen sticky hold. It starts as a flat side view with a single line of light, then turns into 3D as you scroll while the light stretches into six rays; the exit face faces the viewer.
+- Grid: two masonry columns (`minmax(0, 1fr)`) of boxless cards, the columns within a few percent of each other and both ending on a film. Phone order is independent, set by inline `--mo:N`. Visible: Scope, Octocrab, Perfect Copy, Midjourney, Luma, Robot Operator Console, New Craft Society, TickerPulse*, Market Street Booklet Kit, Missing Pavilion, UN/FOLD, The Last Human Gestures, The Rib, No Signal Summer*, Whisper XR*, Futuristic Starship Cockpit, Fish Ocean, Mirror, Running Dog, About the Teddy Bear, I Believe in a Thing Called Love (* desktop only). Hidden with markup kept: Buffering Ocean, Golden Flux, Redbrick Coffee, Escape Velocity.
 - The lightbox is a dialog that morphs out of the card. On desktop Fish Ocean runs live in it (`window.playStage`); Robot Operator Console and Fish Ocean loop silently while on screen; the YouTube cards are click-to-play facades with local posters; Starship Cockpit is a video plus a link to its figma.site app. The Midjourney grid's stills load eagerly.
 
 ### Case studies
@@ -124,7 +124,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 **Play**
 - The statement stays plain: no hover type (three cancellations), dust, trail, halo, colour, or motion beyond the reveal.
 - The prism is settled: six rays, their angles, the prism at 44%, the beam's path. No dust-only version, continuous spectrum, physical-accuracy rework, ray spine or phone version.
-- No 3D ring of the pieces (a hero object must not be built from the content below it), no pinned horizontal scroll, no left-aligned statement. Only Fish Ocean runs on the stage (Starship stays a video plus a link). No "Run the prototype" on the home rows.
+- No 3D ring of the pieces (a hero object must not be built from the content below it), no pinned horizontal scroll, no left-aligned statement. Only Fish Ocean runs on the stage (Starship stays a video plus a link). No "Run the prototype" on the home rows. A caption never opens on its own card's title (a cited source, like the song on I Believe in a Thing Called Love, is fine).
 
 **Case studies and decks**
 - NOVA's Final Design stays carousels, one frame at a time.
