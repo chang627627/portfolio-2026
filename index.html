@@ -483,7 +483,24 @@
       padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
       transition: border-color var(--dur-base) var(--ease-out);
     }
-    .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.4); }
+    .ask-form:focus-within { border-color: rgba(255, 255, 255, 0.6); }
+    /* THE LIGHT ALONG THE LINE (per user "more obvious like chang's AI ... some glow animation like the line animation"):
+       a soft white light crosses the rule under "Show me" and fades out at its end. It only ever moves on the rule,
+       never over text, and the arrow does not catch it (per user "do not highlight here"). */
+    .ask-light { position: absolute; left: 0; right: 0; bottom: -7px; height: 13px; overflow: hidden; pointer-events: none; }
+    .ask-light::before {
+      content: ''; position: absolute; inset: 0; opacity: 0; transform: translateX(-66%);
+      background:
+        linear-gradient(90deg, transparent 36%, rgba(255, 255, 255, 0.95) 50%, transparent 64%) center / 100% 1px no-repeat,
+        radial-gradient(ellipse 16% 50% at 50% 50%, rgba(255, 236, 214, 0.45), transparent 72%);
+    }
+    .ask-light.run::before { animation: ask-sweep 2.2s linear; }
+    @keyframes ask-sweep {
+      0% { transform: translateX(-66%); opacity: 0; }
+      10%, 88% { opacity: 1; }
+      100% { transform: translateX(66%); opacity: 0; }
+    }
+    .ask-form:focus-within .ask-light { visibility: hidden; }
     /* No label above the line (per user: the section shows the work as well as answering questions, so "Ask the work"
        named only half of it). One optical gap, 24px of visible space, between the rule and the chips and between the
        chips and the answer's caps: the 17px margin is that 24 minus the answer's own leading, measured.
@@ -495,7 +512,7 @@
       flex: 1; min-width: 0; background: none; border: 0; outline: none; padding: 0;
       font: inherit; font-size: clamp(28px, 2.64vw, 38px); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); caret-color: var(--text);
     }
-    .ask-input::placeholder { color: rgba(255, 255, 255, 0.22); }
+    .ask-input::placeholder { color: rgba(255, 255, 255, 0.32); }
     .ask-go {
       flex: none; width: 44px; height: 44px; border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.12); background: transparent; color: var(--text-muted);
@@ -1957,7 +1974,7 @@
     bar.innerHTML =
       '<form class="ask-form" role="search" autocomplete="off"><label for="askInput">Show me</label>' +
         '<input class="ask-input" id="askInput" type="text" spellcheck="false" enterkeyhint="search" placeholder="anything, or ask a question">' +
-        '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button></form>' +
+        '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button><span class="ask-light" aria-hidden="true"></span></form>' +
       '<div class="ask-chips" role="group" aria-label="Suggested questions">' + Q.map(function (q) {
         return '<button class="ask-chip" type="button" data-q="' + q.id + '" aria-pressed="' + (q.id === 'all') + '">' + q.label + '</button>';
       }).join('') + '</div>' +
@@ -2222,6 +2239,25 @@
       e.preventDefault(); input.focus();
       bar.scrollIntoView({ block: 'center', behavior: reduce ? 'instant' : 'smooth' });
     });
+
+    // The light crosses the line when the section comes into view and then every few seconds while it stays on screen.
+    // It waits while someone is typing or an answer is typing out, and never runs under reduced motion.
+    var light = bar.querySelector('.ask-light');
+    var SWEEP_EVERY = 6500, sweepTimer = null, onScreen = false, seenLight = false;
+    function sweep() {
+      clearTimeout(sweepTimer);
+      if (!onScreen) return;
+      if (form.matches(':focus-within') || answer.classList.contains('is-streaming')) { sweepTimer = setTimeout(sweep, 1500); return; }
+      light.classList.remove('run'); void light.offsetWidth; light.classList.add('run');
+      sweepTimer = setTimeout(sweep, SWEEP_EVERY);
+    }
+    if (!reduce && 'IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        onScreen = es[es.length - 1].isIntersecting;
+        clearTimeout(sweepTimer);
+        if (onScreen) { sweepTimer = setTimeout(sweep, seenLight ? 600 : 1600); seenLight = true; }
+      }, { threshold: 0.6 }).observe(form);
+    }
 
     rest(Q[0].text);   // at rest it reads as the overview of the six
   })();
