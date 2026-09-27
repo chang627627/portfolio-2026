@@ -1936,20 +1936,21 @@
       coffee: 'coffee chat litespace hybrid remote teams team pairing pairings matching social b2b saas enterprise dashboard web shipped launched ai professional 2023',
       nova: 'unicef nova ar augmented reality glasses wearable wearables hardware kids kid children child family parents safety navigation academic speculative 2025'
     };
-    // every answer is a fact already on the home page or in the case study it names; [id] renders the project's name
+    // every answer is a fact already on the home page or in the case study it names, and opens with its chip's own
+    // words (per user, so the answer reads as the chip's); [id] renders the project's name
     var Q = [
       { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
-        text: 'Six case studies, 2023 to 2026. Two AI agents that stop for a person, [homewise] and [countersign]; two award winning mobile apps, [pollennav] and [storybloom]; a feature shipped to hybrid teams, [coffee]; and AR glasses for children, [nova].' },
+        text: 'All six case studies, 2023 to 2026. Two AI agents that stop for a person, [homewise] and [countersign]; two award winning mobile apps, [pollennav] and [storybloom]; a feature shipped to hybrid teams, [coffee]; and AR glasses for children, [nova].' },
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
-        text: 'Two, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
+        text: 'Two AI agents, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
       { id: 'awards', label: 'Award winners', ids: ['pollennav', 'storybloom'], alias: ['award', 'awards', 'award winner', 'award winners', 'winner', 'winners', 'red dot', 'reddot'],
-        text: 'Two, both mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
-      { id: 'shipped', label: 'Shipped products', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
+        text: 'Two award winners, both mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
+      { id: 'shipped', label: 'Shipped', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
         text: 'Two shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
       { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
-        text: 'Three, for the browser: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
+        text: 'Three on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
       { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
-        text: 'Three, for the pocket and the face: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' }
+        text: 'Three across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
@@ -2092,7 +2093,7 @@
     chips.forEach(function (b) {
       b.addEventListener('click', function () {
         var q = Q.filter(function (x) { return x.id === b.dataset.q; })[0];
-        typeThen(q.id === 'all' ? '' : q.label.replace(/^[A-Z](?![A-Z])/, function (c) { return c.toLowerCase(); }), function () { runQuery(q); });
+        typeThen(q.id === 'all' ? '' : q.label, function () { runQuery(q); });   // the chip's words exactly as written
       });
     });
     // a window narrowed to phone width hides the bar, so no row may stay folded away behind it
@@ -2122,7 +2123,7 @@
       var terms = t.split(' ').filter(function (w) { return w.length > 1 && ['me', 'the', 'and', 'for', 'with', 'show', 'about', 'what', 'your', 'any', 'work', 'projects', 'project'].indexOf(w) < 0; });
       var hits = Object.keys(byId).filter(function (id) { var kw = ' ' + KW[id] + ' '; return terms.some(function (w) { return kw.indexOf(' ' + w + ' ') >= 0; }); });
       showOnly(hits.length ? hits : Object.keys(byId));
-      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **shipped products.**', then); return; }
+      if (!hits.length) { render(note + ' Try **AI agents, award winners** or **mobile & wearables.**', then); return; }
       var names = hits.map(function (id) { return '[' + id + ']'; });
       render(note + ' By their tags: ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1]) + '.', then);
     }
