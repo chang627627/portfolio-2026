@@ -176,7 +176,7 @@
        hour per user. The plate keeps a lip, which gives the two full-bleed
        covers a defined edge against the black page. */
     @media (min-width: 769px) {
-      .feature-card .project-img { box-shadow: inset 0 0 0 1px rgba(12, 18, 22, 0.08); transition: box-shadow var(--dur-base) var(--ease-out), translate var(--dur-slow) var(--ease-out); }
+      .feature-card .project-img { box-shadow: inset 0 0 0 1px rgba(12, 18, 22, 0.08); transition: box-shadow var(--dur-base) var(--ease-out); }
     }
     /* DATUM. The row used to centre the caption, so each title's y was an
        average of its own text height and no two rows shared a line. Now the
@@ -232,10 +232,9 @@
          reads left to right instead of as four simultaneous state changes */
       .feature .feature-card:hover .project-info h3 { color: #fff; transition-delay: 60ms; }
       /* THE FRAME ANSWERS THE HAND (per user "I need the thumbnail image's frame have some effect to make the visual more
-         obvious", then "do 1 and 2"): the plate's own hue glow, which was too faint to read at 0.14 / 0.07, is 0.30 / 0.14
-         and a little wider, and the whole plate lifts 4px. The lift is `translate`, not `transform`, because the row's
-         arrival animation owns the plate's transform and would override it. The screenshot inside is untouched. */
-      @media (prefers-reduced-motion: no-preference) { .feature .feature-card:hover .project-img { translate: 0 -4px; } }
+         obvious"): the plate's own hue glow, which was too faint to read at 0.14 / 0.07, is 0.30 / 0.14 and a little wider.
+         A 4px lift of the plate shipped with it and was removed per user "i do not like the lift": the frame stays put.
+         The screenshot inside is untouched. */
       @supports (color: oklch(from white l c h)) {
         /* box-shadow is not additive, so the lip has to be restated here */
         .feature .feature-card:hover .project-img {
@@ -455,7 +454,6 @@
     .feature .feature-card:focus-visible .project-img { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; }
     .feature .feature-card:focus-visible .project-info::before { transform: scaleX(1); }
     .feature .feature-card:focus-visible .project-info h3 { color: #fff; transition-delay: 60ms; }
-    @media (prefers-reduced-motion: no-preference) { .feature .feature-card:focus-visible .project-img { translate: 0 -4px; } }
     @supports (color: oklch(from white l c h)) {
       .feature .feature-card:focus-visible .project-img {
         box-shadow:
