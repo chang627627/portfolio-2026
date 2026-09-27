@@ -6,8 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "if": "Bash(git push*)",
-            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"A git push just completed. Review the commits you just pushed (run `git log -5 --oneline` or `git log origin/main -5`) and update CLAUDE.md in the project root if there are new design decisions, user preferences, or structural changes from this session worth capturing. If nothing material to add, say so briefly instead of forcing changes.\"}}'"
+            "command": "if jq -r '.tool_input.command // empty' | grep -Eq '(^|[;&|[:space:]])git([[:space:]]+-C[[:space:]]+[^[:space:]]+)?[[:space:]]+push([[:space:]]|$)'; then echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"A git push just completed. Log this session: add a dated entry at the top of the matching .claude/notes/<area>.md with the story (what was tried, the measurements, what was rejected and why), and in CLAUDE.md change only the current-state line or rule it affects, in a sentence or two. Keep CLAUDE.md under 60 KB. If nothing material changed, say so briefly.\"}}'; fi"
           }
         ]
       }
