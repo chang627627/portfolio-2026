@@ -1957,7 +1957,7 @@
     // words (per user, so the answer reads as the chip's); [id] renders the project's name
     var Q = [
       { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
-        text: 'All six case studies, 2023 to 2026. Two AI agents that stop for a person, [homewise] and [countersign]; two award winning mobile apps, [pollennav] and [storybloom]; a feature shipped to hybrid teams, [coffee]; and AR glasses for children, [nova].' },
+        text: '' },   // All shows every row and no answer
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
         text: 'Two AI agents, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
       { id: 'awards', label: 'Award winners', ids: ['pollennav', 'storybloom'], alias: ['award', 'awards', 'award winner', 'award winners', 'winner', 'winners', 'red dot', 'reddot'],
@@ -2019,12 +2019,17 @@
     }
     function render(text, then) {
       if (asking) { asking.abort(); asking = null; }
+      answer.hidden = false;
       goTo.innerHTML = ''; by.classList.remove('on');
       startTyping(then);
       setWords(writtenWords(text), true);
     }
-    // the resting overview is simply there when the page loads
-    function rest(text) { stopTyping(); shown = Infinity; setWords(writtenWords(text), true); }
+    // "All" needs no explanation (per user): every row shows and the answer line is empty and out of the way
+    function clearAnswer() {
+      if (asking) { asking.abort(); asking = null; }
+      stopTyping(); goTo.innerHTML = ''; by.classList.remove('on'); words.innerHTML = '';
+      answer.hidden = true;
+    }
     // a name in the answer brings its row into view instead of leaving the page
     words.addEventListener('click', function (e) {
       var a = e.target.closest('a[data-to]');
@@ -2101,7 +2106,7 @@
     function idle() { return !input.value.trim() && allChip.getAttribute('aria-pressed') === 'true'; }
     function syncIdle() { bar.classList.toggle('is-idle', idle()); }
     input.addEventListener('input', syncIdle);
-    function runQuery(q) { press(q.id); showOnly(q.ids); render(q.text); }
+    function runQuery(q) { press(q.id); showOnly(q.ids); if (q.id === 'all') clearAnswer(); else render(q.text); }
 
     // a suggested question types itself into the line first
     function typeThen(text, then) {
@@ -2169,6 +2174,7 @@
     async function askClaude(raw, t) {
       if (asking) asking.abort();
       var ctl = asking = new AbortController();
+      answer.hidden = false;
       goTo.innerHTML = ''; by.classList.remove('on');
       if (!withinLimit()) {
         render('That is ten questions for today. Write to **changmou627627@gmail.com** and I will answer the rest myself.');
@@ -2265,7 +2271,7 @@
       }, { threshold: 0.6 }).observe(form);
     }
 
-    rest(Q[0].text);   // at rest it reads as the overview of the six
+    clearAnswer();   // at rest: All, every row, no answer
     syncIdle();
   })();
 </script>
