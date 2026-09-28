@@ -1867,7 +1867,7 @@ footer {
 }
 
 .say-hello {
-  padding-top: 302px; /* 160 until 2026-09-11, then 232, then 302 the same day: the extra room is the whale's sky (see index.html's footer stardust block) */
+  padding-top: 380px; /* 160 until 2026-09-11, then 232, then 302 the same day: the extra room is the whale's sky (see index.html's footer stardust block); 500 for the Golden Gate on 2026-09-27, back to 302 when it went, then 380 the same day per user "I think we can add a little height" */
   text-align: center;
 }
 
