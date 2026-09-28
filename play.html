@@ -1183,8 +1183,12 @@
       stage.classList.remove('is-film');
     };
     // A piece with several images (the Whisper XR and TickerPulse slides, Midjourney's stills) is
-    // browsed here: previous and next under the caption, or the arrow keys. The card's own carousel
-    // follows, so closing lands back on the slide you were looking at.
+    // browsed here: previous and next under the caption, or the arrow keys. A slideshow's detail page
+    // and its card are separate (per user "what I want is detail page and play page are separated.
+    // when I click page 5 of whisper xr on play page. the detail page still show page 1"): it always
+    // opens on the first slide, and stepping never moves the card, which it closes back into as it
+    // left it. Midjourney's tiles all show at once, so a clicked tile opens on itself and the view
+    // closes back into the still you ended on.
     let gallery = null;
     // Midjourney's three clips (the silent loops in its grid) are items too, so its detail page has
     // all nine. A clip loops as it does in the grid, in the stills' own frame, so stepping between
@@ -1220,7 +1224,8 @@
       prev.addEventListener('click', () => stepGallery(-1));
       next.addEventListener('click', () => stepGallery(1));
       panel.append(nav);
-      gallery = { card, items, count, index: Math.max(0, items.indexOf(img)) };
+      const slideshow = !!card.querySelector('[data-carousel]');
+      gallery = { card, items, count, slideshow, index: slideshow ? 0 : Math.max(0, items.indexOf(img)) };
       count.textContent = (gallery.index + 1) + ' / ' + items.length;
       preloadAround();
     }
@@ -1236,16 +1241,16 @@
     }
     function stepGallery(d) {
       if (!gallery) return;
-      const { card, items, count } = gallery;
+      const { items, count, slideshow } = gallery;
       gallery.index = (gallery.index + d + items.length) % items.length;
       const item = items[gallery.index];
-      const carousel = card.querySelector('[data-carousel]');
-      if (carousel && carousel.playGoTo) carousel.playGoTo(gallery.index, 'auto'); // a plain swap: it happens under the page
       count.textContent = (gallery.index + 1) + ' / ' + items.length;
       preloadAround();
       if (item.tagName === 'VIDEO') { morphImg = null; showClip(item); return; }
-      morphImg = item;
-      if (opener && opener.tagName === 'IMG') opener = item; // focus comes back to the slide you ended on, not a hidden one
+      if (!slideshow) { // Midjourney: close back into the still you ended on, and hand focus to it
+        morphImg = item;
+        if (opener && opener.tagName === 'IMG') opener = item;
+      }
       const next = new Image();
       next.src = srcOf(item);
       (next.decode ? next.decode() : Promise.resolve()).catch(() => {}).then(() => {
@@ -1359,8 +1364,9 @@
       if (piece) startGallery(card, img);
       if (img.tagName === 'VIDEO') { morphImg = null; showClip(img); show(titleOf(card)); return; } // a Midjourney clip
       hideClip();
-      lightboxImg.src = img.currentSrc || img.src;
-      lightboxImg.alt = img.alt;
+      const first = gallery && gallery.slideshow ? gallery.items[0] : img; // a slideshow's page opens on its first slide; it still grows out of the slide the card shows
+      lightboxImg.src = first.currentSrc || first.src;
+      lightboxImg.alt = first.alt;
       const label = piece ? titleOf(card) : 'Enlarged image' + (img.alt ? ': ' + img.alt : '');
       if (!canMorph()) { show(label); return; }
       const decoded = lightboxImg.decode ? lightboxImg.decode().then(() => true, () => false) : Promise.resolve(false);
@@ -1689,7 +1695,6 @@
     prevBtn.addEventListener('click', () => { goTo(current - 1, 'prev'); schedule(); });
     nextBtn.addEventListener('click', () => { goTo(current + 1, 'next'); schedule(); });
     dotsContainer.addEventListener('click', schedule);
-    carousel.playGoTo = goTo; // the piece view keeps the card on the slide it is showing
   });
 
   const footerGlow = document.querySelector('.footer-glow');
