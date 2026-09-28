@@ -124,7 +124,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 **Play**
 - The statement stays plain: no hover type (three cancellations), dust, trail, halo, colour, or motion beyond the reveal.
 - The prism is settled: six rays, their angles, the prism at 44%, the beam's path. No dust-only version, continuous spectrum, physical-accuracy rework, ray spine or phone version.
-- No 3D ring of the pieces (a hero object must not be built from the content below it), no pinned horizontal scroll, no left-aligned statement. Only Fish Ocean runs on the stage (Starship stays a video plus a link). No "Run the prototype" on the home rows. A caption never opens on its own card's title (a cited source, like the song on I Believe in a Thing Called Love, is fine). The Rib's caption never frames the woman as made from or for the man (the rib reads as side: two equals).
+- No 3D ring of the pieces (a hero object must not be built from the content below it), no pinned horizontal scroll, no left-aligned statement. Only Fish Ocean runs on the stage (Starship stays a video plus a link). No "Run the prototype" on the home rows. A caption never opens on its own card's title (a cited source, like the song on I Believe in a Thing Called Love, is fine). The Rib's caption never frames the woman as made from or for the man (one whole becomes two equals).
 
 **Case studies and decks**
 - NOVA's Final Design stays carousels, one frame at a time.
