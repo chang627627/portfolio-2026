@@ -1499,8 +1499,9 @@
         // toward the roadway
         legs: [[-0.404, 0, 9.6, 16], [0, 0.215, 7.5, 13.9], [0.215, 0.48, 5.9, 11.7], [0.48, 0.715, 4.5, 9.6], [0.715, 1, 3.2, 7.5]],
         struts: [[0.215, 0.3], [0.48, 0.555], [0.715, 0.785], [0.92, 0.99]], sd: 3.2, // the four portal struts, 10.5 ft deep, their spacing diminishing toward the top (the crown last, just under the leg tops), sized off the fog photograph
-        view: 28, dist: 12000, // the camera: 12 km away, nearly side-on, turned 28 degrees toward one end, so both towers stand the same size and show just their upper openings and both cables
-        vx: 1.4, // drawn 1.4 times taller than true, as illustrations of the bridge do (per user, with a stock side-view illustration: "something like this"); the shape is otherwise real
+        view: 0, dist: 12000, // the camera: 12 km away and square to the span, the side view (per user "Is the angle right (I want the side view)?", 2026-09-27). It was turned 28 degrees toward one end, which doubled both cables and both curtains of hangers, made the nearer tower 5% taller and pushed the bridge off centre
+        turn: 28, // only the towers are turned, 28 degrees on their own axes, as illustrations of the bridge do (his stock side view among them): seen truly side-on the legs line up and hide the tower windows, so the towers would read as plain spires
+        vx: 1.59, // drawn 1.59 times taller than true, as illustrations of the bridge do (per user, with a stock side-view illustration: "something like this"); the shape is otherwise real. It was 1.4 in the 28 degree view, whose turn foreshortened the span by cos 28 = 0.88, so the towers stood 1.4 / 0.88 = 1.59 times true against it; the side view keeps that height
       };
       const BR_A = 0.72, BR_C = '192, 54, 44'; // International Orange, #C0362C, at its clearest
       const BR_GAP = 0.35; // the room between the roadway's truss and the word's cap line, in ems of the word (0.06 until the user found "say hello is too close to the bridge"; the band grew by the same amount, 440 to 500px)
@@ -1522,7 +1523,7 @@
         const phone = phoneMQ.matches, txt = document.querySelector('.say-hello .footer-big-text');
         const wb = !phone && txt && txt.offsetParent;
         const inkTop = wb ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
-        // the camera, far away and nearly side-on
+        // the camera, far away and square to the span
         const va = GG.view * Math.PI / 180, cam = [GG.span / 2 + GG.dist * Math.sin(va), 50, GG.dist * Math.cos(va)], look = [GG.span / 2, 40, 0];
         const f = vnorm(vsub(look, cam)), r = vnorm(vcross(f, [0, 1, 0])), u = vcross(r, f);
         const pj = P => { const d = vsub([P[0], P[1] * GG.vx, P[2]], cam), z = vdot(d, f); return [vdot(d, r) / z, vdot(d, u) / z, z]; };
@@ -1534,8 +1535,12 @@
         // towers rise between the whale and the links
         const yD = wb ? inkTop - BR_GAP * parseFloat(getComputedStyle(txt).fontSize) - hN * GG.deck / GG.th : wTop - 30 + hN, yTop = yD - hN; // the truss under it too
         const oy = yTop + s * n0[1];
-        let top = 1e9;
-        const S = P => { const q = pj(P), p = [ox + s * q[0], oy - s * q[1], q[2]]; if (p[1] < top) top = p[1]; return p; };
+        let top = 1e9, twx = null; // twx: the tower being drawn, turned GG.turn degrees on its own vertical axis
+        const tc = Math.cos(GG.turn * Math.PI / 180), ts = Math.sin(GG.turn * Math.PI / 180);
+        const S = P => {
+          if (twx !== null) { const dx = P[0] - twx; P = [twx + dx * tc + P[2] * ts, P[1], P[2] * tc - dx * ts]; }
+          const q = pj(P), p = [ox + s * q[0], oy - s * q[1], q[2]]; if (p[1] < top) top = p[1]; return p;
+        };
         const fill = new Path2D(), hang = new Path2D(), wires = new Map();
         const box = (x0, x1, y0, y1, z0, z1) => {
           const h = hull([x0, x1].flatMap(x => [y0, y1].flatMap(y => [z0, z1].map(z => S([x, y, z])))));
@@ -1546,6 +1551,7 @@
           h.forEach((p, i) => i ? fill.lineTo(p[0], p[1]) : fill.moveTo(p[0], p[1])); fill.closePath();
         };
         [0, GG.span].forEach(xt => {
+          twx = xt;
           GG.legs.forEach(([a, b, w, d]) => [-1, 1].forEach(sg => box(xt - d / 2, xt + d / 2, a * GG.th, b * GG.th, sg * (GG.cz - w / 2), sg * (GG.cz + w / 2))));
           GG.struts.forEach(([a, b]) => {
             const leg = GG.legs.find(l => (a + b) / 2 >= l[0] && (a + b) / 2 <= l[1]), zi = GG.cz - leg[2] / 2;
@@ -1553,12 +1559,16 @@
           });
           const top = GG.legs[GG.legs.length - 1]; // the saddle housing: each leg top rises to a point where the cable passes over
           [-1, 1].forEach(sg => frustum(xt, GG.th, GG.th * 1.032, sg * GG.cz, top[3], top[2], top[3] * 0.3, top[2] * 0.45));
+          twx = null;
         });
-        // the roadway arches over the main span and falls to the shore pylons, carried on its 25 ft truss
+        // the roadway arches over the main span and falls to the shore pylons, carried on its 25 ft truss, then runs on past them to both edges of
+        // the screen at any width (it stopped at fixed ends, which hung in the air above about 1560px)
         const road = X => X < 0 ? GG.pylon * (-X / GG.side) : X > GG.span ? GG.pylon * ((X - GG.span) / GG.side)
           : GG.rise * (1 - ((X - GG.span / 2) / (GG.span / 2)) ** 2);
-        for (let i = 0; i < 40; i++) {
-          const x0 = -GG.side - 200 + (GG.span + 2 * GG.side + 400) * i / 40, x1 = -GG.side - 200 + (GG.span + 2 * GG.side + 400) * (i + 1) / 40;
+        const mpx = GG.span / (xF - xN), rL = Math.min(-GG.side - 200, -(xN + 40) * mpx), rR = Math.max(GG.span + GG.side + 200, GG.span + (W - xF + 40) * mpx);
+        const nR = Math.ceil((rR - rL) / 50);
+        for (let i = 0; i < nR; i++) {
+          const x0 = rL + (rR - rL) * i / nR, x1 = rL + (rR - rL) * (i + 1) / nR;
           const y = Math.max(road(Math.max(-GG.side, Math.min(GG.span + GG.side, x0))), road(Math.max(-GG.side, Math.min(GG.span + GG.side, x1))));
           box(x0, x1, y - GG.deck, y, -GG.cz, GG.cz);
         }
