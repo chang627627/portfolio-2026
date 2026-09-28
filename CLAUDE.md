@@ -122,7 +122,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 
 **Play**
 - The statement stays plain: no hover type (three cancellations), dust, trail, halo, colour, or motion beyond the reveal.
-- The prism is settled: six rays, their angles, the prism at 44%, the beam's path. No dust-only version, continuous spectrum, physical-accuracy rework, ray spine or phone version.
+- The prism is settled: six rays, their angles, the prism centred at 50% (moved from 44% on 2026-09-28 at his request), the beam's path. No dust-only version, continuous spectrum, physical-accuracy rework, ray spine or phone version.
 - No 3D ring of the pieces (a hero object must not be built from the content below it), no pinned horizontal scroll, no left-aligned statement. Nothing runs live on the stage, and no "Run" disc (Fish Ocean became a film plus a "Play it here" link, like Starship). In three columns captions live only in the detail page (hover reveal, read-more expansion and a page per piece were set aside); the detail page is solid, never a veil; films never autoplay there; no zoom cursors anywhere on Play. The slideshows' autoplay just changes the image: no slide-in, fade or other effect, and nothing may jump. Detail-page introductions come only from his history, never invented; The Rib's never carries the Hebrew rib-means-side clause (cut twice), and Octocrab's paragraph he withdrew stays out unless he asks. No "Run the prototype" on the home rows. A caption never opens on its own card's title (a cited source, like the song on I Believe in a Thing Called Love, is fine). The Rib's caption never frames the woman as made from or for the man (one whole becomes two equals).
 
 **Case studies and decks**

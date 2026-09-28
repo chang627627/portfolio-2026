@@ -420,7 +420,8 @@
       ctx.clearRect(0, 0, W, H);
       ctx.globalCompositeOperation = 'lighter';
       const e = smooth(p);
-      const S = Math.min(W * SIZE, MAX_S), cx = W * 0.44, cy = Math.max(titleBottom + 70 + S * 0.62, H * 0.6);
+      // centred under the statement (2026-09-28, per user "I feel the prism is not in the middle, which is a little left aligned"; was 0.44)
+      const S = Math.min(W * SIZE, MAX_S), cx = W * 0.5, cy = Math.max(titleBottom + 70 + S * 0.62, H * 0.6);
       const roll = mix(ROLL[0], ROLL[1], e), yaw = mix(YAW[0], YAW[1], e), tilt = mix(TILT[0], TILT[1], e), persp = mix(PERSP[0], PERSP[1], e);
       const rC = S / Math.sqrt(3), half = S * DEPTH / 2;
       // the prism in 3D: an equilateral cross-section, apex up, extruded along the depth axis
