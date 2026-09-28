@@ -97,6 +97,7 @@
     .lightbox-panel h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; }
     .lightbox-panel .play-year { flex-shrink: 0; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
     .lightbox-panel p { margin: 0; color: var(--text-soft); font-size: 16px; line-height: 1.6; }
+    .lightbox-panel .play-more p + p { margin-top: 12px; }
     .lightbox-panel .play-link { margin-top: 20px; }
     .lightbox-stage__film { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; outline: none; cursor: default; }
     .lightbox-stage.is-film .lightbox-stage__film { display: block; }
@@ -597,6 +598,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Scope</h3><span class="play-year">2026</span></div>
           <p>A Gen Z cultural platform imagined as one AI-native brand world. Identity, music, fashion, and digital drops. Made with GPT Image 2.</p>
+          <div class="play-more" hidden><p>A branding exploration imagining a Gen Z cultural platform where identity, creators, events, fashion, music, and digital expression come together. The project experiments with how one AI-native brand world can extend across campaign visuals, interface fragments, editorial layouts, and cultural drops. Made with GPT Image 2.</p></div>
         </div>
         <img width="1254" height="1254" src="images/scope-card.jpg" alt="Scope — Gen Z cultural platform branding exploration" class="play-img-photo">
       </div>
@@ -618,6 +620,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>The Rib</h3><span class="play-year">2026</span></div>
           <p>Creation begins with separation. In this retelling of Genesis, one whole becomes two equals, and distance makes loss possible. Only when there is an “I” and a “you” can there be someone to love. Made with GPT Image 2.5.</p>
+          <div class="play-more" hidden><p>Creation begins with separation. Drawn from Genesis, the work captures the moment one whole becomes two equals, each with a form and presence of its own. The distance between them brings loneliness, vulnerability, and the possibility of loss, but it also makes connection possible. Only when there is an “I” and a “you” can there be someone to love. Made with GPT Image 2.5.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1024" height="1536" src="images/the-rib.webp" alt="The Rib, a painting of a pale man under a gold halo whose opened ribs stream out as ribbons and petals into a woman drifting away over deep blue" class="play-img-photo">
       </div>
@@ -648,14 +651,16 @@
       <div class="play-card" style="--mo:9">
         <div class="play-info">
           <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
-          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Figma Make.</p>
+          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
+          <div class="play-more" hidden><p>Solo concept project exploring how neuroaesthetic interaction can support emotional regulation through art-based rituals. Inspired by Your Brain on Art, it uses body mapping, abstract visual expression, and sensory check-ins to help users externalize difficult feelings in a private, nonverbal way. A trauma-informed concept focused on calm interaction, emotional safety, and a more poetic alternative to conventional wellness apps. Made with Claude Code.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:18">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
-          <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity and Claude Code.</p>
+          <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity MCP and Claude Code.</p>
+          <div class="play-more" hidden><p>Solo project built in Unity, exploring what it feels like to sit at the console of a working robot. A humanoid runs a warehouse pick-and-place loop: approach, grasp, lift, carry, place, return. An industrial control interface reads its vitals: battery, joint load, gait stability, alarms that flash red and wait to be acknowledged. Watch from above, through the robot's own eyes, or free-flying in VR. Made with Unity MCP and Claude Code.</p></div>
         </div>
         <div class="play-video build-stage" style="aspect-ratio: 1280 / 716">
           <img class="build-poster" src="images/robot-console-loop-poster.jpg" alt="" width="1280" height="716" loading="lazy" decoding="async">
@@ -683,6 +688,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>TickerPulse</h3><span class="play-year">2025</span></div>
           <p>An AI trading terminal that monitors real-time news sentiment and explains the why behind every alert, not just the what. It filters market noise down to portfolio-relevant moves, backs every verdict with linked evidence, and surfaces the catalyst before the move is over.</p>
+          <div class="play-more" hidden><p>An AI trading terminal that monitors real-time news sentiment and explains the why behind every alert, not just the what. Built for active and part-time traders, it filters market noise down to portfolio-relevant moves and backs every verdict with linked evidence, so they can act on the catalyst before the move is over.</p></div>
         </div>
         <div class="carousel" data-carousel>
           <div class="carousel-row">
@@ -702,6 +708,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
           <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
+          <div class="play-more" hidden><p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
       </div>
@@ -709,6 +716,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Missing Pavilion</h3><span class="play-year">2021</span></div>
           <p>A parametric pavilion of wave-like metal and semi-transparent glass, sited at a park pathway intersection and built around light, water, and quiet. Made in Rhino and Grasshopper.</p>
+          <div class="play-more" hidden><p>Solo project designing an 8x12m parametric pavilion, featuring a wave-like structure of metal and semi-transparent glass. Positioned at a pathway intersection, it enhances the park experience with light, water play, and a serene space for relaxation and socializing. Made in Rhino and Grasshopper.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1243" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
       </div>
@@ -716,6 +724,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>UN/FOLD</h3><span class="play-year">2020</span></div>
           <p>A team 3D adventure built in Unity. As game designer, I shaped levels and mechanics where players shapeshift between humans, wolves, and seagulls to solve puzzles.</p>
+          <div class="play-more" hidden><p>A team developed 3D adventure game built in Unity, featuring puzzles, platforming, and a fantasy world. As the game designer, I focused on the setting, level design, and mechanics, allowing players to shapeshift into humans, wolves, and seagulls to solve challenges creatively.</p></div>
         </div>
         <div class="play-video">
           <button class="yt-facade" type="button" data-embed="https://player.vimeo.com/video/486270690?autoplay=1&amp;title=0&amp;byline=0&amp;portrait=0" aria-label="Play: UN/FOLD"><img class="yt-facade__poster" src="images/unfold-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
@@ -728,6 +737,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>The Last Human Gestures</h3><span class="play-year">2026</span></div>
           <p>A future archive of irreplaceable human behavior. Hesitation, waiting, wandering, and daydreaming reframed as qualities worth preserving in the age of AI. Made with GPT Image 2.</p>
+          <div class="play-more" hidden><p>A future archive of irreplaceable human behavior in the age of AI. As efficiency, optimization, and productivity become automated, this poster reframes hesitation, waiting, wandering, and daydreaming as human qualities worth preserving. Made with GPT Image 2.</p></div>
         </div>
         <img width="1024" height="1536" src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
       </div>
@@ -735,6 +745,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Vitruvian</h3><span class="play-year">2026</span></div>
           <p>Leonardo da Vinci's ideal human, redrawn in overlapping color layers that share one center but diverge toward the edges. One ideal gives way to many possible selves, all of them human. Made with GPT Image 2.5.</p>
+          <div class="play-more" hidden><p>Leonardo da Vinci's search for ideal human proportions, reimagined through a body that refuses to resolve into a single form. Overlapping color layers share the same center but diverge toward the edges, replacing one ideal with many possible selves. The work asks whether there can still be a universal image of the human, or whether being human has always meant existing in variation. Made with GPT Image 2.5.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1254" height="1254" src="images/vitruvian.webp" alt="Vitruvian, Leonardo's Vitruvian Man redrawn as overlapping cyan, magenta, and yellow figures that share one center and spread apart toward the circle and square" class="play-img-photo">
       </div>
@@ -742,6 +753,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Perfect Copy</h3><span class="play-year">2026</span></div>
           <p>When improvement becomes erasure. One imperfect flower, copied and refined until it is cleaner, brighter, and less itself. Some imperfections are not defects at all, but what makes something distinct. Made with GPT Image 2.5.</p>
+          <div class="play-more" hidden><p>What happens when improvement becomes erasure. A single imperfect flower is repeatedly copied, refined, and optimized until it becomes cleaner, brighter, and more ideal, but increasingly less itself. The work asks what progress should preserve, and whether some imperfections are not defects at all, but the very things that make something distinct. Made with GPT Image 2.5.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1374" height="1145" src="images/perfect-copy.webp" alt="Perfect Copy, a contact sheet of 35 photocopies of one poppy, from a grainy black and white scan to a flawless pink flower and, at the last copy, a white one drained of color" class="play-img-photo">
       </div>
@@ -749,6 +761,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>No Signal Summer</h3><span class="play-year">2026</span></div>
           <p>Future nostalgia and the quiet beauty of being unreachable. A summer when nothing was trying to reach us. Made with GPT Image 2.</p>
+          <div class="play-more" hidden><p>A visual experiment about future nostalgia and the quiet beauty of being unreachable. What if the most peaceful memory of the future is not progress, but a summer when nothing was trying to reach us? Made with GPT Image 2.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
       </div>
@@ -763,6 +776,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Whisper XR</h3><span class="play-year">2025</span></div>
           <p>Team project for Apple Vision Pro. An AI powered extended reality service that simulates social scenarios to help people with social anxiety prepare for real-life interactions.</p>
+          <div class="play-more" hidden><p>A collaborative project developed by a team of two, built for Apple Vision Pro. It's an AI powered extended reality service that currently focuses on simulating social scenarios to help people with social anxiety prepare for real-life interactions. Emphasizing privacy, subtlety, and personalization, it aims to build users' confidence in a supportive, low pressure environment.</p></div>
         </div>
         <div class="carousel" data-carousel>
           <div class="carousel-row">
@@ -789,6 +803,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
           <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
+          <div class="play-more" hidden><p>Solo project exploring what immersive flight can feel like inside a browser. Users can steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p></div>
           <a href="https://mince-lemon-30902005.figma.site/" target="_blank" rel="noopener" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
         <div class="play-video">
@@ -812,6 +827,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
           <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
+          <div class="play-more" hidden><p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
       </div>
@@ -826,6 +842,7 @@
         <div class="play-info">
           <div class="play-info-top"><h3>About the Teddy Bear</h3><span class="play-year">2020</span></div>
           <p>A debut 3D animated short built in Maya with a student team. As animator and scene designer, I shaped the scenes and motion for a story about responsibility and impulsive commitments, following a teddy bear left behind when a young couple parts ways.</p>
+          <div class="play-more" hidden><p>A debut 3D animated short created by a passionate student team using Maya. As an animator and scene designer, I brought the story to life, exploring themes of responsibility and impulsive commitments through the journey of a teddy bear, symbolizing abandonment and loss as a young couple parts ways.</p></div>
         </div>
         <div class="play-video">
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/zdQ4LYluWnc?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: About the Teddy Bear"><img class="yt-facade__poster" src="images/teddybear-poster.jpg" alt="" width="640" height="480" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
@@ -1276,6 +1293,10 @@
         stopGridFilms();
         const info = card.querySelector('.play-info').cloneNode(true);
         info.querySelectorAll('.play-title-btn').forEach((b) => b.replaceWith(...b.childNodes));
+        // the longer introduction, where the card has one, takes the short caption's place here;
+        // the grid (two columns, phones) keeps the short one
+        const more = info.querySelector('.play-more');
+        if (more) { info.querySelectorAll(':scope > p').forEach((p) => p.remove()); more.hidden = false; }
         panel.append(info);
         panel.scrollTop = 0;
       }
