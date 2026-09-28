@@ -518,6 +518,20 @@
       font: inherit; font-size: clamp(28px, 2.64vw, 38px); line-height: 1.1; letter-spacing: -0.025em; color: var(--text); caret-color: var(--text);
     }
     .ask-input::placeholder { color: rgba(255, 255, 255, 0.32); }
+    /* the ghost suggestion, in the placeholder's type, as a button: hover underlines it like the answer's links (2026-09-28) */
+    .ask-ghost {
+      position: absolute; display: flex; align-items: center; margin: 0; padding: 0; border: 0; background: none; cursor: pointer;
+      font: inherit; font-size: clamp(28px, 2.64vw, 38px); line-height: 1.1; letter-spacing: -0.025em; white-space: nowrap;
+      color: rgba(255, 255, 255, 0.32); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; text-decoration-color: transparent;
+      transition: color var(--dur-base) var(--ease-out), text-decoration-color var(--dur-base) var(--ease-out);
+    }
+    .ask-ghost[hidden] { display: none; }
+    @media (hover: hover) { .ask-ghost:hover { color: var(--text-soft); text-decoration-color: rgba(255, 255, 255, 0.3); } }
+    .ask-bar.has-ghost .ask-go { color: var(--text); border-color: rgba(255, 255, 255, 0.34); }
+    /* the way back to every row once something is asked (2026-09-28) */
+    .ask-clear { flex: none; width: 44px; height: 44px; margin-right: -8px; border: 0; border-radius: var(--radius); background: transparent; color: var(--text-muted); display: grid; place-items: center; cursor: pointer; transition: color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out); }
+    .ask-clear[hidden] { display: none; }
+    @media (hover: hover) { .ask-clear:hover { color: var(--text); background: rgba(255, 255, 255, 0.06); } }
     .ask-go {
       flex: none; width: 44px; height: 44px; border-radius: var(--radius);
       border: 1px solid rgba(255, 255, 255, 0.12); background: transparent; color: var(--text-muted);
@@ -528,15 +542,11 @@
     .ask-input:focus:not(:placeholder-shown) + .ask-go { background: #f0f0f0; color: #0a0a0a; border-color: #f0f0f0; }
     @media (hover: hover) { .ask-go:hover { background: #f0f0f0; color: #0a0a0a; border-color: #f0f0f0; } }
     .ask-go:active { transform: scale(0.96); }
-    .ask-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-    .ask-chip {
-      font: inherit; font-size: 14px; color: var(--text-soft); background: transparent; cursor: pointer;
-      border: 1px solid rgba(255, 255, 255, 0.14); border-radius: var(--radius); padding: 7px 14px;
-      display: inline-flex; align-items: baseline; gap: 8px;
-      transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out);
-    }
-    @media (hover: hover) { .ask-chip:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.34); } }
-    .ask-chip[aria-pressed="true"] { color: #0a0a0a; background: #f0f0f0; border-color: #f0f0f0; }
+    /* the suggestion chips are gone (2026-09-28); each row's tags ask instead, with the chips' hover and pressed states */
+    .feature-card .card-tag[role="button"] { cursor: pointer; transition: color var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out); }
+    @media (hover: hover) { .feature-card .card-tag[role="button"]:hover { color: var(--text); border-color: rgba(255, 255, 255, 0.34); } }
+    .feature-card .card-tag[aria-pressed="true"] { color: #0a0a0a; background: #f0f0f0; border-color: #f0f0f0; }
+    .feature-card .card-tag[role="button"]:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 2px; }
     .ask-answer {
       position: relative; margin: 17px 0 0; padding-left: 18px; max-width: 980px; min-height: 1.55em;
       font-size: 16px; line-height: 1.55; color: var(--text-soft); text-wrap: pretty;
@@ -1969,26 +1979,72 @@
         text: 'Two award winners, both mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
       { id: 'shipped', label: 'Shipped', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
         text: 'Two shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
-      { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
+      { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'saas', 'desktop', 'browser'],
         text: 'Three on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
       { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
-        text: 'Three across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' }
+        text: 'Three across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' },
+      // ONE QUESTION PER ROW TAG (2026-09-28), so every tag on a row can be asked; answers are only facts already on this page
+      { id: 'professional', label: 'Professional work', ids: ['homewise', 'coffee'], alias: ['professional', 'professional work', 'client work'],
+        text: 'Two from professional work, both shipped: [homewise], an AI command center for homeowners, and [coffee], AI powered coffee chat for hybrid teams at Litespace.' },
+      { id: 'personal', label: 'Personal projects', ids: ['pollennav', 'countersign', 'storybloom'], alias: ['personal', 'personal project', 'personal projects', 'side project', 'self initiated'],
+        text: 'Three personal projects: [pollennav] for street level pollen guidance, [countersign], agentic credit analysis that a person countersigns, and [storybloom], bedtime stories for kids 3 to 8.' },
+      { id: 'academic', label: 'Academic work', ids: ['nova'], alias: ['academic', 'academic work', 'school project', 'student work'],
+        text: 'One academic project: [nova], an AR navigation system for children, tested with 20+ parents and kids.' },
+      { id: 'home', label: 'Home services', ids: ['homewise'], alias: ['home services', 'home service'],
+        text: 'One in home services: [homewise], an AI command center for homeowners that scopes the job and compares the bids.' },
+      { id: 'health', label: 'Health', ids: ['pollennav'], alias: ['health', 'healthcare'],
+        text: 'One in health: [pollennav], street level pollen guidance for the one billion people with seasonal allergies.' },
+      { id: 'fintech', label: 'Fintech', ids: ['countersign'], alias: ['fintech', 'finance', 'lending'],
+        text: 'One in fintech: [countersign], agentic credit analysis that pauses for a person at the approval gate.' },
+      { id: 'wellness', label: 'Wellness', ids: ['storybloom'], alias: ['wellness', 'bedtime'],
+        text: 'One in wellness: [storybloom], a bedtime app that turns how today felt into an illustrated story for kids 3 to 8.' },
+      { id: 'b2b', label: 'B2B SaaS', ids: ['coffee'], alias: ['b2b', 'b2b saas', 'enterprise'],
+        text: 'One in B2B SaaS: [coffee], AI powered coffee chat for hybrid teams, with 63% opt in and 200+ chats in month one.' },
+      { id: 'kids', label: 'Work for kids', ids: ['nova', 'storybloom'], alias: ['kids', 'kid', 'children', 'for kids', 'work for kids'],
+        text: 'Two for kids: [nova], AR navigation that keeps children independent and parents reassured, and [storybloom], bedtime stories for ages 3 to 8.' },
+      { id: 'dashboard', label: 'Dashboards', ids: ['homewise', 'coffee'], alias: ['dashboard', 'dashboards'],
+        text: 'Two dashboards, both shipped: [homewise] for homeowners managing repairs, and [coffee] for pairing people across hybrid teams.' },
+      { id: 'apps', label: 'Mobile apps', ids: ['pollennav', 'storybloom'], alias: ['mobile app', 'mobile apps', 'ios app'],
+        text: 'Two mobile apps, both award winners: [pollennav] for street level pollen guidance, and [storybloom] for bedtime stories for kids 3 to 8.' },
+      { id: 'wearable', label: 'Wearables', ids: ['nova'], alias: ['ar wearable', 'ar wearables'],
+        text: 'One wearable: [nova], AR navigation that keeps children independent and parents reassured.' },
+      { id: 'speculative', label: 'Speculative design', ids: ['nova'], alias: ['speculative', 'speculative design'],
+        text: 'One speculative design: [nova], AR navigation for children, tested with 20+ parents and kids.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
+    // what a tag types after "Show me", so the line reads as a sentence
+    var SAY = { agents: 'AI agents', awards: 'award winners', shipped: 'what shipped', web: 'web work', mobile: 'mobile & wearables',
+      professional: 'professional work', personal: 'personal projects', academic: 'academic work', home: 'home services', health: 'health',
+      fintech: 'fintech', wellness: 'wellness', b2b: 'B2B SaaS', kids: 'work for kids', dashboard: 'dashboards', apps: 'mobile apps',
+      wearable: 'wearables', speculative: 'speculative design' };
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
     bar.innerHTML =
       '<form class="ask-form" role="search" autocomplete="off"><label for="askInput">Show me</label>' +
         '<input class="ask-input" id="askInput" type="text" spellcheck="false" enterkeyhint="search" placeholder="anything, or ask a question">' +
+        '<button class="ask-ghost" type="button" tabindex="-1" aria-hidden="true" hidden></button>' +
+        '<button class="ask-clear" type="button" aria-label="Show all the work" hidden><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8"/></svg></button>' +
         '<button class="ask-go" type="submit" aria-label="Ask"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg></button><span class="ask-light" aria-hidden="true"></span></form>' +
-      '<div class="ask-chips" role="group" aria-label="Suggested questions">' + Q.map(function (q) {
-        return '<button class="ask-chip" type="button" data-q="' + q.id + '" aria-pressed="' + (q.id === 'all') + '">' + q.label + '</button>';
-      }).join('') + '</div>' +
       '<p class="ask-answer" aria-live="polite"><span class="ask-mote" aria-hidden="true"></span><span class="ask-words"></span><span class="ask-by">Answered by Claude</span><span class="ask-to"></span></p>';
     work.insertBefore(bar, work.firstChild);
 
     var form = bar.querySelector('.ask-form'), input = bar.querySelector('.ask-input');
     var answer = bar.querySelector('.ask-answer'), words = bar.querySelector('.ask-words'), goTo = bar.querySelector('.ask-to'), by = bar.querySelector('.ask-by');
-    var chips = [].slice.call(bar.querySelectorAll('.ask-chip'));
+    // EVERY TAG IS A QUESTION (2026-09-28, per user "these chips and study case's tag are very repetitive. Can you redesign it
+    // to make it more creative?", then "Tags become the questions"): the suggestion chips above the rows are gone and each
+    // row's own tags ask instead. They sit inside the row's link, so each one stops the link and answers; every tag that
+    // gives the same answer lights with it, and pressing a lit tag again shows all the work.
+    var TAG_Q = { 'Professional': 'professional', 'Personal': 'personal', 'Academic': 'academic', 'Home Services': 'home', 'Health': 'health',
+      'Fintech': 'fintech', 'Wellness': 'wellness', 'B2B SaaS': 'b2b', 'Kids': 'kids', 'Dashboard': 'dashboard', 'Mobile App': 'apps',
+      'AR Wearable': 'wearable', 'Speculative Design': 'speculative', 'Shipped': 'shipped', 'Award Winner': 'awards', 'AI Agent': 'agents' };
+    var chips = [], current = 'all';
+    cards.forEach(function (c) {
+      [].forEach.call(c.querySelectorAll('.card-tag'), function (t) {
+        var id = TAG_Q[t.textContent.trim()];
+        if (!id || !Q.some(function (q) { return q.id === id; })) return;
+        t.dataset.q = id; t.setAttribute('role', 'button'); t.setAttribute('tabindex', '0'); t.setAttribute('aria-pressed', 'false');
+        chips.push(t);
+      });
+    });
     var typeTimer = null;
 
     // ONE WAY OF APPEARING (per user "no matter ai or pre-written text should look the same" and "do not just
@@ -2104,12 +2160,18 @@
       resume: { alias: ['resume', 'cv', 'my resume', 'your resume', 'r\u00e9sum\u00e9'], text: 'Here is **my resume,** one page.' }
     };
 
-    function press(id) { chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.q === id)); }); syncIdle(); }
+    function press(id) { current = id; chips.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.q === id)); }); syncIdle(); }
     // at rest: "All" pressed and nothing in the line. Only then does the light run (per user: "only [when] the All chip
     // is highlighted the glow animation is active. Otherwise, if there is something else in the chat, do not use the glow")
-    var allChip = bar.querySelector('.ask-chip[data-q="all"]');
-    function idle() { return !input.value.trim() && allChip.getAttribute('aria-pressed') === 'true'; }
-    function syncIdle() { bar.classList.toggle('is-idle', idle()); }
+    function idle() { return !input.value.trim() && current === 'all'; }
+    // THE WAY BACK (2026-09-28, per user "this condition, how to go back"): the All chip was the way back to every row,
+    // and it went with the chip bar, so a clear button shows in the line whenever something is asked or typed, and Escape
+    // in the line does the same
+    var clearBtn = bar.querySelector('.ask-clear');
+    function syncIdle() { var rest = idle(); bar.classList.toggle('is-idle', rest); clearBtn.hidden = rest; }
+    function showAll() { clearInterval(typeTimer); input.value = ''; runQuery(Q[0]); }
+    clearBtn.addEventListener('click', function () { showAll(); input.focus(); });
+    input.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !idle()) { e.preventDefault(); showAll(); } });
     input.addEventListener('input', syncIdle);
     function runQuery(q) { press(q.id); showOnly(q.ids); if (q.id === 'all') clearAnswer(); else render(q.text); }
 
@@ -2123,12 +2185,63 @@
         if (i >= text.length) { clearInterval(typeTimer); setTimeout(then, 120); }
       }, 26);
     }
-    chips.forEach(function (b) {
-      b.addEventListener('click', function () {
-        var q = Q.filter(function (x) { return x.id === b.dataset.q; })[0];
-        typeThen(q.id === 'all' ? '' : q.label, function () { runQuery(q); });   // the chip's words exactly as written
-      });
+    function askFor(id) { var q = Q.filter(function (x) { return x.id === id; })[0]; if (q) typeThen(SAY[q.id], function () { runQuery(q); }); }
+    var ghostNow = null;   // the question the ghost suggestion is showing, if any
+    function pickTag(t) {
+      var q = t.dataset.q === current ? Q[0] : Q.filter(function (x) { return x.id === t.dataset.q; })[0];
+      typeThen(q.id === 'all' ? '' : SAY[q.id], function () { runQuery(q); });
+      var top = bar.getBoundingClientRect().top;   // the answer types out above the rows, so bring it into view
+      if (top < 0 || top > innerHeight * 0.5) scrollTo({ top: scrollY + top - 96, behavior: reduce ? 'instant' : 'smooth' });
+    }
+    chips.forEach(function (t) {
+      t.addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); pickTag(t); });
+      t.addEventListener('keydown', function (e) { if (e.key !== 'Enter' && e.key !== ' ') return; e.preventDefault(); e.stopPropagation(); pickTag(t); });
     });
+
+    // THE LINE SUGGESTS ITSELF (2026-09-28): with the chips gone, the empty line types the tags' own words as ghost text,
+    // one at a time, so a visitor still sees what can be asked. It waits while the line is in use or an answer is showing,
+    // and stays still under reduced motion. THE SUGGESTION CAN BE ASKED (same day, per user "but how to interact with this
+    // type of thing"): the ghost words are a real button laid over the line in the placeholder's type, so clicking them asks
+    // that question; hovering holds the whole phrase still and underlines it; the arrow asks it too while the line is empty.
+    // Clicking anywhere else on the line still puts the cursor there to type.
+    (function () {
+      if (reduce) return;
+      var ghost = bar.querySelector('.ask-ghost'), BASE = input.placeholder, k = 0;
+      var WORDS = [['award winners', 'awards'], ['what shipped', 'shipped'], ['AI agents', 'agents'], ['personal projects', 'personal'], ['mobile apps', 'apps'], ['dashboards', 'dashboard']];
+      function calm() { return idle() && document.activeElement !== input && !document.hidden; }
+      function later(ms, fn) { setTimeout(fn, ms); }
+      function place() { ghost.style.left = input.offsetLeft + 'px'; ghost.style.top = input.offsetTop + 'px'; ghost.style.height = input.offsetHeight + 'px'; }
+      function show(text, id) {
+        if (ghost.hidden) { place(); ghost.hidden = false; input.placeholder = ''; bar.classList.add('has-ghost'); }
+        ghost.textContent = text; ghostNow = id;
+      }
+      function hide() { ghost.hidden = true; ghost.textContent = ''; ghostNow = null; input.placeholder = BASE; bar.classList.remove('has-ghost'); }
+      function held() { return ghost.matches(':hover'); }
+      function rest() { hide(); later(1500, next); }
+      function next() {
+        if (!calm()) return rest();
+        var w = WORDS[k++ % WORDS.length], i = 0;
+        (function type() {
+          if (!calm()) return rest();
+          if (held()) { show(w[0], w[1]); i = w[0].length; return later(200, type); }
+          show(w[0].slice(0, ++i), w[1]);
+          if (i < w[0].length) return later(55, type);
+          later(2200, function erase() {
+            if (!calm()) return rest();
+            if (held()) { show(w[0], w[1]); i = w[0].length; return later(200, erase); }
+            show(w[0].slice(0, --i), w[1]);
+            if (i > 0) return later(26, erase);
+            hide();
+            if (k % WORDS.length === 0) return later(6000, next);
+            later(260, next);
+          });
+        })();
+      }
+      ghost.addEventListener('click', function (e) { e.preventDefault(); var id = ghostNow; hide(); if (id) askFor(id); });
+      input.addEventListener('focus', hide); input.addEventListener('input', hide);   // the moment the line is used, the suggestion steps aside
+      addEventListener('resize', function () { if (!ghost.hidden) place(); });
+      later(4000, next);
+    })();
     // a window narrowed to phone width hides the bar, so no row may stay folded away behind it
     phone.addEventListener('change', function (e) {
       if (e.matches) { clearInterval(typeTimer); input.value = ''; runQuery(Q[0]); }
@@ -2236,7 +2349,7 @@
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var raw = input.value.trim(), t = raw.toLowerCase().replace(/[^a-z0-9&\s]/g, ' ').replace(/\s+/g, ' ').trim();
-      if (!t) { runQuery(Q[0]); return; }
+      if (!t) { if (ghostNow) { var g = ghostNow; bar.querySelector('.ask-ghost').hidden = true; askFor(g); return; } runQuery(Q[0]); return; }
       var named = Q.filter(function (q) { return q.alias.indexOf(t) >= 0 || q.label.toLowerCase() === t; })[0];
       if (named) { runQuery(named); return; }
       var page = PAGE_ORDER.filter(function (k) { return INSTANT[k].alias.indexOf(t) >= 0 && PAGES[k].href; })[0];
