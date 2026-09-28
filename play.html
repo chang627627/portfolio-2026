@@ -31,6 +31,78 @@
     .play-grid .play-card video, .play-grid .play-card iframe, .play-grid .play-video { border-radius: var(--radius); }
     .play-column { gap: 48px; }
     @media (max-width: 768px) { .play-column { gap: 40px; } }
+    /* THREE COLUMNS (2026-09-28, per user "make the play section to three column layout and
+       occupy all the space horizontally on the screen"). From 1200px the script after the grid
+       deals the cards into three columns and adds .is-three, and the grid drops its 1344px cap to
+       run the full width inside the page's 48px inset. Below 1200, and without the script, the two
+       columns stay exactly as they were. */
+    .play-grid.is-three { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: none; }
+    /* Whisper XR's eleven dots (11 x 24px) wrapped to two rows in a column under 456px. In three
+       columns the rail keeps 4px beside each 36px arrow and closes its 8px gaps only as far as it
+       must, so the dots stay one row down to 1200px and sit exactly as before from about 1430. */
+    .play-grid.is-three .carousel-dots { padding-inline: 40px; column-gap: clamp(0px, calc((100% - 264px) / 10), 8px); }
+    /* THE PIECE VIEW (2026-09-28, per user "too text heavy ... without reduce the text number, how to
+       make it more scannable?", then "do" on title and year only). In three columns a card shows its
+       piece, title and year; the caption and links move to the viewer, which opens from the piece or
+       its title and sets them in a panel beside the work. A film plays in its card; its detail page
+       holds it paused under its poster until pressed (per user "do not auto-play"). Two columns and
+       phones keep their captions and today's viewer. */
+    .play-grid.is-three .play-info p,
+    .play-grid.is-three .play-info .play-link { display: none; }
+    .play-grid.is-three .play-card .play-info-top { margin-bottom: 0; cursor: pointer; }
+    .play-title-btn { position: relative; font: inherit; color: inherit; letter-spacing: inherit; line-height: inherit; text-align: left; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
+    .play-title-btn:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; border-radius: 4px; }
+    /* the header links' own hover line (1px, grows left to right in 160ms), so the title reads as
+       clickable (per user "add the hover line under the title, otherwise how do I know it is
+       clickable?"). On the button, not the h3: a text-decoration never reaches into a button. */
+    .play-title-btn::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--text); transition: width var(--dur-base) var(--ease-out); }
+    /* NO ENLARGE IN THE GRID (per user "there is no enlarge for this page. If you want to see the
+       bigger picture, go to the detail page"): in three columns a card is one link to its piece
+       view, so it takes the pointer, not zoom-in, and any hover on it draws the title's line. The
+       piece view is a page, not a zoom: no zoom-out cursor, and a click on the work keeps it open. */
+    .play-grid.is-three .play-card { cursor: pointer; }
+    @media (hover: hover) {
+      /* not over what answers in place: a film's play button or player, and the carousel controls */
+      .play-grid.is-three .play-card:hover:not(:has(.yt-facade:hover, .build-go:hover, .play-video > iframe:hover, video[controls]:hover, .carousel-arrow:hover, .carousel-dot:hover)) .play-title-btn::after { width: 100%; }
+    }
+    /* No zoom cursors anywhere on Play, at any width (per user "no zoom-in in the play page"): an
+       image takes the pointer, and the viewer a plain cursor (style.css gives them zoom-in/out). */
+    .play-grid .play-card img { cursor: pointer; }
+    .lightbox,
+    .lightbox img { cursor: default; }
+    #lightboxClip { display: none; width: min(var(--clip-w, 1200px), 92vw, calc(92vh * var(--clip-r, 1200 / 672))); aspect-ratio: var(--clip-r, 1200 / 672); object-fit: contain; cursor: default; }
+    .lightbox.is-piece #lightboxClip { width: min(var(--clip-w, 1200px), calc(100vw - 512px), calc((100vh - 128px) * var(--clip-r, 1200 / 672))); }
+    .lightbox.is-clip #lightboxClip { display: block; }
+    .lightbox.is-clip #lightboxImg { display: none; }
+    .piece-nav { display: flex; align-items: center; gap: 16px; margin-top: 28px; }
+    .piece-nav .carousel-arrow { position: static; }
+    .piece-count { min-width: 7ch; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; text-align: center; }
+    .lightbox-panel { display: none; }
+    /* solid, not the 95% veil: the piece is a page of its own, and the grid must not show through
+       (per user "please make it full black", 2026-09-28). On .is-piece, which stays through the fade
+       out, and so does the layout: only display waits on .open, or the close fade drops to one column. */
+    .lightbox.is-piece { background: var(--bg); grid-template-columns: auto 360px; column-gap: 56px; align-content: center; justify-content: center; align-items: start; padding: 64px 48px; }
+    .lightbox.open.is-piece { display: grid; }
+    .lightbox.is-piece .lightbox-panel { display: block; max-height: calc(100vh - 128px); overflow-y: auto; cursor: default; }
+    .lightbox.is-piece #lightboxImg { max-width: calc(100vw - 512px); max-height: calc(100vh - 128px); }
+    .lightbox.is-piece .lightbox-stage { width: min(calc(100vw - 512px), calc((100vh - 128px) * var(--ratio, 1.6))); }
+    .lightbox-panel .play-info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 12px; }
+    .lightbox-panel h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; }
+    .lightbox-panel .play-year { flex-shrink: 0; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
+    .lightbox-panel p { margin: 0; color: var(--text-soft); font-size: 16px; line-height: 1.6; }
+    .lightbox-panel .play-link { margin-top: 20px; }
+    .lightbox-stage__film { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; outline: none; cursor: default; }
+    .lightbox-stage.is-film .lightbox-stage__film { display: block; }
+    .lightbox-stage.is-film .lightbox-stage__frame { display: none; }
+    /* a held film: its poster (the stage background) under the glass play button, nothing loaded */
+    .lightbox-stage__play { display: none; position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .lightbox-stage.is-held .lightbox-stage__play { display: block; }
+    .lightbox-stage.is-held .lightbox-stage__film,
+    .lightbox-stage.is-held .lightbox-stage__frame { visibility: hidden; } /* nothing to Tab into before play */
+    .lightbox-stage__film:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; } /* inset: the stage clips */
+    .lightbox-stage__play:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; }
+    @media (hover: hover) { .lightbox-stage__play:hover .yt-facade__play { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
+    .lightbox-stage__play:active .yt-facade__play { transform: translate(-50%, -50%) scale(0.96); }
     /* Photo cards carry width/height attributes (2026-09-10) so the masonry
        stops reflowing by ~900px as they load; height:auto turns the attribute
        into an aspect ratio, since .play-img-photo sizes only the width. */
@@ -101,7 +173,7 @@
 
     @media (min-width: 769px) {
       .page-hero--tight {
-        max-width: calc(1344px + 96px);   /* the grid's own box model */
+        max-width: calc(1344px + 96px);   /* the two-column grid's box model; three columns run wider */
         padding-left: 48px;
         padding-right: 48px;
       }
@@ -136,8 +208,10 @@
     /* THE BUILDS. Robot Operator Console and Fish Ocean are code, not films, so on desktop they
        move at rest: a silent loop that loads only while the card is on screen and is dropped when
        it leaves, over a poster of its own first frame (the loop fades in once it is actually
-       playing, so it never blinks in). The disc says what a click does: the film's triangle on
-       Robot, RUN on Fish Ocean, which opens the real build on the lightbox stage. The script adds
+       playing, so it never blinks in). The disc plays the film in the card on both (Fish Ocean's
+       RUN, which opened the live build on the lightbox stage, retired 2026-09-28 per user "fish
+       ocean should be like robot ... Do not say run"; its live build is the "Play it here" link
+       under the caption). The script adds
        .builds-on to <html> only at desktop width, so phones and a failed script keep the film
        cards exactly as they were. */
     .build-stage { display: none; background: #000; }
@@ -151,8 +225,6 @@
     .build-go { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: transparent; cursor: pointer; display: block; }
     @media (hover: hover) { .build-go:hover .yt-facade__play { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
     .build-go:active .yt-facade__play { transform: translate(-50%, -50%) scale(0.96); }
-    .build-run { color: rgba(240, 240, 240, 0.95); font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 62px; text-align: center; text-indent: 0.12em; }
-    .build-run::after { content: none !important; }
 
     /* THE STAGE. The lightbox doubles as a stage for a live build: the app runs in an iframe at
        its own aspect, as large as the window allows, over its poster until the app has loaded;
@@ -720,11 +792,12 @@
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
+          <a href="https://fish-ocean-gray.vercel.app/" target="_blank" rel="noopener" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
         <div class="play-video build-stage" style="aspect-ratio: 1280 / 804">
           <img class="build-poster" src="images/fish-ocean-loop-poster.jpg" alt="" width="1280" height="804" loading="lazy" decoding="async">
           <video class="build-loop" data-loop="images/fish-ocean-loop.mp4" muted loop playsinline preload="none" disablepictureinpicture aria-hidden="true" tabindex="-1"></video>
-          <button class="build-go build-go--run" type="button" data-run="https://fish-ocean-gray.vercel.app/" data-ratio="1280 / 804" data-title="Fish Ocean, running live" aria-label="Run Fish Ocean live"><span class="yt-facade__play build-run" aria-hidden="true">Run</span></button>
+          <button class="build-go" type="button" aria-label="Play the film: Fish Ocean"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
         <video class="build-film" src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
@@ -763,6 +836,55 @@
             </div>
     </div>
   </section>
+  <script>
+    /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
+       approved columns; from 1200px the cards move into these three, and back below it. Balanced in
+       Chrome from 1200 to 2560 with the cards at title and year: the columns end within 0.3% of each
+       other, each on a film, with The Rib still left of Vitruvian and Perfect Copy under it. A new
+       card has to be listed here, or it falls to the end of the column it came from. Runs before
+       first paint. */
+    (() => {
+      const grid = document.querySelector('.play-grid');
+      if (!grid) return;
+      const THREE = [
+        ['Scope', 'The Rib', 'Luma', 'Whisper XR', 'New Craft Society', 'Market Street Booklet Kit', 'UN/FOLD'],
+        ['Octocrab', 'Vitruvian', 'Perfect Copy', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'Mirror', 'Running Dog', 'About the Teddy Bear'],
+        ['The Last Human Gestures', 'Midjourney', 'No Signal Summer', 'Fish Ocean', 'TickerPulse', 'Missing Pavilion', 'I Believe in a Thing Called Love'],
+      ];
+      const two = [...grid.querySelectorAll(':scope > .play-column')];
+      const home = two.map(col => [...col.children]);
+      const third = document.createElement('div');
+      third.className = 'play-column';
+      const title = card => card.querySelector('h3')?.textContent.trim();
+      const wide = matchMedia('(min-width: 1200px)');
+      let dealt = false;
+      // moveBefore keeps a moved card's state, so a film playing in it across 1200px goes on
+      // playing (append would reload its player); browsers without it fall back to append
+      const put = (col, card) => (col.moveBefore ? col.moveBefore(card, null) : col.append(card));
+      const deal = () => {
+        if (wide.matches === dealt) return;
+        dealt = wide.matches;
+        if (dealt) {
+          grid.append(third);
+          const cols = [...two, third];
+          const byTitle = new Map(home.flat().map(card => [title(card), card]));
+          const placed = new Set();
+          THREE.forEach((titles, i) => titles.forEach(t => {
+            const card = byTitle.get(t);
+            if (card) { put(cols[i], card); placed.add(card); }
+          }));
+          home.forEach((cards, i) => cards.forEach(card => { if (!placed.has(card)) put(cols[i], card); }));
+        } else {
+          home.forEach((cards, i) => cards.forEach(card => put(two[i], card)));
+          third.remove(); // after the cards have left it, so none is ever detached
+        }
+        grid.classList.toggle('is-three', dealt);
+        grid.dispatchEvent(new Event('play:columns')); // the piece view turns the titles into buttons
+      };
+      deal();
+      wide.addEventListener('change', deal);
+    })();
+  </script>
 
   <!-- Lightbox -->
   <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Enlarged image">
@@ -1031,7 +1153,122 @@
     if (!lightbox) return;
     const frame = stage.querySelector('.lightbox-stage__frame');
     const openLink = stage.querySelector('.lightbox-stage__open');
-    let opener = null, stageUrl = '', slowTimer = 0, unloadTimer = 0;
+    let opener = null, morphImg = null, stageUrl = '', slowTimer = 0, unloadTimer = 0;
+    frame.allow = 'autoplay; fullscreen; encrypted-media; picture-in-picture'; // the films play here too
+
+    // THE PIECE VIEW (see the note in the head): in three columns the viewer carries the caption.
+    // The panel takes a copy of the card's own title, year, caption and links, so the words live in
+    // one place, the markup. Local films (Robot) play in a <video> on the stage.
+    const grid = document.querySelector('.play-grid');
+    const pieceMode = () => !!grid && grid.classList.contains('is-three');
+    const panel = document.createElement('div');
+    panel.className = 'lightbox-panel';
+    panel.addEventListener('click', (e) => e.stopPropagation()); // reading or selecting the caption never closes the view
+    lightbox.append(panel);
+    const film = document.createElement('video');
+    film.className = 'lightbox-stage__film';
+    film.controls = true; film.playsInline = true; film.preload = 'none';
+    stage.append(film);
+    const unloadFilm = () => {
+      film.pause();
+      if (film.getAttribute('src')) { film.removeAttribute('src'); film.load(); }
+      stage.classList.remove('is-film');
+    };
+    // A piece with several images (the Whisper XR and TickerPulse slides, Midjourney's stills) is
+    // browsed here: previous and next under the caption, or the arrow keys. The card's own carousel
+    // follows, so closing lands back on the slide you were looking at.
+    let gallery = null;
+    // Midjourney's three clips (the silent loops in its grid) are items too, so its detail page has
+    // all nine. A clip loops as it does in the grid, in the stills' own frame, so stepping between
+    // them never moves the panel (per user "why midjourney's detail page only has 6 instead of 9").
+    const clip = document.createElement('video');
+    clip.id = 'lightboxClip';
+    clip.muted = true; clip.loop = true; clip.playsInline = true;
+    lightbox.insertBefore(clip, stage);
+    clip.addEventListener('click', (e) => e.stopPropagation()); // the piece view is a page: the work keeps it open
+    function showClip(item) {
+      const still = gallery && gallery.items.find((i) => i.tagName === 'IMG' && i.naturalWidth);
+      if (still) {
+        clip.style.setProperty('--clip-w', still.naturalWidth + 'px');
+        clip.style.setProperty('--clip-r', still.naturalWidth + ' / ' + still.naturalHeight);
+      }
+      clip.setAttribute('aria-label', titleOf(item.closest('.play-card')) + ', clip');
+      clip.src = srcOf(item);
+      lightbox.classList.add('is-clip');
+      clip.play().catch(() => {});
+    }
+    function hideClip() {
+      lightbox.classList.remove('is-clip');
+      clip.pause();
+      if (clip.getAttribute('src')) { clip.removeAttribute('src'); clip.load(); }
+    }
+    function startGallery(card, img) {
+      const items = [...card.querySelectorAll('img[data-name], video[preload="metadata"]')];
+      if (items.length < 2) return;
+      const nav = document.createElement('div');
+      nav.className = 'piece-nav';
+      nav.innerHTML = '<button class="carousel-arrow" type="button" aria-label="Previous">‹</button><span class="piece-count" aria-live="polite"></span><button class="carousel-arrow" type="button" aria-label="Next">›</button>';
+      const [prev, count, next] = nav.children;
+      prev.addEventListener('click', () => stepGallery(-1));
+      next.addEventListener('click', () => stepGallery(1));
+      panel.append(nav);
+      gallery = { card, items, count, index: Math.max(0, items.indexOf(img)) };
+      count.textContent = (gallery.index + 1) + ' / ' + items.length;
+      preloadAround();
+    }
+    // the hidden slides are lazy and never loaded in the grid: fetch the neighbours ahead of time,
+    // and keep the current image up until the next one has decoded, so no step shows an empty frame
+    function srcOf(item) { return item.currentSrc || item.getAttribute('src'); }
+    function preloadAround() {
+      const { items, index } = gallery;
+      [1, -1].forEach((d) => {
+        const it = items[(index + d + items.length) % items.length];
+        if (it.tagName === 'IMG') new Image().src = srcOf(it);
+      });
+    }
+    function stepGallery(d) {
+      if (!gallery) return;
+      const { card, items, count } = gallery;
+      gallery.index = (gallery.index + d + items.length) % items.length;
+      const item = items[gallery.index];
+      const carousel = card.querySelector('[data-carousel]');
+      if (carousel && carousel.playGoTo) carousel.playGoTo(gallery.index);
+      count.textContent = (gallery.index + 1) + ' / ' + items.length;
+      preloadAround();
+      if (item.tagName === 'VIDEO') { morphImg = null; showClip(item); return; }
+      morphImg = item;
+      if (opener && opener.tagName === 'IMG') opener = item; // focus comes back to the slide you ended on, not a hidden one
+      const next = new Image();
+      next.src = srcOf(item);
+      (next.decode ? next.decode() : Promise.resolve()).catch(() => {}).then(() => {
+        if (!gallery || gallery.items[gallery.index] !== item) return; // stepped on again meanwhile
+        hideClip();
+        lightboxImg.src = next.src;
+        lightboxImg.alt = item.alt;
+      });
+    }
+    // Opening a piece stops every film playing in the grid, not only its own card's: the grid is
+    // inert and hidden under the page, so nothing left playing there could be paused. A card's
+    // film pauses; an inline embed goes back to its poster (which stops it).
+    function stopGridFilms() {
+      document.querySelectorAll('.play-grid .build-film').forEach((v) => v.pause());
+      document.querySelectorAll('.play-grid .play-video > iframe').forEach((f) => { if (f.playFacade) f.replaceWith(f.playFacade); });
+    }
+    function setPiece(card) {
+      const on = !!card && pieceMode();
+      gallery = null;
+      lightbox.classList.toggle('is-piece', on);
+      panel.replaceChildren();
+      if (on) {
+        stopGridFilms();
+        const info = card.querySelector('.play-info').cloneNode(true);
+        info.querySelectorAll('.play-title-btn').forEach((b) => b.replaceWith(...b.childNodes));
+        panel.append(info);
+        panel.scrollTop = 0;
+      }
+      return on;
+    }
+    const titleOf = (card) => (card && card.querySelector('h3') ? card.querySelector('h3').textContent.trim() : '');
 
     function show(label) {
       clearTimeout(unloadTimer);
@@ -1063,6 +1300,7 @@
         to.style.viewTransitionName = 'play-piece';
         update();
       });
+      t.ready.catch(() => {}); // a skipped transition (hidden tab, a newer one) is fine: the update still ran
       t.finished.finally(() => {
         to.style.viewTransitionName = '';
         if (token === morphToken) html.classList.remove('vt-piece', 'vt-piece-open', 'vt-piece-close');
@@ -1071,7 +1309,7 @@
 
     function closeLightbox() {
       if (!lightbox.classList.contains('open')) return;
-      const back = opener;
+      const back = morphImg;
       if (canMorph() && back && back.tagName === 'IMG' && !lightbox.classList.contains('is-stage') && back.isConnected && back.getClientRects().length) {
         morph('close', lightboxImg, back, closeNow);
         return;
@@ -1088,28 +1326,38 @@
       if (lightbox.classList.contains('is-stage')) {
         clearTimeout(slowTimer);
         stage.classList.remove('is-live', 'is-slow');
-        // let the overlay's 160ms fade finish on the poster, then unload the app
+        film.pause();
+        // let the overlay's 160ms fade finish on the poster, then unload the app or the film
         unloadTimer = setTimeout(() => {
           frame.src = 'about:blank';
+          unloadFilm();
           stage.hidden = true; reset.hidden = true;
           lightbox.classList.remove('is-stage');
         }, 200);
       }
+      clip.pause(); // it keeps its frame through the fade; the next opening clears it
       if (opener) opener.focus({ preventScroll: true });
-      opener = null;
+      opener = null; morphImg = null; gallery = null;
     }
 
-    function openImage(img) {
-      opener = img;
+    // from: what takes focus back on close, when it is not the image itself (a title button)
+    function openImage(img, from) {
+      opener = from || img;
+      morphImg = img;
       clearTimeout(unloadTimer);
-      if (lightbox.classList.contains('is-stage')) { frame.src = 'about:blank'; stage.hidden = true; reset.hidden = true; lightbox.classList.remove('is-stage'); }
+      if (lightbox.classList.contains('is-stage')) { frame.src = 'about:blank'; unloadFilm(); stage.hidden = true; reset.hidden = true; lightbox.classList.remove('is-stage'); }
+      const card = img.closest('.play-card');
+      const piece = setPiece(card);
+      if (piece) startGallery(card, img);
+      if (img.tagName === 'VIDEO') { morphImg = null; showClip(img); show(titleOf(card)); return; } // a Midjourney clip
+      hideClip();
       lightboxImg.src = img.currentSrc || img.src;
       lightboxImg.alt = img.alt;
-      const label = 'Enlarged image' + (img.alt ? ': ' + img.alt : '');
+      const label = piece ? titleOf(card) : 'Enlarged image' + (img.alt ? ': ' + img.alt : '');
       if (!canMorph()) { show(label); return; }
       const decoded = lightboxImg.decode ? lightboxImg.decode().then(() => true, () => false) : Promise.resolve(false);
       Promise.race([decoded, new Promise((r) => setTimeout(() => r(false), 300))]).then((ready) => {
-        if (opener !== img) return; // superseded while decoding
+        if (morphImg !== img) return; // superseded while decoding
         if (ready) morph('open', img, lightboxImg, () => show(label)); else show(label);
       });
     }
@@ -1125,21 +1373,62 @@
     };
     window.addEventListener('resize', () => { if (lightbox.classList.contains('is-stage')) fitFrame(); }, { passive: true });
 
-    // opts: { url, title, poster, ratio, fit: 'WxH', opener }
+    // A held film waits on its poster under the site's glass play button: nothing loads or plays
+    // until it is pressed (an embed then loads with its own autoplay, so one press starts it).
+    const playBtn = document.createElement('button');
+    playBtn.type = 'button';
+    playBtn.className = 'lightbox-stage__play';
+    playBtn.setAttribute('aria-label', 'Play the film');
+    playBtn.innerHTML = '<span class="yt-facade__play" aria-hidden="true"></span>';
+    stage.append(playBtn);
+    playBtn.addEventListener('click', () => {
+      stage.classList.remove('is-held');
+      if (stage.classList.contains('is-film')) { film.focus({ preventScroll: true }); film.play().catch(() => {}); return; }
+      frame.src = stageUrl;
+      slowTimer = setTimeout(() => stage.classList.add('is-slow'), 8000);
+      frame.focus({ preventScroll: true });
+    });
+    film.addEventListener('play', () => stage.classList.remove('is-held')); // its own controls started it
+
+    // opts: { url, title, poster, ratio, fit: 'WxH', opener, card, film, restart, hold }
+    // card: the Play card whose caption the panel carries (three columns only); film: a local video
+    // to play instead of a page; restart: false hides Restart (a film has its own controls);
+    // hold: wait on the poster for the play button instead of starting
     window.playStage = function (opts) {
       opener = opts.opener || null;
+      morphImg = null;
       clearTimeout(unloadTimer); clearTimeout(slowTimer);
-      stageUrl = opts.url;
+      setPiece(opts.card);
+      hideClip();
+      stageUrl = opts.film ? '' : opts.url;
       lightbox.classList.add('is-stage');
       stage.style.setProperty('--ratio', opts.ratio || '1.6');
       stage.style.backgroundImage = opts.poster ? 'url("' + opts.poster + '")' : 'none';
       stage.classList.remove('is-live', 'is-slow');
-      openLink.href = opts.url;
+      stage.classList.toggle('is-held', !!opts.hold);
+      openLink.href = opts.film || opts.url;
       frame.title = opts.title || '';
-      stage.hidden = false; reset.hidden = false;
+      stage.hidden = false; reset.hidden = !!opts.film || opts.restart === false;
       const m = /^(\d+)x(\d+)$/.exec(opts.fit || '');
       fit = m ? { w: +m[1], h: +m[2] } : null;
       fitFrame();
+      if (opts.film) {
+        if (frame.getAttribute('src') !== 'about:blank') frame.src = 'about:blank';
+        stage.classList.add('is-film');
+        film.poster = opts.poster || '';
+        film.src = opts.film;
+        film.setAttribute('aria-label', opts.title || 'Film');
+        show(opts.title || 'Film');
+        if (!opts.hold) film.play().catch(() => {});
+        return;
+      }
+      unloadFilm();
+      if (opts.hold) {
+        if (frame.getAttribute('src') !== 'about:blank') frame.src = 'about:blank';
+        show(opts.title || 'Film');
+        fitFrame();
+        return;
+      }
       frame.src = stageUrl;
       slowTimer = setTimeout(() => stage.classList.add('is-slow'), 8000);
       show(opts.title || 'Live build');
@@ -1170,25 +1459,110 @@
       img.tabIndex = 0;
       img.setAttribute('role', 'button');
       const alt = img.alt || '';
-      img.setAttribute('aria-label', 'Enlarge: ' + (!title || alt.toLowerCase().startsWith(title.toLowerCase()) ? alt || title : alt ? title + ', ' + alt : title));
+      img.dataset.name = !title || alt.toLowerCase().startsWith(title.toLowerCase()) ? alt || title : alt ? title + ', ' + alt : title;
+      img.setAttribute('aria-label', 'Enlarge: ' + img.dataset.name); // "Open: " in three columns, see syncTitles
       img.addEventListener('click', (e) => { e.stopPropagation(); openImage(img); });
       img.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openImage(img); }
       });
     });
 
+    // Open a card's piece in three columns: a film waits paused on its poster, an image grows out
+    // of its card (a carousel's current slide). Returns false outside three columns.
+    window.playPiece = {
+      open(card, from) {
+        if (!pieceMode() || !card) return false;
+        const title = titleOf(card);
+        const buildFilm = card.querySelector('.build-film');
+        const posterOf = (sel) => { const p = card.querySelector(sel); return p ? p.getAttribute('src') : ''; };
+        // Films play in their card; the detail page holds the film paused until its own play button
+        // (per user "when you go to the detail page of the video, do not auto-play"). Films playing
+        // in the grid stop first (before the facade lookup: an inline embed gets its poster back).
+        stopGridFilms();
+        const facade = card.querySelector('.yt-facade');
+        if (buildFilm) {
+          window.playStage({ film: buildFilm.getAttribute('src'), poster: buildFilm.getAttribute('poster'), ratio: buildFilm.getAttribute('width') + ' / ' + buildFilm.getAttribute('height'), title, opener: from, card, hold: true });
+        } else if (facade) {
+          const box = facade.closest('.play-video');
+          const ratio = box && box.clientHeight ? box.clientWidth + ' / ' + box.clientHeight : '16 / 9';
+          window.playStage({ url: facade.dataset.embed, title, ratio, poster: posterOf('.yt-facade__poster'), opener: from, card, restart: false, hold: true });
+        } else {
+          const img = card.querySelector('.carousel-slide.active img') || card.querySelector('img[data-name]');
+          if (!img) return false;
+          openImage(img, from);
+        }
+        return true;
+      },
+    };
+
+    // In three columns each title is a button, inside its h3 so the heading stays a heading, and it
+    // is the card's one tab stop into its piece: the images leave the tab order (they opened the same
+    // view) and the title block moves after the work in the DOM, so Tab runs down the page as the
+    // eye does (order: 2 already draws it last, so nothing moves on screen). Two columns undo all of
+    // it: the markup order, and the images as "Enlarge" buttons.
+    const titleRows = [...document.querySelectorAll('.play-grid .play-card .play-info-top')];
+    const syncTitles = () => {
+      const on = pieceMode();
+      titleRows.forEach((row) => {
+        const card = row.closest('.play-card');
+        const info = row.parentNode;
+        const h3 = row.querySelector('h3');
+        const btn = h3 && h3.querySelector('.play-title-btn');
+        if (on && h3 && !btn) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'play-title-btn';
+          b.append(...h3.childNodes);
+          h3.append(b);
+          card.append(info);
+        } else if (!on && btn) {
+          // a view opened from this title (still open while the window narrowed) must not lose
+          // its way back when the button goes
+          if (opener === btn || document.activeElement === btn) {
+            const back = card.querySelector('.carousel-slide.active img, img[data-name], .yt-facade, .build-go');
+            if (opener === btn) opener = back;
+            if (document.activeElement === btn && back) back.focus({ preventScroll: true });
+          }
+          btn.replaceWith(...btn.childNodes);
+          card.prepend(info);
+        }
+      });
+      document.querySelectorAll('.play-grid img[data-name]').forEach((img) => {
+        if (on) { img.tabIndex = -1; img.removeAttribute('role'); img.removeAttribute('aria-label'); }
+        else { img.tabIndex = 0; img.setAttribute('role', 'button'); img.setAttribute('aria-label', 'Enlarge: ' + img.dataset.name); }
+      });
+    };
+    // The whole card is one link to its piece view in three columns, the title included. The image
+    // opens it itself; a film's play button, carousel arrows and dots, and links keep their jobs.
+    document.querySelectorAll('.play-grid .play-card').forEach((card) => card.addEventListener('click', (e) => {
+      if (!pieceMode()) return;
+      const control = e.target.closest('button, a, img[data-name], video[controls]');
+      if (control && !control.classList.contains('play-title-btn')) return;
+      const tile = e.target.closest('video[preload="metadata"]'); // a Midjourney clip opens on itself
+      if (tile) { openImage(tile, card.querySelector('.play-title-btn')); return; }
+      window.playPiece.open(card, card.querySelector('.play-title-btn'));
+    }));
+    syncTitles();
+    if (grid) grid.addEventListener('play:columns', syncTitles);
+    // the piece view is a page: a click on the work keeps it open (the old viewer closes on it)
+    lightboxImg.addEventListener('click', (e) => { if (lightbox.classList.contains('is-piece')) e.stopPropagation(); });
+
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && gallery && lightbox.classList.contains('open')) {
+        e.preventDefault();
+        stepGallery(e.key === 'ArrowRight' ? 1 : -1);
+      }
     });
   })();
 
   // The builds (2026-09-24): on desktop the two code builds move at rest and their disc says
   // what a click does. The loop's source is set only while the card is on screen and removed
-  // when it leaves (so the decode is dropped); it fades in on its first real frame. Robot plays
-  // its film in place; Fish Ocean runs live on the lightbox stage. Phones, reduced motion and a
-  // failed script keep the film cards.
+  // when it leaves (so the decode is dropped); it fades in on its first real frame. The disc plays
+  // the film in place, on Robot and Fish Ocean alike. Phones, reduced motion and a failed script
+  // keep the film cards.
   (function() {
     const stages = [...document.querySelectorAll('.build-stage')];
     if (!stages.length) return;
@@ -1225,17 +1599,6 @@
         if (io) io.observe(loop);
       }
       go.addEventListener('click', () => {
-        if (go.dataset.run && window.playStage) {
-          window.playStage({
-            url: go.dataset.run,
-            title: go.dataset.title,
-            ratio: go.dataset.ratio,
-            fit: go.dataset.fit,
-            poster: stage.querySelector('.build-poster').getAttribute('src'),
-            opener: go,
-          });
-          return;
-        }
         const film = card.querySelector('.build-film');
         if (!film) return;
         if (loop) { if (io) io.unobserve(loop); unload(loop); }
@@ -1277,6 +1640,7 @@
 
     prevBtn.addEventListener('click', () => goTo(current - 1, 'prev'));
     nextBtn.addEventListener('click', () => goTo(current + 1, 'next'));
+    carousel.playGoTo = goTo; // the piece view keeps the card on the slide it is showing
   });
 
   const footerGlow = document.querySelector('.footer-glow');
@@ -1293,17 +1657,20 @@
 </script>
 
 <script>
-  // YouTube facades: swap the poster for the player on click (autoplay is in data-embed)
+  // YouTube facades: swap the poster for the player on click (autoplay is in data-embed). The film
+  // plays in its card at every width; the player keeps its facade, so opening the card's detail
+  // page can put the poster back and stop it.
   document.querySelectorAll('.yt-facade').forEach(btn => {
     btn.addEventListener('click', () => {
       const f = document.createElement('iframe');
+      f.playFacade = btn;
       f.src = btn.dataset.embed;
       f.title = btn.getAttribute('aria-label').replace(/^Play: /, '');
       f.setAttribute('frameborder', '0');
       f.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture');
       f.allowFullscreen = true;
-      btn.replaceWith(f);
-    }, { once: true });
+      btn.replaceWith(f); // the button leaves the page until the detail page puts it back
+    });
   });
 </script>
 
