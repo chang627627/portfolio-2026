@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=276">
+  <link rel="stylesheet" href="style.css?v=277">
   <link rel="canonical" href="https://www.chang-mou.com/ticker.html">
   <meta name="robots" content="noindex">
   <!-- Google Analytics -->
@@ -812,7 +812,6 @@
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
     const whaleOn = !FX.includes('-whale') && !FX.includes('off');
-    const bridgeOn = !FX.includes('-bridge') && !FX.includes('off');
     const phoneMQ = matchMedia('(max-width: 768px)'); // the same breakpoint the footer's CSS uses, so the whale's size always matches its band
     document.querySelectorAll('.px-dissolve').forEach(cv => {
       if (getComputedStyle(cv).display === 'none') return;
@@ -1002,12 +1001,7 @@
         const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
         // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
         // On a phone the width decides instead: 55% of it, so the animal reads at 375
-        // Its floor is the bridge's tower tops when the bridge is there (2026-09-27), so it always swims above them;
-        // otherwise the cap tops of "Say hello". The caps sit 0.147em under the word's box; on phones the word is hidden.
-        const txt = document.querySelector('.say-hello .footer-big-text');
-        const inkTop = txt && txt.offsetParent ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
-        const floor = bridge ? Math.min(inkTop, bridge.top - (phone ? 16 : 24)) : inkTop, room = Math.min(span, floor - bTop);
-        const L = phone ? Math.min(W * 0.55, (room - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (room - 38 - arc) / 0.424);
+        const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
         if (L < 120) return;
         rScale = phone ? 1.25 : 1;
         rayK = Math.min(1, L / 500);
@@ -1034,8 +1028,12 @@
         // Vertically it sits in the middle of the lit band (2026-09-22): it used to hang 30px under the band's top,
         // so its back rode the glow's near-black edge (10-16px of room) while 90-137px stayed empty down to the word.
         // Over a crossing, with the wave, the arc and the flap, the whale spans cyEnd - arc - 0.18L to cyEnd + 0.263L
-        // (measured); equal room above and below it, between the band's top and its floor (above), gives the line below.
-        whale = { born: T, dir, L, arc, swim, cx0, cx1, cyEnd: (bTop + floor + arc - 0.083 * L) / 2, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
+        // (measured); equal room above and below it, between the band's top and the cap tops of "Say hello", gives
+        // the line below. The caps sit 0.147em under the word's box; on phones the word is hidden, so the band
+        // ends at its line.
+        const txt = document.querySelector('.say-hello .footer-big-text');
+        const inkTop = txt && txt.offsetParent ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
+        whale = { born: T, dir, L, arc, swim, cx0, cx1, cyEnd: (bTop + inkTop + arc - 0.083 * L) / 2, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
         nextWhale = T + rnd(WHALE[0], WHALE[1]);
         list.forEach(m => { // each ember ignites at the glow's edge under its place and rises into it, nose first
           const a = whalePoint(m, 0);
@@ -1109,163 +1107,17 @@
           ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, 7, 0, Math.PI * 2); ctx.fill();
         }
       }
-      // THE BRIDGE (2026-09-27, per user: "a golden gate bridge hide in the fog at the footer. No need to add the extra
-      // fog, the purple layer is like the fog. The whale is looking swimming on the top of the bridge"). The towers and
-      // cables in the bridge's own International Orange (per user, "why do not make the bridge red"), clearest at the
-      // tower tops and fading out as they sink into the purple, so the glow does the fog's work. The fade is measured on
-      // the glow itself, which the scroll stretches as the footer arrives, so the towers rise out of the fog at the end
-      // of the page. Drawn before the dust, so every ember and the whale pass in front of it. ?fx=-bridge hides it.
-      // A REAL VIEW (same day, per user "the bridge does not look real. Not like the side view or with the angle", then
-      // "i still like the side view one" and "do not distort the angle too much"): the first build mixed two views,
-      // towers drawn face-on like a ladder with one cable running flat past them. It is now a 3D model of the real
-      // bridge in metres, from the Chief Engineer's 1937 report and Wikimedia photographs, seen side-on from far away
-      // and turned slightly, so both towers stay the same size either side of the word, their deep legs close the
-      // lower openings as they do from the shore, and both cables and both curtains of hangers show.
-      const GG = {
-        span: 1280, side: 343, th: 152.4, cz: 13.7, low: 9.1, deck: 7.6, hang: 15.24, dia: 0.92, // main and side spans, the cable's height at the tower tops above the roadway there, the cables' half-spacing (90 ft apart, like the tower shafts), the cable's lowest point, the truss depth, the hanger spacing (50 ft), the cable diameter; metres, from the Chief Engineer's 1937 report
-        rise: 6.3, pylon: -8.5, sideSag: 10.4, // the roadway arches 20.6 ft higher at midspan than at the towers and falls 28 ft to the shore pylons; the side-span cable sags 34 ft below its chord
-        // each leg (shaft) from its base up: [from, to] as shares of the tower's height above the roadway, then its width across the bridge and its
-        // depth along it (metres). The report: steel cells 3.5 ft square, 9 across by 15 along at the base, dropped from the outside at each
-        // set-back down to 3 by 7 at the top, centred on lines 90 ft apart; so the legs are thin across and deep along, and the openings narrow
-        // toward the roadway
-        legs: [[-0.404, 0, 9.6, 16], [0, 0.215, 7.5, 13.9], [0.215, 0.48, 5.9, 11.7], [0.48, 0.715, 4.5, 9.6], [0.715, 1, 3.2, 7.5]],
-        struts: [[0.215, 0.3], [0.48, 0.555], [0.715, 0.785], [0.92, 0.99]], sd: 3.2, // the four portal struts, 10.5 ft deep, their spacing diminishing toward the top (the crown last, just under the leg tops), sized off the fog photograph
-        view: 0, dist: 12000, // the camera: 12 km away and square to the span, the side view (per user "Is the angle right (I want the side view)?", 2026-09-27). It was turned 28 degrees toward one end, which doubled both cables and both curtains of hangers, made the nearer tower 5% taller and pushed the bridge off centre
-        turn: 28, // only the towers are turned, 28 degrees on their own axes, as illustrations of the bridge do (his stock side view among them): seen truly side-on the legs line up and hide the tower windows, so the towers would read as plain spires
-        vx: 1.59, // drawn 1.59 times taller than true, as illustrations of the bridge do (per user, with a stock side-view illustration: "something like this"); the shape is otherwise real. It was 1.4 in the 28 degree view, whose turn foreshortened the span by cos 28 = 0.88, so the towers stood 1.4 / 0.88 = 1.59 times true against it; the side view keeps that height
-      };
-      const BR_A = 0.72, BR_C = '192, 54, 44'; // International Orange, #C0362C, at its clearest
-      const BR_GAP = 0.35; // the room between the roadway's truss and the word's cap line, in ems of the word (0.06 until the user found "say hello is too close to the bridge"; the band grew by the same amount, 440 to 500px)
-      const BR_CLEAR = 0.3, BR_GONE = 0.3;     // at the end of the page the fog starts this far (of a tower's height) under the tower tops, and has swallowed everything this far under the roadway, so the roadway still shows faintly
-      let bridge = null;
-      const vsub = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]], vdot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-      const vcross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-      const vnorm = a => { const l = Math.hypot(a[0], a[1], a[2]); return [a[0] / l, a[1] / l, a[2] / l]; };
-      function hull(pts) { // the convex hull of projected points, counter-clockwise, so every part fills with the same winding
-        pts = pts.slice().sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-        const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]), lo = [], up = [];
-        for (const p of pts) { while (lo.length > 1 && cr(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop(); lo.push(p); }
-        for (let i = pts.length - 1; i >= 0; i--) { const p = pts[i]; while (up.length > 1 && cr(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop(); up.push(p); }
-        return lo.slice(0, -1).concat(up.slice(0, -1));
-      }
-      function buildBridge() {
-        bridge = null;
-        if (!bridgeOn || W < 320) return;
-        const phone = phoneMQ.matches, txt = document.querySelector('.say-hello .footer-big-text');
-        const wb = !phone && txt && txt.offsetParent;
-        const inkTop = wb ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
-        // the camera, far away and square to the span
-        const va = GG.view * Math.PI / 180, cam = [GG.span / 2 + GG.dist * Math.sin(va), 50, GG.dist * Math.cos(va)], look = [GG.span / 2, 40, 0];
-        const f = vnorm(vsub(look, cam)), r = vnorm(vcross(f, [0, 1, 0])), u = vcross(r, f);
-        const pj = P => { const d = vsub([P[0], P[1] * GG.vx, P[2]], cam), z = vdot(d, f); return [vdot(d, r) / z, vdot(d, u) / z, z]; };
-        // fitted to the footer: the towers frame the word, 58% of the width apart (at most 920px); on a phone near the edges
-        const half = phone ? W * 0.42 : Math.min(W * 0.29, 460), xN = W / 2 - half, xF = W / 2 + half;
-        const n0 = pj([0, GG.th, 0]), f0 = pj([GG.span, GG.th, 0]), s = (xF - xN) / (f0[0] - n0[0]), ox = xN - s * n0[0];
-        const hN = s * (n0[1] - pj([0, 0, 0])[1]); // a tower's height on screen
-        // the roadway and its truss run a third of the word's size above its cap line, so the word has room under the bridge; a phone has no word, so there the
-        // towers rise between the whale and the links
-        const yD = wb ? inkTop - BR_GAP * parseFloat(getComputedStyle(txt).fontSize) - hN * GG.deck / GG.th : wTop - 30 + hN, yTop = yD - hN; // the truss under it too
-        const oy = yTop + s * n0[1];
-        let top = 1e9, twx = null; // twx: the tower being drawn, turned GG.turn degrees on its own vertical axis
-        const tc = Math.cos(GG.turn * Math.PI / 180), ts = Math.sin(GG.turn * Math.PI / 180);
-        const S = P => {
-          if (twx !== null) { const dx = P[0] - twx; P = [twx + dx * tc + P[2] * ts, P[1], P[2] * tc - dx * ts]; }
-          const q = pj(P), p = [ox + s * q[0], oy - s * q[1], q[2]]; if (p[1] < top) top = p[1]; return p;
-        };
-        const fill = new Path2D(), hang = new Path2D(), wires = new Map();
-        const box = (x0, x1, y0, y1, z0, z1) => {
-          const h = hull([x0, x1].flatMap(x => [y0, y1].flatMap(y => [z0, z1].map(z => S([x, y, z])))));
-          h.forEach((p, i) => i ? fill.lineTo(p[0], p[1]) : fill.moveTo(p[0], p[1])); fill.closePath();
-        };
-        const frustum = (x, y0, y1, z, d0, w0, d1, w1) => { // a box whose top is smaller than its base
-          const h = hull([[d0, w0, y0], [d1, w1, y1]].flatMap(([d, w, y]) => [-1, 1].flatMap(a => [-1, 1].map(b => S([x + a * d / 2, y, z + b * w / 2])))));
-          h.forEach((p, i) => i ? fill.lineTo(p[0], p[1]) : fill.moveTo(p[0], p[1])); fill.closePath();
-        };
-        [0, GG.span].forEach(xt => {
-          twx = xt;
-          GG.legs.forEach(([a, b, w, d]) => [-1, 1].forEach(sg => box(xt - d / 2, xt + d / 2, a * GG.th, b * GG.th, sg * (GG.cz - w / 2), sg * (GG.cz + w / 2))));
-          GG.struts.forEach(([a, b]) => {
-            const leg = GG.legs.find(l => (a + b) / 2 >= l[0] && (a + b) / 2 <= l[1]), zi = GG.cz - leg[2] / 2;
-            box(xt - GG.sd / 2, xt + GG.sd / 2, a * GG.th, b * GG.th, -zi, zi);
-          });
-          const top = GG.legs[GG.legs.length - 1]; // the saddle housing: each leg top rises to a point where the cable passes over
-          [-1, 1].forEach(sg => frustum(xt, GG.th, GG.th * 1.032, sg * GG.cz, top[3], top[2], top[3] * 0.3, top[2] * 0.45));
-          twx = null;
-        });
-        // the roadway arches over the main span and falls to the shore pylons, carried on its 25 ft truss, then runs on past them to both edges of
-        // the screen at any width (it stopped at fixed ends, which hung in the air above about 1560px)
-        const road = X => X < 0 ? GG.pylon * (-X / GG.side) : X > GG.span ? GG.pylon * ((X - GG.span) / GG.side)
-          : GG.rise * (1 - ((X - GG.span / 2) / (GG.span / 2)) ** 2);
-        const mpx = GG.span / (xF - xN), rL = Math.min(-GG.side - 200, -(xN + 40) * mpx), rR = Math.max(GG.span + GG.side + 200, GG.span + (W - xF + 40) * mpx);
-        const nR = Math.ceil((rR - rL) / 50);
-        for (let i = 0; i < nR; i++) {
-          const x0 = rL + (rR - rL) * i / nR, x1 = rL + (rR - rL) * (i + 1) / nR;
-          const y = Math.max(road(Math.max(-GG.side, Math.min(GG.span + GG.side, x0))), road(Math.max(-GG.side, Math.min(GG.span + GG.side, x1))));
-          box(x0, x1, y - GG.deck, y, -GG.cz, GG.cz);
-        }
-        // the cables: a parabola over the main span from saddle to saddle, and each side span nearly straight to its pylon, sagging 34 ft.
-        // TWO CABLES (2026-09-27, per user "i need two cable"): seen square to the span the pair sits one behind the other and draws as one
-        // line, so each cable is shifted along the span by the towers' turn (z * sin 28), which lands it on its own saddle cap and shows the
-        // pair as his reference does, apart near the towers and meeting at midspan. Only the near curtain of hangers is drawn, so the
-        // hangers stay one row instead of an interleaved hatch
-        const cy = X => {
-          if (X >= 0 && X <= GG.span) return GG.th - (GG.th - GG.low) * (1 - ((X - GG.span / 2) / (GG.span / 2)) ** 2);
-          const u = X < 0 ? -X / GG.side : (X - GG.span) / GG.side, end = GG.pylon + 2;
-          return GG.th + (end - GG.th) * u - 4 * GG.sideSag * u * (1 - u);
-        };
-        [-GG.cz, GG.cz].forEach(z => {
-          [[-GG.side, 0, 24], [0, GG.span, 96], [GG.span, GG.span + GG.side, 24]].forEach(([x0, x1, n]) => {
-            let prev = S([x0 + z * ts, cy(x0), z]);
-            for (let i = 1; i <= n; i++) {
-              const X = x0 + (x1 - x0) * i / n, p = S([X + z * ts, cy(X), z]);
-              const w = Math.round(Math.max(0.8, Math.min(2.2, GG.dia * 1.25 * s / p[2])) * 10) / 10; // the real diameter, a little heavier, thinning with distance
-              if (!wires.has(w)) wires.set(w, new Path2D());
-              wires.get(w).moveTo(prev[0], prev[1]); wires.get(w).lineTo(p[0], p[1]); prev = p;
-            }
-          });
-          if (z > 0) for (let X = -GG.side + GG.hang; X < GG.span + GG.side - 4; X += GG.hang) { // a hanger every 50 ft, down to the roadway, near side only
-            if (Math.abs(X) < 12 || Math.abs(X - GG.span) < 12 || cy(X) - road(X) < 3) continue;
-            const a = S([X + z * ts, cy(X), z]), b = S([X + z * ts, road(X), z]); hang.moveTo(a[0], a[1]); hang.lineTo(b[0], b[1]);
-          }
-        });
-        // drawn once at full strength into its own layer, so parts that overlap never double up; the fog is applied on top
-        const dpr = cv.width / W, mk = () => { const c = document.createElement('canvas'); c.width = cv.width; c.height = cv.height; return c; };
-        const art = mk(), bx = art.getContext('2d');
-        bx.setTransform(dpr, 0, 0, dpr, 0, 0); bx.fillStyle = bx.strokeStyle = `rgb(${BR_C})`; bx.lineCap = 'round';
-        bx.globalAlpha = 0.45; bx.lineWidth = 0.6; bx.stroke(hang); bx.globalAlpha = 1;
-        bx.fill(fill);
-        wires.forEach((path, w) => { bx.lineWidth = w; bx.stroke(path); });
-        const gh1 = H * 1.2; // the glow's height once the page has reached its end
-        bridge = { art, fogged: mk(), p: -1, top, deck: yD, fog: [(yTop + BR_CLEAR * hN) / gh1, (yD + BR_GONE * hN) / gh1] };
-      }
-      function drawBridge(p) {
-        if (!bridge) return;
-        if (Math.abs(p - bridge.p) > 0.001) { // the fog only moves with the scroll, so the masked layer is rebuilt only then
-          bridge.p = p;
-          const gh = p * H * 1.2, y0 = gh * bridge.fog[0], y1 = Math.max(y0 + 1, gh * bridge.fog[1]); // where the glow's purple thickens, at this point of its reveal
-          const fx = bridge.fogged.getContext('2d'), dpr = cv.width / W;
-          fx.setTransform(1, 0, 0, 1, 0, 0); fx.globalCompositeOperation = 'source-over'; fx.clearRect(0, 0, cv.width, cv.height);
-          fx.drawImage(bridge.art, 0, 0);
-          fx.setTransform(dpr, 0, 0, dpr, 0, 0); fx.globalCompositeOperation = 'destination-in';
-          const g = fx.createLinearGradient(0, y0, 0, y1);
-          g.addColorStop(0, `rgba(0, 0, 0, ${BR_A})`); g.addColorStop(0.4, `rgba(0, 0, 0, ${(BR_A * 0.45).toFixed(3)})`); g.addColorStop(1, 'rgba(0, 0, 0, 0)');
-          fx.fillStyle = g; fx.fillRect(0, 0, W, H); fx.globalCompositeOperation = 'source-over';
-        }
-        ctx.drawImage(bridge.fogged, 0, 0, W, H);
-      }
-      cv._bridge = () => bridge; // for probing
       function draw(dt) {
         if (cv.offsetParent === null) return;
         T += dt;
         if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); nextWhale = T + 0.6; const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
-        const p = progress();
         if (dt) {
+          const p = progress();
           acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
           if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (phoneMQ.matches ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
           else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
         }
         ctx.clearRect(0, 0, W, H);
-        drawBridge(p);
         ctx.globalCompositeOperation = 'lighter';
         const span = bBot - bTop, fieldDim = 1 - FIELD_DIM * whalePresence();
         for (let i = motes.length - 1; i >= 0; i--) {
@@ -1298,7 +1150,6 @@
         const el = stopSel && document.querySelector(stopSel);
         if (el) b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04);
         bTop = 0; bBot = H * b1; wTop = bBot + H * 0.04;
-        buildBridge();
         if (whale) { whale = null; nextWhale = T + 3; }
       }
       cv._draw = draw; // for probing: step the simulation without waiting on frames
@@ -1308,11 +1159,7 @@
       layout();
       draw(0);
       window.addEventListener('resize', () => { layout(); draw(0); }, { passive: true });
-      if (reduce) { // the still frame redraws as the glow follows the scroll, so the bridge still rises out of its fog
-        let q = 0;
-        window.addEventListener('scroll', () => { if (!q) q = requestAnimationFrame(() => { q = 0; draw(0); }); }, { passive: true });
-        return;
-      }
+      if (reduce) return;
       new IntersectionObserver(es => { es[es.length - 1].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
   })();
