@@ -1591,7 +1591,11 @@
           const y = Math.max(road(Math.max(-GG.side, Math.min(GG.span + GG.side, x0))), road(Math.max(-GG.side, Math.min(GG.span + GG.side, x1))));
           box(x0, x1, y - GG.deck, y, -GG.cz, GG.cz);
         }
-        // the cables: a parabola over the main span from saddle to saddle, and each side span nearly straight to its pylon, sagging 34 ft
+        // the cables: a parabola over the main span from saddle to saddle, and each side span nearly straight to its pylon, sagging 34 ft.
+        // TWO CABLES (2026-09-27, per user "i need two cable"): seen square to the span the pair sits one behind the other and draws as one
+        // line, so each cable is shifted along the span by the towers' turn (z * sin 28), which lands it on its own saddle cap and shows the
+        // pair as his reference does, apart near the towers and meeting at midspan. Only the near curtain of hangers is drawn, so the
+        // hangers stay one row instead of an interleaved hatch
         const cy = X => {
           if (X >= 0 && X <= GG.span) return GG.th - (GG.th - GG.low) * (1 - ((X - GG.span / 2) / (GG.span / 2)) ** 2);
           const u = X < 0 ? -X / GG.side : (X - GG.span) / GG.side, end = GG.pylon + 2;
@@ -1599,17 +1603,17 @@
         };
         [-GG.cz, GG.cz].forEach(z => {
           [[-GG.side, 0, 24], [0, GG.span, 96], [GG.span, GG.span + GG.side, 24]].forEach(([x0, x1, n]) => {
-            let prev = S([x0, cy(x0), z]);
+            let prev = S([x0 + z * ts, cy(x0), z]);
             for (let i = 1; i <= n; i++) {
-              const X = x0 + (x1 - x0) * i / n, p = S([X, cy(X), z]);
+              const X = x0 + (x1 - x0) * i / n, p = S([X + z * ts, cy(X), z]);
               const w = Math.round(Math.max(0.8, Math.min(2.2, GG.dia * 1.25 * s / p[2])) * 10) / 10; // the real diameter, a little heavier, thinning with distance
               if (!wires.has(w)) wires.set(w, new Path2D());
               wires.get(w).moveTo(prev[0], prev[1]); wires.get(w).lineTo(p[0], p[1]); prev = p;
             }
           });
-          for (let X = -GG.side + GG.hang; X < GG.span + GG.side - 4; X += GG.hang) { // a hanger every 50 ft, down to the roadway
+          if (z > 0) for (let X = -GG.side + GG.hang; X < GG.span + GG.side - 4; X += GG.hang) { // a hanger every 50 ft, down to the roadway, near side only
             if (Math.abs(X) < 12 || Math.abs(X - GG.span) < 12 || cy(X) - road(X) < 3) continue;
-            const a = S([X, cy(X), z]), b = S([X, road(X), z]); hang.moveTo(a[0], a[1]); hang.lineTo(b[0], b[1]);
+            const a = S([X + z * ts, cy(X), z]), b = S([X + z * ts, road(X), z]); hang.moveTo(a[0], a[1]); hang.lineTo(b[0], b[1]);
           }
         });
         // drawn once at full strength into its own layer, so parts that overlap never double up; the fog is applied on top
