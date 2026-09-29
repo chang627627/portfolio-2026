@@ -21,16 +21,46 @@
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=278">
   <style>
-    /* Boxless Play cards (2026-09-02), matching the home grid: no tile, no
-       border, the image carries the radius and its hairline, text hangs
-       under it. Column gap opens up because the boxes no longer separate
-       the cards. */
-    .play-grid .play-card { background: transparent; border: 0; padding: 0; }
-    @media (hover: hover) { .play-grid .play-card:hover { border-color: transparent; box-shadow: none; } }
-    .play-grid .play-card img { border-radius: var(--radius) !important; }
-    .play-grid .play-card video, .play-grid .play-card iframe, .play-grid .play-video { border-radius: var(--radius); }
-    .play-column { gap: 48px; }
-    @media (max-width: 768px) { .play-column { gap: 40px; } }
+    /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
+       back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
+       information"). Replaces the boxless cards of 2026-09-02. The same card as the home grid: a #1a1a1a surface in
+       the stylesheet's 1px hairline frame and radius, the piece flush with the frame's top and sides, so the
+       frame's own corners round its top and its bottom meets the information square (per user "maybe both go no
+       padding and top round bottom right for the images", after a round-cornered piece on a 4, 6 and 8px mat); no
+       radius or hairline of its own, which would double the frame's edge; and the
+       title and year, or the caption where the grid shows one, on the surface below. One 24px gap between cards,
+       across and down, as on home. The hover is the stylesheet's own: the frame brightens and glows faintly;
+       nothing moves. */
+    .play-grid { column-gap: 24px; }
+    .play-column { gap: 24px; }
+    .play-grid .play-card { background: var(--surface); padding: 0; overflow: hidden; }
+    .play-grid .play-card img,
+    .play-grid .play-card video,
+    .play-grid .play-card iframe,
+    .play-grid .play-card .play-video,
+    .play-grid .play-card .carousel-track { border-radius: 0 !important; outline: none; }
+    .play-grid .play-card .play-info { margin-top: 0; padding: 16px 20px 18px; }
+    /* THE HOVER ANSWERS LIKE HOME'S (2026-09-29, per user "play section's work's hover effect are too weak. how to
+       improve it like the home page ones"). The stylesheet's hover was a 0.14 frame and a white glow at 0.04, too faint
+       to read. Now the frame brightens to home's 0.18 and each piece glows outside it in its own colour at home's
+       strength (40px at 0.30, 96px at 0.14), through home's own oklch recipe: the hue of --glow, lightness 0.78, chroma
+       capped at 0.18, so a colourless piece glows neutral, as NOVA does on home. --glow, inline on each card, is the
+       dominant hue of its image (the strongest 10-degree band of saturated pixels, measured once from the files; the
+       mean colour when under 6% of the pixels are saturated); a new card needs one. Home's third cue, the still's
+       zoom inside its plate, is left out: a piece here has no plate to hold a zoom, so it would push over the title,
+       and this page has no enlarging. */
+    @media (hover: hover) {
+      .play-grid .play-card:hover { border-color: rgba(255, 255, 255, 0.18); }
+      @supports (color: oklch(from white l c h)) {
+        .play-grid .play-card:hover {
+          box-shadow:
+            0 0 40px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.30),
+            0 0 96px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14);
+        }
+      }
+    }
+    /* a control near the frame keeps its focus ring inside itself, where the frame's clip cannot cut it off */
+    .play-grid .play-card .yt-facade:focus-visible { outline-offset: -3px; }
     /* THREE COLUMNS (2026-09-28, per user "make the play section to three column layout and
        occupy all the space horizontally on the screen"). From 1200px the script after the grid
        deals the cards into three columns and adds .is-three, and the grid drops its 1344px cap to
@@ -43,7 +73,6 @@
        then sits under the slide at every card's 14px. Two columns keep the controls. */
     .play-grid.is-three .carousel-arrow,
     .play-grid.is-three .carousel-dots { display: none; }
-    .play-grid.is-three .play-card:has(.carousel) .play-info { margin-top: 14px; }
     /* an autoplay step just changes the image: no slide-in, no fade (per user "auto play just change
        the image, do not have slide in or other effect ... do not make it feel jump"); the next slide
        is decoded first, so it never shows an empty frame */
@@ -59,19 +88,14 @@
     .play-grid.is-three .play-card .play-info-top { margin-bottom: 0; cursor: pointer; }
     .play-title-btn { position: relative; font: inherit; color: inherit; letter-spacing: inherit; line-height: inherit; text-align: left; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
     .play-title-btn:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; border-radius: 4px; }
-    /* the header links' own hover line (1px, grows left to right in 160ms), so the title reads as
-       clickable (per user "add the hover line under the title, otherwise how do I know it is
-       clickable?"). On the button, not the h3: a text-decoration never reaches into a button. */
-    .play-title-btn::after { content: ''; position: absolute; left: 0; bottom: -4px; width: 0; height: 1px; background: var(--text); transition: width var(--dur-base) var(--ease-out); }
+    /* NO HOVER LINE UNDER THE TITLE (2026-09-29, per user "cancel the hover line animation on play section's card").
+       It was added so the title read as clickable ("add the hover line under the title, otherwise how do I know it
+       is clickable?"); the card's frame, which brightens on hover, now says that. */
     /* NO ENLARGE IN THE GRID (per user "there is no enlarge for this page. If you want to see the
        bigger picture, go to the detail page"): in three columns a card is one link to its piece
-       view, so it takes the pointer, not zoom-in, and any hover on it draws the title's line. The
+       view, so it takes the pointer, not zoom-in. The
        piece view is a page, not a zoom: no zoom-out cursor, and a click on the work keeps it open. */
     .play-grid.is-three .play-card { cursor: pointer; }
-    @media (hover: hover) {
-      /* not over what answers in place: a film's play button or player, and the carousel controls */
-      .play-grid.is-three .play-card:hover:not(:has(.yt-facade:hover, .build-go:hover, .play-video > iframe:hover, video[controls]:hover, .carousel-arrow:hover, .carousel-dot:hover)) .play-title-btn::after { width: 100%; }
-    }
     /* No zoom cursors anywhere on Play, at any width (per user "no zoom-in in the play page"): an
        image takes the pointer, and the viewer a plain cursor (style.css gives them zoom-in/out). */
     .play-grid .play-card img { cursor: pointer; }
@@ -595,7 +619,7 @@
     <div class="play-grid">
       <div class="play-column">
 
-      <div class="play-card play-card--m-feature" style="--mo:1">
+      <div class="play-card play-card--m-feature" style="--glow:#b3d31b;--mo:1">
         <div class="play-info">
           <div class="play-info-top"><h3>Scope</h3><span class="play-year">2026</span></div>
           <p>A Gen Z cultural platform imagined as one AI-native brand world. Identity, music, fashion, and digital drops. Made with GPT Image 2.</p>
@@ -603,21 +627,21 @@
         </div>
         <img width="1254" height="1254" src="images/scope-card.jpg" alt="Scope — Gen Z cultural platform branding exploration" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:5;display:none">
+      <div class="play-card play-card--desktop-only" style="--glow:#6a839e;--mo:5;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Buffering Ocean</h3><span class="play-year">2026</span></div>
           <p>A seaside scene caught in digital delay. Loading windows, broken pixels, and drifting interface fragments turn the shoreline into a soft glitch between nature and the network. Made with GPT Image 2.</p>
         </div>
         <img loading="lazy" decoding="async" width="1536" height="1024" src="images/gpt2-buffering-ocean.jpg" alt="Buffering Ocean — coastal cityscape glitching with loading bars, pixelated sky and sea, and simulation UI fragments" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:3">
+      <div class="play-card" style="--glow:#f7b251;--mo:3">
         <div class="play-info">
           <div class="play-info-top"><h3>Octocrab</h3><span class="play-year">2026</span></div>
           <p>An octagonal crab drawn in ASCII. Glyphs and dither become pearl armor, neon claws, and a glowing core. Made with GPT Image 2.</p>
         </div>
         <img loading="lazy" decoding="async" width="1254" height="1254" src="images/gpt2-mech-crab.jpg" alt="Octocrab — pearl-white sci-fi crab creature with neon claws and a glowing core" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:6">
+      <div class="play-card" style="--glow:#102f5f;--mo:6">
         <div class="play-info">
           <div class="play-info-top"><h3>The Rib</h3><span class="play-year">2026</span></div>
           <p>Creation begins with separation. In this retelling of Genesis, one whole becomes two equals, and distance makes loss possible. Only when there is an “I” and a “you” can there be someone to love. Made with GPT Image 2.5.</p>
@@ -625,14 +649,14 @@
         </div>
         <img loading="lazy" decoding="async" width="1024" height="1536" src="images/the-rib.webp" alt="The Rib, a painting of a pale man under a gold halo whose opened ribs stream out as ribbons and petals into a woman drifting away over deep blue" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:4;display:none">
+      <div class="play-card" style="--glow:#be6217;--mo:4;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Golden Flux</h3><span class="play-year">2026</span></div>
           <p>Warmth caught mid-motion. Molten gold, orbiting trails, and grainy light flow through the dark like heat you can almost feel. Made with GPT Image 2.</p>
         </div>
         <img loading="lazy" decoding="async" width="1054" height="1492" src="images/gpt2-golden-flux.jpg" alt="Golden Flux — abstract poster of molten gold ribbons, orbiting trails, and grain on black" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:8">
+      <div class="play-card" style="--glow:#62399f;--mo:8">
         <div class="play-info">
           <div class="play-info-top"><h3>Midjourney</h3><span class="play-year">2026</span></div>
           <p>Exploring different visual styles, moods, and worlds through prompt-driven image and video generation in Midjourney.</p>
@@ -649,7 +673,7 @@
           <video src="images/mj9-portrait-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
         </div>
       </div>
-      <div class="play-card" style="--mo:9">
+      <div class="play-card" style="--glow:#534e51;--mo:9">
         <div class="play-info">
           <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
           <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
@@ -657,7 +681,7 @@
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:18" data-length="0:23">
+      <div class="play-card" style="--glow:#82a0c4;--mo:18" data-length="0:23">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
           <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity MCP and Claude Code.</p>
@@ -670,7 +694,7 @@
         </div>
         <video class="build-film" src="images/robot-console.mp4" controls preload="none" poster="images/robot-console-poster.jpg" playsinline width="1280" height="716" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
-      <div class="play-card" style="--mo:10">
+      <div class="play-card" style="--glow:#bbcbaf;--mo:10">
         <div class="play-info">
           <div class="play-info-top"><h3>New Craft Society</h3><span class="play-year">2026</span></div>
           <p>A home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. Freelance, in active development: I am both a designer on it and one of the product engineers building it.</p>
@@ -678,14 +702,14 @@
         </div>
         <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:10;display:none">
+      <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
           <p>A specialty coffee e-commerce redesign leaning on editorial typography and rich product imagery. Bold brand color meets calm layouts to carry browsing, discovery, and subscription flows.</p>
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1537" src="images/redbrick.jpg" alt="Redbrick Coffee" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:12">
+      <div class="play-card play-card--desktop-only" style="--glow:#37383a;--mo:12">
         <div class="play-info">
           <div class="play-info-top"><h3>TickerPulse</h3><span class="play-year">2025</span></div>
           <p>An AI trading terminal that monitors real-time news sentiment and explains the why behind every alert, not just the what. It filters market noise down to portfolio-relevant moves, backs every verdict with linked evidence, and surfaces the catalyst before the move is over.</p>
@@ -705,7 +729,7 @@
           <div class="carousel-dots"></div>
         </div>
       </div>
-      <div class="play-card" style="--mo:16">
+      <div class="play-card" style="--glow:#937965;--mo:16">
         <div class="play-info">
           <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
           <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
@@ -713,7 +737,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:15">
+      <div class="play-card" style="--glow:#736847;--mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Missing Pavilion</h3><span class="play-year">2021</span></div>
           <p>A parametric pavilion of wave-like metal and semi-transparent glass, sited at a park pathway intersection and built around light, water, and quiet. Made in Rhino and Grasshopper.</p>
@@ -721,7 +745,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1243" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:20" data-length="1:02">
+      <div class="play-card" style="--glow:#98c37f;--mo:20" data-length="1:02">
         <div class="play-info">
           <div class="play-info-top"><h3>UN/FOLD</h3><span class="play-year">2020</span></div>
           <p>A team 3D adventure built in Unity. As game designer, I shaped levels and mechanics where players shapeshift between humans, wolves, and seagulls to solve puzzles.</p>
@@ -734,7 +758,7 @@
       </div>
       <div class="play-column">
 
-      <div class="play-card play-card--m-feature" style="--mo:2">
+      <div class="play-card play-card--m-feature" style="--glow:#dad7d1;--mo:2">
         <div class="play-info">
           <div class="play-info-top"><h3>The Last Human Gestures</h3><span class="play-year">2026</span></div>
           <p>A future archive of irreplaceable human behavior. Hesitation, waiting, wandering, and daydreaming reframed as qualities worth preserving in the age of AI. Made with GPT Image 2.</p>
@@ -742,7 +766,7 @@
         </div>
         <img width="1024" height="1536" src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:5">
+      <div class="play-card" style="--glow:#4da5c7;--mo:5">
         <div class="play-info">
           <div class="play-info-top"><h3>Vitruvian</h3><span class="play-year">2026</span></div>
           <p>Leonardo da Vinci's ideal human, redrawn in overlapping color layers that share one center but diverge toward the edges. One ideal gives way to many possible selves, all of them human. Made with GPT Image 2.5.</p>
@@ -750,7 +774,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1254" height="1254" src="images/vitruvian.webp" alt="Vitruvian, Leonardo's Vitruvian Man redrawn as overlapping cyan, magenta, and yellow figures that share one center and spread apart toward the circle and square" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:4">
+      <div class="play-card" style="--glow:#e85e63;--mo:4">
         <div class="play-info">
           <div class="play-info-top"><h3>Perfect Copy</h3><span class="play-year">2026</span></div>
           <p>When improvement becomes erasure. One imperfect flower, copied and refined until it is cleaner, brighter, and less itself. Some imperfections are not defects at all, but what makes something distinct. Made with GPT Image 2.5.</p>
@@ -758,7 +782,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1374" height="1145" src="images/perfect-copy.webp" alt="Perfect Copy, a contact sheet of 35 photocopies of one poppy, from a grainy black and white scan to a flawless pink flower and, at the last copy, a white one drained of color" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:6">
+      <div class="play-card play-card--desktop-only" style="--glow:#e78d6c;--mo:6">
         <div class="play-info">
           <div class="play-info-top"><h3>No Signal Summer</h3><span class="play-year">2026</span></div>
           <p>Future nostalgia and the quiet beauty of being unreachable. A summer when nothing was trying to reach us. Made with GPT Image 2.</p>
@@ -766,14 +790,14 @@
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:7;display:none">
+      <div class="play-card play-card--desktop-only" style="--glow:#2057a5;--mo:7;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Escape Velocity</h3><span class="play-year">2026</span></div>
           <p>Motion, light, and leaving gravity behind. The moment everything opens up. Made with GPT Image 2.</p>
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-escape-velocity.jpg" alt="Escape Velocity — sci-fi editorial poster of an iridescent sphere pierced by a rocket trail" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:11">
+      <div class="play-card play-card--desktop-only" style="--glow:#664f37;--mo:11">
         <div class="play-info">
           <div class="play-info-top"><h3>Whisper XR</h3><span class="play-year">2025</span></div>
           <p>Team project for Apple Vision Pro. An AI powered extended reality service that simulates social scenarios to help people with social anxiety prepare for real-life interactions.</p>
@@ -800,14 +824,14 @@
           <div class="carousel-dots"></div>
         </div>
       </div>
-      <div class="play-card" style="--mo:13;display:none">
+      <div class="play-card" style="--glow:#dfd7cf;--mo:13;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>CoPatible</h3><span class="play-year">2026</span></div>
           <p>Solo concept prototyping an AI powered social platform for people in active life transitions. Co, an AI companion, reads how you're feeling and organizes real experiences with others in the same moment.</p>
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/copatible.jpg" alt="CoPatible" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:17" data-length="0:35">
+      <div class="play-card" style="--glow:#141c39;--mo:17" data-length="0:35">
         <div class="play-info">
           <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
           <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
@@ -818,7 +842,7 @@
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
-      <div class="play-card" style="--mo:17" data-length="0:44">
+      <div class="play-card" style="--glow:#0d4a84;--mo:17" data-length="0:44">
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
@@ -831,7 +855,7 @@
         </div>
         <video class="build-film" src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
-      <div class="play-card" style="--mo:14">
+      <div class="play-card" style="--glow:#efd2ae;--mo:14">
         <div class="play-info">
           <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
           <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
@@ -839,14 +863,14 @@
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:15">
+      <div class="play-card" style="--glow:#9ea4b0;--mo:15">
         <div class="play-info">
           <div class="play-info-top"><h3>Running Dog</h3><span class="play-year">2020</span></div>
           <p>A tri-gear mechanism modeled in SolidWorks. Rotating the primary crank transfers motion to two more gears in one linked movement, and a secondary crank on the central bar converts that rotation into vertical motion through a crank pin.</p>
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1285" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:19" data-length="1:35">
+      <div class="play-card" style="--glow:#67bcda;--mo:19" data-length="1:35">
         <div class="play-info">
           <div class="play-info-top"><h3>About the Teddy Bear</h3><span class="play-year">2020</span></div>
           <p>A debut 3D animated short built in Maya with a student team. As animator and scene designer, I shaped the scenes and motion for a story about responsibility and impulsive commitments, following a teddy bear left behind when a young couple parts ways.</p>
@@ -856,7 +880,7 @@
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/zdQ4LYluWnc?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: About the Teddy Bear"><img class="yt-facade__poster" src="images/teddybear-poster.jpg" alt="" width="640" height="480" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
-<div class="play-card" style="--mo:18" data-length="1:01">
+<div class="play-card" style="--glow:#fa640b;--mo:18" data-length="1:01">
         <div class="play-info">
           <div class="play-info-top"><h3>I Believe in a Thing Called Love</h3><span class="play-year">2020</span></div>
           <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>

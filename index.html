@@ -63,43 +63,33 @@
        it out of the box model on phones entirely */
     @media (max-width: 768px) { .card-loop { display: none; } }
 
-    /* Boxless work cards. The eight identical dark tiles were the loudest
-       template tell on the page, so the tile is gone: the plate keeps the
-       radius and carries the hue glow itself, the text hangs under it flush
-       with the plate's edge, and the cursor-following white haze that lit the
-       whole tile is retired (the plate light already answers the cursor).
-       `overflow: visible` on the card is load-bearing: an ancestor's
-       overflow:hidden clips a child's box-shadow, so the plate's glow could
-       not spill past the card's own edges otherwise. The named --card-view
-       timeline on the card is unaffected (only anonymous view() cares about
-       scroll containers). */
-    .project-grid { column-gap: 32px; row-gap: 56px; }
-    .project-grid .project-card {
-      background: transparent;
-      border: 0;
-      overflow: visible;
-    }
+    /* THE WORK IS CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
+       back to "card" which means it will have the frame. I want the card the top side is image or video and bottom
+       is information"). This retires the desktop editorial rows (their builder, the script after the grid, now
+       returns at once; the rows' CSS stays in place, inert) and the boxless cards of 2026-09-02, whose reason was
+       "eight identical dark tiles were the loudest template tell on the page". The stylesheet's own card comes back
+       at every width: a #1a1a1a surface in a 1px hairline frame with the site radius, the plate flush with the
+       frame's top and sides, and title, year and description on the surface below; two columns on desktop, one on
+       phones, and one 24px gap across and down, the same as Play. The white cursor haze stays retired (the lit
+       plate already answers the cursor). The hover keeps the rows' approved strength: the frame brightens and the
+       plate's own hue glows outside it at 0.30 / 0.14 (0.14 / 0.07 was "too faint to read"); nothing lifts. */
+    .project-grid { gap: 24px; }
     .project-grid .project-card::before { display: none; }
-    .project-grid .project-img {
-      border-radius: var(--radius);
-      transition: box-shadow var(--dur-base) var(--ease-out);
-    }
-    .project-grid .project-info { padding: 18px 0 0; }
+    /* FLUSH, ROUND ON TOP, SQUARE BELOW (2026-09-29): the plate fills the frame's top and sides with no mat, so the
+       frame's own 8px corners round its top, and its bottom edge meets the information square (per user "maybe both go
+       no padding and top round bottom right for the images", after a round-cornered plate on a 4, 6 and 8px mat).
+       The plate carries no radius of its own; the information keeps the stylesheet's 20px. */
     @media (hover: hover) {
-      .project-grid .project-card:hover { box-shadow: none; }
       @supports (color: oklch(from white l c h)) {
-        .project-grid .project-card:hover .project-img {
+        .project-grid .project-card:hover {
           box-shadow:
-            0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14),
-            0 0 52px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.07);
+            0 0 40px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.30),
+            0 0 96px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14);
         }
       }
     }
-    @media (max-width: 768px) {
-      .project-grid { row-gap: 40px; }
-    }
 
-    /* Card typography for boxless cards: the plate leads, the title is the
+    /* Card typography: the plate leads, the title is the
        second read, the year stays at the end of the row (an inline year was
        tried and moved back per user). The chip row stays as
        pills: a single muted metadata line was tried and rejected the same day
@@ -486,7 +476,8 @@
        Each row is the title, the year and the description beside the image. The markup stays, so this one rule is the
        whole change and the undo. */
     #work .card-meta { display: none; }
-    .ask-bar { max-width: 1344px; margin: 0 auto 112px; }
+    /* 48px under the chips, twice the cards' 24px gap, so the chips head the grid (112 matched the retired rows' gap) */
+    .ask-bar { max-width: 1344px; margin: 0 auto 48px; }
     .ask-form {
       position: relative; display: flex; align-items: center; gap: 16px;
       padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
@@ -1845,7 +1836,10 @@
   // keeps the plain grid untouched (the cards never leave the markup). Runs
   // before armArrival() measures row one, so the timed-entrance fallback
   // applies to whichever cards are inside the viewport at load.
+  // RETIRED 2026-09-29 (per user: the work goes "back to card"): the grid's cards show at every width, so this
+  // returns at once. Everything below is the row builder, kept one line away with the rows' CSS if ever wanted.
   (function () {
+    return;
     if (!window.matchMedia || !matchMedia('(min-width: 769px)').matches) return;
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'))) return;
