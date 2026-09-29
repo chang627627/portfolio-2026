@@ -94,6 +94,13 @@
     .play-grid.is-three .play-info p,
     .play-grid.is-three .play-info .play-link { display: none; }
     .play-grid.is-three .play-card .play-info-top { margin-bottom: 0; cursor: pointer; }
+    /* THE TITLE IS A LABEL HERE, 18px (2026-09-29, per user "do you think play section's card's title are too big?", then
+       "do it"). In three columns a card shows only its title and year under the piece, and at 22px the title was about a
+       quarter larger for its card than home's (5.1% of a 432px card at 1440, 6.3% at 1200, against home's 27px on 658,
+       4.1%), and "I Believe in a Thing Called Love" wrapped at 1200, which is what put the columns 2% apart there. 18px is
+       4.2% at 1440, and nothing wraps from 1200 up. Two columns and phones keep 22px over their 16px captions, and the
+       detail page's panel keeps its own 22px. */
+    .play-grid.is-three .play-card .play-info h3 { font-size: 18px; }
     .play-title-btn { position: relative; font: inherit; color: inherit; letter-spacing: inherit; line-height: inherit; text-align: left; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
     .play-title-btn:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; border-radius: 4px; }
     /* NO HOVER LINE UNDER THE TITLE (2026-09-29, per user "cancel the hover line animation on play section's card").
