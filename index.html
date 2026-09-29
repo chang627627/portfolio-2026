@@ -71,8 +71,11 @@
        at every width: a #1a1a1a surface in a 1px hairline frame with the site radius, the plate flush with the
        frame's top and sides, and title, year and description on the surface below; two columns on desktop, one on
        phones, and one 24px gap across and down, the same as Play. The white cursor haze stays retired (the lit
-       plate already answers the cursor). The hover keeps the rows' approved strength: the frame brightens and the
-       plate's own hue glows outside it at 0.30 / 0.14 (0.14 / 0.07 was "too faint to read"); nothing lifts. */
+       plate already answers the cursor). The hover is Play's: the frame brightens and a soft glow of the plate's own
+       hue sits behind it, 24px at 0.16 and 60px at 0.06 (per user "what if you try play section's glow on home page",
+       after "home page's glow need to go one level down" took the rows' 40px 0.30 / 96px 0.14 to 0.20 / 0.09: with
+       the frame back the glow is the second signal, and at 0.30 it tinted the 24px gap by about 70 RGB units); the
+       two pages now share one hover; nothing lifts. */
     .project-grid { gap: 24px; }
     .project-grid .project-card::before { display: none; }
     /* FLUSH, ROUND ON TOP, SQUARE BELOW (2026-09-29): the plate fills the frame's top and sides with no mat, so the
@@ -83,8 +86,8 @@
       @supports (color: oklch(from white l c h)) {
         .project-grid .project-card:hover {
           box-shadow:
-            0 0 40px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.30),
-            0 0 96px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14);
+            0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.16),
+            0 0 60px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.06);
         }
       }
     }
@@ -212,6 +215,21 @@
        legible while placing them a tier below the awards on the other cards. */
     .project-card[href="nova.html"] .card-awards img { height: 20px; }
     @media (max-width: 768px) { .project-card[href="nova.html"] .card-awards img { height: 13px; } }
+    /* THE BADGES SCALE WITH THE PLATE ON DESKTOP CARDS (2026-09-29, from the review of the card change; per user "do
+       all three"). The badges were a fixed 26px at 12px from the corner, sized for the rows' 840px plate; on the cards'
+       338-658px plates they sat on the screenshots, and more so the narrower the window (PollenNav's phones by 7px at
+       1440, 17 at 1024, 22 at 800; NOVA's glasses and Coffee's app below 1200), because a still's top edge moves with
+       the plate's width while the badges did not. Now they are a share of the plate: 3% of its width tall (20px on the
+       658px plate, 13px on 450), 1.5% in from the corner, never under 12px, and NOVA's partner wordmarks keep their
+       tier below (2.4%). PollenNav's still starts 4.7% of the plate down, the tightest, so the badges clear it at rest
+       at every desktop width. Phones keep their own approved 16px and 13px. StoryBloom's sit on its full-bleed cover,
+       as they always have. */
+    @media (min-width: 769px) {
+      .project-grid .project-img { container-type: inline-size; }
+      .project-grid .card-awards { top: 1.5cqi; left: 1.5cqi; gap: 1cqi; }
+      .project-grid .card-awards img { height: clamp(12px, 3cqi, 26px); }
+      .project-grid .project-card[href="nova.html"] .card-awards img { height: clamp(10px, 2.4cqi, 20px); }
+    }
     /* HOVER. The thumbnail keeps its original zoom from style.css; what is
        added back here is the oklch hue glow the row build silently lost (its
        rule is scoped to .project-grid, which stopped matching once the JS

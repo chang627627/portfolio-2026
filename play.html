@@ -40,27 +40,35 @@
     .play-grid .play-card .play-video,
     .play-grid .play-card .carousel-track { border-radius: 0 !important; outline: none; }
     .play-grid .play-card .play-info { margin-top: 0; padding: 16px 20px 18px; }
-    /* THE HOVER ANSWERS LIKE HOME'S (2026-09-29, per user "play section's work's hover effect are too weak. how to
-       improve it like the home page ones"). The stylesheet's hover was a 0.14 frame and a white glow at 0.04, too faint
-       to read. Now the frame brightens to home's 0.18 and each piece glows outside it in its own colour at home's
-       strength (40px at 0.30, 96px at 0.14), through home's own oklch recipe: the hue of --glow, lightness 0.78, chroma
-       capped at 0.18, so a colourless piece glows neutral, as NOVA does on home. --glow, inline on each card, is the
-       dominant hue of its image (the strongest 10-degree band of saturated pixels, measured once from the files; the
-       mean colour when under 6% of the pixels are saturated); a new card needs one. Home's third cue, the still's
-       zoom inside its plate, is left out: a piece here has no plate to hold a zoom, so it would push over the title,
-       and this page has no enlarging. */
+    /* THE HOVER FRAME IS HOME'S (2026-09-29, per user "play section's work's hover effect are too weak. how to
+       improve it like the home page ones", then "play section's hover focus on frame color change rather than glow.
+       You can have both but do not make the glow too strong", then "frame one color, white", then on white "no white,
+       similar to white. just one color", then on #a0a0a0 "frame color is too strong. should be like home page's frame
+       color"). On hover the 1px frame brightens exactly as a home card's does, from 0.08 to rgba(255, 255, 255, 0.18),
+       the same on every card: a frame in each piece's own colour, the focus ring's near-white rgba(240, 240, 240, 0.9)
+       and --text-soft (#a0a0a0) came first, and all three read too strong. Behind it, a soft glow in the piece's own colour (24px at
+       0.16, 60px at 0.06; the first version, home's 40px at 0.30 and 96px at 0.14, led with the glow), through home's
+       oklch recipe: the hue of --glow, lightness 0.78, chroma capped at 0.18, so a colourless piece glows neutral.
+       --glow, inline on each card, is the dominant hue of its image (the strongest 10-degree band of saturated
+       pixels, measured once from the files; the mean colour when under 6% of the pixels are saturated); a new card
+       needs one. No zoom: a piece here has no plate to hold one, and this page has no enlarging. */
     @media (hover: hover) {
       .play-grid .play-card:hover { border-color: rgba(255, 255, 255, 0.18); }
       @supports (color: oklch(from white l c h)) {
         .play-grid .play-card:hover {
           box-shadow:
-            0 0 40px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.30),
-            0 0 96px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.14);
+            0 0 24px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.16),
+            0 0 60px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.06);
         }
       }
     }
-    /* a control near the frame keeps its focus ring inside itself, where the frame's clip cannot cut it off */
-    .play-grid .play-card .yt-facade:focus-visible { outline-offset: -3px; }
+    /* THE CAROUSEL ARROWS SIT IN FROM THE FRAME (2026-09-29, from the review of the card change; per user "do all
+       three"). They were at left: 0 and right: 0, which lined up with a boxless image's edge; with the frame back, each
+       arrow's own border lay against the frame's hairline, a doubled line 36px tall (Whisper XR and TickerPulse, two
+       columns; three columns hide them). 12px in, so their own focus ring (3px out) fits inside the frame too; the dots'
+       56px of side padding still clears them (12 + 36). */
+    .play-grid .play-card .carousel-prev { left: 12px; }
+    .play-grid .play-card .carousel-next { right: 12px; }
     /* THREE COLUMNS (2026-09-28, per user "make the play section to three column layout and
        occupy all the space horizontally on the screen"). From 1200px the script after the grid
        deals the cards into three columns and adds .is-three, and the grid drops its 1344px cap to
@@ -233,9 +241,11 @@
     /* KEYBOARD STATES. The resting hairline on videos (0,1,1) was beating the global focus ring,
        and the facade buttons' ring was clipped by .play-video's overflow, so both drew nothing.
        The facade ring is inset for that reason. Zoomable images are focusable buttons now. */
-    .play-card video:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; }
+    /* inset, not 3px out (2026-09-29, from the review of the card change): the framed card clips at its edge, and a
+       film or image here runs flush to the frame, so a ring drawn outside it lost three of its sides */
+    .play-card video:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -3px; }
     .yt-facade:focus-visible, .build-go:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; }
-    .play-grid .play-card img[tabindex]:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; }
+    .play-grid .play-card img[tabindex]:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -3px; }
 
     /* THE BUILDS. Robot Operator Console and Fish Ocean are code, not films, so on desktop they
        move at rest: a silent loop that loads only while the card is on screen and is dropped when
