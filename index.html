@@ -2234,8 +2234,11 @@
         var named = [];
         acc.replace(NAMES, function (m) { var id = NAME_ID[m]; if (id && byId[id] && named.indexOf(id) < 0) named.push(id); return m; });
         showOnly(named.length ? named : Object.keys(byId));
+        // ONE LINK PER PAGE (2026-09-29, per user "some AI answer feels very repetitive for the links. you can see there
+        // are two about page links"): a page Claude names is already a link in its words, so the row under the answer
+        // offers only the pages the question asked about that the answer did not name
         var said = PAGE_ORDER.filter(function (k) { PAGES[k].says.lastIndex = 0; return PAGES[k].href && PAGES[k].says.test(acc); });
-        setGoTo(said.concat(pagesAsked(raw)), 150);
+        setGoTo(pagesAsked(raw).filter(function (k) { return said.indexOf(k) < 0; }), 150);
         by.classList.add('on');
       });
       setWords([], false);
