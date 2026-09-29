@@ -203,6 +203,15 @@
        motion it outranked the grid, which wrapped 3/3/2 with a third of the last row empty. Page-scoped, so the
        stylesheet and the other pages are untouched. */
     @media (prefers-reduced-motion: reduce) { .deck-track { overflow-x: visible; padding: 0; gap: 4px; } }
+    /* THE PHOTOGRAPHS KEEP THEIR OWN SHAPES (2026-09-28, per user "do" on the authenticity pass). The stylesheet's
+       1:1 cards cut five vertical phone photos into squares (the Transamerica tip and the Sentinel Building lost their
+       tops). Still two static rows of four at every width: each card carries its photo's ratio inline (--ar), and
+       takes that share of the row, so all four in a row are one height and the row fills the measure exactly. --row
+       is the sum of the row's ratios (1.4035 + 3 x 0.75; 2 x 0.75 + 2 x 1.3333): change it if a photo or the order
+       changes. The 12.5px is the three 4px gaps plus half a pixel, so subpixel rounding can never wrap a row; the
+       grow factor, proportional to the ratio, gives that half pixel back without changing any shape. */
+    .deck-card { --row: 3.6535; flex: var(--ar, 1) 0 calc((100% - 12.5px) * var(--ar, 1) / var(--row)); aspect-ratio: var(--ar, 1); }
+    .deck-card:nth-child(n + 5) { --row: 4.1667; }
     /* THE WORDS ARE CENTRED, NOT THE FULL STOP (2026-09-24). A centred line that ends in punctuation sits a
        little left of centre by the width of that mark; the four lines that end in a comma or a full stop carry
        0.17em on the left, the same hanging method as the testimonials' opening quote marks. Desktop
@@ -1119,14 +1128,14 @@
   <section class="deck" aria-label="Personal photo deck">
     <div class="deck-track" data-deck>
       <!-- Set 1 -->
-      <div class="deck-card"><img src="images/profile.jpg" alt="Chang Mou" loading="eager"></div>
-      <div class="deck-card"><img src="images/jenga.jpeg" alt="Playing Jenga" loading="eager"></div>
-      <div class="deck-card"><img src="images/pier.jpeg" alt="SF Pier at dusk" loading="eager"></div>
-      <div class="deck-card"><img src="images/building.jpeg" alt="Cafe Zoetrope" loading="eager"></div>
-      <div class="deck-card"><img src="images/talk1.jpeg" alt="At a design talk" loading="eager"></div>
-      <div class="deck-card"><img src="images/talk2.jpeg" alt="Friends in SF" loading="eager"></div>
-      <div class="deck-card"><img src="images/food.jpeg" alt="Home cooking" loading="eager"></div>
-      <div class="deck-card"><img src="images/extra.jpeg" alt="Life in SF" loading="eager"></div>
+      <div class="deck-card" style="--ar: 1.4035"><img src="images/profile.jpg" width="800" height="570" alt="Chang Mou" loading="eager"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/jenga.jpeg" width="600" height="800" alt="Playing Jenga" loading="eager"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/pier.jpeg" width="600" height="800" alt="SF Pier at dusk" loading="eager"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/building.jpeg" width="600" height="800" alt="Cafe Zoetrope" loading="eager"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/talk1.jpeg" width="600" height="800" alt="At a design talk" loading="eager"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/talk2.jpeg" width="800" height="600" alt="Friends in SF" loading="eager"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/food.jpeg" width="600" height="800" alt="Home cooking" loading="eager"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/extra.jpeg" width="800" height="600" alt="Life in SF" loading="eager"></div>
       <!-- Set 2 (middle - seeded at start) -->
       <div class="deck-card"><img src="images/profile.jpg" alt="" aria-hidden="true"></div>
       <div class="deck-card"><img src="images/jenga.jpeg" alt="" aria-hidden="true"></div>

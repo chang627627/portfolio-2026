@@ -441,6 +441,11 @@
        cancels its 8px flex gap lets "Email copied" and the check centre in the held pill width; opacity needs
        !important to beat the running pulse animation. */
     .hero .status-tag.is-copied .status-dot { width: 0; margin-right: -8px; opacity: 0 !important; }
+    /* THE DOT HOLDS STILL UNDER REDUCED MOTION (2026-09-28). style.css runs its 3s pulse with no motion gate, against
+       the site rule that all motion is gated. The dot exists only on this page, so the gate lives here rather than in
+       the shared stylesheet (no ?v= bump across the other pages). The ignition flare is already gated by the engine.
+       At rest the dot sits at full opacity, the pulse's peak. */
+    @media (prefers-reduced-motion: reduce) { .hero .status-dot { animation: none; } }
     /* A WRAPPED CHIP ROW BREAKS 2+2, NEVER 3+1 (2026-09-24, per user "do"). Below 1440 the caption column narrows
        (382px at 1366, 280-296 at 1024-1280) and four-pill rows wrapped with one pill alone on the second line. The
        pills are untouched; the script only adds this class to a row that has actually wrapped into 3+1. */

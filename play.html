@@ -657,7 +657,7 @@
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:18">
+      <div class="play-card" style="--mo:18" data-length="0:23">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
           <p>Sitting at the console of a working robot. A humanoid runs a warehouse pick-and-place loop while the control interface reads its vitals: battery, joint load, gait stability, alarms that wait to be acknowledged. Watch from above, through its eyes, or in VR. Made with Unity MCP and Claude Code.</p>
@@ -721,7 +721,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1243" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:20">
+      <div class="play-card" style="--mo:20" data-length="1:02">
         <div class="play-info">
           <div class="play-info-top"><h3>UN/FOLD</h3><span class="play-year">2020</span></div>
           <p>A team 3D adventure built in Unity. As game designer, I shaped levels and mechanics where players shapeshift between humans, wolves, and seagulls to solve puzzles.</p>
@@ -807,7 +807,7 @@
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/copatible.jpg" alt="CoPatible" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:17">
+      <div class="play-card" style="--mo:17" data-length="0:35">
         <div class="play-info">
           <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
           <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
@@ -818,7 +818,7 @@
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
-      <div class="play-card" style="--mo:17">
+      <div class="play-card" style="--mo:17" data-length="0:44">
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
@@ -846,7 +846,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1285" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:19">
+      <div class="play-card" style="--mo:19" data-length="1:35">
         <div class="play-info">
           <div class="play-info-top"><h3>About the Teddy Bear</h3><span class="play-year">2020</span></div>
           <p>A debut 3D animated short built in Maya with a student team. As animator and scene designer, I shaped the scenes and motion for a story about responsibility and impulsive commitments, following a teddy bear left behind when a young couple parts ways.</p>
@@ -856,7 +856,7 @@
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/zdQ4LYluWnc?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: About the Teddy Bear"><img class="yt-facade__poster" src="images/teddybear-poster.jpg" alt="" width="640" height="480" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
-<div class="play-card" style="--mo:18">
+<div class="play-card" style="--mo:18" data-length="1:01">
         <div class="play-info">
           <div class="play-info-top"><h3>I Believe in a Thing Called Love</h3><span class="play-year">2020</span></div>
           <p>As an animator, I collaborated with an illustrator to create this kinetic typography project in After Effects, inspired by "I Believe in a Thing Called Love" by The Darkness, blending animation and illustration to capture its bold and expressive themes.</p>
@@ -1305,6 +1305,11 @@
         // the grid (two columns, phones) keeps the short one
         const more = info.querySelector('.play-more');
         if (more) { info.querySelectorAll(':scope > p').forEach((p) => p.remove()); more.hidden = false; }
+        // a film's real length follows its year, the way a film credit reads ("2025 · 0:35"): measured once
+        // (2026-09-28) from the local files and the YouTube and Vimeo hosts, whole seconds rounded down as
+        // the players show them, and kept on the card as data-length; the grid stays title and year
+        const len = card.dataset.length, year = info.querySelector('.play-year');
+        if (len && year) year.textContent += ' · ' + len;
         panel.append(info);
         panel.scrollTop = 0;
       }
