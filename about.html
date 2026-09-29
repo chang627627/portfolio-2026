@@ -450,6 +450,42 @@
       100% { opacity: 1; translate: 0 0; }
     }
 
+    /* 3. THE PHOTOGRAPHS COME IN (2026-09-28, per user "add some motion when photos come in"). Each photo rises
+       into place on its own view() timeline, with the home plates' arrival (card-arrive: 56px below, faded,
+       at 0.96) rather than the lists' lighter unfold, because these are pictures, not rows of facts. A row
+       enters the screen at once, so each photo further along its row starts 8% of the entry later (--i, reading
+       order within the row): the row comes in as a left-to-right wave, and the last photo lands as the row
+       becomes fully visible. Opacity is full by 35% of each photo's range, so a reader who stops scrolling
+       mid-arrival never looks at a faint photograph for long; the rise and scale carry the rest. Ease-out cubic,
+       not the lists' quint: on a scroll-driven animation the scroll is the clock, and the quint spent 98% of the
+       fade in the first 60px, so the arrival read as a jump. Scroll-driven, so it plays both ways and never
+       replays on its own; desktop and motion-safe only, like the lists; phones and reduced motion keep the
+       still grid. Individual translate and scale, so the grid's `transform: none` is untouched. KEPT AFTER A
+       ROUND TRIP THE SAME DAY: a gather from every direction ("go back to previous effect"), a stronger wave
+       (120px from 0.92, about 70px of scroll apart, a 4px settle: "no that obvious, be more subtle") and one
+       between the two (84px from 0.94, about 45px apart, a 3px settle) were each built and reverted, and he
+       chose this one: "back to the original very subtle wave version". */
+    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+      @supports (animation-timeline: view()) {
+        .deck-card {
+          animation-name: photo-arrive;
+          animation-timeline: view();
+          animation-range: entry calc(var(--i, 0) * 8%) entry calc(76% + var(--i, 0) * 8%);
+          animation-duration: auto;
+          animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+          animation-fill-mode: both;
+        }
+        .deck-card:nth-child(4n + 2) { --i: 1; }
+        .deck-card:nth-child(4n + 3) { --i: 2; }
+        .deck-card:nth-child(4n + 4) { --i: 3; }
+      }
+    }
+    @keyframes photo-arrive {
+      0% { opacity: 0; translate: 0 56px; scale: 0.96; }
+      35% { opacity: 1; }
+      100% { opacity: 1; translate: 0 0; scale: 1; }
+    }
+
     /* ---- Text pass, 2026-09-22 (per user "all five"). ----------------------------
        THE BIO'S PARAGRAPHS READ AS FOUR: they were 8px apart, less than a line's own
        leading, so the four ran together as one block. The type stays 16px: a 20px bio
