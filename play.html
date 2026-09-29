@@ -625,7 +625,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1024" height="1536" src="images/the-rib.webp" alt="The Rib, a painting of a pale man under a gold halo whose opened ribs stream out as ribbons and petals into a woman drifting away over deep blue" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:4;display:none">
+      <div class="play-card" style="--mo:4">
         <div class="play-info">
           <div class="play-info-top"><h3>Golden Flux</h3><span class="play-year">2026</span></div>
           <p>Warmth caught mid-motion. Molten gold, orbiting trails, and grainy light flow through the dark like heat you can almost feel. Made with GPT Image 2.</p>
@@ -678,7 +678,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
       </div>
-      <div class="play-card" style="--mo:10; display: none;">
+      <div class="play-card" style="--mo:10;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
           <p>A specialty coffee e-commerce redesign leaning on editorial typography and rich product imagery. Bold brand color meets calm layouts to carry browsing, discovery, and subscription flows.</p>
@@ -766,7 +766,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
       </div>
-      <div class="play-card play-card--desktop-only" style="--mo:7;display:none">
+      <div class="play-card play-card--desktop-only" style="--mo:7">
         <div class="play-info">
           <div class="play-info-top"><h3>Escape Velocity</h3><span class="play-year">2026</span></div>
           <p>Motion, light, and leaving gravity behind. The moment everything opens up. Made with GPT Image 2.</p>
@@ -799,6 +799,13 @@
           </div>
           <div class="carousel-dots"></div>
         </div>
+      </div>
+      <div class="play-card" style="--mo:13;display:none">
+        <div class="play-info">
+          <div class="play-info-top"><h3>CoPatible</h3><span class="play-year">2026</span></div>
+          <p>Solo concept prototyping an AI powered social platform for people in active life transitions. Co, an AI companion, reads how you're feeling and organizes real experiences with others in the same moment.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/copatible.jpg" alt="CoPatible" class="play-img-photo">
       </div>
       <div class="play-card" style="--mo:17">
         <div class="play-info">
@@ -864,18 +871,19 @@
   <script>
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
-       Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls:
-       the columns end within 1.5% of each other, each on a film, with The Rib still left of
-       Vitruvian and Perfect Copy under it, and the two slideshows in different columns. A new
+       Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
+       24 cards (Golden Flux and Escape Velocity back, 2026-09-28): the columns end within 0.3% of
+       each other, each on a film, with The Rib still left of Vitruvian, and the two slideshows in
+       different columns. A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'The Rib', 'Luma', 'Whisper XR', 'Fish Ocean', 'Market Street Booklet Kit', 'UN/FOLD'],
-        ['Octocrab', 'Vitruvian', 'Perfect Copy', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'TickerPulse', 'Missing Pavilion', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Midjourney', 'No Signal Summer', 'New Craft Society', 'Mirror', 'Running Dog', 'About the Teddy Bear'],
+        ['Scope', 'Perfect Copy', 'Golden Flux', 'Luma', 'Whisper XR', 'Mirror', 'Market Street Booklet Kit', 'I Believe in a Thing Called Love'],
+        ['Octocrab', 'The Rib', 'Escape Velocity', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'TickerPulse', 'Running Dog', 'About the Teddy Bear'],
+        ['The Last Human Gestures', 'Vitruvian', 'Midjourney', 'No Signal Summer', 'New Craft Society', 'Fish Ocean', 'Missing Pavilion', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
@@ -1678,12 +1686,12 @@
     }
 
     // AUTOPLAY (2026-09-28, per user "make whisper XR and TickerPulse autoplay on play page. And
-    // user can switch page in the detail page"): the slides move on by themselves, one every 3.5s,
+    // user can switch page in the detail page"): the slides move on by themselves, one every 2.5s,
     // only while the card is on screen, the tab is visible and no detail page is open; a hover or
     // keyboard focus on the card holds the slide you are looking at (so a click opens that one).
     // The next slide is decoded before it shows (hidden slides are lazy and never loaded), and a
     // manual step restarts the wait. Reduced motion: no autoplay.
-    const DWELL = 3500;
+    const DWELL = 2500; // was 3500 (per user "i want a little quicker", 2026-09-28)
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
     const lightbox = document.getElementById('lightbox');
     const card = carousel.closest('.play-card') || carousel;
