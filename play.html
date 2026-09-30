@@ -150,6 +150,12 @@
     .lightbox.is-piece { background: var(--bg); grid-template-columns: auto 360px; column-gap: 56px; align-content: center; justify-content: center; align-items: start; padding: 64px 48px; }
     .lightbox.open.is-piece { display: grid; }
     .lightbox.is-piece .lightbox-panel { display: block; max-height: calc(100vh - 128px); overflow-y: auto; cursor: default; }
+    /* the view takes focus when it opens (see show()), and draws no ring for it */
+    .lightbox:focus, .lightbox:focus-visible { outline: none; }
+    /* room for a focus ring (2px, 3px out) inside the panel, which scrolls and so clips at its edge: the page arrows sit
+       at its left edge and lost their ring's left side (per user, 2026-09-29, a screenshot of the Midjourney view); the
+       negative margin keeps every word exactly where it was */
+    .lightbox.is-piece .lightbox-panel { padding: 6px; margin: -6px; }
     .lightbox.is-piece #lightboxImg { max-width: calc(100vw - 512px); max-height: calc(100vh - 128px); }
     .lightbox.is-piece .lightbox-stage { width: min(calc(100vw - 512px), calc((100vh - 128px) * var(--ratio, 1.6))); }
     .lightbox-panel .play-info-top { display: flex; align-items: baseline; justify-content: space-between; gap: 24px; margin-bottom: 12px; }
@@ -1395,7 +1401,13 @@
       lightbox.setAttribute('aria-hidden', 'false');
       document.documentElement.style.overflow = 'hidden'; // lock the viewport: html carries overflow-x: hidden, so a body lock never reached it (fixed 2026-09-15)
       [...document.body.children].forEach(el => { if (el !== lightbox && el.tagName !== 'SCRIPT') el.inert = true; });
-      lightboxClose.focus({ preventScroll: true });
+      // FOCUS GOES TO THE VIEW, NOT THE CLOSE BUTTON (2026-09-29, per user "if the work have one more page there is a
+      // white frame on the 'x' sign. why?", then "fix it"): with focus on the close button, stepping pages with the arrow
+      // keys counted as keyboard use, so the browser drew the focus ring on the close button though focus never moved.
+      // The dialog itself takes focus, invisibly; arrows still step, Escape still closes, and Tab reaches the close
+      // button first, ring and all, because then it really is where focus goes.
+      lightbox.tabIndex = -1;
+      lightbox.focus({ preventScroll: true });
     }
 
     // THE PIECE GROWS OUT OF ITS CARD AND BACK (2026-09-24, per user "do"). A same-document view

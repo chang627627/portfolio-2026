@@ -180,6 +180,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 - In the decks the stage is scaled, so measure with `offsetWidth` and `offsetHeight`. A `shot--crop` object-position is tuned to one capture and breaks when that capture is retaken.
 - After renaming a section, compare the label with its own h2, and rename both the `side-nav-link` and the `section-label`.
 - A queued recommendation can be invalidated by a later edit in the same session; re-check its premise before applying it.
+- In a view stepped with arrow keys, never park focus on a visible control: the first arrow press counts as keyboard use and lights that control's focus ring. Focus the dialog itself (`tabIndex = -1`, no outline), as Play's detail view does. A scrolling panel clips focus rings at its edge; give it inner room.
 - A letterboxed video (`object-fit: contain` in a frame of another shape) takes its border-radius on the frame, not the picture; round the picture with a `clip-path: inset(... round 8px)` computed from `videoWidth`/`videoHeight` (Play's `#lightboxClip`).
 - A text-decoration on a heading never reaches a button inside it; draw hover lines on the button. Moving a card with an iframe by append reloads the iframe; use `moveBefore` where it exists. A view's layout that must survive its close fade belongs on a class that outlives `.open`.
 
