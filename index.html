@@ -1757,30 +1757,66 @@
   const PLATE_AMP = 12;   // % the light field leans at full cursor deflection
   const SHADOW_AMP = 10;  // px the contact shadow casts against the light
 
-  document.querySelectorAll('.project-card').forEach(card => {
-    const lit = plateOn && card.querySelector('.project-img--lit');
+  // The per-card --x/--y writes are gone with this: their only reader, the stylesheet's ::before haze, is
+  // display: none on every grid card (the "cards again" block above), so they painted nothing.
 
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--x', x + '%');
-      card.style.setProperty('--y', y + '%');
-      if (!lit) return;
-      const nx = (x - 50) / 50, ny = (y - 50) / 50;
-      card.style.setProperty('--plate-dx', (nx * PLATE_AMP).toFixed(2) + '%');
-      card.style.setProperty('--plate-dy', (ny * PLATE_AMP).toFixed(2) + '%');
-      card.style.setProperty('--plate-sx', (-nx * SHADOW_AMP).toFixed(2) + 'px');
-    });
-
-    if (lit) {
-      card.addEventListener('mouseleave', () => {
-        card.style.setProperty('--plate-dx', '0%');
-        card.style.setProperty('--plate-dy', '0%');
-        card.style.setProperty('--plate-sx', '0px');
+  // ONE LIGHT FOR THE WHOLE GRID (2026-09-30, per user "just do 1"). The pointer is one light source over the
+  // work, and every lit plate leans toward it at once, the nearest most: under the pointer a plate leans exactly
+  // as it did when each card followed only its own hover (the pointer's place inside the card, up to PLATE_AMP);
+  // beyond the card's edge the lean keeps that direction and fades with the distance from the edge, gone at
+  // REACH (1.4 card widths, so a neighbour across the 24px gap leans about 0.6, the row below about 0.7, two rows
+  // away about 0.1). The contact shadow casts against the light on every plate by the same measure. One
+  // rAF-throttled pass on mousemove, on scroll and whenever the work section or a card changes size (the cards
+  // move under a still pointer when the page scrolls, when Ask the work folds or unfolds a card or its answer
+  // grows above the grid, and on resize), only while the grid is on screen; the pointer leaving the window or
+  // the grid leaving the screen rests every plate. The stylesheet's 400ms --plate-dx/dy transition smooths each
+  // step, as before.
+  if (plateOn) {
+    const lit = [].slice.call(document.querySelectorAll('.project-card')).filter(c => c.querySelector('.project-img--lit'));
+    if (lit.length) {
+      let px = null, py = null, raf = 0, onScreen = false;
+      const rest = () => lit.forEach(c => {
+        c.style.setProperty('--plate-dx', '0%'); c.style.setProperty('--plate-dy', '0%'); c.style.setProperty('--plate-sx', '0px');
       });
+      const paint = () => {
+        raf = 0;
+        if (px === null) { rest(); return; }
+        const rects = lit.map(c => c.getBoundingClientRect());      // all reads before any write: one layout per frame
+        lit.forEach((c, i) => {
+          const r = rects[i];
+          if (!r.width || !r.height) {                              // folded away by Ask the work: rest, so it unfolds at rest
+            c.style.setProperty('--plate-dx', '0%'); c.style.setProperty('--plate-dy', '0%'); c.style.setProperty('--plate-sx', '0px');
+            return;
+          }
+          const hw = r.width / 2, hh = r.height / 2;
+          const vx = (px - (r.left + hw)) / hw, vy = (py - (r.top + hh)) / hh;   // the pointer in card halves
+          const ex = Math.max(0, Math.abs(px - (r.left + hw)) - hw), ey = Math.max(0, Math.abs(py - (r.top + hh)) - hh);
+          const fall = Math.max(0, 1 - Math.hypot(ex, ey) / (r.width * 1.4));
+          const nx = Math.max(-1, Math.min(1, vx)) * fall, ny = Math.max(-1, Math.min(1, vy)) * fall;
+          c.style.setProperty('--plate-dx', (nx * PLATE_AMP).toFixed(2) + '%');
+          c.style.setProperty('--plate-dy', (ny * PLATE_AMP).toFixed(2) + '%');
+          c.style.setProperty('--plate-sx', (-nx * SHADOW_AMP).toFixed(2) + 'px');
+        });
+      };
+      const queue = () => { if (!raf && onScreen) raf = requestAnimationFrame(paint); };
+      window.addEventListener('mousemove', (e) => { px = e.clientX; py = e.clientY; queue(); }, { passive: true });
+      window.addEventListener('scroll', queue, { passive: true });
+      window.addEventListener('resize', queue, { passive: true });
+      document.addEventListener('mouseleave', () => { px = py = null; queue(); });
+      const grid = lit[0].parentElement;
+      if ('ResizeObserver' in window) {
+        const ro = new ResizeObserver(queue);
+        ro.observe(grid.closest('.work') || grid);   // the answer growing above the grid moves it
+        lit.forEach(c => ro.observe(c));             // a fold or unfold
+      }
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          onScreen = entries[entries.length - 1].isIntersecting;
+          if (!onScreen) { cancelAnimationFrame(raf); raf = 0; rest(); } else queue();
+        }).observe(grid);
+      } else onScreen = true;
     }
-  });
+  }
 
 
   // Letter light on "Say hello" — ambient sweep + cursor spotlight.
