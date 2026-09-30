@@ -3253,6 +3253,9 @@ footer {
     }
   }
 }
+/* A case study prerendered from a home card runs before anyone sees it; its cover waits, unlit, until it is shown
+   (html.is-prerendering, set by each case study's head script until prerenderingchange). */
+.is-prerendering .case-cover { animation-play-state: paused; }
 
 /* Comparison Table */
 .compare-table {
