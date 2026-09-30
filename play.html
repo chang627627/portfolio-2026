@@ -131,7 +131,12 @@
     .play-grid .play-card img { cursor: pointer; }
     .lightbox,
     .lightbox img { cursor: default; }
-    #lightboxClip { display: none; width: min(var(--clip-w, 1200px), 92vw, calc(92vh * var(--clip-r, 1200 / 672))); aspect-ratio: var(--clip-r, 1200 / 672); object-fit: contain; cursor: default; }
+    /* the clip's corners are round like the stills' 8px (per user "three midjourney video's detail page the corner should
+       be round not right", 2026-09-29). The clip keeps the stills' frame so the panel never moves, and a square clip sits
+       letterboxed inside it (object-fit: contain), so a border-radius here would round empty space: the script rounds
+       the picture itself with a clip-path once the clip's own size is known. The radius below covers a clip whose
+       shape matches the frame, and the moment before its size loads. */
+    #lightboxClip { display: none; width: min(var(--clip-w, 1200px), 92vw, calc(92vh * var(--clip-r, 1200 / 672))); aspect-ratio: var(--clip-r, 1200 / 672); object-fit: contain; cursor: default; border-radius: 8px; }
     .lightbox.is-piece #lightboxClip { width: min(var(--clip-w, 1200px), calc(100vw - 512px), calc((100vh - 128px) * var(--clip-r, 1200 / 672))); }
     .lightbox.is-clip #lightboxClip { display: block; }
     .lightbox.is-clip #lightboxImg { display: none; }
@@ -1279,6 +1284,15 @@
     clip.muted = true; clip.loop = true; clip.playsInline = true;
     lightbox.insertBefore(clip, stage);
     clip.addEventListener('click', (e) => e.stopPropagation()); // the piece view is a page: the work keeps it open
+    // round the picture, not its frame: the clip is letterboxed in the stills' frame (object-fit: contain), so once its
+    // own size is known the visible picture is cut to itself with 8px corners (per user "three midjourney video's detail
+    // page the corner should be round not right"); the frame keeps a fixed shape, so this holds at any window size
+    clip.addEventListener('loadedmetadata', () => {
+      const rb = clip.clientWidth / clip.clientHeight, rc = clip.videoWidth / clip.videoHeight;
+      if (!(rb > 0 && rc > 0)) return;
+      const x = rc < rb ? (1 - rc / rb) / 2 * 100 : 0, y = rc > rb ? (1 - rb / rc) / 2 * 100 : 0;
+      clip.style.clipPath = 'inset(' + y.toFixed(3) + '% ' + x.toFixed(3) + '% round 8px)';
+    });
     function showClip(item) {
       const still = gallery && gallery.items.find((i) => i.tagName === 'IMG' && i.naturalWidth);
       if (still) {
@@ -1286,6 +1300,7 @@
         clip.style.setProperty('--clip-r', still.naturalWidth + ' / ' + still.naturalHeight);
       }
       clip.setAttribute('aria-label', titleOf(item.closest('.play-card')) + ', clip');
+      clip.style.clipPath = ''; // the next clip's own shape sets it again once it loads
       clip.src = srcOf(item);
       lightbox.classList.add('is-clip');
       clip.play().catch(() => {});
