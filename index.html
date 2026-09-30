@@ -453,6 +453,11 @@
        this state"): while the pill says "Email copied" it holds its resting border and fill, the check is not nudged
        (the hover's 2px up-and-right nudge is what lifted it off centre; at rest it sits within 0.3px of the text's
        middle), and no focus ring shows. */
+    /* THE GLASS PILL KEEPS ITS OWN LAYER (2026-09-30, same report as THE FIRST LEAN SETTLES). The pill is blurred glass
+       (backdrop-filter) that fades and rises in, ending at 2.15s; when such an animation ends a browser may re-plan the
+       pill's layer and redraw what sits behind it, the gradient and the stardust, in one frame. will-change keeps the
+       layer as it was through the entrance, so nothing is re-planned. */
+    .hero .status-tag { will-change: transform, opacity; }
     .hero .status-tag.is-copied { border-color: rgba(255, 255, 255, 0.22); background: rgba(10, 10, 12, 0.45); outline: none; }
     .hero .status-tag.is-copied .arrow { transform: none; transition: none; }
     /* NO GREEN DOT IN THE COPIED STATE (2026-09-22, per user "why emailed copied in the hero section need attached with
@@ -772,9 +777,20 @@
       heroOrbs.style.transition = `translate 0.55s ${EASE}`;
 
       let cx = 0, cy = 0, raf = null, dragging = false;
+      // THE FIRST LEAN SETTLES (2026-09-30, per user "sometimes the homepage have some hard refresh which feels jump on the
+      // position of the stardust. Especially when I ... click the logo 'chang mou' and go back to the home page"). After a
+      // click on the logo the pointer rests in the hero's top-left corner, so the first twitch leaned the whole field the
+      // furthest it goes (-90px, -13px) in 0.55s while the stardust, which never follows the pointer, stayed put: the dust
+      // seemed to jump. The first lean after load eases in over 1.4s; every lean after it keeps the 0.55s answer.
+      let firstLean = true;
 
       const apply = () => {
         raf = null;
+        if (firstLean && !dragging) {
+          firstLean = false;
+          heroOrbs.style.transition = `translate 1.4s ${EASE}`;
+          setTimeout(() => { if (!dragging) heroOrbs.style.transition = `translate 0.55s ${EASE}`; }, 1400);
+        }
         const rect = hero.getBoundingClientRect();
         // clamped so a drag tracked outside the hero (window-level move) can
         // lean the field slightly past the edge but never fling it
