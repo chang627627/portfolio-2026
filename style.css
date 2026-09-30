@@ -1501,12 +1501,14 @@ nav:not(.side-nav)::after {
 
    Applies to the four two-radial cards only. NOVA + Mercor keep flat #FFFFFF
    (their PNGs carry a baked shadow that halos against anything darker) and
-   StoryBloom + New Craft Society are full-bleed covers with no visible plate. */
+   StoryBloom + New Craft Society are full-bleed covers with no visible plate.
+   The same recipe lights three case-study covers (.case-cover--lit, below). */
 @property --plate-dx { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
 @property --plate-dy { syntax: '<percentage>'; initial-value: 0%; inherits: true; }
 @property --plate-sx { syntax: '<length>'; initial-value: 0px; inherits: true; }
 
-.project-img--lit {
+.project-img--lit,
+.case-cover--lit {
   background:
     radial-gradient(ellipse 70% 70% at calc(30% + var(--plate-dx)) calc(30% + var(--plate-dy)),
                     var(--plate-light) 0%, transparent 60%),
@@ -1516,7 +1518,8 @@ nav:not(.side-nav)::after {
 }
 
 /* Source-order tie-break over `.project-img > img` (same specificity). */
-.project-img--lit > img {
+.project-img--lit > img,
+.case-cover--lit > img {
   filter: drop-shadow(var(--plate-sx) 16px 28px rgba(0, 0, 0, 0.16));
 }
 
@@ -3190,6 +3193,65 @@ footer {
 }
 @media (max-width: 768px) {
   .case-cover { width: calc(100% - 48px); }
+}
+
+/* THE LIT COVER (2026-09-30, per user "do 1 and 2" of a futuristic pass). Homewise, Countersign and Coffee Chat
+   open on the same lit object their home card is. Each cover was the card's own still baked onto a plate, so it is
+   now built the card's way: the lit-plate recipe above in the card's colours (inline --plate-*), the card's still
+   laid on it at the old cover's geometry (inline --cover-ar, --still-w, --still-top, and Countersign's rounded
+   window as --still-radius), and the page's script leaning the light toward the cursor at the home card's
+   amplitudes. The shadow's swing rides the still's filter transition, as on home. PollenNav's cover is a
+   full-bleed collage and NOVA's and StoryBloom's are pictures, so, like NOVA and StoryBloom on home, they have no
+   plate to light. */
+.case-cover--lit {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: var(--cover-ar);
+  transition: --plate-dx var(--dur-slow) var(--ease-out),
+              --plate-dy var(--dur-slow) var(--ease-out);
+}
+.case-cover--lit > img {
+  position: absolute;
+  inset-inline: 0;
+  top: var(--still-top);
+  width: var(--still-w);
+  height: auto;
+  margin-inline: auto; /* centred without a transform, so the still is never resampled onto a half pixel */
+  border-radius: var(--still-radius, 0);
+  transition: filter 0.5s ease;
+}
+
+/* THE COVER ARRIVES IN ITS OWN LIGHT (same pass). The glow a home card shows on hover (24px at 0.16 and 60px at
+   0.06, the plate's hue through the same oklch recipe, from the cover's inline --plate-light) sits around every
+   cover when the page opens, so the card you hovered lands still lit. It rises over 1.2s as the page crossfades
+   in, then dims to nothing as the cover scrolls away (a named view timeline over the cover's exit; the two
+   animations own different properties, --cover-in and --cover-out). Reduced motion keeps it steady; a browser
+   without scroll timelines keeps it lit. */
+@property --cover-in { syntax: '<number>'; initial-value: 1; inherits: false; }
+@property --cover-out { syntax: '<number>'; initial-value: 1; inherits: false; }
+@supports (color: oklch(from white l c h)) {
+  .case-cover {
+    box-shadow:
+      0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / calc(0.16 * var(--cover-in) * var(--cover-out))),
+      0 0 60px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / calc(0.06 * var(--cover-in) * var(--cover-out)));
+  }
+}
+@keyframes cover-in { from { --cover-in: 0; } to { --cover-in: 1; } }
+@keyframes cover-out { from { --cover-out: 1; } to { --cover-out: 0; } }
+@media (prefers-reduced-motion: no-preference) {
+  .case-cover { animation: cover-in 1.2s var(--ease-out) 0.2s both; }
+  @supports (animation-timeline: view()) {
+    .case-cover {
+      view-timeline-name: --case-cover;
+      animation-name: cover-in, cover-out;
+      animation-duration: 1.2s, auto;
+      animation-timing-function: var(--ease-out), linear;
+      animation-delay: 0.2s, 0s;
+      animation-fill-mode: both, both;
+      animation-timeline: auto, --case-cover;
+      animation-range: normal, exit 0% exit 100%;
+    }
+  }
 }
 
 /* Comparison Table */

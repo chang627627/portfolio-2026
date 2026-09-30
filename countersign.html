@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=278">
+  <link rel="stylesheet" href="style.css?v=279">
   <link rel="canonical" href="https://www.chang-mou.com/countersign.html">
   <script type="application/ld+json">
   {
@@ -127,7 +127,30 @@
     </div>
   </nav>
 
-  <img width="2400" height="1350" src="images/countersign-cover.jpg?v=5" alt="Countersign approval gate, the agent's escalation waiting on a human signature" class="case-cover">
+  <!-- Cover (top, content width): the home card's lit plate and still, at the old cover's geometry -->
+  <div class="case-cover case-cover--lit" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB; --cover-ar: 16 / 9; --still-w: 84%; --still-top: 5.33%; --still-radius: 1.19% / 1.99%;">
+    <img width="1920" height="1147" src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(84vw - 41px), 807px" alt="Countersign approval gate, the agent's escalation waiting on a human signature">
+  </div>
+  <script>
+    // The lit cover: its plate light leans toward the cursor and the still's contact shadow casts the other way,
+    // the home card's lean at the home card's amplitudes (fine pointer, motion-safe; otherwise it rests).
+    (() => {
+      const cover = document.querySelector('.case-cover--lit');
+      if (!cover || !matchMedia('(hover: hover) and (pointer: fine)').matches
+        || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const PLATE_AMP = 12, SHADOW_AMP = 10;
+      const lean = (nx, ny) => {
+        cover.style.setProperty('--plate-dx', (nx * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-dy', (ny * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-sx', (-nx * SHADOW_AMP).toFixed(2) + 'px');
+      };
+      cover.addEventListener('mousemove', (e) => {
+        const r = cover.getBoundingClientRect();
+        lean((e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1);
+      });
+      cover.addEventListener('mouseleave', () => lean(0, 0));
+    })();
+  </script>
 
   <!-- Project Hero -->
   <section class="project-hero">

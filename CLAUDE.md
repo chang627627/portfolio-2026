@@ -49,7 +49,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 
 ### Case studies
 - Six linked studies in a circular previous/next chain, in home order: Homewise → PollenNav → Countersign → StoryBloom → Coffee Chat → NOVA → Homewise (`.case-nav`, a `div role="navigation"`; hover lights the title letter by letter toward the arrow). `ticker.html` is unlinked and noindex on purpose.
-- Shared shape: the header wordmark reads "← Back" and goes to index.html; a contained `.case-cover`; the hero sub opens with the home card's first clause verbatim, then says something new; `.project-details`; a side rail (hidden at 1343px and below); back-to-top; a lightbox on images; width and height on every image; the Reflection h2 is a claim, never "What I learned".
+- Shared shape: the header wordmark reads "← Back" and goes to index.html; a contained `.case-cover` that arrives in its plate's hover glow (home's recipe from inline `--plate-light`) and dims as it scrolls away; the Homewise, Countersign and Coffee Chat covers are lit plates (`.case-cover--lit`) built from the home card's own still, which lean toward the cursor like the card, so changing a card still changes its cover; the hero sub opens with the home card's first clause verbatim, then says something new; `.project-details`; a side rail (hidden at 1343px and below); back-to-top; a lightbox on images; width and height on every image; the Reflection h2 is a claim, never "What I learned".
 - Side-nav spines:
   - Homewise: Problem · Insight · Why this is hard · Solution · Final Design · Design System · Process · Collaboration · Reflection · One more thing
   - PollenNav: Overview · Recognition · Problem · Research · Goals and challenges · Making the data readable · Approachable, not clinical · Usability Testing · Final Design · Reflection
@@ -71,7 +71,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - Comment mode (C) is shared through `api/comments.js` on the private Blob store, one immutable blob per comment. Pins are keyed by slide index, so inserting a slide moves them.
 
 ### Other files
-`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=278` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
+`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=279` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
 
 ## Design system
 - Type: Neue Montreal, self-hosted `@font-face` in style.css (Fontshare delisted it), weight 400 everywhere; the one italic is hero line 2. Set `font-weight: 400` on every heading or browsers fake bold. Home size ladder: 104 hero, 38 titles, 16 body, 14, 13; new elements take a size from it.

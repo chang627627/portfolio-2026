@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=278">
+  <link rel="stylesheet" href="style.css?v=279">
   <style>
     /* The plates, the widget pairs and the pairing card open in the shared
        lightbox (2026-09-10): the whole-app screens render at ~864px here, so
@@ -75,8 +75,30 @@
     </div>
   </nav>
 
-  <!-- Immersive Cover -->
-  <img width="1920" height="852" src="images/coffeecover.jpg" alt="Litespace Coffee Chat cover" class="case-cover">
+  <!-- Cover (top, content width): the home card's lit plate and still, at the old cover's geometry -->
+  <div class="case-cover case-cover--lit" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD; --cover-ar: 1920 / 852; --still-w: 55.16%; --still-top: 33.8%;">
+    <img width="1920" height="1143" src="images/coffeechat-card.webp" srcset="images/coffeechat-card-960.webp 960w, images/coffeechat-card.webp 1920w" sizes="(max-width: 768px) calc(55vw - 27px), 530px" alt="Litespace Coffee Chat cover">
+  </div>
+  <script>
+    // The lit cover: its plate light leans toward the cursor and the still's contact shadow casts the other way,
+    // the home card's lean at the home card's amplitudes (fine pointer, motion-safe; otherwise it rests).
+    (() => {
+      const cover = document.querySelector('.case-cover--lit');
+      if (!cover || !matchMedia('(hover: hover) and (pointer: fine)').matches
+        || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const PLATE_AMP = 12, SHADOW_AMP = 10;
+      const lean = (nx, ny) => {
+        cover.style.setProperty('--plate-dx', (nx * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-dy', (ny * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-sx', (-nx * SHADOW_AMP).toFixed(2) + 'px');
+      };
+      cover.addEventListener('mousemove', (e) => {
+        const r = cover.getBoundingClientRect();
+        lean((e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1);
+      });
+      cover.addEventListener('mouseleave', () => lean(0, 0));
+    })();
+  </script>
 
   <!-- Project Hero -->
   <section class="project-hero">

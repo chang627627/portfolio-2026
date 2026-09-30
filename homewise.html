@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=278">
+  <link rel="stylesheet" href="style.css?v=279">
   <link rel="canonical" href="https://www.chang-mou.com/homewise.html">
   <script type="application/ld+json">
   {
@@ -197,8 +197,30 @@
     </div>
   </nav>
 
-  <!-- Cover (top, content width) -->
-  <img src="images/homewise-cover.jpg" alt="Homewise apples-to-apples quote comparison" class="case-cover">
+  <!-- Cover (top, content width): the home card's lit plate and still, at the old cover's geometry -->
+  <div class="case-cover case-cover--lit" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB; --cover-ar: 2400 / 1065; --still-w: 55.125%; --still-top: 32.11%;">
+    <img width="1920" height="1144" src="images/homewise-card.jpg" srcset="images/homewise-card-960.jpg 960w, images/homewise-card.jpg 1920w" sizes="(max-width: 768px) calc(55vw - 27px), 530px" alt="Homewise apples-to-apples quote comparison">
+  </div>
+  <script>
+    // The lit cover: its plate light leans toward the cursor and the still's contact shadow casts the other way,
+    // the home card's lean at the home card's amplitudes (fine pointer, motion-safe; otherwise it rests).
+    (() => {
+      const cover = document.querySelector('.case-cover--lit');
+      if (!cover || !matchMedia('(hover: hover) and (pointer: fine)').matches
+        || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const PLATE_AMP = 12, SHADOW_AMP = 10;
+      const lean = (nx, ny) => {
+        cover.style.setProperty('--plate-dx', (nx * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-dy', (ny * PLATE_AMP).toFixed(2) + '%');
+        cover.style.setProperty('--plate-sx', (-nx * SHADOW_AMP).toFixed(2) + 'px');
+      };
+      cover.addEventListener('mousemove', (e) => {
+        const r = cover.getBoundingClientRect();
+        lean((e.clientX - r.left) / r.width * 2 - 1, (e.clientY - r.top) / r.height * 2 - 1);
+      });
+      cover.addEventListener('mouseleave', () => lean(0, 0));
+    })();
+  </script>
 
   <!-- Project Hero -->
   <section class="project-hero">
