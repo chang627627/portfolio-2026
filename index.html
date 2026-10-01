@@ -628,6 +628,22 @@
       .ask-by.on { animation: none; }
       .ask-answer.is-streaming .ask-mote { animation: none; }
     }
+    /* HOME'S HEADER ARRIVES (2026-10-01, per user "at home page the header need a transition"): over the hero the bar
+       is clear, and the glass (style.css's nav ::before) fades in over the first 96px of scroll, tied to the scroll so
+       it reverses on the way back up. Opacity on the glass layer itself, never on the nav (that would make the nav a
+       backdrop root). Without scroll timelines the glass simply stays, as on every other page. */
+    @supports (animation-timeline: scroll()) {
+      nav:not(.side-nav)::before {
+        animation-name: home-nav-glass;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root block);
+        animation-range: 0px 96px;
+      }
+    }
+    @keyframes home-nav-glass { from { opacity: 0; } to { opacity: 1; } }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
