@@ -155,7 +155,7 @@ nav:not(.side-nav) {
   top: 0;
   left: 0;
   right: 0;
-  height: 64px;
+  height: 52px; /* 64 until 2026-10-01: the giga glass bar was "too fat" at 60 */
   padding: 0 48px;
   z-index: 100;
   background: transparent;
@@ -164,76 +164,23 @@ nav:not(.side-nav) {
   box-shadow: none;
 }
 
-/* THE BAND IS curated.design's OWN (2026-10-01, per user "just copy paste https://curated.design/'s header. Do not
-   change the layout. I think we are similar but its contrast is better"): copied from its live page, measured in
-   both of its themes. A `.progressive-blur` element inside the nav (absolute, inset 0 0 -48px, so 112px under the
-   64px bar, z-index -1) holds five stacked backdrop layers, each blurring harder and fading out sooner: 1px held
-   to 55% and gone by 92%, 2px 42/78, 4px 30/64, 8px 18/50, 16px 6/36. No scrim or tint, as on the reference.
-   It replaces the two pseudo-element layers (12px and 4px blur with a 0.55 scrim) that were here since
-   2026-09-12. Out of flow, so the bar's layout is untouched. */
-.progressive-blur {
-  position: absolute;
-  inset: 0 0 -48px;
-  z-index: -1;
-  pointer-events: none;
-}
-.progressive-blur > div {
-  position: absolute;
-  inset: 0;
-}
-/* THE DARKENING (2026-10-01, per user "just darken the header with gradient. but do not make it too dark", then
-   "too high ... i mean the height"): one gradient of the page colour over the five blur layers, 0.45 at the top edge (tried 0.7, 0.6, 0.5 and 0.4; after ascii-magic's clear-edged bar he came back to this at 0.6, then 0.5, 0.4 and 0.45 with the 96px height),
-   fading to nothing by 80px, short of the band's 112px foot. */
-.progressive-blur::after {
+/* THE BAR IS GIGA'S GLASS (2026-10-01, per user "like https://giga.ai/"): its header, measured live, is one glass
+   bar in one state at every scroll: 0.62 of near-black (rgb 8,7,7), backdrop blur(24px) saturate(1.6), and its
+   edge drawn as an inset 1px line, white at 0.07, along the foot. Here it is the page colour at 0.62, filling the
+   whole bar (52px since "too fat" at 60), on the nav's ::before. It sits on a pseudo-element, not on the nav itself, because a backdrop-filter
+   on the nav would make it the containing block for the phone menu (.nav-links, position fixed) and shrink that
+   menu to the bar. It replaces curated.design's five-layer band, its flat 0.6 layer and the 0.1 hairline. */
+nav:not(.side-nav)::before {
   content: '';
   position: absolute;
   inset: 0 0 auto;
-  height: 80px; /* 112 was "too high"; 96 and 88 were tried, then "do 80" */
-  /* one fade, 0.8 at the top edge (0.45, 0.6, 0.7 and 1.0 were tried) to 0 at 80px, eased by smoothstep so its slope is zero at both ends: no hold,
-     no knee, no edge (the earlier hold-then-drop curve read "strange", per user "the top is 0.45 the bottom should
-     be 0") */
-  background: linear-gradient(to bottom,
-    rgba(10, 10, 10, 0.8) 0%,
-    rgba(10, 10, 10, 0.778) 10%,
-    rgba(10, 10, 10, 0.717) 20%,
-    rgba(10, 10, 10, 0.627) 30%,
-    rgba(10, 10, 10, 0.518) 40%,
-    rgba(10, 10, 10, 0.4) 50%,
-    rgba(10, 10, 10, 0.282) 60%,
-    rgba(10, 10, 10, 0.173) 70%,
-    rgba(10, 10, 10, 0.083) 80%,
-    rgba(10, 10, 10, 0.022) 90%,
-    rgba(10, 10, 10, 0.0) 100%);
-}
-.progressive-blur > div:nth-child(1) {
-  -webkit-backdrop-filter: blur(1px);
-          backdrop-filter: blur(1px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
-}
-.progressive-blur > div:nth-child(2) {
-  -webkit-backdrop-filter: blur(2px);
-          backdrop-filter: blur(2px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 78%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 78%);
-}
-.progressive-blur > div:nth-child(3) {
-  -webkit-backdrop-filter: blur(4px);
-          backdrop-filter: blur(4px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 64%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 64%);
-}
-.progressive-blur > div:nth-child(4) {
-  -webkit-backdrop-filter: blur(8px);
-          backdrop-filter: blur(8px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);
-}
-.progressive-blur > div:nth-child(5) {
-  -webkit-backdrop-filter: blur(16px);
-          backdrop-filter: blur(16px);
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 6%, transparent 36%);
-          mask-image: linear-gradient(to bottom, #000 0%, #000 6%, transparent 36%);
+  height: 100%; /* the whole bar: 52px on desktop, 56 on phones */
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(10, 10, 10, 0.62);
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+          backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .logo {
@@ -278,7 +225,7 @@ nav:not(.side-nav) {
      4.5:1 for normal text). #a0a0a0 measures 4.67:1 there and ~7.6:1 on the
      dark pages. Deliberately NOT brighter — these must stay clearly secondary
      to the white .nav-active link. */
-  color: var(--text-soft);
+  color: var(--text-soft); /* #b4b4b4 was tried and reverted, 2026-10-01 ("revert the grey color") */
 }
 
 /* Links rest in the secondary grey above and turn white on hover and for the current page
@@ -4934,7 +4881,7 @@ footer {
     gap: 0;
   }
 
-  body.menu-open .progressive-blur { display: none; } /* the overlay is opaque; no band under it */
+  body.menu-open nav:not(.side-nav)::before { display: none; } /* the overlay is opaque; no glass under it */
 
   .hero {
     padding: 120px 24px 40px;
