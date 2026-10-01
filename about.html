@@ -536,14 +536,28 @@
         grid-column: 1;
         grid-row: 1;
         align-self: start;
-        margin: 0;
-        padding-top: var(--label-drop, 0px); /* sets the label's baseline on its content's first line */
+        margin: var(--label-drop, 0px) 0 0;   /* a margin, not padding: the lists, quotes and shelf need it negative */
       }
-      .about-block > .section-meta { --label-drop: 4px; }                        /* the bio's first line */
+      /* EVERY LABEL AT ITS SECTION'S VISIBLE TOP (2026-10-01, per user "subtitle should be at each section's visible
+         top ... like what background part did"). Background's label sat on its first line, its capitals 3px under the
+         text's; the others sat on their first row of words, 40 to 60px under the faint rule that is the first thing
+         seen in those sections. Every label's capitals now sit 3px under its section's visible top, as Background's
+         do: the bio's first line, a list's or the quotes' top rule, the top of the shelf's covers. */
+      .about-block > .section-meta { --label-drop: 4px; }                        /* Background: on its first line */
       .about-block > .section-meta + .experience-list { margin-top: 0; }
-      .about-block:has(> .experience-list) > .section-meta { --label-drop: 34px; } /* the first row, under its rule */
-      .testimonials > .section-meta { --label-drop: 54px; }                      /* the first quote, under its rule */
-      .media-section > .section-meta { --label-drop: 0px; }
+      .about-block:has(> .experience-list) > .section-meta { --label-drop: -3px; } /* on the list's top rule */
+      .testimonials > .section-meta { --label-drop: -3px; }                      /* on the quotes' top rule */
+      .media-section > .section-meta { --label-drop: -6px; }                     /* on the covers' top */
+      /* ONE RHYTHM BETWEEN SECTIONS (2026-10-01, per user "i feel the subtitle in the about page's position is not
+         consistent ... background's position is too high", then "do it", then the labels moved to each section's
+         visible top). Measured from the last thing seen in one section to the first thing seen in the next, which is
+         where its label now sits: 116px under the photos, 101 after the bio, 96 between the lists, 76 before the
+         quotes, 138 before the books. Every section now starts 96px under the one before, the lists' own gap: the
+         photos' foot 64 to 89, the bio's margin 96 to 91 (its descenders end below its box), People's foot 96 to 67
+         (its last quote carries 32px of padding under the names). */
+      .deck { padding-bottom: 89px; }
+      .about-vertical > .about-block:first-of-type { margin-bottom: 91px; }
+      .testimonials { padding-bottom: 67px; }
     }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
