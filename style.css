@@ -182,29 +182,29 @@ nav:not(.side-nav) {
   inset: 0;
 }
 /* THE DARKENING (2026-10-01, per user "just darken the header with gradient. but do not make it too dark", then
-   "too high ... i mean the height"): one gradient of the page colour over the five blur layers, 0.5 at the top edge (tried 0.7, 0.6, 0.45 and 0.4; after ascii-magic's clear-edged bar he came back to this at 0.6, then 0.5, 0.4 and 0.45 with the 96px height),
+   "too high ... i mean the height"): one gradient of the page colour over the five blur layers, 0.45 at the top edge (tried 0.7, 0.6, 0.5 and 0.4; after ascii-magic's clear-edged bar he came back to this at 0.6, then 0.5, 0.4 and 0.45 with the 96px height),
    held through the link row (y 22-43), then eased out to nothing by 80px, short of the band's 112px foot. */
 .progressive-blur::after {
   content: '';
   position: absolute;
   inset: 0 0 auto;
   height: 80px; /* 112 was "too high"; 96 and 88 were tried, then "do 80" */
-  /* eased, not stepped: a slow 0.50 to 0.47 across the link row (to 44px), then a smoothstep fall whose slope is
+  /* eased, not stepped: a slow 0.45 to 0.42 across the link row (to 44px), then a smoothstep fall whose slope is
      zero where it starts and where it ends, so there is no kink, shelf or edge anywhere in the 80px */
   background: linear-gradient(to bottom,
-    rgba(10, 10, 10, 0.5) 0%,
-    rgba(10, 10, 10, 0.492) 15%,
-    rgba(10, 10, 10, 0.484) 30%,
-    rgba(10, 10, 10, 0.476) 45%,
-    rgba(10, 10, 10, 0.471) 55%,
-    rgba(10, 10, 10, 0.455) 60%,
-    rgba(10, 10, 10, 0.412) 65%,
-    rgba(10, 10, 10, 0.349) 70%,
-    rgba(10, 10, 10, 0.275) 75%,
-    rgba(10, 10, 10, 0.196) 80%,
-    rgba(10, 10, 10, 0.122) 85%,
-    rgba(10, 10, 10, 0.059) 90%,
-    rgba(10, 10, 10, 0.016) 95%,
+    rgba(10, 10, 10, 0.45) 0%,
+    rgba(10, 10, 10, 0.443) 15%,
+    rgba(10, 10, 10, 0.436) 30%,
+    rgba(10, 10, 10, 0.429) 45%,
+    rgba(10, 10, 10, 0.424) 55%,
+    rgba(10, 10, 10, 0.41) 60%,
+    rgba(10, 10, 10, 0.371) 65%,
+    rgba(10, 10, 10, 0.314) 70%,
+    rgba(10, 10, 10, 0.248) 75%,
+    rgba(10, 10, 10, 0.177) 80%,
+    rgba(10, 10, 10, 0.11) 85%,
+    rgba(10, 10, 10, 0.053) 90%,
+    rgba(10, 10, 10, 0.015) 95%,
     rgba(10, 10, 10, 0) 100%);
 }
 .progressive-blur > div:nth-child(1) {
