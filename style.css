@@ -155,47 +155,21 @@ nav:not(.side-nav) {
   top: 0;
   left: 0;
   right: 0;
-  height: 64px;
+  height: 52px; /* 64 until 2026-10-01, per user "too fat, reduce the height of the header" */
   padding: 0 48px;
   z-index: 100;
   /* THE BAR HAS A CLEAR EDGE (2026-10-01, per user "maybe use this one https://www.ascii-magic.com/landing / the one
      has the clear edge"): its header, measured live: a 1px rgba(221,221,221,0.1) hairline along the bottom at all
      times, clear at the top of the page, then 0.78 of near-black with a 10px blur once the page scrolls. Here the
-     fill is the page colour and it arrives over the first 64px of scroll (below); without scroll timelines the bar
-     is simply filled. It replaces curated.design's five-layer band and its 0.5 gradient (v=283 to v=291). */
-  background: rgba(10, 10, 10, 0.78);
+     fill is the page colour and there is ONE STATE: the bar is always filled, at the top of the page too (the
+     scroll-in fill was cancelled the same day, per user "cancel the transition. only one state"). It replaces curated.design's five-layer band and its 0.5 gradient (v=283 to v=291). */
+  background: rgba(10, 10, 10, 0.6); /* 0.78 (ascii-magic's) until "lighter" */
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border: none;
   border-bottom: 1px solid rgba(221, 221, 221, 0.1);
   border-radius: 0;
   box-shadow: none;
-}
-
-/* longhands with duration auto on the root timeline, as g2Lift uses; fill both holds the clear state above the
-   range and the filled one past it */
-@supports (animation-timeline: scroll()) {
-  nav:not(.side-nav) {
-    animation-name: navFill;
-    animation-duration: auto;
-    animation-timing-function: linear;
-    animation-iteration-count: 1;
-    animation-fill-mode: both;
-    animation-timeline: scroll(root block);
-    animation-range: 0px 64px;
-  }
-}
-@keyframes navFill {
-  from {
-    background-color: rgba(10, 10, 10, 0);
-    -webkit-backdrop-filter: blur(0px);
-            backdrop-filter: blur(0px);
-  }
-  to {
-    background-color: rgba(10, 10, 10, 0.78);
-    -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px);
-  }
 }
 
 .logo {
@@ -4901,11 +4875,6 @@ footer {
   nav:not(.side-nav) {
     -webkit-backdrop-filter: none;
             backdrop-filter: none;
-    animation-name: navFillPhone;
-  }
-  @keyframes navFillPhone {
-    from { background-color: rgba(10, 10, 10, 0); }
-    to   { background-color: rgba(10, 10, 10, 0.78); }
   }
 
 
