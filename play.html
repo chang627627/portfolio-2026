@@ -336,6 +336,21 @@
     .footer-big-text { width: fit-content; margin-inline: auto; }
     .footer-big-text:focus-visible { opacity: 1; transform: none; }
     .footer-big-text:focus-visible .letter { opacity: 1 !important; }
+    /* PHONES ARE A GALLERY (2026-10-01, per user "do it", the "title-and-year gallery" lead from the premium research,
+       then "one column" and "no need detail page on mobile"): below 769px the script after the grid adds .is-gallery,
+       and the phone's one column (in --mo order) shows each piece with only its title and year under it. Taps do what
+       they always did on phones: an image opens the image viewer, a film plays in its card. There is no piece page on
+       phones, so the captions and links are not reachable there. Without the script phones keep their captions. */
+    @media (max-width: 768px) {
+      .play-grid.is-gallery .play-info p,
+      .play-grid.is-gallery .play-info .play-link { display: none; }
+      .play-grid.is-gallery .play-card .play-info-top { margin-bottom: 0; }
+      .play-grid.is-gallery .play-card .play-info h3 { font-size: 18px; }
+      /* every piece at the column's full width (per user "just make sure the width of each work is the same"): the phone
+         column is a flex column with align-items: start, so with the captions gone a card shrank to its title's width
+         (Luma 138px, Mirror 142, The Rib 153 at 375) and its piece with it */
+      .play-grid.is-gallery .play-card { align-self: stretch; }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
   <!-- Google Analytics -->
@@ -957,14 +972,21 @@
       third.className = 'play-column';
       const title = card => card.querySelector('h3')?.textContent.trim();
       const wide = matchMedia('(min-width: 1200px)');
-      let dealt = false;
+      // phones are a gallery (see .is-gallery in the head): one column, the piece with its title and year
+      const phone = matchMedia('(max-width: 768px)');
+      let dealt = 'two';
       // moveBefore keeps a moved card's state, so a film playing in it across 1200px goes on
       // playing (append would reload its player); browsers without it fall back to append
       const put = (col, card) => (col.moveBefore ? col.moveBefore(card, null) : col.append(card));
       const deal = () => {
-        if (wide.matches === dealt) return;
-        dealt = wide.matches;
-        if (dealt) {
+        const mode = wide.matches ? 'three' : phone.matches ? 'gallery' : 'two';
+        if (mode === dealt) return;
+        // back to the markup's two columns first, whatever came before
+        home.forEach((cards, i) => cards.forEach(card => put(two[i], card)));
+        third.remove(); // after the cards have left it, so none is ever detached
+        grid.classList.toggle('is-three', mode === 'three');
+        grid.classList.toggle('is-gallery', mode === 'gallery');
+        if (mode === 'three') {
           grid.append(third);
           const cols = [...two, third];
           const byTitle = new Map(home.flat().map(card => [title(card), card]));
@@ -974,15 +996,13 @@
             if (card) { put(cols[i], card); placed.add(card); }
           }));
           home.forEach((cards, i) => cards.forEach(card => { if (!placed.has(card)) put(cols[i], card); }));
-        } else {
-          home.forEach((cards, i) => cards.forEach(card => put(two[i], card)));
-          third.remove(); // after the cards have left it, so none is ever detached
-        }
-        grid.classList.toggle('is-three', dealt);
+        } // the gallery keeps the markup's columns: on phones they are one column in --mo order (style.css)
+        dealt = mode;
         grid.dispatchEvent(new Event('play:columns')); // the piece view turns the titles into buttons
       };
       deal();
       wide.addEventListener('change', deal);
+      phone.addEventListener('change', deal);
     })();
   </script>
 
@@ -1260,7 +1280,7 @@
     // The panel takes a copy of the card's own title, year, caption and links, so the words live in
     // one place, the markup. Local films (Robot) play in a <video> on the stage.
     const grid = document.querySelector('.play-grid');
-    const pieceMode = () => !!grid && grid.classList.contains('is-three');
+    const pieceMode = () => !!grid && grid.classList.contains('is-three'); // phones have no piece page (the gallery is captions off only)
     const panel = document.createElement('div');
     panel.className = 'lightbox-panel';
     panel.addEventListener('click', (e) => e.stopPropagation()); // reading or selecting the caption never closes the view
@@ -2299,7 +2319,8 @@
         return [cx + w.dir * (0.5 - ss) * w.L + 0.6 * Math.sin(age * 3 + m.ph), cy + tt * w.L + 0.6 * Math.cos(age * 2.7 + m.ph)];
       }
       function spawnWhale() {
-        if (whale || !whaleOn) return;
+        // NOT ON PHONES (2026-10-01, per user "no need whale on mobile"): the embers stay, the whale never forms there
+        if (whale || !whaleOn || phoneMQ.matches) return;
         const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
         // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
         // On a phone the width decides instead: 55% of it, so the animal reads at 375
