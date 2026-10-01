@@ -216,7 +216,7 @@ nav:not(.side-nav) {
      grey with equal contrast on both ends, about 4.5:1 on #0a0a0a and 4.5:1 on white (3.4 on the pale plates), so it
      reads over the dark page and over light work alike; --text-soft (#a0a0a0) read 7.6 on the page but 1.1 to 2.6 over
      the plates. #b4b4b4 was tried and reverted the same day. */
-  color: #888888; /* #777777 until "that grey color a little lighter": about 5.5:1 on the page, 3.5 on white */
+  color: #a0a0a0; /* #777777, #888888 (the sweep's balance) and #777777 again were tried; "back to #a0a0a0" */
 }
 
 /* Links rest in the secondary grey above and turn white on hover and for the current page
