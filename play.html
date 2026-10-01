@@ -350,6 +350,7 @@
          column is a flex column with align-items: start, so with the captions gone a card shrank to its title's width
          (Luma 138px, Mirror 142, The Rib 153 at 375) and its piece with it */
       .play-grid.is-gallery .play-card { align-self: stretch; }
+      .play-grid.is-gallery .play-card img[data-name] { cursor: default; }
     }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/play.html">
@@ -1612,8 +1613,12 @@
       const alt = img.alt || '';
       img.dataset.name = !title || alt.toLowerCase().startsWith(title.toLowerCase()) ? alt || title : alt ? title + ', ' + alt : title;
       img.setAttribute('aria-label', 'Enlarge: ' + img.dataset.name); // "Open: " in three columns, see syncTitles
-      img.addEventListener('click', (e) => { e.stopPropagation(); openImage(img); });
+      // phones (the gallery) open nothing: a card there is just the piece (per user "make mobile version's play
+      // section's card unclickable"); syncTitles takes the images out of the tab order there too
+      const inert = () => !!grid && grid.classList.contains('is-gallery');
+      img.addEventListener('click', (e) => { if (inert()) return; e.stopPropagation(); openImage(img); });
       img.addEventListener('keydown', (e) => {
+        if (inert()) return;
         if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openImage(img); }
       });
     });
@@ -1678,8 +1683,9 @@
           card.prepend(info);
         }
       });
+      const inert = !!grid && grid.classList.contains('is-gallery'); // phones: the images are not buttons at all
       document.querySelectorAll('.play-grid img[data-name]').forEach((img) => {
-        if (on) { img.tabIndex = -1; img.removeAttribute('role'); img.removeAttribute('aria-label'); }
+        if (on || inert) { img.tabIndex = -1; img.removeAttribute('role'); img.removeAttribute('aria-label'); }
         else { img.tabIndex = 0; img.setAttribute('role', 'button'); img.setAttribute('aria-label', 'Enlarge: ' + img.dataset.name); }
       });
     };
