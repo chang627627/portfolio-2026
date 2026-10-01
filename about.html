@@ -506,6 +506,45 @@
     .footer-big-text { width: fit-content; margin-inline: auto; }
     .footer-big-text:focus-visible { opacity: 1; transform: none; }
     .footer-big-text:focus-visible .letter { opacity: 1 !important; }
+
+    /* ABOUT ON HOME'S EDGES, THE LABELS IN THE MARGIN (2026-10-01, per user "do 3", the third move I recommended
+       after the curated.design + Mobbin premium research). Below the hold, About was a centred 960 column (x=240 at
+       1440), so it looked like a different site from Home, whose header and grid start at the 48px inset. From 1100px
+       every section under the statement (the photos, Background, Experience, Education, Recognition, People I've
+       worked with, the books) sits in one frame anchored to that inset: its label hangs in a left column at x=48 and
+       its content runs beside it. At 1440 the columns are 360 and 960, so every line keeps its 960 measure (the
+       bio's settled full-width line, the rows' right edge, the shelf's width) and the content ends on the header's
+       right inset; narrower windows share the space 360:960; wider ones keep the frame on the left edge. The
+       statement and the galaxy hold above stay centred, as Home's hero does over its edge-aligned grid. Below
+       1100px and on phones nothing changes. Labels keep their size, case and grey; only their place moves. */
+    @media (min-width: 1100px) {
+      .deck, .about-vertical, .testimonials, .media-section {
+        max-width: calc(1344px + 96px);
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 48px;
+        padding-right: 48px;
+      }
+      .deck, .about-block, .testimonials, .media-section {
+        display: grid;
+        grid-template-columns: minmax(160px, 360fr) minmax(0, 960fr);
+        column-gap: 24px;
+      }
+      .deck > .deck-track { grid-column: 2; }
+      .about-block > *, .testimonials > *, .media-section > * { grid-column: 2; }
+      .about-block > .section-meta, .testimonials > .section-meta, .media-section > .section-meta {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: start;
+        margin: 0;
+        padding-top: var(--label-drop, 0px); /* sets the label's baseline on its content's first line */
+      }
+      .about-block > .section-meta { --label-drop: 4px; }                        /* the bio's first line */
+      .about-block > .section-meta + .experience-list { margin-top: 0; }
+      .about-block:has(> .experience-list) > .section-meta { --label-drop: 34px; } /* the first row, under its rule */
+      .testimonials > .section-meta { --label-drop: 54px; }                      /* the first quote, under its rule */
+      .media-section > .section-meta { --label-drop: 0px; }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->

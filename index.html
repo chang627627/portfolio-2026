@@ -84,6 +84,15 @@
        the frame back the glow is the second signal, and at 0.30 it tinted the 24px gap by about 70 RGB units); the
        two pages now share one hover; nothing lifts. */
     .project-grid { gap: 24px; }
+    /* THE WORK FILLS THE WINDOW (2026-10-01, per user "do 1", the first of three moves I recommended after the
+       curated.design + Mobbin premium research). The work section dropped style.css's 1440 cap (1344 of content),
+       and Ask the work its own 1344 cap, so both run to the header's 48px inset at every width: on a wide screen
+       the cards grow with the window instead of sitting in a 1344 island with empty bands either side, and the
+       header, Ask's line and the grid share one left edge. At 1440 nothing moves (the cards were already 660);
+       at 1920 they are about 900 wide and the stills about 585. From 2200px the grid takes a third column, so no
+       card is ever narrower than at 1440. Phones are untouched: they were already full width. */
+    .work { max-width: none; }
+    @media (min-width: 2200px) { .project-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
     .project-grid .project-card::before { display: none; }
     /* FLUSH, ROUND ON TOP, SQUARE BELOW (2026-09-29): the plate fills the frame's top and sides with no mat, so the
        frame's own 8px corners round its top, and its bottom edge meets the information square (per user "maybe both go
@@ -521,7 +530,7 @@
        whole change and the undo. */
     #work .card-meta { display: none; }
     /* 48px under the chips, twice the cards' 24px gap, so the chips head the grid (112 matched the retired rows' gap) */
-    .ask-bar { max-width: 1344px; margin: 0 auto 48px; }
+    .ask-bar { margin: 0 0 48px; } /* full width of .work since 2026-10-01 (THE WORK FILLS THE WINDOW); was max-width 1344px, centred */
     .ask-form {
       position: relative; display: flex; align-items: center; gap: 16px;
       padding: 0 0 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.14);
