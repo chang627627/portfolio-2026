@@ -163,7 +163,7 @@ nav:not(.side-nav) {
      times, clear at the top of the page, then 0.78 of near-black with a 10px blur once the page scrolls. Here the
      fill is the page colour and there is ONE STATE: the bar is always filled, at the top of the page too (the
      scroll-in fill was cancelled the same day, per user "cancel the transition. only one state"). It replaces curated.design's five-layer band and its 0.5 gradient (v=283 to v=291). */
-  background: rgba(10, 10, 10, 0.6); /* 0.78 (ascii-magic's) until "lighter" */
+  background: rgba(10, 10, 10, 0.7); /* 0.78 (ascii-magic's), then 0.6 ("lighter"), then 0.7 ("back to 0.7") */
   -webkit-backdrop-filter: blur(10px);
           backdrop-filter: blur(10px);
   border: none;
