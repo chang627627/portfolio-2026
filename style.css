@@ -155,21 +155,87 @@ nav:not(.side-nav) {
   top: 0;
   left: 0;
   right: 0;
-  height: 52px; /* 64 until 2026-10-01, per user "too fat, reduce the height of the header" */
+  height: 64px;
   padding: 0 48px;
   z-index: 100;
-  /* THE BAR HAS A CLEAR EDGE (2026-10-01, per user "maybe use this one https://www.ascii-magic.com/landing / the one
-     has the clear edge"): its header, measured live: a 1px rgba(221,221,221,0.1) hairline along the bottom at all
-     times, clear at the top of the page, then 0.78 of near-black with a 10px blur once the page scrolls. Here the
-     fill is the page colour and there is ONE STATE: the bar is always filled, at the top of the page too (the
-     scroll-in fill was cancelled the same day, per user "cancel the transition. only one state"). It replaces curated.design's five-layer band and its 0.5 gradient (v=283 to v=291). */
-  background: rgba(10, 10, 10, 0.7); /* 0.78 (ascii-magic's), then 0.6 ("lighter"), then 0.7 ("back to 0.7") */
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
+  background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(221, 221, 221, 0.1);
   border-radius: 0;
   box-shadow: none;
+}
+
+/* THE BAND IS curated.design's OWN (2026-10-01, per user "just copy paste https://curated.design/'s header. Do not
+   change the layout. I think we are similar but its contrast is better"): copied from its live page, measured in
+   both of its themes. A `.progressive-blur` element inside the nav (absolute, inset 0 0 -48px, so 112px under the
+   64px bar, z-index -1) holds five stacked backdrop layers, each blurring harder and fading out sooner: 1px held
+   to 55% and gone by 92%, 2px 42/78, 4px 30/64, 8px 18/50, 16px 6/36. No scrim or tint, as on the reference.
+   It replaces the two pseudo-element layers (12px and 4px blur with a 0.55 scrim) that were here since
+   2026-09-12. Out of flow, so the bar's layout is untouched. */
+.progressive-blur {
+  position: absolute;
+  inset: 0 0 -48px;
+  z-index: -1;
+  pointer-events: none;
+}
+.progressive-blur > div {
+  position: absolute;
+  inset: 0;
+}
+/* THE DARKENING (2026-10-01, per user "just darken the header with gradient. but do not make it too dark", then
+   "too high ... i mean the height"): one gradient of the page colour over the five blur layers, 0.6 at the top edge (tried 0.7, 0.5 and 0.4; then ascii-magic's clear-edged bar was shipped and he came back to this at 0.6),
+   held through the link row (y 22-43), then eased out to nothing by 80px, short of the band's 112px foot. */
+.progressive-blur::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 80px;
+  /* eased, not stepped: a slow 0.60 to 0.57 across the link row (to 44px), then a smoothstep fall whose slope is
+     zero where it starts and where it ends, so there is no kink, shelf or edge anywhere in the 80px */
+  background: linear-gradient(to bottom,
+    rgba(10, 10, 10, 0.6) 0%,
+    rgba(10, 10, 10, 0.591) 15%,
+    rgba(10, 10, 10, 0.581) 30%,
+    rgba(10, 10, 10, 0.572) 45%,
+    rgba(10, 10, 10, 0.566) 55%,
+    rgba(10, 10, 10, 0.546) 60%,
+    rgba(10, 10, 10, 0.495) 65%,
+    rgba(10, 10, 10, 0.419) 70%,
+    rgba(10, 10, 10, 0.33) 75%,
+    rgba(10, 10, 10, 0.236) 80%,
+    rgba(10, 10, 10, 0.147) 85%,
+    rgba(10, 10, 10, 0.071) 90%,
+    rgba(10, 10, 10, 0.02) 95%,
+    rgba(10, 10, 10, 0) 100%);
+}
+.progressive-blur > div:nth-child(1) {
+  -webkit-backdrop-filter: blur(1px);
+          backdrop-filter: blur(1px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 92%);
+}
+.progressive-blur > div:nth-child(2) {
+  -webkit-backdrop-filter: blur(2px);
+          backdrop-filter: blur(2px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 78%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 78%);
+}
+.progressive-blur > div:nth-child(3) {
+  -webkit-backdrop-filter: blur(4px);
+          backdrop-filter: blur(4px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 64%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 64%);
+}
+.progressive-blur > div:nth-child(4) {
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);
+}
+.progressive-blur > div:nth-child(5) {
+  -webkit-backdrop-filter: blur(16px);
+          backdrop-filter: blur(16px);
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 6%, transparent 36%);
+          mask-image: linear-gradient(to bottom, #000 0%, #000 6%, transparent 36%);
 }
 
 .logo {
@@ -4869,14 +4935,8 @@ footer {
     padding: 0 24px;
     gap: 0;
   }
-  /* phones: the same fill and hairline with NO blur. A backdrop-filter makes the nav the containing block for its
-     fixed descendants, and the full-screen menu (.nav-links, position: fixed) lives inside it, so a blurred nav
-     would shrink the open menu to the 56px bar. */
-  nav:not(.side-nav) {
-    -webkit-backdrop-filter: none;
-            backdrop-filter: none;
-  }
 
+  body.menu-open .progressive-blur { display: none; } /* the overlay is opaque; no band under it */
 
   .hero {
     padding: 120px 24px 40px;
