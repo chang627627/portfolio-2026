@@ -164,24 +164,11 @@ nav:not(.side-nav) {
   box-shadow: none;
 }
 
-/* THE BAR IS GIGA'S GLASS (2026-10-01, per user "like https://giga.ai/"): its header, measured live, is one glass
-   bar in one state at every scroll: 0.62 of near-black (rgb 8,7,7), backdrop blur(24px) saturate(1.6), and its
-   edge drawn as an inset 1px line, white at 0.07, along the foot. Here it is the page colour at 0.62, filling the
-   whole bar (52px since "too fat" at 60), on the nav's ::before. It sits on a pseudo-element, not on the nav itself, because a backdrop-filter
-   on the nav would make it the containing block for the phone menu (.nav-links, position fixed) and shrink that
-   menu to the bar. It replaces curated.design's five-layer band, its flat 0.6 layer and the 0.1 hairline. */
-nav:not(.side-nav)::before {
-  content: '';
-  position: absolute;
-  inset: 0 0 auto;
-  height: 100%; /* the whole bar: 52px on desktop, 56 on phones */
-  z-index: -1;
-  pointer-events: none;
-  background: rgba(10, 10, 10, 0.62);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-          backdrop-filter: blur(24px) saturate(1.6);
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.07);
-}
+/* PURE TRANSPARENT, ONE MODE (2026-10-01, per user "I want a pure transparent header", then, after an adaptive-ink
+   script was built, "too complicated. keep chang mou white and selected section white. And change the rest text to a
+   grey color can adapt both dark and light ... just one mode"): no fill, blur, band, shade or line under the bar; the
+   wordmark and the current page white, the other links #888888 (.nav-links below, picked from a measured sweep of Home
+   and Play). A 60px shade, 0.6 to 0, was added and removed the same day ("remove the header"). */
 
 .logo {
   font-weight: 400;
@@ -225,7 +212,11 @@ nav:not(.side-nav)::before {
      4.5:1 for normal text). #a0a0a0 measures 4.67:1 there and ~7.6:1 on the
      dark pages. Deliberately NOT brighter — these must stay clearly secondary
      to the white .nav-active link. */
-  color: var(--text-soft); /* #b4b4b4 was tried and reverted, 2026-10-01 ("revert the grey color") */
+  /* #777777 since 2026-10-01 (per user "change the rest text to a grey color can adapt both dark and light"): the
+     grey with equal contrast on both ends, about 4.5:1 on #0a0a0a and 4.5:1 on white (3.4 on the pale plates), so it
+     reads over the dark page and over light work alike; --text-soft (#a0a0a0) read 7.6 on the page but 1.1 to 2.6 over
+     the plates. #b4b4b4 was tried and reverted the same day. */
+  color: #888888; /* #777777 until "that grey color a little lighter": about 5.5:1 on the page, 3.5 on white */
 }
 
 /* Links rest in the secondary grey above and turn white on hover and for the current page
@@ -4881,7 +4872,6 @@ footer {
     gap: 0;
   }
 
-  body.menu-open nav:not(.side-nav)::before { display: none; } /* the overlay is opaque; no glass under it */
 
   .hero {
     padding: 120px 24px 40px;
