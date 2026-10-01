@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=280">
+  <link rel="stylesheet" href="style.css?v=281">
   <style>
     /* One real session, in the content-card family (surface, radius, 32px, no
        border) so it sits like the testimonial cards below it. */
@@ -543,11 +543,14 @@
          text's; the others sat on their first row of words, 40 to 60px under the faint rule that is the first thing
          seen in those sections. Every label's capitals now sit 3px under its section's visible top, as Background's
          do: the bio's first line, a list's or the quotes' top rule, the top of the shelf's covers. */
+      /* A LITTLE BELOW THE TOP (2026-10-01, per user "each move down a little, not at the top for each"): the labels
+         that sat on a list's or the quotes' top rule and on the covers' top edge drop 19px, which puts a list's label
+         on the baseline of its first row; Background's already sits on its first line of words and stays. */
       .about-block > .section-meta { --label-drop: 4px; }                        /* Background: on its first line */
       .about-block > .section-meta + .experience-list { margin-top: 0; }
-      .about-block:has(> .experience-list) > .section-meta { --label-drop: -3px; } /* on the list's top rule */
-      .testimonials > .section-meta { --label-drop: -3px; }                      /* on the quotes' top rule */
-      .media-section > .section-meta { --label-drop: -6px; }                     /* on the covers' top */
+      .about-block:has(> .experience-list) > .section-meta { --label-drop: 16px; } /* on the list's first row */
+      .testimonials > .section-meta { --label-drop: 16px; }                      /* 19px under the quotes' top rule */
+      .media-section > .section-meta { --label-drop: 13px; }                     /* 19px under the covers' top */
       /* ONE RHYTHM BETWEEN SECTIONS (2026-10-01, per user "i feel the subtitle in the about page's position is not
          consistent ... background's position is too high", then "do it", then the labels moved to each section's
          visible top). Measured from the last thing seen in one section to the first thing seen in the next, which is

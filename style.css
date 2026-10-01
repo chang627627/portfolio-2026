@@ -145,7 +145,21 @@ p, figcaption {
    near-white card and read 1.1 to 2.35 against the 4.5 floor. The user's call: "bring back
    the blur. the contrast is not enough". THE SCRIM IS THE HALF THAT DOES THE WORK; the blur
    alone would not have saved it. Scoped with :not(.side-nav): the case-study side rail is
-   also a <nav> and used to inherit the pill's glass (the documented bare-nav gotcha). */
+   also a <nav> and used to inherit the pill's glass (the documented bare-nav gotcha).
+   THE SCRIM FILLS IN ONCE THE PAGE MOVES (2026-10-01, per user "current version is not
+   visible under the light environment", after a survey of 72 top-startup headers from
+   curated.design's shelves): at the very top of every page the band is exactly the one above.
+   Over the first 80px of scroll one number, --nav-scrim, goes 0 to 1 and the scrim through the
+   link row goes from about 0.35 to 0.88 of the page colour, 0.72 at 56px, then falls with the
+   mask to nothing by 112px: Vercel's and Retool's transparent-at-rest, ink-once-scrolled bar,
+   Linear's and Oxide's dense fill under a blur, kept on this site's own soft edge with no
+   hairline. Measured before: the grey links fell to 1.03 to 1.57:1 over the home plates and
+   Play's pale cards. Height, padding, type and links never change, so it is a tint, not a
+   condensing nav. Without scroll timelines the band stays dense (contrast first). Never
+   animate opacity or filter on the nav itself: that makes it a backdrop root and kills both
+   blurs. */
+@property --nav-scrim { syntax: '<number>'; initial-value: 1; inherits: true; }
+
 nav:not(.side-nav) {
   display: flex;
   justify-content: space-between;
@@ -162,6 +176,27 @@ nav:not(.side-nav) {
   border: none;
   border-radius: 0;
   box-shadow: none;
+  --nav-scrim: 1;
+}
+
+/* longhands with duration auto on the root timeline, as g2Lift uses; fill both holds 0 above
+   the range and 1 past it. Case covers start at y147 and reach the links only after about
+   110px of scroll, so light never meets a half-filled band. */
+@supports (animation-timeline: scroll()) {
+  nav:not(.side-nav) {
+    animation-name: navScrim;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+    animation-range: 0px 80px;
+  }
+}
+
+@keyframes navScrim {
+  from { --nav-scrim: 0; }
+  to   { --nav-scrim: 1; }
 }
 
 /* the progressive blur band: ::before is the strong layer at the top edge, ::after the soft
@@ -186,7 +221,13 @@ nav:not(.side-nav)::before {
 nav:not(.side-nav)::after {
   -webkit-backdrop-filter: blur(4px);
           backdrop-filter: blur(4px);
-  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.55), rgba(10, 10, 10, 0.2) 50%, rgba(10, 10, 10, 0));
+  /* --nav-scrim 0 = the shipped gradient exactly (0.55, 0.256 on its straight run at 42%, 0.2,
+     0); 1 = 0.88 through the link boxes (y 22-43) and the hover line (y 46-47), 0.72 at 56px */
+  background: linear-gradient(to bottom,
+    rgba(10, 10, 10, calc(0.55  + 0.33  * var(--nav-scrim))) 0%,
+    rgba(10, 10, 10, calc(0.256 + 0.624 * var(--nav-scrim))) 42%,
+    rgba(10, 10, 10, calc(0.2   + 0.52  * var(--nav-scrim))) 50%,
+    rgba(10, 10, 10, 0) 100%);
   -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
           mask-image: linear-gradient(to bottom, #000 0%, #000 50%, transparent 100%);
 }
