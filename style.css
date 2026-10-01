@@ -189,20 +189,20 @@ nav:not(.side-nav) {
   position: absolute;
   inset: 0 0 auto;
   height: 80px; /* 112 was "too high"; 96 and 88 were tried, then "do 80" */
-  /* one fade, 1.0 at the top edge (0.45, 0.6, 0.7 and 0.8 before "do 1.0") to 0 at 80px, eased by smoothstep so its slope is zero at both ends: no hold,
+  /* one fade, 0.8 at the top edge (0.45, 0.6, 0.7 and 1.0 were tried) to 0 at 80px, eased by smoothstep so its slope is zero at both ends: no hold,
      no knee, no edge (the earlier hold-then-drop curve read "strange", per user "the top is 0.45 the bottom should
      be 0") */
   background: linear-gradient(to bottom,
-    rgba(10, 10, 10, 1.0) 0%,
-    rgba(10, 10, 10, 0.972) 10%,
-    rgba(10, 10, 10, 0.896) 20%,
-    rgba(10, 10, 10, 0.784) 30%,
-    rgba(10, 10, 10, 0.648) 40%,
-    rgba(10, 10, 10, 0.5) 50%,
-    rgba(10, 10, 10, 0.352) 60%,
-    rgba(10, 10, 10, 0.216) 70%,
-    rgba(10, 10, 10, 0.104) 80%,
-    rgba(10, 10, 10, 0.028) 90%,
+    rgba(10, 10, 10, 0.8) 0%,
+    rgba(10, 10, 10, 0.778) 10%,
+    rgba(10, 10, 10, 0.717) 20%,
+    rgba(10, 10, 10, 0.627) 30%,
+    rgba(10, 10, 10, 0.518) 40%,
+    rgba(10, 10, 10, 0.4) 50%,
+    rgba(10, 10, 10, 0.282) 60%,
+    rgba(10, 10, 10, 0.173) 70%,
+    rgba(10, 10, 10, 0.083) 80%,
+    rgba(10, 10, 10, 0.022) 90%,
     rgba(10, 10, 10, 0.0) 100%);
 }
 .progressive-blur > div:nth-child(1) {
