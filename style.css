@@ -164,11 +164,26 @@ nav:not(.side-nav) {
   box-shadow: none;
 }
 
-/* PURE TRANSPARENT, ONE MODE (2026-10-01, per user "I want a pure transparent header", then, after an adaptive-ink
-   script was built, "too complicated. keep chang mou white and selected section white. And change the rest text to a
-   grey color can adapt both dark and light ... just one mode"): no fill, blur, band, shade or line under the bar; the
-   wordmark and the current page white, the other links #888888 (.nav-links below, picked from a measured sweep of Home
-   and Play). A 60px shade, 0.6 to 0, was added and removed the same day ("remove the header"). */
+/* THE BAR IS GIGA'S GLASS (2026-10-01, per user "like https://giga.ai/"): its header, measured live, is one glass
+   bar in one state at every scroll: 0.62 of near-black (rgb 8,7,7), backdrop blur(24px) saturate(1.6), and its
+   edge drawn as an inset 1px line, white at 0.07, along the foot. Here it is the page colour at 0.62, filling the
+   whole bar (52px since "too fat" at 60), on the nav's ::before. It sits on a pseudo-element, not on the nav itself, because a backdrop-filter
+   on the nav would make it the containing block for the phone menu (.nav-links, position fixed) and shrink that
+   menu to the bar. It replaces curated.design's five-layer band, its flat 0.6 layer and the 0.1 hairline.
+   BROUGHT BACK (2026-10-01, per user "bring back https://giga.ai/ type header"): a pure transparent bar replaced it
+   for a few hours (#888888, then #a0a0a0 links); the glass returns exactly as pushed, links #a0a0a0. */
+nav:not(.side-nav)::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  height: 100%; /* the whole bar: 52px on desktop, 56 on phones */
+  z-index: -1;
+  pointer-events: none;
+  background: rgba(10, 10, 10, 0.55); /* giga's 0.62, then "can we do 0.5", then "do 0.55" (2026-10-01) */
+  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+          backdrop-filter: blur(24px) saturate(1.6);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.07);
+}
 
 .logo {
   font-weight: 400;
@@ -4893,6 +4908,7 @@ footer {
     gap: 0;
   }
 
+  body.menu-open nav:not(.side-nav)::before { display: none; } /* the overlay is opaque; no glass under it */
 
   .hero {
     padding: 120px 24px 40px;
