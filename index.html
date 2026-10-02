@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=342">
+  <link rel="stylesheet" href="style.css?v=343">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -487,6 +487,23 @@
         rgba(255, 190, 35, 0.64) 88%,
         rgba(255, 190, 35, 0.64) 100%);
     }
+    /* HOME'S HEADER ARRIVES WITH THE SCROLL (2026-10-02, per user "only home page's header need transition, and we can
+       do it slower"): over the hero the bar is clear, and the black fade (style.css's nav ::before) comes in over the
+       first 200px of scroll, tied to the scroll so it reverses on the way back up. It ran site-wide over 96px for one
+       push first. Opacity on the layer itself, never on the nav. Without scroll timelines the fade simply stays, as on
+       every other page. */
+    @supports (animation-timeline: scroll()) {
+      nav:not(.side-nav)::before {
+        animation-name: home-nav-fade;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root block);
+        animation-range: 0px 200px;
+      }
+    }
+    @keyframes home-nav-fade { from { opacity: 0; } to { opacity: 1; } }
     /* THE HEADLINE IS IN THE HTML (2026-09-22): its two lines carry their text in the markup, so a reader
        without JavaScript, a crawler or an AI assistant reading the page gets it, and a visually hidden copy
        gives screen readers the sentence whole (the per-letter spans the entrance needs are aria-hidden,
