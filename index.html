@@ -75,7 +75,11 @@
       inset: 0;
       margin: auto;
       width: 65%;
-      height: fit-content;
+      /* auto, not fit-content (2026-10-02, per user "why on safari browser, those two study case's thumbnail's
+         interface's shape get distorted?"): Safari resolved fit-content on this inset-0 image as the plate's full
+         height, so the Homewise and Countersign loops ran 65% wide by 100% tall, about 1.4x stretched. Auto takes the
+         image's own proportions in every browser, and margin: auto still centres it. */
+      height: auto;
       display: block;
       opacity: 0;
       pointer-events: none;
