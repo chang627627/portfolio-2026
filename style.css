@@ -171,18 +171,31 @@ nav:not(.side-nav) {
    on the nav would make it the containing block for the phone menu (.nav-links, position fixed) and shrink that
    menu to the bar. It replaces curated.design's five-layer band, its flat 0.6 layer and the 0.1 hairline.
    BROUGHT BACK (2026-10-01, per user "bring back https://giga.ai/ type header"): a pure transparent bar replaced it
-   for a few hours (#888888, then #a0a0a0 links); the glass returns exactly as pushed, links #a0a0a0. */
+   for a few hours (#888888, then #a0a0a0 links); the glass returns exactly as pushed, links #a0a0a0. Its flat fill
+   went 0.62, 0.5, 0.55 (pushed at 0.55).
+   ONE BLACK FADE (2026-10-01, per user "just change the header from 0.8 to 0 with black color"): no blur, no edge
+   line, only black from 0.8 at the top edge to 0 at 80px, eased by smoothstep so the slope is zero at both ends. A
+   blurred layer under the fade was tried first and dropped: the blur spread the pale plates into the bar and it read
+   white. */
 nav:not(.side-nav)::before {
   content: '';
   position: absolute;
   inset: 0 0 auto;
-  height: 100%; /* the whole bar: 52px on desktop, 56 on phones */
+  height: 80px; /* past the 52px bar (56 on phones) so the fade is gentle */
   z-index: -1;
   pointer-events: none;
-  background: rgba(10, 10, 10, 0.55); /* giga's 0.62, then "can we do 0.5", then "do 0.55" (2026-10-01) */
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
-          backdrop-filter: blur(24px) saturate(1.6);
-  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.07);
+  background: linear-gradient(to bottom,
+    rgba(0, 0, 0, 0.8) 0%,
+    rgba(0, 0, 0, 0.778) 10%,
+    rgba(0, 0, 0, 0.717) 20%,
+    rgba(0, 0, 0, 0.627) 30%,
+    rgba(0, 0, 0, 0.518) 40%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0.282) 60%,
+    rgba(0, 0, 0, 0.173) 70%,
+    rgba(0, 0, 0, 0.083) 80%,
+    rgba(0, 0, 0, 0.022) 90%,
+    rgba(0, 0, 0, 0) 100%);
 }
 
 .logo {
@@ -4908,7 +4921,7 @@ footer {
     gap: 0;
   }
 
-  body.menu-open nav:not(.side-nav)::before { display: none; } /* the overlay is opaque; no glass under it */
+  body.menu-open nav:not(.side-nav)::before { display: none; } /* the overlay is opaque; no shade under it */
 
   .hero {
     padding: 120px 24px 40px;
