@@ -19,13 +19,23 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=329">
+  <link rel="stylesheet" href="style.css?v=332">
   <script>
     // Opened from a prerender (the home cards' speculation rules): hold the cover's arrival until the page is shown
     if (document.prerendering) {
       document.documentElement.classList.add('is-prerendering');
       document.addEventListener('prerenderingchange', function () { document.documentElement.classList.remove('is-prerendering'); }, { once: true });
     }
+    // THE CARD GROWS INTO THE COVER (2026-10-01): arriving from Home, whose clicked card shares this cover's name, or from
+    // another case study, the page comes up at once under the morph instead of the staged crossfade (html.vt-case, style.css)
+    addEventListener('pagereveal', function (e) {
+      if (!e.viewTransition || !window.navigation || !navigation.activation || !navigation.activation.from) return;
+      var from = new URL(navigation.activation.from.url).pathname.replace(/\.html$/, '').replace(/^\/+/, '');
+      if (!/^(|index|homewise|pollen|countersign|storybloom|coffee|nova)$/.test(from)) return;
+      var html = document.documentElement;
+      html.classList.add('vt-case');
+      e.viewTransition.finished.finally(function () { html.classList.remove('vt-case'); });
+    });
   </script>
   <style>
     /* The plates, the widget pairs and the pairing card open in the shared

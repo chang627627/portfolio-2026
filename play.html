@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=329">
+  <link rel="stylesheet" href="style.css?v=332">
   <style>
     /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
        back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
@@ -316,23 +316,46 @@
     .lightbox-reset[hidden] { display: none; }
     .lightbox-reset svg { width: 16px; height: 16px; }
 
-    /* THE MORPH (see the lightbox script). The root is opted out so nothing but the piece is captured; the
+    /* THE MORPH (see the lightbox script). The root was opted out so nothing but the piece was captured (no longer: see below); the
        group moves on the site's ease-out, 300ms open and 220ms close; both snapshots cover-fit their box and
        only the full image is shown, so a cropped card image opens out of its crop. The lightbox image's own
        0.97 settle is switched off while a morph runs, or the two would fight. */
     @media (prefers-reduced-motion: no-preference) {
-      html.vt-piece { view-transition-name: none; }
+      /* THE PAGE IS PART OF THE MORPH (2026-10-01, per user "right now same problem ... I still can see other images in
+         the play section. then those images disappeared"): with the root opted out, a screencast showed Chrome holding
+         the old Play page, frozen, under the growing piece for the whole morph, and the black page appeared only in the
+         frame the morph finished (about 560ms), whatever the lightbox's own fade did. So the root is captured now: on
+         open the old page (the grid) fades out over 120ms while the new one (the black page with its caption) is there
+         from the start, so the piece grows over black; on close the black page fades out over the 300ms the piece
+         shrinks, and the grid comes back under it. The global root crossfade of page navigations does not apply here. */
+      html.vt-piece-open::view-transition-old(root) { animation: vt-fade-out 120ms linear both; }
+      html.vt-piece-open::view-transition-new(root) { animation: none; }
+      html.vt-piece-close::view-transition-old(root) { animation: vt-fade-out 300ms var(--ease-out) both; }
+      html.vt-piece-close::view-transition-new(root) { animation: none; }
       html.vt-piece .lightbox img { transition: none !important; transform: none !important; }
       ::view-transition-group(play-piece) { animation-duration: 450ms; animation-timing-function: var(--ease-out); } /* 300ms until 2026-10-01 */
       html.vt-piece-close::view-transition-group(play-piece) { animation-duration: 300ms; } /* 220ms until 2026-10-01 */
       /* SLOWER AND SOFTER (2026-10-01, per user "...or in the play page to open the detail page feels instant", then
-         "do 1 and 2"): the piece grows over 450ms; the black page comes up over the same 450ms instead of 240ms and
-         goes in 300ms; the title, year and caption arrive just after the piece lands, 60ms apart from the first */
-      .lightbox.is-piece.open { transition-duration: 450ms; }
+         "do 1 and 2"): the piece grows over 450ms. THE PAGE GOES AT ONCE (the same day, per user "the play page did not
+         disappear and the new detail page's image is there. So there is some feeling of delay like loading problem"):
+         traced, the black page had taken 450ms, so the grid was still half visible 160ms in while the piece grew over
+         it, and the caption came 300ms after opening, so the open read as loading. Now the black page comes in over
+         200ms with the piece (240 before any of this) and goes in 300ms, and the title, year and caption come with the
+         page, 60ms apart, not after the piece lands. */
+      .lightbox.is-piece.open { transition-duration: 200ms; }
+      /* WHILE THE PIECE GROWS, THE PAGE IS ALREADY BLACK (per user "right now same problem. second 1 the image expand
+         when I click it. And I still can see other images in the play section. then those images disappeared"): even a
+         200ms fade showed the grid around the growing piece, so during the morph the black page takes no fade at all and
+         is there in the frame the piece starts to grow. Without a morph (reduced motion, an image not decoded in time)
+         the 200ms fade stays. */
+      html.vt-piece-open .lightbox.open { transition: none; } /* the image-only viewer below 1200 morphs too */
       .lightbox.is-piece:not(.open) { transition-duration: 300ms; }
+      /* on a morphing close the transition's old page already fades the black out; the live view goes at once, or its
+         own fade showed a full-size ghost of the piece beside the one shrinking back into its card */
+      html.vt-piece-close .lightbox:not(.open) { transition: none; }
       @keyframes piece-panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-      .lightbox.is-piece.open .lightbox-panel .play-info-top { animation: piece-panel-in 0.4s var(--ease-out) 0.3s both; }
-      .lightbox.is-piece.open .lightbox-panel .play-info-top ~ * { animation: piece-panel-in 0.4s var(--ease-out) 0.36s both; }
+      .lightbox.is-piece.open .lightbox-panel .play-info-top { animation: piece-panel-in 0.35s var(--ease-out) 0.06s both; }
+      .lightbox.is-piece.open .lightbox-panel .play-info-top ~ * { animation: piece-panel-in 0.35s var(--ease-out) 0.12s both; }
       ::view-transition-old(play-piece),
       ::view-transition-new(play-piece) { animation: none; width: 100%; height: 100%; object-fit: cover; overflow: hidden; border-radius: 8px; }
       html.vt-piece-open::view-transition-old(play-piece) { opacity: 0; }

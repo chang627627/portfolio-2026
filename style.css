@@ -5386,6 +5386,28 @@ footer {
   ::view-transition-new(root) { animation: none; }
 }
 
+/* THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
+   transition like play page did for its work"; this reverses the June ruling against a card-to-cover morph, which was
+   cut then because the card images and covers were different pictures; since 2026-09-30 three covers are built from
+   their card's own still). Every case-study cover carries the name case-cover, and Home gives it to the clicked card's
+   plate at the moment of leaving (index.html's head script), so the browser grows the plate into the cover over 450ms
+   on the site's ease-out, both pictures cover-fit in a box with 8px corners, the way Play's pieces grow. While it runs
+   (html.vt-case, set by the arriving page) the old page fades out in 150ms and the new one is there at once, as on Play,
+   in place of the staged crossfade above. Back to Home, the cover shrinks into its card when the card is on screen;
+   from one case study to the next, cover morphs into cover. Reduced motion: no name, the plain crossfade. */
+@media (prefers-reduced-motion: no-preference) {
+  .case-cover { view-transition-name: case-cover; }
+  ::view-transition-group(case-cover) { animation-duration: 450ms; animation-timing-function: var(--ease-out); }
+  ::view-transition-old(case-cover),
+  ::view-transition-new(case-cover) { height: 100%; object-fit: cover; overflow: hidden; border-radius: 8px; }
+  /* the two pictures swap early and fast (120ms), so the growth reads as one picture: across the whole 450ms the card's
+     still and the cover's showed together, doubled; at 180ms the doubling still read for about a fifth of a second */
+  ::view-transition-old(case-cover) { animation: vt-fade-out 120ms linear both; }
+  ::view-transition-new(case-cover) { animation: vt-fade-in 120ms linear both; }
+  html.vt-case::view-transition-old(root) { animation: vt-fade-out 150ms linear both; }
+  html.vt-case::view-transition-new(root) { animation: none; }
+}
+
 /* ═══════════ Interaction state layer (added 2026-07-26, UI-craft review P3) ═══════════
    Before this block the whole 84KB stylesheet contained zero :focus-visible rules,
    zero :active rules, and exactly one `outline` declaration (`outline: none` on

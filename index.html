@@ -19,13 +19,51 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=329">
+  <link rel="stylesheet" href="style.css?v=332">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
        ignore the block; the case studies hold their cover's arrival until they are actually opened. -->
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"selector_matches": ".project-card"}, {"href_matches": "/*"}]}, "eagerness": "moderate"}]}
+  </script>
+  <!-- the card grid must be parsed before the first frame, so a return from a case study can find its card -->
+  <link rel="expect" href="#work" blocking="render">
+  <script>
+    // THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
+    // transition like play page did for its work"): leaving for a case study, the clicked card's plate takes the name its
+    // cover carries (case-cover) and the browser morphs one into the other; coming back, the cover shrinks into its card
+    // when that card is on screen (a link back lands at the top, where it usually is not: then the plain crossfade).
+    // Reduced motion: the plain crossfade. Names are cleared first, so a page restored from the back-forward cache never
+    // carries two.
+    (function () {
+      if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
+      var key = function (url) { try { return new URL(url, location.href).pathname.replace(/\.html$/, '').replace(/^\/+/, ''); } catch (e) { return '#'; } };
+      var clear = function () { var p = document.querySelectorAll('#work .project-img'); for (var i = 0; i < p.length; i++) p[i].style.viewTransitionName = ''; };
+      var plateFor = function (url) {
+        var k = key(url), cards = document.querySelectorAll('#work a.project-card');
+        for (var i = 0; i < cards.length; i++) if (cards[i].offsetParent !== null && key(cards[i].href) === k) return cards[i].querySelector('.project-img');
+        return null;
+      };
+      addEventListener('pageswap', function (e) {
+        clear();
+        if (!e.viewTransition || !e.activation) return;
+        var el = plateFor(e.activation.entry.url);
+        if (el) el.style.viewTransitionName = 'case-cover';
+      });
+      addEventListener('pagereveal', function (e) {
+        clear();
+        if (!e.viewTransition || !window.navigation || !navigation.activation || !navigation.activation.from) return;
+        var el = plateFor(navigation.activation.from.url);
+        if (!el) return;
+        var r = el.getBoundingClientRect();
+        if (r.bottom < 0 || r.top > innerHeight) return;
+        var html = document.documentElement;
+        el.style.viewTransitionName = 'case-cover';
+        html.classList.add('vt-case');
+        e.viewTransition.finished.finally(function () { el.style.viewTransitionName = ''; html.classList.remove('vt-case'); });
+      });
+    })();
   </script>
   <!-- Work-card motion. Scoped to this page (.card-loop exists only
        here), so it stays inline rather than bumping style.css across nine pages.
