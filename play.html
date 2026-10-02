@@ -96,6 +96,17 @@
        then sits under the slide at every card's 14px. Two columns keep the controls. */
     .play-grid.is-three .carousel-arrow,
     .play-grid.is-three .carousel-dots { display: none; }
+    /* NO FRAME, NO TEXT (2026-10-02, per user "maybe cancel the dark frame for the work", then "no text."). In three
+       columns a card is its piece alone: no #1a1a1a surface, no hairline, no edge shade, and no title or year under it,
+       since the detail page carries both. The piece keeps its 8px corners and the hover keeps only the soft glow in the
+       piece's own colour. The title stays in the page for screen readers and is still the card's one tab stop: it is
+       visually hidden, and while it has keyboard focus the ring is drawn round the piece. Below 1200 the cards keep
+       their frame and text (there is no detail page there to carry the title). */
+    .play-grid.is-three .play-card { background: transparent; border-color: transparent; }
+    @media (hover: hover) { .play-grid.is-three .play-card:hover { border-color: transparent; } }
+    .play-grid.is-three .play-card::after { display: none; }
+    .play-grid.is-three .play-card .play-info { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
+    .play-grid.is-three .play-card:has(.play-title-btn:focus-visible) { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; }
     /* an autoplay step just changes the image: no slide-in, no fade (per user "auto play just change
        the image, do not have slide in or other effect ... do not make it feel jump"); the next slide
        is decoded first, so it never shows an empty frame */
@@ -1732,7 +1743,9 @@
     document.querySelectorAll('.play-grid .play-card').forEach((card) => card.addEventListener('click', (e) => {
       if (!pieceMode()) return;
       const control = e.target.closest('button, a, img[data-name], video[controls]');
-      if (control && !control.classList.contains('play-title-btn')) return;
+      // a film's play disc opens the detail page too: no video plays in the grid (per user "for video, do not let it
+      // play at the play page, just direct to the detail page", 2026-10-02)
+      if (control && !control.classList.contains('play-title-btn') && !control.matches('.yt-facade, .build-go')) return;
       const tile = e.target.closest('video[preload="metadata"]'); // a Midjourney clip opens on itself
       if (tile) { openImage(tile, card.querySelector('.play-title-btn')); return; }
       window.playPiece.open(card, card.querySelector('.play-title-btn'));
@@ -1772,11 +1785,14 @@
       v.classList.remove('is-playing');
       v.pause(); v.removeAttribute('src'); v.load();
     };
+    // in three columns no video plays in the grid (2026-10-02): the builds rest on their posters there
+    const grid = document.querySelector('.play-grid');
+    const still = () => !!grid && grid.classList.contains('is-three');
     let io = null;
     if ('IntersectionObserver' in window) {
       io = new IntersectionObserver((entries) => entries.forEach((e) => {
         const v = e.target;
-        if (!e.isIntersecting || !desktop.matches || calm.matches) { unload(v); return; }
+        if (!e.isIntersecting || !desktop.matches || calm.matches || still()) { unload(v); return; }
         if (e.intersectionRatio >= 0.35) {
           if (!v.getAttribute('src')) v.src = v.dataset.loop;
           v.play().catch(() => {});
@@ -1794,6 +1810,7 @@
         if (io) io.observe(loop);
       }
       go.addEventListener('click', () => {
+        if (still()) return; // the card opens its detail page instead
         const film = card.querySelector('.build-film');
         if (!film) return;
         if (loop) { if (io) io.unobserve(loop); unload(loop); }
@@ -1803,6 +1820,12 @@
         film.play().catch(() => {});
       });
     });
+    // crossing 1200px: the loops stop for three columns, and are asked again below it
+    if (grid && io) grid.addEventListener('play:columns', () => stages.forEach((stage) => {
+      const loop = stage.querySelector('.build-loop');
+      if (!loop) return;
+      if (still()) unload(loop); else { io.unobserve(loop); io.observe(loop); }
+    }));
   })();
 
   // Carousel logic
@@ -1897,6 +1920,9 @@
   // page can put the poster back and stop it.
   document.querySelectorAll('.yt-facade').forEach(btn => {
     btn.addEventListener('click', () => {
+      // in three columns a film never plays in the grid: the click goes on to the card, which opens its detail
+      // page (2026-10-02); the detail page's own facade still plays when pressed
+      if (btn.closest('.play-grid.is-three')) return;
       const f = document.createElement('iframe');
       f.playFacade = btn;
       f.src = btn.dataset.embed;
@@ -2141,14 +2167,23 @@
   // Defer the Midjourney clips: fetch + play only when scrolled into view
   (function() {
     const vids = document.querySelectorAll('video[preload="metadata"]');
-    if (!('IntersectionObserver' in window)) { vids.forEach(v => v.play().catch(() => {})); return; }
+    // in three columns no video plays in the grid (2026-10-02): a clip shows its first frame and plays in its
+    // detail page. A muted play-then-pause draws that frame where a browser would otherwise leave the tile blank.
+    const grid = document.querySelector('.play-grid');
+    const still = () => !!grid && grid.classList.contains('is-three');
+    const show = (v) => {
+      if (still()) { if (v.readyState < 2) v.play().then(() => v.pause()).catch(() => {}); else v.pause(); }
+      else v.play().catch(() => {});
+    };
+    if (!('IntersectionObserver' in window)) { vids.forEach(show); return; }
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
-        if (e.isIntersecting) { e.target.play().catch(() => {}); }
+        if (e.isIntersecting) show(e.target);
         else { e.target.pause(); }
       });
     }, { rootMargin: '200px' });
     vids.forEach(v => io.observe(v));
+    if (grid) grid.addEventListener('play:columns', () => vids.forEach(v => { io.unobserve(v); io.observe(v); }));
   })();
 </script>
 
