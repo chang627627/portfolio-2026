@@ -198,6 +198,24 @@ nav:not(.side-nav)::before {
     rgba(0, 0, 0, 0) 100%);
 }
 
+/* THE FADE ARRIVES WITH THE SCROLL (2026-10-02, per user "I want the header has the transition. first it is
+   transparent and then it has the current version"): at the top of every page the bar is clear, and the fade above
+   comes in over the first 96px of scroll, tied to the scroll so it reverses on the way back up (the timing of Home's
+   glass fade-in, built and cancelled 2026-10-01; this one is site-wide). Opacity on the layer itself, never on the
+   nav. Without scroll timelines the fade simply stays. */
+@supports (animation-timeline: scroll()) {
+  nav:not(.side-nav)::before {
+    animation-name: nav-fade-in;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-iteration-count: 1;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+    animation-range: 0px 96px;
+  }
+}
+@keyframes nav-fade-in { from { opacity: 0; } to { opacity: 1; } }
+
 .logo {
   font-weight: 400;
   font-size: 14px;
