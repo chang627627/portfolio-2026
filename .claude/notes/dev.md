@@ -2,6 +2,8 @@
 
 Moved word for word from CLAUDE.md on 2026-09-27 (the full original is `git show f7f52ee:CLAUDE.md`). CLAUDE.md holds the current state and the standing rules; this file is the history behind them. Entries keep their original order, and where two disagree, the later-dated one or the one marked SUPERSEDES wins. Add new entries at the top, directly under this paragraph.
 
+- **FOUR MORE CLEAN URLS (2026-10-02, per user "do 2" from the dark.design comparison; vercel.json only; pushed to main 2026-10-02 per user "push").** Production returned the 404 page for /about, /play, /pollen, /coffee and /resume while /homewise, /nova, /storybloom and /countersign (and the deck URLs) worked, so a recruiter typing chang-mou.com/about landed on "Lost in the fog". Added four rewrites in the existing style: /about, /play, /pollen and /coffee to their .html files. Site-wide `cleanUrls` stays off (it 301s every shared .html link); nav links, canonicals and the sitemap keep .html. A /resume redirect to the Drive PDF was offered as optional and is not built (silence is not approval). serve.py ignores vercel.json, so this can only be checked on production after a push.
+
 - LinkedIn: https://www.linkedin.com/in/chang-mou/
 - Email: changmou627627@gmail.com
 - Resume: https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view?usp=sharing

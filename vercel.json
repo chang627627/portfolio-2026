@@ -7,6 +7,10 @@
     { "source": "/homewiseslide", "destination": "/homewiseslide.html" },
     { "source": "/storybloom", "destination": "/storybloom.html" },
     { "source": "/countersign", "destination": "/countersign.html" },
-    { "source": "/countersignslide", "destination": "/countersignslide.html" }
+    { "source": "/countersignslide", "destination": "/countersignslide.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/play", "destination": "/play.html" },
+    { "source": "/pollen", "destination": "/pollen.html" },
+    { "source": "/coffee", "destination": "/coffee.html" }
   ]
 }
