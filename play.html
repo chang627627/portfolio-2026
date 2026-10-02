@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=328">
+  <link rel="stylesheet" href="style.css?v=329">
   <style>
     /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
        back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
@@ -323,8 +323,16 @@
     @media (prefers-reduced-motion: no-preference) {
       html.vt-piece { view-transition-name: none; }
       html.vt-piece .lightbox img { transition: none !important; transform: none !important; }
-      ::view-transition-group(play-piece) { animation-duration: 300ms; animation-timing-function: var(--ease-out); }
-      html.vt-piece-close::view-transition-group(play-piece) { animation-duration: 220ms; }
+      ::view-transition-group(play-piece) { animation-duration: 450ms; animation-timing-function: var(--ease-out); } /* 300ms until 2026-10-01 */
+      html.vt-piece-close::view-transition-group(play-piece) { animation-duration: 300ms; } /* 220ms until 2026-10-01 */
+      /* SLOWER AND SOFTER (2026-10-01, per user "...or in the play page to open the detail page feels instant", then
+         "do 1 and 2"): the piece grows over 450ms; the black page comes up over the same 450ms instead of 240ms and
+         goes in 300ms; the title, year and caption arrive just after the piece lands, 60ms apart from the first */
+      .lightbox.is-piece.open { transition-duration: 450ms; }
+      .lightbox.is-piece:not(.open) { transition-duration: 300ms; }
+      @keyframes piece-panel-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+      .lightbox.is-piece.open .lightbox-panel .play-info-top { animation: piece-panel-in 0.4s var(--ease-out) 0.3s both; }
+      .lightbox.is-piece.open .lightbox-panel .play-info-top ~ * { animation: piece-panel-in 0.4s var(--ease-out) 0.36s both; }
       ::view-transition-old(play-piece),
       ::view-transition-new(play-piece) { animation: none; width: 100%; height: 100%; object-fit: cover; overflow: hidden; border-radius: 8px; }
       html.vt-piece-open::view-transition-old(play-piece) { opacity: 0; }

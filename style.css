@@ -3240,6 +3240,27 @@ footer {
    (html.is-prerendering, set by each case study's head script until prerenderingchange). */
 .is-prerendering .case-cover { animation-play-state: paused; }
 
+/* THE WORDS SETTLE IN AFTER THE PAGE (2026-10-01, the staged page arrival above): on a case study the title, the
+   intro line and the details row come up one after another, 60ms apart, each over half a second (opacity and an 8px
+   lift on the elements themselves, never the root, so the fixed header does not move), starting as the page's
+   crossfade lands; the cover arrives in its own light meanwhile. Held, like the cover, while the page is prerendered,
+   so it plays when the page is shown. Reduced motion: no movement. */
+@keyframes case-arrive {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .project-hero h1,
+  .project-hero .project-hero-sub,
+  .project-content > .project-details { animation: case-arrive 0.5s var(--ease-out) both; }
+  .project-hero h1 { animation-delay: 0.28s; }
+  .project-hero .project-hero-sub { animation-delay: 0.34s; }
+  .project-content > .project-details { animation-delay: 0.4s; }
+}
+.is-prerendering .project-hero h1,
+.is-prerendering .project-hero .project-hero-sub,
+.is-prerendering .project-content > .project-details { animation-play-state: paused; }
+
 /* Comparison Table */
 .compare-table {
   width: 100%;
@@ -5342,11 +5363,16 @@ footer {
 @view-transition {
   navigation: auto;
 }
+/* STAGED, NOT A CUT (2026-10-01, per user "the transition of open study case from home page ... feels instant which
+   feel not very premium", then "do 1 and 2"): the old page dims out first (250ms) and the new one comes up a beat
+   later and slower (420ms from 100ms), so the page reads as arriving; the case study's title, intro and details then
+   settle in after it (.project-hero below). It was 300ms out and 340ms in at once, and with the case study already
+   prerendered from the card it read as a cut. Still pure opacity on the root, for the reason above. */
 ::view-transition-old(root) {
-  animation: vt-fade-out 0.3s ease both;
+  animation: vt-fade-out 0.25s ease both;
 }
 ::view-transition-new(root) {
-  animation: vt-fade-in 0.34s ease both;
+  animation: vt-fade-in 0.42s var(--ease-out) 0.1s both;
 }
 @keyframes vt-fade-out {
   to { opacity: 0; }
