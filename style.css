@@ -5358,8 +5358,7 @@ footer {
    gated off under prefers-reduced-motion. NO transform/translate on the root: a 12px "fade-up"
    was tried first but it lifted the position:fixed chrome (the floating nav, the chat button,
    the case-study side-nav) 12px on every navigation, because fixed elements ride the root
-   snapshot — so it's a still crossfade now. NOT a card->cover morph (that paired-name version
-   was tried + cut 2026-06-11 — card thumbnails and covers are different images). */
+   snapshot — so it's a still crossfade now. From Home the card grows into the cover (below). */
 @view-transition {
   navigation: auto;
 }
@@ -5387,9 +5386,7 @@ footer {
 }
 
 /* THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
-   transition like play page did for its work"; this reverses the June ruling against a card-to-cover morph, which was
-   cut then because the card images and covers were different pictures; since 2026-09-30 three covers are built from
-   their card's own still). Every case-study cover carries the name case-cover, and Home gives it to the clicked card's
+   transition like play page did for its work"). Every case-study cover carries the name case-cover, and Home gives it to the clicked card's
    plate at the moment of leaving (index.html's head script), so the browser grows the plate into the cover over 450ms
    on the site's ease-out, both pictures cover-fit in a box with 8px corners, the way Play's pieces grow. While it runs
    (html.vt-case, set by the arriving page) the old page fades out in 150ms and the new one is there at once, as on Play,
@@ -5400,10 +5397,13 @@ footer {
   ::view-transition-group(case-cover) { animation-duration: 450ms; animation-timing-function: var(--ease-out); }
   ::view-transition-old(case-cover),
   ::view-transition-new(case-cover) { height: 100%; object-fit: cover; overflow: hidden; border-radius: 8px; }
-  /* the two pictures swap early and fast (120ms), so the growth reads as one picture: across the whole 450ms the card's
-     still and the cover's showed together, doubled; at 180ms the doubling still read for about a fifth of a second */
-  ::view-transition-old(case-cover) { animation: vt-fade-out 120ms linear both; }
-  ::view-transition-new(case-cover) { animation: vt-fade-in 120ms linear both; }
+  /* the two pictures swap early and fast (120ms), so the growth reads as one picture. ONLY the duration and timing are
+     set: replacing the whole animation (as first built) also dropped the browser's plus-lighter blend, and the swap dipped
+     dim and grey halfway, both pictures half there over black (per user "only unicef nova case has that transition.
+     others do not apply well") */
+  ::view-transition-old(case-cover),
+  ::view-transition-new(case-cover) { animation-duration: 120ms; animation-timing-function: linear; }
+
   html.vt-case::view-transition-old(root) { animation: vt-fade-out 150ms linear both; }
   html.vt-case::view-transition-new(root) { animation: none; }
 }

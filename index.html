@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=332">
+  <link rel="stylesheet" href="style.css?v=335">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -40,6 +40,7 @@
       if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
       var key = function (url) { try { return new URL(url, location.href).pathname.replace(/\.html$/, '').replace(/^\/+/, ''); } catch (e) { return '#'; } };
       var clear = function () { var p = document.querySelectorAll('#work .project-img'); for (var i = 0; i < p.length; i++) p[i].style.viewTransitionName = ''; };
+      var nameCard = function (el) { el.style.viewTransitionName = 'case-cover'; };
       var plateFor = function (url) {
         var k = key(url), cards = document.querySelectorAll('#work a.project-card');
         for (var i = 0; i < cards.length; i++) if (cards[i].offsetParent !== null && key(cards[i].href) === k) return cards[i].querySelector('.project-img');
@@ -49,7 +50,7 @@
         clear();
         if (!e.viewTransition || !e.activation) return;
         var el = plateFor(e.activation.entry.url);
-        if (el) el.style.viewTransitionName = 'case-cover';
+        if (el) nameCard(el, e.activation.entry.url);
       });
       addEventListener('pagereveal', function (e) {
         clear();
@@ -59,9 +60,9 @@
         var r = el.getBoundingClientRect();
         if (r.bottom < 0 || r.top > innerHeight) return;
         var html = document.documentElement;
-        el.style.viewTransitionName = 'case-cover';
+        nameCard(el, navigation.activation.from.url);
         html.classList.add('vt-case');
-        e.viewTransition.finished.finally(function () { el.style.viewTransitionName = ''; html.classList.remove('vt-case'); });
+        e.viewTransition.finished.finally(function () { clear(); html.classList.remove('vt-case'); });
       });
     })();
   </script>
