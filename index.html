@@ -172,6 +172,30 @@
         inset 0 -1px 0 rgba(0, 0, 0, 0.35),
         inset 0 -48px 64px -48px rgba(0, 0, 0, 0.35);
     }
+    /* IMAGE ON TOP, TEXT BELOW, NO FRAME (2026-10-03, per user "get rid of the frame for the thumbnail of the study case.
+       make it 2026", then "image top + text down"). The card loses its #1a1a1a surface, its hairline and the edge light
+       above: the plate stands on the page by itself with the site's 8px corners all round, and the title, year and
+       description sit under it on black, flush with its edges. The hover keeps the plate's own soft glow (Play's recipe,
+       24px at 0.16 and 60px at 0.06), now round the plate rather than a card, and the still keeps its zoom; nothing
+       lifts. With no frame closing each card, a row needs more air under its text than the 24px between columns. The
+       keyboard ring still goes round the whole card. Supersedes THE WORK IS CARDS AGAIN's frame (2026-09-29). */
+    .project-grid { gap: 56px 24px; }
+    @media (max-width: 768px) { .project-grid { row-gap: 40px; } }
+    .project-grid .project-card { background: transparent; border: 0; border-radius: 0; overflow: visible; }
+    .project-grid .project-card::after { display: none; }
+    .project-grid .project-img { border-radius: var(--radius); transition: box-shadow var(--dur-base) var(--ease-out); }
+    .project-grid .project-info { padding: 20px 0 0; }
+    @media (hover: hover) {
+      .project-grid .project-card:hover { border-color: transparent; box-shadow: none; }
+      @supports (color: oklch(from white l c h)) {
+        .project-grid .project-card:hover { box-shadow: none; }
+        .project-grid .project-card:hover .project-img {
+          box-shadow:
+            0 0 24px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.16),
+            0 0 60px oklch(from var(--plate-light, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.06);
+        }
+      }
+    }
     /* Card typography: the plate leads, the title is the
        second read, the year stays at the end of the row (an inline year was
        tried and moved back per user). The chip row stays as
