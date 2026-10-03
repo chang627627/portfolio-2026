@@ -719,31 +719,11 @@ nav:not(.side-nav)::before {
    which interpolates DISCRETELY: the specular fade-out would snap. */
 .hero h1.lit.settled .line-inner span {
   filter: none;
-  position: relative;
   /* 0.45s is only the pre-first-write default: the specular engine overrides
      transition-duration inline per glyph (fast rise / slow decay = the wake).
      transform is deliberately NOT in this list — the magnetic displacement
      writes it per frame and must land instantly, not be smeared by CSS. */
   transition: filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out);
-}
-
-/* THE GLOW IS A COPY THAT FADES (2026-10-02). The specular glow used to be a text-shadow the engine rewrote on every
-   change, which re-rasterized the headline every frame. Each glyph now carries a copy of itself (its character from
-   data-c, set by the sweep script) with the same two shadows at full strength, and the engine sets --glow, its
-   opacity, and --td, its transition (the wake's fast rise and slow decay). The copy is drawn once; only its opacity
-   moves, on the compositor. Its text is transparent, so only the shadows show, over the glyph exactly where the
-   shadow used to sit beneath it. */
-.hero h1.lit.settled .line-inner span::after {
-  content: attr(data-c);
-  position: absolute;
-  left: 0;
-  top: 0;
-  color: transparent;
-  pointer-events: none;
-  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35), 0 0 22px rgba(255, 255, 255, 0.30);
-  opacity: var(--glow, 0);
-  transition: opacity var(--td, 0.45s) var(--ease-out);
-  will-change: opacity;
 }
 
 @keyframes revealLine {
