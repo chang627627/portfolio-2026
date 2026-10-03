@@ -469,6 +469,10 @@
         radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
         radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(60, 20, 200, 0.88), transparent 66%);
     }
+    /* the field is painted small on a canvas, blurred there, by the script after the hero (THE GRADIENT IS PAINTED SMALL);
+       once that canvas is in, the stylesheet's own background and blur step aside */
+    .hero .hero-orbs--g2.is-painted { background: none !important; }
+    .hero .hero-orbs--g2.is-blurred { filter: none !important; }
     /* ORIGINAL (the pre-2026-09-08 "g2" ramp, kept for comparison and for
        going back): ?look=original restores it on this page, hero and footer.
        Values are copies of style.css's .hero-orbs--g2 and .footer-glow as
@@ -941,6 +945,118 @@
       });
     }
 
+  </script>
+  <script>
+    /* THE GRADIENT IS PAINTED SMALL, BLUR AND SPILL INCLUDED (2026-10-02, per user "home page has some freeze, when I
+       enter it from different page ... especially when i click the 'back' button"). Measured in a visible Chrome on the
+       live site, Homewise -> "← Back" -> Home, Chrome's own display log: about 275 frames shown in 4.8s on a 120Hz screen
+       (half of them dropped), the GPU process busy 2,930ms of every 3,000, and the screen held 50 to 83ms in the middle of
+       the crossfade; pausing only this gradient's motion gave 570 frames, no holds, GPU about 900ms. irisFlow and blueFlow
+       move the six pools through custom properties, so the browser repainted all six at full size (about 4,300 by 1,500
+       device pixels) and re-ran blur(32px) over the result every frame. Now the same pools are drawn each frame into a
+       canvas at a quarter of the size and blurred there (8px at that size), and the element shows it stretched, with no
+       background and no filter of its own. The canvas reaches 96px (three times the blur) past the element on every side,
+       where the browser's own blur spilled, so the field's foot fades out exactly as before (the 2026-10-02 canvas without
+       that margin cut a hard line there). Shapes, colours and stops are read from the stylesheet's own background (so
+       ?look=original still works), positions from the same custom properties every frame, so the CSS animations,
+       Lightfall's lean, the scroll lag and the stardust's colour sampling keep working untouched. Reduced motion keeps
+       the stylesheet's background, which then never moves; a browser whose canvas cannot blur keeps the element's blur. */
+    (() => {
+      const orbs = document.querySelector('.hero .hero-orbs--g2');
+      if (!orbs || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const NAMES = ['yellow', 'warm', 'pink', 'azure', 'cyan', 'blue'];   // the stylesheet's layer order, top first
+      const BLUR = 32, M = 3 * BLUR, SCALE = 0.25;                          // CSS px; the blur's spill is 3 sigma
+      const split = (s) => { const out = []; let depth = 0, cur = ''; for (const ch of s) { if (ch === '(') depth++; if (ch === ')') depth--; if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; } else cur += ch; } if (cur.trim()) out.push(cur.trim()); return out; };
+      const parse = () => {
+        const layers = split(getComputedStyle(orbs).backgroundImage).map((g) => {
+          const m = g.match(/^radial-gradient\((.*)\)$/);
+          if (!m) return null;
+          const parts = split(m[1]);
+          const size = parts[0].match(/^(?:ellipse\s+)?([\d.]+)%\s+([\d.]+)%\s+at\s/);
+          const c0 = parts[1] && parts[1].match(/rgba?\(([^)]+)\)/), end = parts[2] && parts[2].match(/([\d.]+)%\s*$/);
+          if (parts.length !== 3 || !size || !c0 || !end) return null;
+          const c = c0[1].split(',').map(Number);
+          return { rx: +size[1] / 100, ry: +size[2] / 100, rgb: `${c[0]},${c[1]},${c[2]}`, a: c.length > 3 ? c[3] : 1, end: Math.min(1, +end[1] / 100) };
+        });
+        return layers.length === NAMES.length && layers.every(Boolean) ? layers : null;
+      };
+      let layers = parse();
+      if (!layers) return;                                                 // anything unexpected: keep the CSS
+      const cv = document.createElement('canvas'), off = document.createElement('canvas');
+      const ctx = cv.getContext('2d'), octx = off.getContext('2d');
+      if (!ctx || !octx) return;
+      // can this canvas blur? (Safari has no canvas filters: then the element keeps its own blur). One white pixel is
+      // blurred on a tiny canvas kept off the GPU, and a neighbour read back; the filter must exist too, so a browser
+      // that adds noise to read-backs (Safari's private windows) can never pass by chance.
+      const probe = document.createElement('canvas'); probe.width = probe.height = 9;
+      const pctx = probe.getContext('2d', { willReadFrequently: true });
+      let canBlur = false;
+      if (pctx && 'filter' in pctx) {
+        pctx.filter = 'blur(2px)'; pctx.fillStyle = '#fff'; pctx.fillRect(4, 4, 1, 1);
+        canBlur = pctx.filter === 'blur(2px)' && pctx.getImageData(2, 4, 1, 1).data[3] > 0;
+      }
+      cv.className = 'hero-orbs__paint';
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = `position:absolute;left:${-M}px;top:${-M}px;width:calc(100% + ${2 * M}px);height:calc(100% + ${2 * M}px);display:block;pointer-events:none`;
+      const hero = orbs.closest('.hero') || orbs;
+      let W = 1, H = 1, cw = 1, ch = 1, sx = SCALE, sy = SCALE, heroEnd = 0;
+      const size = () => {
+        W = orbs.offsetWidth; H = orbs.offsetHeight; heroEnd = hero.offsetTop + hero.offsetHeight;
+        cw = Math.max(1, Math.round((W + 2 * M) * SCALE)); ch = Math.max(1, Math.round((H + 2 * M) * SCALE));
+        sx = cw / (W + 2 * M); sy = ch / (H + 2 * M);
+        if (cv.width !== cw) { cv.width = cw; off.width = cw; }
+        if (cv.height !== ch) { cv.height = ch; off.height = ch; }
+      };
+      const pct = (cs, name) => parseFloat(cs.getPropertyValue(name)) / 100;
+      const draw = () => {
+        const cs = getComputedStyle(orbs), lift = pct(cs, '--g2-lift') || 0;
+        const bx = M * sx, by = M * sy, bw = W * sx, bh = H * sy;           // the element's own box inside the canvas
+        octx.setTransform(1, 0, 0, 1, 0, 0);
+        octx.clearRect(0, 0, cw, ch);
+        for (let i = layers.length - 1; i >= 0; i--) {                     // the bottom layer first, as CSS composites them
+          const L = layers[i], n = NAMES[i];
+          const x = pct(cs, `--g2-${n}-x`), y = pct(cs, `--g2-${n}-y`);
+          if (isNaN(x) || isNaN(y)) continue;
+          const cx = bx + x * bw, cy = by + (y + lift) * bh, rx = L.rx * bw, ry = L.ry * bh;
+          octx.setTransform(rx, 0, 0, ry, cx, cy);                          // unit circle -> the stylesheet's ellipse
+          const g = octx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          g.addColorStop(0, `rgba(${L.rgb},${L.a})`);
+          g.addColorStop(L.end, `rgba(${L.rgb},0)`);
+          octx.fillStyle = g;
+          octx.fillRect((bx - cx) / rx, (by - cy) / ry, bw / rx, bh / ry);   // painted within the box only, as a background is
+        }
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, cw, ch);
+        if (canBlur) ctx.filter = `blur(${(BLUR * sx).toFixed(3)}px)`;     // the whole field blurred at once, as the filter did
+        ctx.drawImage(off, 0, 0);
+        ctx.filter = 'none';
+      };
+      size(); draw();
+      orbs.appendChild(cv);
+      // the stylesheet's background and blur step aside while the canvas holds the field; if the browser drops the
+      // canvas (a GPU reset), they come back until it is restored
+      let live = true;
+      const show = () => { orbs.classList.toggle('is-painted', live); orbs.classList.toggle('is-blurred', live && canBlur); };
+      show();
+      [cv, off].forEach((c) => {
+        c.addEventListener('contextlost', () => { live = false; show(); });
+        c.addEventListener('contextrestored', () => { live = true; draw(); show(); });
+      });
+      let raf = 0, on = true;
+      const loop = () => { raf = 0; if (!on) return; draw(); raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+      // drawing starts a little before the hero scrolls back in, so its first frame on screen is never a stale one;
+      // a jump back faster than that (the scrollbar dragged to the top) is drawn in the scroll event itself
+      new IntersectionObserver((es) => { on = es[es.length - 1].isIntersecting; if (on && !raf) raf = requestAnimationFrame(loop); }, { rootMargin: '200px 0px' }).observe(hero);
+      addEventListener('scroll', () => { if (!on && scrollY < heroEnd + 200) draw(); }, { passive: true });
+      // a new size, or a width where the stylesheet draws the field differently: read it again
+      if ('ResizeObserver' in window) new ResizeObserver(() => {
+        orbs.classList.remove('is-painted', 'is-blurred');
+        layers = parse() || layers;
+        show();
+        size(); draw();
+      }).observe(orbs);
+    })();
   </script>
   <!-- The Living Gradient (hero-fluid.js) is retired, per Chang: its field animated
        on its own and read as disconnected from the cursor. The hero is back to the
