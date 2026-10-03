@@ -1236,6 +1236,13 @@
   // (about 200px at 375) inside the same band, a shorter crossing since the band is narrower,
   // the stars a little larger so the animal reads at that size, and the meteor retired there
   // as on desktop (one event per surface). It stays abstract and still ignores touch.
+  // Off phones on 2026-10-01 ("no need whale on mobile"); BACK ON PHONES, ITS STARS REMADE FOR ITS
+  // SIZE (2026-10-03, per user "can we bring back the whale to the mobile footer? we need to remake
+  // the stardust size of whale for the mobile version"): at 375-390 the whale is about 215px long,
+  // under half the desktop 500, but its stars kept desktop pixel sizes (and grew 1.25x), so it read
+  // as a few heavy blobs, and its outline kept desktop's 13px spacing, so it had a third of the
+  // stars per length. Now its stars are 0.6 of their desktop size and 7px apart (anchors clear 5px),
+  // about desktop's stars per length: the same animal, scaled down.
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
@@ -1346,10 +1353,10 @@
       const SETTLE_PULSE = 0.3, FIELD_DIM = 0.3, WHALE_R = 1.15; // the click when the last star lands, how much the ambient field steps back while it swims, the whale's stars a little larger than the field's
       const WHALE = [34, 50];                 // seconds between whale starts (a desktop crossing takes about 27s, so 7 to 23s of empty band between them; a phone crossing about 18s, so 16 to 32s; was 45 to 75, then 28 to 45 with the 18s crossing)
       let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
-      let rScale = 1; // the stars grow a little on phones, where the whale is half the size (set per spawn)
+      let rScale = 1; // the stars' size: smaller on phones, where the whale is under half the size (set per spawn)
       // The sparks' rays scale with the animal (2026-09-22): they were sized for a 500px whale, so on a 206px phone
       // whale each cross spanned about a fifth of the body and it read as a scatter of stars (set per spawn)
-      let rayK = 1;
+      let rayK = 1, outPx = OUT_PX, anchorClear = ANCHOR_CLEAR; // the outline's spacing and the anchors' clearance, tighter on phones (set per spawn)
       function catmull(pts, per, closed) {
         const out = [], n = pts.length;
         for (let i = 0; i < (closed ? n : n - 1); i++) {
@@ -1396,7 +1403,7 @@
       function sampleAlong(poly, L) { // stars along a closed polyline: OUT_PX apart, some dropped, each slid along the curve, faint midpoints between
         const C = [0];
         for (let i = 1; i <= poly.length; i++) { const a = poly[i - 1], b = poly[i % poly.length]; C.push(C[C.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
-        const tot = C[C.length - 1], sp = OUT_PX / L, n = Math.max(3, Math.floor(tot / sp)), out = [];
+        const tot = C[C.length - 1], sp = outPx / L, n = Math.max(3, Math.floor(tot / sp)), out = [];
         const at = d => { d = ((d % tot) + tot) % tot; for (let i = 1; i < C.length; i++) if (C[i] >= d) { const a = poly[i - 1], b = poly[i % poly.length], seg = C[i] - C[i - 1], t = seg ? (d - C[i - 1]) / seg : 0; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, i - 1]; } return [poly[0][0], poly[0][1], 0]; };
         for (let i = 0; i < n; i++) {
           if (Math.random() >= OUT_DROP) out.push({ p: at((i + rnd(-OUT_SLIDE, OUT_SLIDE)) * sp), kind: 'outline' });
@@ -1425,21 +1432,20 @@
         return [cx + w.dir * (0.5 - ss) * w.L + 0.6 * Math.sin(age * 3 + m.ph), cy + tt * w.L + 0.6 * Math.cos(age * 2.7 + m.ph)];
       }
       function spawnWhale() {
-        // NOT ON PHONES (2026-10-01, per user "no need whale on mobile"): the embers stay, the whale never forms there
-        if (whale || !whaleOn || phoneMQ.matches) return;
+        if (whale || !whaleOn) return;
         const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
         // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
         // On a phone the width decides instead: 55% of it, so the animal reads at 375
         const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
         if (L < 120) return;
-        rScale = phone ? 1.25 : 1;
+        rScale = phone ? 0.6 : 1; outPx = phone ? 7 : OUT_PX; anchorClear = phone ? 5 : ANCHOR_CLEAR;
         rayK = Math.min(1, L / 500);
         const swim = phone ? 16 : W_SWIM; // a narrower band, a shorter crossing
         const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
         const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], ka = (L / 460) * (L / 460);
         const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
         const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
-        const clear = p => !W_ANCHORS.some(a => Math.hypot(p[0] - a[0], p[1] - a[1]) * L < ANCHOR_CLEAR); // anchors stand alone
+        const clear = p => !W_ANCHORS.some(a => Math.hypot(p[0] - a[0], p[1] - a[1]) * L < anchorClear); // anchors stand alone
         W_ANCHORS.forEach(a => list.push(whaleMote(a, a[2] ? 'spark' : a[3] === 2 ? 'anchor2' : 'anchor', a[4])));
         sampleAlong(body, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, o.p[2] >= F0 && o.p[2] < F1 ? 'fluke' : 'body')); });
         sampleAlong(fin, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, 'fin')); });
