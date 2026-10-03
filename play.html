@@ -834,6 +834,13 @@
         </div>
         <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
       </div>
+      <div class="play-card" style="--glow:#5990d8;--mo:12">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Pastel Floating Plaza</h3><span class="play-year">2026</span></div>
+          <p>An exploration of an imagined public space shaped by color, light, and weightlessness. Soft architectural forms create an open, dreamlike environment, while floating shapes and unexpected bursts of saturation introduce movement and play. Familiar spatial cues gradually become less literal, turning the plaza into a place that feels somewhere between architecture, landscape, and imagination. Made with GPT Image 2.5.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="1370" height="1148" src="images/pastel-floating-plaza.webp" alt="Pastel Floating Plaza, a painted plaza of pale arches and columns over a reflecting floor, with coral, blue and yellow ovals floating in the air and a burst of small colored shapes drifting toward the horizon" class="play-img-photo">
+      </div>
       <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
@@ -1035,17 +1042,17 @@
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
        Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
-       22 cards: the columns end within 1.5% of each other, each on a film, with The Rib still left
-       of Vitruvian and Perfect Copy under it, and the two slideshows in different columns. A new
+       24 cards: the columns end within 0.1% of each other, each runs 2026 to 2020 and ends on a 2020
+       film, Day Drift sits under Perfect Copy, and the two slideshows are in different columns. A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'Vitruvian', 'Luma', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'Market Street Booklet Kit', 'Missing Pavilion', 'About the Teddy Bear'],
-        ['Octocrab', 'Midjourney', 'No Signal Summer', 'Fish Ocean', 'Whisper XR', 'Mirror', 'Running Dog', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'The Rib', 'Perfect Copy', 'Day Drift', 'New Craft Society', 'TickerPulse', 'UN/FOLD'],
+        ['Scope', 'Midjourney', 'The Rib', 'Pastel Floating Plaza', 'Fish Ocean', 'Whisper XR', 'Mirror', 'About the Teddy Bear'],
+        ['Octocrab', 'Luma', 'No Signal Summer', 'Robot Operator Console', 'New Craft Society', 'Market Street Booklet Kit', 'TickerPulse', 'I Believe in a Thing Called Love'],
+        ['The Last Human Gestures', 'Vitruvian', 'Perfect Copy', 'Day Drift', 'Futuristic Starship Cockpit', 'Missing Pavilion', 'Running Dog', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
