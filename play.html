@@ -138,6 +138,26 @@
       }
     }
     @media (max-width: 768px) { .play-section .play-grid.is-gallery .play-card .play-info h3 { font-size: 16px; } }
+    /* THE HOVER CARD (2026-10-03, per user "can we do https://www.youtube.com/'s hover state of video in our home
+       page and play section but in our style. There is no card but I hover there is a card"): Home's, the same rule.
+       No card at rest; on hover the site's #1a1a1a surface, nudged toward the piece's own hue (--glow through oklch,
+       lightness 0.22, chroma at most 0.02), fades in behind the piece and its text, 12px past them all round with
+       concentric corners. It replaces the glow round the piece. Nothing moves. */
+    @media (hover: hover) and (pointer: fine) {
+      .play-section .play-grid .play-card { position: relative; isolation: isolate; }
+      .play-section .play-grid .play-card::before {
+        content: ""; position: absolute; inset: -12px; z-index: -1;
+        border-radius: calc(var(--radius) + 12px);
+        background: #1a1a1a;
+        opacity: 0; transition: opacity var(--dur-base) var(--ease-out); pointer-events: none;
+      }
+      @supports (color: oklch(from white l c h)) {
+        .play-section .play-grid .play-card::before { background: oklch(from var(--glow, #1a1a1a) 0.22 min(c, 0.02) h); }
+        .play-section .play-grid .play-card:hover > :not(.play-info):not(.carousel),
+        .play-section .play-grid .play-card:hover > .carousel .carousel-track { box-shadow: none; }
+      }
+      .play-section .play-grid .play-card:hover::before { opacity: 1; }
+    }
     /* an autoplay step just changes the image: no slide-in, no fade (per user "auto play just change
        the image, do not have slide in or other effect ... do not make it feel jump"); the next slide
        is decoded first, so it never shows an empty frame */

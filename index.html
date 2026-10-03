@@ -204,6 +204,27 @@
         }
       }
     }
+    /* THE HOVER CARD (2026-10-03, per user "can we do https://www.youtube.com/'s hover state of video in our home
+       page and play section but in our style. There is no card but I hover there is a card"). YouTube's grid has no
+       card at rest; on hover a dark rounded card fades in behind the thumbnail and its text, about 12px past the tile
+       on every side, tinted with the thumbnail's colour. Ours: the site's #1a1a1a surface, nudged toward the plate's
+       own hue (oklch lightness 0.22, chroma at most 0.02), 12px past the card all round with concentric corners
+       (the plate's 8px plus the 12px), fading in on the hover clock. It replaces the plate's glow, so the hover has
+       one signal. Nothing moves: the card sits behind the plate and text, and the still keeps its zoom. */
+    @media (hover: hover) and (pointer: fine) {
+      .project-grid .project-card { position: relative; isolation: isolate; }
+      .project-grid .project-card::before {
+        display: block; content: ""; position: absolute; inset: -12px; z-index: -1;
+        border-radius: calc(var(--radius) + 12px);
+        background: #1a1a1a;
+        opacity: 0; transition: opacity var(--dur-base) var(--ease-out); pointer-events: none;
+      }
+      @supports (color: oklch(from white l c h)) {
+        .project-grid .project-card::before { background: oklch(from var(--plate-light, #1a1a1a) 0.22 min(c, 0.02) h); }
+        .project-grid .project-card:hover .project-img { box-shadow: none; }
+      }
+      .project-grid .project-card:hover::before { opacity: 1; }
+    }
     /* Card typography: the plate leads, the title is the
        second read, the year stays at the end of the row (an inline year was
        tried and moved back per user). The chip row stays as
