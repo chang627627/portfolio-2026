@@ -184,6 +184,12 @@
     .project-grid .project-card { background: transparent; border: 0; border-radius: 0; overflow: visible; }
     .project-grid .project-card::after { display: none; }
     .project-grid .project-img { border-radius: var(--radius); transition: box-shadow var(--dur-base) var(--ease-out); }
+    /* SAFARI'S SQUARE CORNERS (2026-10-03, per user with an iPhone screenshot, "why the fuck the storybloom's thumbnail is
+       right corner not round corner"). StoryBloom's still is a full-bleed cover; every plate image carries style.css's
+       drop-shadow filter, and WebKit does not clip a filtered child to its parent's rounded overflow, so the cover's own
+       square corners showed in Safari (Chrome clipped them). The cover takes the plate's radius itself; checked in a
+       WKWebView at 390, at rest and with the hover zoom (nothing spills past the plate). */
+    .project-grid .project-img--cover > img { border-radius: var(--radius); }
     .project-grid .project-info { padding: 20px 0 0; }
     /* one-line descriptions (2026-10-03, "make the description shorter. do not have the number"): no two-line reserve under them */
     .project-grid .project-info p { min-height: 0; }
