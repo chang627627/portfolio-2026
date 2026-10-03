@@ -561,6 +561,12 @@
        so 404.html, which shares the rule, is untouched. */
     @media (max-width: 768px) {
       .hero::after { height: 48px; background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 0%, #0a0a0a 85%); }
+      /* MORE BLUE UNDER THE PILL (2026-10-03, per user, with a phone screenshot: "for mobile version, the open to new
+         opportunity get too close the dark"). With 40px under the pill the field's box ended 13px below it (434px hero,
+         box foot 421, pill foot 394), so the pill sat on the edge of the dark. 104px gives the hero 64px more room; the
+         field, sized by the hero, reaches 89px past the pill before it fades, and the pill does not move. 88 and 120
+         were compared; 104 keeps the pill in the blue with a soft foot under it. */
+      .hero { padding-bottom: 104px; }
     }
     /* THE COPIED STATE HAS NO HOVER (2026-09-22, per user "the click sign should be in the middle and have no hover in
        this state"): while the pill says "Email copied" it holds its resting border and fill, the check is not nudged
