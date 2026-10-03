@@ -185,6 +185,8 @@
     .project-grid .project-card::after { display: none; }
     .project-grid .project-img { border-radius: var(--radius); transition: box-shadow var(--dur-base) var(--ease-out); }
     .project-grid .project-info { padding: 20px 0 0; }
+    /* one-line descriptions (2026-10-03, "make the description shorter. do not have the number"): no two-line reserve under them */
+    .project-grid .project-info p { min-height: 0; }
     @media (hover: hover) {
       .project-grid .project-card:hover { border-color: transparent; box-shadow: none; }
       @supports (color: oklch(from white l c h)) {
@@ -1117,7 +1119,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
-            <p>AI command center for homeowners. Prototyped in code, shipped by the dev team, managing repairs from one workspace</p>
+            <p>AI command center for homeowners. Prototyped in code, shipped by the dev team</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Professional</span><span class="card-tag">Home Services</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
@@ -1131,7 +1133,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>PollenNav</h3><span class="project-year">2025</span></div>
-            <p>Street level pollen guidance for safer city travel, designed for the one billion people with seasonal allergies</p>
+            <p>Street level pollen guidance for safer city travel</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Personal</span><span class="card-tag">Health</span><span class="card-tag">Mobile App</span><span class="card-tag">Award Winner</span></div>
           </div>
         </div>
@@ -1142,7 +1144,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
-            <p>The agent analyzes, a human countersigns. A watchable agent loop that extracts deal financials, tests covenants, and pauses at the approval gate</p>
+            <p>The agent analyzes, a human countersigns. Agentic credit analysis you can watch</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Personal</span><span class="card-tag">Fintech</span><span class="card-tag">AI Agent</span></div>
           </div>
         </div>
@@ -1156,7 +1158,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>StoryBloom</h3><span class="project-year">2026</span></div>
-            <p>Personalized bedtime app that turns how today felt into an illustrated story for kids ages 3 to 8</p>
+            <p>Personalized bedtime app that turns how today felt into an illustrated story for kids</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Personal</span><span class="card-tag">Wellness</span><span class="card-tag">Mobile App</span><span class="card-tag">Award Winner</span></div>
           </div>
         </div>
@@ -1172,7 +1174,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Litespace Coffee Chat</h3><span class="project-year">2023</span></div>
-            <p>AI powered coffee chat for intentional, pressure free pairings across hybrid teams. 63% opt in, 200+ chats in month one</p>
+            <p>AI powered coffee chat for intentional, pressure free pairings across hybrid teams</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Professional</span><span class="card-tag">B2B SaaS</span><span class="card-tag">Dashboard</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
@@ -1191,7 +1193,7 @@
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>UNICEF NOVA</h3><span class="project-year">2025</span></div>
-            <p>AR navigation system for children that balances independence and parental reassurance, tested with 20+ parents and kids</p>
+            <p>AR navigation system for children that balances independence and parental reassurance</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Academic</span><span class="card-tag">Kids</span><span class="card-tag">AR Wearable</span><span class="card-tag">Speculative Design</span></div>
           </div>
         </div>

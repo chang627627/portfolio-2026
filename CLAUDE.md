@@ -14,7 +14,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - Small targeted changes, one at a time. If something I just built regresses, restore the last pushed version first, then fix it.
 - Lead with my own measured read; keep agent runs short. Verify in the preview before reporting, and report plainly.
 - Copy is judged by a YC/startup hiring reader; deliberate buzzwords stay ("first-principles").
-- Visible copy: no em dashes (periods or commas), US spelling, compounds unhyphenated as on the cards ("AI powered", "pressure free", "Street level"), no award bragging in prose (badges and Recognition carry awards), work-card descriptions end without a period.
+- Visible copy: no em dashes (periods or commas), US spelling, compounds unhyphenated as on the cards ("AI powered", "pressure free", "Street level"), no award bragging in prose (badges and Recognition carry awards), work-card descriptions end without a period, fit one line at 1440 and carry no numbers (2026-10-03, "make the description shorter. do not have the number"); each still opens with its case study sub's first clause.
 - A pair of screenshots, one broken and one clean: the clean one is the goal; remove the feature that caused the broken one.
 - Images at maximum quality: 1920 wide (2x display), JPEG q90-100, PNG lossless or lossless WebP, never full-resolution exports. Every `<img>` gets width and height plus `height: auto` on the rule that sizes it.
 - His other working preferences are in the auto-memory (`MEMORY.md`).
