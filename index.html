@@ -32,10 +32,9 @@
   <script>
     // THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
     // transition like play page did for its work"): leaving for a case study, the clicked card's plate takes the name its
-    // cover carries (case-cover) and the browser morphs one into the other; coming back, the cover shrinks into its card
-    // when that card is on screen (a link back lands at the top, where it usually is not: then the plain crossfade).
-    // Reduced motion: the plain crossfade. Names are cleared first, so a page restored from the back-forward cache never
-    // carries two.
+    // cover carries (case-cover) and the browser morphs one into the other. Coming back, Home has no page transition at
+    // all (2026-10-02, see pagereveal below): it loads straight in like a first visit. Reduced motion: the plain
+    // crossfade on the way out. Names are cleared first, so a page restored from the back-forward cache never carries two.
     (function () {
       if (!matchMedia('(prefers-reduced-motion: no-preference)').matches) return;
       var key = function (url) { try { return new URL(url, location.href).pathname.replace(/\.html$/, '').replace(/^\/+/, ''); } catch (e) { return '#'; } };
@@ -54,15 +53,15 @@
       });
       addEventListener('pagereveal', function (e) {
         clear();
-        if (!e.viewTransition || !window.navigation || !navigation.activation || !navigation.activation.from) return;
-        var el = plateFor(navigation.activation.from.url);
-        if (!el) return;
-        var r = el.getBoundingClientRect();
-        if (r.bottom < 0 || r.top > innerHeight) return;
-        var html = document.documentElement;
-        nameCard(el, navigation.activation.from.url);
-        html.classList.add('vt-case');
-        e.viewTransition.finished.finally(function () { clear(); html.classList.remove('vt-case'); });
+        // HOME ALWAYS OPENS LIKE A FIRST VISIT (2026-10-02, per user "I was in the study case and click 'back', it will go
+        // to the home page and play a little bit and then stardust will refresh ... no matter where I go back or first
+        // time open, it should be like the first time open"). Recorded in a visible Chrome: arriving from Homewise by its
+        // Back link, the cross-document crossfade showed Home dim over a ghost of Homewise from 0.42 to 0.47s (a 190ms
+        // frame stall froze it mid-fade), then snapped to full brightness in one frame at 0.5s. A first visit from outside
+        // the site has no page transition, and that is the opening that looks right, so every arrival here skips it:
+        // Home loads straight in and plays its whole opening. Leaving Home for a case study keeps the card-to-cover morph
+        // (pageswap above and the case study's own pagereveal).
+        if (e.viewTransition) e.viewTransition.skipTransition();
       });
     })();
   </script>
@@ -516,10 +515,6 @@
        split never happens, they show anyway after 3s. */
     .hero-sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
     .hero-js .hero h1:not(.sweep-in) .line-inner { visibility: hidden; animation: hero-failsafe 0s linear 3s forwards; }
-    /* a return opens settled (the script in the head): the headline, sub and pill are simply there */
-    .home-return.hero-js .hero h1:not(.sweep-in) .line-inner { visibility: visible; animation: none; }
-    .home-return .hero .hero-sub,
-    .home-return .hero .status-tag { animation: none; opacity: 1; }
     @keyframes hero-failsafe { to { visibility: visible; } }
     /* PHONES: THE FADE NO LONGER EATS THE BLUE (2026-09-22, per user "do 1 and 2" from the hero design pass). The
        mobile seam fade in style.css (.hero::after, 42% of the hero reaching #0a0a0a at 78%) started so high that the
@@ -694,18 +689,6 @@
     }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
-  <script>
-    // HOME OPENS SETTLED ON A RETURN (2026-10-02, per user "from somewhere go back to the home ... play the animation
-    // until 'open to the new opportunity' and then stardust will refresh. It feels off ... reset the way how it opens
-    // the home page so this issue never happen again"). The opening (the headline's wake, the sub and the pill rising,
-    // the beam and its burst of dust, the stardust's updraft) plays on a visitor's first arrival. Arriving from another
-    // page of this site (the logo, Work, a case study's Back) Home opens already settled, so nothing replays. The
-    // browser's Back button restores Home from the back-forward cache and never replays anything anyway.
-    try {
-      var ref = document.referrer && new URL(document.referrer);
-      if (ref && ref.origin === location.origin) document.documentElement.classList.add('home-return');
-    } catch (e) {}
-  </script>
   <script>
     /* PREVIEW LOOK SWITCH: ?look=edge or ?look=all (bloom retired 2026-09-15) */
     (function () {
@@ -1239,7 +1222,7 @@
     // wiggle, and each mote takes its own share (m.lift; the soft far bokeh least), so it
     // reads as dust rising with depth, not the layer sliding up. Once per page load, from
     // the first frame the hero is on screen; a return after scrolling away does not replay it.
-    const OPEN_BOOST = document.documentElement.classList.contains('home-return') ? 0 : 4, OPEN_TAU = 1400, TERM_VY = 0.003 / (1 - 0.985); // no updraft on a return
+    const OPEN_BOOST = 4, OPEN_TAU = 1400, TERM_VY = 0.003 / (1 - 0.985);
     let openT = 0;
     const P = [];
     let heroW = 1, heroH = 1, needSize = true, running = false, raf = 0;
@@ -1485,12 +1468,6 @@
     const GLYPH = 700;   // each glyph's own transition length (matches the CSS)
 
     h1.classList.add('sweep-in');
-    if (document.documentElement.classList.contains('home-return')) {
-      // a return: the headline is already lit (no wake); the hover light still answers the pointer, with no beam
-      h1.classList.add('lit', 'settled');
-      armSpecular(spans);
-      return;
-    }
     if (!sweepMotionOK) {
       // reduced motion: skip straight to the settled headline
       h1.classList.add('lit', 'settled');
@@ -1552,7 +1529,7 @@
       // or an early scroll-away skips the beam (frames never render while the
       // IO has the loop off) instead of replaying it stale later.
       const IGN_DELAY = 180, IGN_DUR = 750, GX = 2 * 150 * 150;
-      const ignStart = document.documentElement.classList.contains('home-return') ? -1e9 : performance.now() + IGN_DELAY; // a return has no beam
+      const ignStart = performance.now() + IGN_DELAY;
       // ignSeen: the pill only ignites if the beam actually rendered — a
       // visitor who scrolled away and missed it gets no orphan pulse
       let ignSeen = false, ignFired = false;
