@@ -101,33 +101,43 @@
        since the detail page carries both. The piece keeps its 8px corners and the hover keeps only the soft glow in the
        piece's own colour. The title stays in the page for screen readers and is still the card's one tab stop: it is
        visually hidden, and while it has keyboard focus the ring is drawn round the piece. Below 1200 the cards keep
-       their frame and text (there is no detail page there to carry the title). */
-    .play-grid.is-three .play-card { background: transparent; border-color: transparent; }
-    @media (hover: hover) { .play-grid.is-three .play-card:hover { border-color: transparent; } }
-    .play-grid.is-three .play-card::after { display: none; }
+       their frame and text (there is no detail page there to carry the title). The name came back and the frame went at
+       every width on 2026-10-03: see the two blocks below. */
     .play-grid.is-three .play-card:has(.play-title-btn:focus-visible) { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; }
     .play-grid.is-three .play-title-btn:focus-visible { outline: none; }   /* the ring is the card's, round piece and name */
     /* THE NAME AND YEAR COME BACK, AS ON HOME (2026-10-03, per user "add the name back to the play section's work, same
        style like home page. just name and year"). In three columns each piece now carries its name and year under it
        on the black page, flush with its edges, the year at the row's end: Home's frameless card of the same day, the
-       caption and links still only in the detail page. The piece takes its own 8px corners all round (the card no
-       longer clips it), and the soft glow in its colour sits round the piece rather than round the card, as on Home.
-       The name stays 18px, the size it was set to here on 2026-09-29 (home's 27px on a 432px card would be half again
-       as large as home's title on its card); the year is home's 14px. */
-    .play-grid.is-three .play-card { overflow: visible; }
-    .play-grid.is-three .play-card .play-info { padding: 14px 0 0; }
-    .play-grid.is-three .play-card .play-year { font-size: 14px; }
-    .play-grid.is-three .play-card > :not(.play-info) { border-radius: var(--radius) !important; overflow: hidden; transition: box-shadow var(--dur-base) var(--ease-out); }
+       caption and links still only in the detail page. The name stays 18px, the size it was set to here on 2026-09-29
+       (home's 27px on a 432px card would be half again as large as home's title on its card). */
+    /* NO FRAME AT ANY WIDTH (2026-10-03, per user "remove the work's frame like desktop did for the work in the play
+       section", then "title size can be smaller"). What three columns had since the same morning now holds in two
+       columns and on phones too: no #1a1a1a surface, no hairline, no edge shade; the piece takes its own 8px corners all
+       round (the card no longer clips it) and the text sits under it on black, flush with its edges, 14px below; the
+       year is home's 14px; the soft glow in the piece's colour sits round the piece, not the card. A slideshow's piece
+       is its slide: in two columns the arrows and dots sit under it, so the slide is what rounds and glows, and the
+       arrows line up with its edges again (they were 12px in to clear the frame). Phones' titles are 16px (were 18). */
+    .play-section .play-grid .play-card { background: transparent; border-color: transparent; overflow: visible; }
+    @media (hover: hover) { .play-section .play-grid .play-card:hover { border-color: transparent; box-shadow: none; } }
+    .play-section .play-grid .play-card::after { display: none; }
+    .play-section .play-grid .play-card .play-info { padding: 14px 0 0; }
+    .play-section .play-grid .play-card .play-year { font-size: 14px; }
+    .play-section .play-grid .play-card > :not(.play-info) { border-radius: var(--radius) !important; overflow: hidden; transition: box-shadow var(--dur-base) var(--ease-out); }
+    .play-section .play-grid .play-card > .carousel { border-radius: 0 !important; overflow: visible; }
+    .play-section .play-grid .play-card .carousel .carousel-track { border-radius: var(--radius) !important; transition: box-shadow var(--dur-base) var(--ease-out); }
+    .play-section .play-grid .play-card .carousel-prev { left: 0; }
+    .play-section .play-grid .play-card .carousel-next { right: 0; }
     @media (hover: hover) {
       @supports (color: oklch(from white l c h)) {
-        .play-grid.is-three .play-card:hover { box-shadow: none; }
-        .play-grid.is-three .play-card:hover > :not(.play-info) {
+        .play-section .play-grid .play-card:hover > :not(.play-info):not(.carousel),
+        .play-section .play-grid .play-card:hover > .carousel .carousel-track {
           box-shadow:
             0 0 24px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.16),
             0 0 60px oklch(from var(--glow, #fff) 0.78 min(calc(c * 5), 0.18) h / 0.06);
         }
       }
     }
+    @media (max-width: 768px) { .play-section .play-grid.is-gallery .play-card .play-info h3 { font-size: 16px; } }
     /* an autoplay step just changes the image: no slide-in, no fade (per user "auto play just change
        the image, do not have slide in or other effect ... do not make it feel jump"); the next slide
        is decoded first, so it never shows an empty frame */
