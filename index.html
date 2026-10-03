@@ -27,8 +27,14 @@
   <script type="speculationrules">
   {"prerender": [{"where": {"and": [{"selector_matches": ".project-card"}, {"href_matches": "/*"}]}, "eagerness": "moderate"}]}
   </script>
-  <!-- the card grid must be parsed before the first frame, so a return from a case study can find its card -->
-  <link rel="expect" href="#work" blocking="render">
+  <!-- HOME'S FIRST FRAME IS ALREADY MOVING (2026-10-02, per user "back to the home page, everything is frozen and then it
+       start to move"). The first frame used to wait only for #work (line ~950), so Home was painted before the hero's
+       own scripts below it (the stardust, the headline's wake, the light) had run: recorded in a visible Chrome on the
+       live site, Back from Homewise, the hero did not change at all for 110ms after it appeared (frame-to-frame 0.00 to
+       0.02), then started. The first frame now waits for #page-ready, the last element in the body, so every script has
+       run before anything is drawn; meanwhile the browser keeps the previous page on screen, and Home appears already
+       in motion. -->
+  <link rel="expect" href="#page-ready" blocking="render">
   <script>
     // THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
     // transition like play page did for its work"): leaving for a case study, the clicked card's plate takes the name its
@@ -1428,6 +1434,25 @@
         if (dustDirty) { dctx.clearRect(0, 0, heroW, heroH); dustDirty = false; }
       }
     }).observe(heroEl);
+    // THE DUST IS ALREADY THERE IN THE FIRST FRAME (2026-10-02, per user "back to the home page, everything is frozen
+    // and then it start to move"). Recorded in a visible Chrome, Back from Homewise: Home appeared with the gradient and
+    // the headline still, the dust starting at opacity 0 and fading in over 0.6s, and the frame-to-frame change stayed
+    // under 0.05 for the first 100ms, so nothing seemed to move until the dust came up. When the hero is on screen as
+    // the page loads (Home's first frame waits for this script, see #page-ready), the field is now seeded and drawn
+    // here, before the first paint, and shown at once with no fade; the loop then carries it on. The fade above stays
+    // for a return to the hero after scrolling away, where the field is re-seeded in one frame.
+    const r0 = heroEl.getBoundingClientRect();
+    if (r0.bottom > 0 && r0.top < innerHeight) {
+      running = true;
+      sizeDust(); readPools();
+      const t = performance.now();
+      lastPoolT = t; dustFrame(t);
+      shown = true;
+      dust.style.transition = 'none';
+      dust.style.opacity = '1';
+      requestAnimationFrame(() => requestAnimationFrame(() => { dust.style.transition = ''; }));
+      raf = requestAnimationFrame(loop);
+    }
   })();
 
   const sweepReady = (document.fonts && document.fonts.ready)
@@ -3091,5 +3116,6 @@
     });
   })();
 </script>
+<div id="page-ready" hidden></div>
 </body>
 </html>
