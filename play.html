@@ -1785,14 +1785,16 @@
       v.classList.remove('is-playing');
       v.pause(); v.removeAttribute('src'); v.load();
     };
-    // in three columns no video plays in the grid (2026-10-02): the builds rest on their posters there
+    // in three columns a film is never played in the grid (2026-10-02): its disc opens the detail page instead. The
+    // silent preview loop still runs while the card is on screen (per user, the same day: "a lot of pre-play ... get
+    // frozen ... please check which one need to have some pre-play").
     const grid = document.querySelector('.play-grid');
     const still = () => !!grid && grid.classList.contains('is-three');
     let io = null;
     if ('IntersectionObserver' in window) {
       io = new IntersectionObserver((entries) => entries.forEach((e) => {
         const v = e.target;
-        if (!e.isIntersecting || !desktop.matches || calm.matches || still()) { unload(v); return; }
+        if (!e.isIntersecting || !desktop.matches || calm.matches) { unload(v); return; }
         if (e.intersectionRatio >= 0.35) {
           if (!v.getAttribute('src')) v.src = v.dataset.loop;
           v.play().catch(() => {});
@@ -1820,12 +1822,6 @@
         film.play().catch(() => {});
       });
     });
-    // crossing 1200px: the loops stop for three columns, and are asked again below it
-    if (grid && io) grid.addEventListener('play:columns', () => stages.forEach((stage) => {
-      const loop = stage.querySelector('.build-loop');
-      if (!loop) return;
-      if (still()) unload(loop); else { io.unobserve(loop); io.observe(loop); }
-    }));
   })();
 
   // Carousel logic
@@ -2167,14 +2163,9 @@
   // Defer the Midjourney clips: fetch + play only when scrolled into view
   (function() {
     const vids = document.querySelectorAll('video[preload="metadata"]');
-    // in three columns no video plays in the grid (2026-10-02): a clip shows its first frame and plays in its
-    // detail page. A muted play-then-pause draws that frame where a browser would otherwise leave the tile blank.
-    const grid = document.querySelector('.play-grid');
-    const still = () => !!grid && grid.classList.contains('is-three');
-    const show = (v) => {
-      if (still()) { if (v.readyState < 2) v.play().then(() => v.pause()).catch(() => {}); else v.pause(); }
-      else v.play().catch(() => {});
-    };
+    // the clips are silent previews and play in the grid at every width (they were held on their first frame for a
+    // few hours on 2026-10-02 and brought back: "a lot of pre-play ... get frozen")
+    const show = (v) => v.play().catch(() => {});
     if (!('IntersectionObserver' in window)) { vids.forEach(show); return; }
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
@@ -2183,7 +2174,6 @@
       });
     }, { rootMargin: '200px' });
     vids.forEach(v => io.observe(v));
-    if (grid) grid.addEventListener('play:columns', () => vids.forEach(v => { io.unobserve(v); io.observe(v); }));
   })();
 </script>
 
