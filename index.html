@@ -983,7 +983,7 @@
           const c0 = parts[1] && parts[1].match(/rgba?\(([^)]+)\)/), end = parts[2] && parts[2].match(/([\d.]+)%\s*$/);
           if (parts.length !== 3 || !size || !c0 || !end) return null;
           const c = c0[1].split(',').map(Number);
-          return { rx: +size[1] / 100, ry: +size[2] / 100, rgb: `${c[0]},${c[1]},${c[2]}`, a: c.length > 3 ? c[3] : 1, end: Math.min(1, +end[1] / 100) };
+          return { rx: +size[1] / 100, ry: +size[2] / 100, c: [c[0], c[1], c[2]], a: c.length > 3 ? c[3] : 1, end: Math.min(1, +end[1] / 100) };
         });
         return layers.length === NAMES.length && layers.every(Boolean) ? layers : null;
       };
@@ -1006,9 +1006,19 @@
       cv.setAttribute('aria-hidden', 'true');
       cv.style.cssText = `position:absolute;left:${-M}px;top:${-M}px;width:calc(100% + ${2 * M}px);height:calc(100% + ${2 * M}px);display:block;pointer-events:none`;
       const hero = orbs.closest('.hero') || orbs;
-      let W = 1, H = 1, cw = 1, ch = 1, sx = SCALE, sy = SCALE, heroEnd = 0;
+      // DAWN TO DUSK (2026-10-02, per user, his pick of four ways for the dawn to change on scroll that stay inside the hero,
+      // after a hand-off below the hero was dropped: "our transition effect stay in the hero, not touch other part"). As
+      // the hero scrolls away the pools keep every position and motion and only cool, and nothing gets darker (per user
+      // "so it means the hero get darken", then "do both": the dim went, and each dusk colour has its dawn colour's own
+      // luminance): the yellow crown to a pale rose, the coral to rose-magenta, the violet to a lighter violet, the glints
+      // to periwinkle and lavender, the base to purple. You arrive at dawn and leave at dusk. At the top of the page it is
+      // the dawn exactly. Desktop only, as the scroll lag is; reduced motion never gets here.
+      const DUSK = { yellow: [255, 198, 240], warm: [250, 92, 196], pink: [128, 80, 255], azure: [110, 120, 255], cyan: [200, 190, 255], blue: [84, 20, 196] };
+      const DUSK_MQ = matchMedia('(min-width: 769px)');
+      const ss = (a, b, v) => { const t = Math.max(0, Math.min(1, (v - a) / (b - a))); return t * t * (3 - 2 * t); };
+      let W = 1, H = 1, cw = 1, ch = 1, sx = SCALE, sy = SCALE, heroEnd = 0, heroH = 0;
       const size = () => {
-        W = orbs.offsetWidth; H = orbs.offsetHeight; heroEnd = hero.offsetTop + hero.offsetHeight;
+        W = orbs.offsetWidth; H = orbs.offsetHeight; heroH = hero.offsetHeight; heroEnd = hero.offsetTop + heroH;
         cw = Math.max(1, Math.round((W + 2 * M) * SCALE)); ch = Math.max(1, Math.round((H + 2 * M) * SCALE));
         sx = cw / (W + 2 * M); sy = ch / (H + 2 * M);
         if (cv.width !== cw) { cv.width = cw; off.width = cw; }
@@ -1018,6 +1028,7 @@
       const draw = () => {
         const cs = getComputedStyle(orbs), lift = pct(cs, '--g2-lift') || 0;
         const bx = M * sx, by = M * sy, bw = W * sx, bh = H * sy;           // the element's own box inside the canvas
+        const dusk = DUSK_MQ.matches && heroH ? ss(heroH * 0.05, heroH * 0.8, scrollY) : 0;
         octx.setTransform(1, 0, 0, 1, 0, 0);
         octx.clearRect(0, 0, cw, ch);
         for (let i = layers.length - 1; i >= 0; i--) {                     // the bottom layer first, as CSS composites them
@@ -1027,8 +1038,11 @@
           const cx = bx + x * bw, cy = by + (y + lift) * bh, rx = L.rx * bw, ry = L.ry * bh;
           octx.setTransform(rx, 0, 0, ry, cx, cy);                          // unit circle -> the stylesheet's ellipse
           const g = octx.createRadialGradient(0, 0, 0, 0, 0, 1);
-          g.addColorStop(0, `rgba(${L.rgb},${L.a})`);
-          g.addColorStop(L.end, `rgba(${L.rgb},0)`);
+          const to = DUSK[n], c = L.c, rgb = dusk
+            ? `${Math.round(c[0] + (to[0] - c[0]) * dusk)},${Math.round(c[1] + (to[1] - c[1]) * dusk)},${Math.round(c[2] + (to[2] - c[2]) * dusk)}`
+            : `${c[0]},${c[1]},${c[2]}`;
+          g.addColorStop(0, `rgba(${rgb},${L.a})`);
+          g.addColorStop(L.end, `rgba(${rgb},0)`);
           octx.fillStyle = g;
           octx.fillRect((bx - cx) / rx, (by - cy) / ry, bw / rx, bh / ry);   // painted within the box only, as a background is
         }
