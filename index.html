@@ -474,6 +474,9 @@
         radial-gradient(ellipse 40% 24% at var(--g2-cyan-x) calc(var(--g2-cyan-y) + var(--g2-lift)), rgba(96, 214, 255, 0.32), transparent 70%),
         radial-gradient(ellipse 116% 60% at var(--g2-blue-x) calc(var(--g2-blue-y) + var(--g2-lift)), rgba(60, 20, 200, 0.88), transparent 66%);
     }
+    /* the gradient is painted small on a canvas by the script after the hero (THE GRADIENT IS DRAWN SMALL); once that
+       canvas is in, the stylesheet's own background steps aside */
+    .hero .hero-orbs--g2.is-painted { background: none !important; }
     /* ORIGINAL (the pre-2026-09-08 "g2" ramp, kept for comparison and for
        going back): ?look=original restores it on this page, hero and footer.
        Values are copies of style.css's .hero-orbs--g2 and .footer-glow as
@@ -836,6 +839,76 @@
       </script>
     </div>
   </section>
+
+  <script>
+    /* THE GRADIENT IS DRAWN SMALL (2026-10-02, per user "still a lot of freeze and jump" on returning to Home). Measured
+       in a visible Chrome at 1728x1080, 2x: while Home opens, the GPU process's main thread was busy 2,980ms of every
+       3,000; pausing the gradient's own motion took it to about 1,060ms, while switching off its blur, the stardust, the
+       pill's glass or the header's fade changed nothing. The six radial pools are redrawn every frame because irisFlow and
+       blueFlow move them through custom properties, and the browser repainted them at full size and full density, about
+       4,000 by 1,600 device pixels, 60 times a second; on a busier machine that is more than one frame's work, so frames
+       drop: the freeze and the jump. Now the same six pools are painted into a canvas at a quarter of the element's
+       size, which the element stretches to its full box under its unchanged blur(32px). Shapes, colours and stops are
+       read once from the stylesheet's own background (so ?look=original still works), the positions from the same
+       custom properties every frame, so the CSS animations, Lightfall's lean, the scroll lag and the stardust's colour
+       sampling all keep working untouched. Reduced motion keeps the stylesheet's background, which then never moves. */
+    (() => {
+      const orbs = document.querySelector('.hero .hero-orbs--g2');
+      if (!orbs || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const NAMES = ['yellow', 'warm', 'pink', 'azure', 'cyan', 'blue'];   // the stylesheet's layer order, top first
+      const split = (s) => { const out = []; let depth = 0, cur = ''; for (const ch of s) { if (ch === '(') depth++; if (ch === ')') depth--; if (ch === ',' && depth === 0) { out.push(cur.trim()); cur = ''; } else cur += ch; } if (cur.trim()) out.push(cur.trim()); return out; };
+      const layers = split(getComputedStyle(orbs).backgroundImage).map((g) => {
+        const m = g.match(/^radial-gradient\((.*)\)$/);
+        if (!m) return null;
+        const parts = split(m[1]);
+        const size = parts[0].match(/^(?:ellipse\s+)?([\d.]+)%\s+([\d.]+)%\s+at\s/);
+        const c0 = parts[1] && parts[1].match(/rgba?\(([^)]+)\)/), end = parts[2] && parts[2].match(/([\d.]+)%\s*$/);
+        if (!size || !c0 || !end) return null;
+        const c = c0[1].split(',').map(Number);
+        return { rx: +size[1] / 100, ry: +size[2] / 100, r: c[0], g: c[1], b: c[2], a: c.length > 3 ? c[3] : 1, end: +end[1] / 100 };
+      });
+      if (layers.length !== NAMES.length || layers.some((l) => !l)) return;       // anything unexpected: keep the CSS
+      const cv = document.createElement('canvas');
+      cv.className = 'hero-orbs__paint';
+      cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none';
+      const ctx = cv.getContext('2d');
+      if (!ctx) return;
+      const SCALE = 0.25;
+      let W = 1, H = 1;
+      const size = () => {
+        W = Math.max(1, Math.round(orbs.offsetWidth * SCALE)); H = Math.max(1, Math.round(orbs.offsetHeight * SCALE));
+        if (cv.width !== W) cv.width = W;
+        if (cv.height !== H) cv.height = H;
+      };
+      const pct = (cs, name) => parseFloat(cs.getPropertyValue(name)) / 100;
+      const draw = () => {
+        const cs = getComputedStyle(orbs), lift = pct(cs, '--g2-lift') || 0;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, W, H);
+        for (let i = layers.length - 1; i >= 0; i--) {         // the bottom layer first, as CSS composites them
+          const L = layers[i], n = NAMES[i];
+          const x = pct(cs, `--g2-${n}-x`), y = pct(cs, `--g2-${n}-y`);
+          if (isNaN(x) || isNaN(y)) continue;
+          const cx = x * W, cy = (y + lift) * H, rx = L.rx * W, ry = L.ry * H;
+          ctx.setTransform(rx, 0, 0, ry, cx, cy);               // unit circle -> the stylesheet's ellipse
+          const g = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+          g.addColorStop(0, `rgba(${L.r},${L.g},${L.b},${L.a})`);
+          g.addColorStop(Math.min(1, L.end), `rgba(${L.r},${L.g},${L.b},0)`);
+          ctx.fillStyle = g;
+          ctx.fillRect(-cx / rx, -cy / ry, W / rx, H / ry);
+        }
+      };
+      size(); draw();
+      orbs.appendChild(cv);
+      orbs.classList.add('is-painted');                        // the stylesheet's own background steps aside
+      let raf = 0, on = true;
+      const loop = () => { raf = 0; if (!on) return; draw(); raf = requestAnimationFrame(loop); };
+      raf = requestAnimationFrame(loop);
+      new IntersectionObserver((es) => { on = es[es.length - 1].isIntersecting; if (on && !raf) raf = requestAnimationFrame(loop); }).observe(orbs.closest('.hero') || orbs);
+      if ('ResizeObserver' in window) new ResizeObserver(() => { size(); draw(); }).observe(orbs);
+    })();
+  </script>
 
   <script>
     const hero = document.querySelector('.hero');

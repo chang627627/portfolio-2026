@@ -44,6 +44,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, *args):
         pass
 
+    def end_headers(self):
+        # NO STALE PAGES (2026-10-02). Without a Cache-Control header the browser caches by heuristic (a tenth of the
+        # time since Last-Modified), so the browser pane kept showing an index.html from before the latest edits
+        # (transferSize 0) while the file on disk had changed, and a test of a fix ran the old page. no-cache makes
+        # every load revalidate (a 304 when nothing changed), the way production's must-revalidate does.
+        self.send_header('Cache-Control', 'no-cache')
+        super().end_headers()
+
     def send_head(self):
         # Single-range support so <video preload="metadata"> works like prod.
         rng = self.headers.get('Range')
