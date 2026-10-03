@@ -17,8 +17,15 @@
   <meta name="twitter:description" content="iF & Red Dot winner. Shaping AI products with taste.">
   <meta name="twitter:image" content="https://www.chang-mou.com/images/og-image.jpg?v=6">
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
-  <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
+  <!-- NO FONT PRELOADS ON HOME (2026-10-02, per user "when I come back from the study case to the home page, sometimes
+       it works, sometimes it freezes ... the gradient background gets refreshed", "it usually happens [when] there's a
+       glow from left to right across AI-first product designer"). Chrome makes a preloaded font render-blocking under a
+       timer of up to 1.5s; on a return the fonts are cached and Home paints at once, but the timer still fired at about
+       1.5s and Chrome began holding the page again as if it had not painted yet: no new frame reached the screen for its
+       500ms timeout (trace: EnsureStartFontPreloadMaxBlockingTimer -> BeginLifecycleUpdates -> SetDeferCommits, 1.50 to
+       2.01s), so the gradient and the dust, drawn by the page, stood still while the beam and the pill, run by the
+       compositor, went on, and then the field jumped. 5 returns in 6 with the two preloads, 0 in 6 without. style.css's
+       @font-face still loads both faces as soon as the page lays out, and the headline waits for them (fonts.ready). -->
   <link rel="stylesheet" href="style.css?v=343">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
