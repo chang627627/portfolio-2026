@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preload" href="fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="fonts/NeueMontreal-Italic.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=343">
+  <link rel="stylesheet" href="style.css?v=344">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -477,6 +477,7 @@
     /* the gradient is painted small on a canvas by the script after the hero (THE GRADIENT IS DRAWN SMALL); once that
        canvas is in, the stylesheet's own background steps aside */
     .hero .hero-orbs--g2.is-painted { background: none !important; }
+    .hero .hero-orbs--g2.is-blurred { filter: none !important; } /* the blur is drawn into the canvas (THE BLUR IS BAKED IN) */
     /* ORIGINAL (the pre-2026-09-08 "g2" ramp, kept for comparison and for
        going back): ?look=original restores it on this page, hero and footer.
        Values are copies of style.css's .hero-orbs--g2 and .footer-glow as
@@ -875,6 +876,12 @@
       const ctx = cv.getContext('2d');
       if (!ctx) return;
       const SCALE = 0.25;
+      // THE BLUR IS BAKED IN (2026-10-02, per user "still freeze"). The stylesheet's blur(32px) re-ran over the whole
+      // 6-megapixel element every frame, since the canvas under it changes every frame; without a GPU that alone took
+      // about 90ms a frame (measured: Home at 10fps, 40 long frames in 4.5s, all rendering). The same blur is now part
+      // of the small drawing, 8px at a quarter size, so the element itself needs no filter. Where a canvas cannot
+      // blur (older Safari), the stylesheet's filter stays.
+      const BLUR = ('filter' in ctx) ? Math.round(32 * SCALE) : 0;
       let W = 1, H = 1;
       const size = () => {
         W = Math.max(1, Math.round(orbs.offsetWidth * SCALE)); H = Math.max(1, Math.round(orbs.offsetHeight * SCALE));
@@ -886,6 +893,7 @@
         const cs = getComputedStyle(orbs), lift = pct(cs, '--g2-lift') || 0;
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         ctx.clearRect(0, 0, W, H);
+        if (BLUR) ctx.filter = `blur(${BLUR}px)`;
         for (let i = layers.length - 1; i >= 0; i--) {         // the bottom layer first, as CSS composites them
           const L = layers[i], n = NAMES[i];
           const x = pct(cs, `--g2-${n}-x`), y = pct(cs, `--g2-${n}-y`);
@@ -902,6 +910,7 @@
       size(); draw();
       orbs.appendChild(cv);
       orbs.classList.add('is-painted');                        // the stylesheet's own background steps aside
+      if (BLUR) orbs.classList.add('is-blurred');              // and so does its blur
       let raf = 0, on = true;
       const loop = () => { raf = 0; if (!on) return; draw(); raf = requestAnimationFrame(loop); };
       raf = requestAnimationFrame(loop);
@@ -1537,7 +1546,7 @@
       const text = el.getAttribute('data-text');
       // spaces stay bare text nodes so line-wrapping behaves as plain text
       el.innerHTML = text.split('').map(c =>
-        c === ' ' ? ' ' : `<span>${c}</span>`
+        c === ' ' ? ' ' : `<span data-c="${c.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')}">${c}</span>`
       ).join('');
     });
     // THE KERNING, PUT BACK (2026-09-22, per user "do 1 and 2" from the hero design pass). One inline-block span per
@@ -1627,7 +1636,7 @@
       // or an early scroll-away skips the beam (frames never render while the
       // IO has the loop off) instead of replaying it stale later.
       const IGN_DELAY = 180, IGN_DUR = 750, GX = 2 * 150 * 150;
-      const ignStart = performance.now() + IGN_DELAY;
+      const ignStart = /(?:\?|&)fx=-beam\b/.test(location.search) ? -1e9 : performance.now() + IGN_DELAY; // ?fx=-beam: no beam, to measure its cost
       // ignSeen: the pill only ignites if the beam actually rendered — a
       // visitor who scrolled away and missed it gets no orphan pulse
       let ignSeen = false, ignFired = false;
@@ -1731,19 +1740,24 @@
             if (Math.abs(dI) < 0.015 && !relMoved) continue;
             // wake: brightening answers fast, dimming trails off slowly (a
             // pure release change follows the scroll direction)
-            glyphs[i].style.transitionDuration =
-              (dI > 0.001 || (Math.abs(dI) <= 0.001 && relRising)) ? RISE : DECAY;
+            const td = (dI > 0.001 || (Math.abs(dI) <= 0.001 && relRising)) ? RISE : DECAY;
+            glyphs[i].style.transitionDuration = td;
+            glyphs[i].style.setProperty('--td', td);
             last[i] = I;
             if (!I && rel >= 0.999) {
               // pristine idle: clear back to the stylesheet state
               glyphs[i].style.filter = '';
-              glyphs[i].style.textShadow = '';
+              glyphs[i].style.removeProperty('--glow');
             } else {
+              // THE GLOW IS A COPY THAT FADES (2026-10-02, per user "still freeze"). The glow was a text-shadow written
+              // here, which re-rasterized the headline on every change (about 60% of a raster thread and half the GPU
+              // through the opening, and a hold at the beam on a loaded machine). Each glyph now has a copy of itself
+              // (style.css: span::after, the same two shadows at full strength, 6px at 0.35 and 22px at 0.30) whose
+              // opacity is this light, so the glow is drawn once and only fades, on the compositor. The brightness
+              // stays a filter on the glyph. (A composited drop-shadow on per-glyph layers was tried first and took
+              // the GPU from 13% to 100%.)
               glyphs[i].style.filter = 'brightness(' + (base + 0.10 * I).toFixed(3) + ')';
-              glyphs[i].style.textShadow = I
-                ? '0 0 6px rgba(255,255,255,' + (0.35 * I).toFixed(3) + '), ' +
-                  '0 0 22px rgba(255,255,255,' + (0.30 * I).toFixed(3) + ')'
-                : '';
+              glyphs[i].style.setProperty('--glow', I.toFixed(3));
             }
           }
           if (relMoved) lastRel = rel;
