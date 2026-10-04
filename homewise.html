@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=343">
+  <link rel="stylesheet" href="style.css?v=344">
   <script>
     // Opened from a prerender (the home cards' speculation rules): hold the cover's arrival until the page is shown
     if (document.prerendering) {
@@ -195,6 +195,49 @@
         gap: 28px;
       }
     }
+
+    /* THE TWO LONG CLIPS GET THE SITE'S OWN PLAYER (2026-10-04, after a six-reviewer pass flagged the browser's default
+       controls on the two clips that matter most: the shipped-build walkthrough and Version 2). The HTML keeps
+       `controls`; the script below removes it and builds this, so a browser without scripts still plays them. The look
+       is Play's: a glass play disc on the poster, then a quiet bar (play/pause, time, a thin scrubber, mute, full
+       screen) that shows while paused, on hover or focus, and for 2.5s after a tap, and steps aside while the film plays.
+       No blur on the bar (the header rule), no colour: near-white on near-black, the focus ring inset so the clip's
+       rounded edge does not cut it. The decks keep native controls on purpose. */
+    .hw-clip--player { background: #000; }
+    .hw-clip--player video { cursor: pointer; }
+    .hw-clip--player:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -3px; }
+    .hw-player-play { position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: 0; padding: 0; transform: translate(-50%, -50%); border-radius: 50%; background: rgba(20, 20, 20, 0.72); -webkit-backdrop-filter: blur(24px); backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.14); cursor: pointer; z-index: 2; transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out); }
+    .hw-player-play::after { content: ''; position: absolute; left: 55%; top: 50%; transform: translate(-50%, -50%); border-style: solid; border-width: 11px 0 11px 19px; border-color: transparent transparent transparent rgba(240, 240, 240, 0.95); }
+    @media (hover: hover) { .hw-player-play:hover { border-color: rgba(255, 255, 255, 0.3); background: rgba(20, 20, 20, 0.85); } }
+    .hw-player-play:active { transform: translate(-50%, -50%) scale(0.96); }
+    .hw-player-play:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; }
+    .hw-clip--player.is-playing .hw-player-play,
+    .hw-clip--player.is-started:not(.is-ended) .hw-player-play { opacity: 0; pointer-events: none; }
+    .hw-bar { position: absolute; left: 0; right: 0; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 2px; height: 48px; padding: 0 6px; line-height: 1; background: rgba(10, 10, 10, 0.78); opacity: 0; pointer-events: none; transition: opacity var(--dur-base) var(--ease-out); }
+    .hw-clip--player.is-started:not(.is-playing) .hw-bar,
+    .hw-clip--player.is-active .hw-bar,
+    .hw-clip--player:focus-visible .hw-bar { opacity: 1; pointer-events: auto; }
+    /* keyboard focus on a control inside keeps the bar up; written as its own rule because a selector list with an
+       unsupported :has() would be dropped whole, and :focus-within would also match a mouse click on the clip */
+    .hw-clip--player:has(:focus-visible) .hw-bar { opacity: 1; pointer-events: auto; }
+    .hw-bar-btn { flex: none; display: grid; place-items: center; width: 44px; height: 44px; margin: 0; padding: 0; border: 0; background: transparent; color: rgba(240, 240, 240, 0.92); cursor: pointer; transition: color var(--dur-base) var(--ease-out); }
+    .hw-bar-btn svg { width: 18px; height: 18px; display: block; }
+    @media (hover: hover) { .hw-bar-btn:hover { color: #fff; } }
+    .hw-bar-btn:active { transform: scale(0.96); }
+    .hw-bar-btn:focus-visible, .hw-seek:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; }
+    .hw-time { flex: none; min-width: 84px; padding: 0 8px; font-size: 12px; font-variant-numeric: tabular-nums; color: rgba(240, 240, 240, 0.78); white-space: nowrap; }
+    .hw-seek { --p: 0%; flex: 1; min-width: 0; height: 44px; margin: 0 6px; padding: 0; background: transparent; cursor: pointer; -webkit-appearance: none; appearance: none; }
+    .hw-seek::-webkit-slider-runnable-track { height: 2px; border-radius: 1px; background: linear-gradient(to right, #f0f0f0 var(--p), rgba(255, 255, 255, 0.28) var(--p)); }
+    .hw-seek::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; margin-top: -5px; border: 0; border-radius: 50%; background: #f0f0f0; }
+    .hw-seek::-moz-range-track { height: 2px; border-radius: 1px; background: rgba(255, 255, 255, 0.28); }
+    .hw-seek::-moz-range-progress { height: 2px; border-radius: 1px; background: #f0f0f0; }
+    .hw-seek::-moz-range-thumb { width: 12px; height: 12px; border: 0; border-radius: 50%; background: #f0f0f0; }
+    .hw-clip--player:fullscreen { border-radius: 0; display: flex; align-items: center; }
+    .hw-clip--player:fullscreen video { height: 100%; object-fit: contain; }
+    .hw-clip--player:-webkit-full-screen { border-radius: 0; display: flex; align-items: center; }
+    .hw-clip--player:-webkit-full-screen video { height: 100%; object-fit: contain; }
+    @media (max-width: 480px) { .hw-time { min-width: 0; padding: 0 4px; font-size: 11px; } }
+    @media (prefers-reduced-motion: reduce) { .hw-bar, .hw-player-play, .hw-bar-btn { transition: none; } }
   </style>
 </head>
 <body>
@@ -1078,6 +1121,118 @@
       footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
     }, { passive: true });
   }
+</script>
+
+<script>
+  // The two long clips (the shipped-build walkthrough and Version 2): swap the browser's controls for the site's
+  // own player (see .hw-clip--player). The markup keeps `controls`, so this is an enhancement, not a requirement.
+  (function() {
+    const wraps = [...document.querySelectorAll('.hw-clip video[controls]')].map(v => v.closest('.hw-clip')).filter(Boolean);
+    if (!wraps.length) return;
+    const svg = (d, extra) => '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="currentColor"' + (extra || '') + '>' + d + '</svg>';
+    const I = {
+      play: svg('<path d="M7 4.5v15l13-7.5z"/>'),
+      pause: svg('<path d="M6 4h4v16H6zM14 4h4v16h-4z"/>'),
+      vol: svg('<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M16 8.5a5 5 0 0 1 0 7M18.5 6a8.5 8.5 0 0 1 0 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'),
+      mute: svg('<path d="M3 9v6h4l5 4V5L7 9H3z"/><path d="M16 9.5l5 5M21 9.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>'),
+      fs: svg('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>')
+    };
+    const fmt = t => { if (!isFinite(t)) t = 0; const m = Math.floor(t / 60), s = Math.floor(t % 60); return m + ':' + (s < 10 ? '0' : '') + s; };
+    const canFs = el => !!(el.requestFullscreen || el.webkitRequestFullscreen);
+    const fsOn = () => document.fullscreenElement || document.webkitFullscreenElement;
+
+    wraps.forEach(wrap => {
+      const v = wrap.querySelector('video');
+      v.removeAttribute('controls');
+      wrap.classList.add('hw-clip--player');
+      wrap.tabIndex = 0;
+      wrap.setAttribute('role', 'group');
+      wrap.setAttribute('aria-label', 'Video player');
+      wrap.insertAdjacentHTML('beforeend',
+        '<button type="button" class="hw-player-play" aria-label="Play video"></button>' +
+        '<div class="hw-bar">' +
+          '<button type="button" class="hw-bar-btn" data-act="toggle" aria-label="Play">' + I.play + '</button>' +
+          '<span class="hw-time" aria-hidden="true">0:00 / 0:00</span>' +
+          '<input class="hw-seek" type="range" min="0" max="1000" step="1" value="0" aria-label="Seek">' +
+          '<button type="button" class="hw-bar-btn" data-act="mute" aria-label="Mute">' + I.vol + '</button>' +
+          ((canFs(wrap) || v.webkitEnterFullscreen) ? '<button type="button" class="hw-bar-btn" data-act="fs" aria-label="Full screen">' + I.fs + '</button>' : '') +
+        '</div>');
+      const disc = wrap.querySelector('.hw-player-play');
+      const toggleBtn = wrap.querySelector('[data-act="toggle"]');
+      const muteBtn = wrap.querySelector('[data-act="mute"]');
+      const fsBtn = wrap.querySelector('[data-act="fs"]');
+      const seek = wrap.querySelector('.hw-seek');
+      const time = wrap.querySelector('.hw-time');
+      let raf = 0, idle = 0, dragging = false;
+
+      const paint = () => {
+        const d = v.duration || 0, t = v.currentTime || 0;
+        if (!dragging) { seek.value = d ? Math.round(t / d * 1000) : 0; }
+        seek.style.setProperty('--p', (d ? t / d * 100 : 0) + '%');
+        time.textContent = fmt(t) + ' / ' + fmt(d);
+      };
+      const tick = () => { paint(); raf = requestAnimationFrame(tick); };
+      const wake = () => {
+        wrap.classList.add('is-active');
+        clearTimeout(idle);
+        if (!v.paused) idle = setTimeout(() => wrap.classList.remove('is-active'), 2500);
+      };
+      const toggle = () => {
+        if (v.paused || v.ended) {
+          if (v.ended) v.currentTime = 0;
+          const p = v.play(); if (p && p.catch) p.catch(() => {});
+        } else { v.pause(); }
+      };
+      const nudge = s => { if (v.duration) { v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + s)); paint(); } };
+      const toggleFs = () => {
+        if (fsOn()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+        else if (wrap.requestFullscreen) { wrap.requestFullscreen(); }
+        else if (wrap.webkitRequestFullscreen) { wrap.webkitRequestFullscreen(); }
+        else if (v.webkitEnterFullscreen) { v.webkitEnterFullscreen(); }
+      };
+
+      v.addEventListener('play', () => {
+        wraps.forEach(o => { if (o !== wrap) o.querySelector('video').pause(); }); // one film at a time
+        wrap.classList.add('is-started', 'is-playing'); wrap.classList.remove('is-ended');
+        toggleBtn.innerHTML = I.pause; toggleBtn.setAttribute('aria-label', 'Pause'); disc.setAttribute('aria-label', 'Pause video');
+        cancelAnimationFrame(raf); tick(); wake();
+      });
+      v.addEventListener('pause', () => {
+        wrap.classList.remove('is-playing');
+        toggleBtn.innerHTML = I.play; toggleBtn.setAttribute('aria-label', 'Play'); disc.setAttribute('aria-label', 'Play video');
+        cancelAnimationFrame(raf); paint(); clearTimeout(idle);
+      });
+      v.addEventListener('ended', () => { wrap.classList.add('is-ended'); wrap.classList.remove('is-playing'); disc.setAttribute('aria-label', 'Replay video'); });
+      ['loadedmetadata', 'durationchange', 'seeked', 'timeupdate'].forEach(e => v.addEventListener(e, () => { if (v.paused) paint(); }));
+
+      v.addEventListener('click', toggle);
+      disc.addEventListener('click', toggle);
+      wrap.addEventListener('click', e => {
+        const b = e.target.closest('[data-act]'); if (!b) return;
+        const act = b.dataset.act;
+        if (act === 'toggle') toggle();
+        else if (act === 'mute') { v.muted = !v.muted; muteBtn.innerHTML = v.muted ? I.mute : I.vol; muteBtn.setAttribute('aria-label', v.muted ? 'Unmute' : 'Mute'); }
+        else if (act === 'fs') toggleFs();
+      });
+      seek.addEventListener('input', () => { dragging = true; if (v.duration) { v.currentTime = seek.value / 1000 * v.duration; } paint(); });
+      seek.addEventListener('change', () => { dragging = false; paint(); });
+
+      ['pointermove', 'pointerdown', 'focusin'].forEach(e => wrap.addEventListener(e, wake));
+      wrap.addEventListener('keydown', e => {
+        const t = e.target, onWrap = t === wrap, onSeek = t === seek;
+        if (!onWrap && !onSeek) return; // buttons keep their own Space and Enter
+        const k = e.key;
+        if (onWrap && (k === ' ' || k === 'k' || k === 'K')) { e.preventDefault(); toggle(); }
+        else if (k === 'ArrowLeft') { e.preventDefault(); nudge(-5); }
+        else if (k === 'ArrowRight') { e.preventDefault(); nudge(5); }
+        else if (onWrap && (k === 'm' || k === 'M')) { e.preventDefault(); muteBtn.click(); }
+        else if (onWrap && (k === 'f' || k === 'F') && fsBtn) { e.preventDefault(); toggleFs(); }
+        else return;
+        wake();
+      });
+      paint();
+    });
+  })();
 </script>
 
 <script>

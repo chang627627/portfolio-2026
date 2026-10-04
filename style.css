@@ -5096,6 +5096,15 @@ footer {
     position: absolute;
     inset: -11px -12px;
   }
+
+  /* THE SAME INVISIBLE TAP AREA FOR THE REST OF THE PHONE'S SMALL TARGETS (2026-10-04, after a six-reviewer pass
+     measured them): the header wordmark and the case studies' "← Back" were 22px tall, the menu button 40px and the
+     hero pill 39px. Each gets a transparent box that reaches 44px without moving anything; neighbours are far
+     enough apart that none overlaps. Phones only: a mouse gets exactly what it had. */
+  .logo, .status-tag { position: relative; }
+  .logo::before { content: ''; position: absolute; inset: -11px -10px; }
+  .status-tag::before { content: ''; position: absolute; inset: -3px -4px; }
+  .hamburger::before { content: ''; position: absolute; inset: -2px; }
 }
 
 /* ============================================================
