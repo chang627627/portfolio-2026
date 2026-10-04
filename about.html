@@ -581,11 +581,12 @@
        room for whale"; "still a little distracting"; "do not matter it land. just keep the loop consistent, keep the
        ellipse flow"). The galaxy's star no longer lifts away: it fades where it formed and this canvas takes it on at
        that exact point. From there it follows the scroll along one smooth curve that turns the same way the whole time:
-       down out of the galaxy onto a wide orbit about the sections, and round it without ever leaving the ellipse.
-       Every scrolled pixel moves it the same distance along the route, on the galaxy's own spring so a wheel step never
-       makes it hop. As it shrinks it dims to half and lets its rays go; its tail is where it has been over the last
-       0.4s. When the Books title passes the middle of the window it simply fades out over the next 120px of scroll,
-       still on the orbit. Decoration only, from 1100px with motion allowed; the sections sit above it. Tried and
+       down out of the galaxy onto a wide orbit about the sections, and round it without ever leaving the ellipse, until
+       the ellipse's leftmost point is eased onto the B of the Books title and it lands there, heading up as the page
+       does. Every scrolled pixel moves it the same distance along the route (only the last stretch eases to the page's
+       own pace), on the galaxy's own spring so a wheel step never makes it hop. As it shrinks it dims to half and lets
+       its rays go; its tail is where it has been over the last 0.4s. At the B it simply fades out over the next 120px
+       of scroll. Decoration only, from 1100px with motion allowed; the sections sit above it. Tried and
        dropped the same day: a mote thread, mote orbits, an orbit inside the label column, travel at one steady speed in
        time ("not this dumb slow one"), solid section backgrounds hiding it between the words, and a climb off the orbit
        into the Books title (it ended on a straight stretch). */
@@ -2582,7 +2583,7 @@
 <script>
   // THE STAR THAT STAYS (see the CSS note): the galaxy's star, taken over where it fades, follows the scroll along one
   // smooth curve: down out of the galaxy and round one wide orbit about the sections, with a tail of where it has been,
-  // and fades out on the orbit as the Books title passes the middle of the window.
+  // and lands just before the B of the Books title, still on the ellipse, then fades.
   (function () {
     const mq = matchMedia('(min-width: 1100px)'), calm = matchMedia('(prefers-reduced-motion: reduce)');
     const region = document.querySelector('.about-vertical');
@@ -2613,8 +2614,8 @@
     const mix = (a, b, t) => a + (b - a) * t;
     const TAIL_S = 0.4;                                     // how long a point of the tail lives, in seconds
     const SPRING = 16;                                      // the galaxy's own spring (rad/s), so the two stay in step
-    const PER_TURN = Math.PI * 2 * 200;                     // the pace: one turn per this many scrolled pixels (2.4 path px a pixel at 1440, as the landing's solved pace was)
-    let W = 0, H = 0, dpr = 1, raf = 0, last = 0, still = 0, prevLift = -1, path = null;
+    const PER_TURN = Math.PI * 2 * 200;                     // the pace it aims near: one turn per this many scrolled pixels (2.4 path px a pixel at 1440)
+    let W = 0, H = 0, dpr = 1, raf = 0, last = 0, still = 0, prevLift = -1, path = null, prevSy = null;
     let yE = scrollY, vE = 0, prevE = yE;                   // the scroll the star follows: eased, so a wheel step never makes it hop
     const hist = [];
     const size = () => {
@@ -2639,9 +2640,17 @@
     // speed be the same, not jump and no straight line. all curve"): one smooth curve out of the galaxy's point heading
     // down onto the orbit's lower left, meeting it on the same tangent, then the orbit itself, and every scrolled pixel
     // moves the star the same distance along the whole of it.
-    // IT NEVER LEAVES THE ELLIPSE (per user, on the rise into the Books title, "do not matter it land. just keep the loop
-    // consistent, keep the ellipse flow"): the climb into the title ended on a straight stretch, so there is no landing
-    // now; it keeps going round at the same pace and fades as the Books title passes the middle of the window.
+    // IT LANDS ON THE B, STILL ON THE ELLIPSE (per user "the star's route land the "Books I'm reading lately" has the
+    // straight line at the end. I think it can land at the "B" of "book" not "lately" so the curve can be more smooth",
+    // "keep the ellipse flow", then "i still it needs to land Books I'm reading lately. If "b" as destination can make
+    // the curve smoother, do it"): the climb off the orbit to the end of the title made its turn early and rose the last
+    // stretch nearly straight. The B sits just left of the ellipse's leftmost point, where the ellipse itself heads
+    // straight up, the way the page moves, so the star never leaves the ellipse: on its last three eighths of a turn
+    // the ellipse is eased sideways (a smootherstep, so heading and bend both join without a seam) until that leftmost
+    // point sits just before the B, and it arrives there heading up as the title does. Only the last stretch eases its
+    // pace down to the page's own, so it settles on the title instead of hitting it.
+    const SPAN = Math.PI * 0.75;                              // the last part of the ellipse that is eased onto the B
+    const sm5 = t => t * t * t * (t * (t * 6 - 15) + 10);
     const TH_J = Math.PI / 2 + 0.55;                         // where it joins the orbit: low on the left
     const books = document.querySelector('.media-section .section-label-text');
     const measure = pts => { const L = [0]; for (let i = 1; i < pts.length; i++) L.push(L[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1])); return L; };
@@ -2654,14 +2663,44 @@
       }
       return out;
     };
-    const build = (gx, gy) => {
+    // tB: the x it lands on, just before the B; tC: the title's centre on the page
+    const build = (gx, gy, y0, tB, tC) => {
       const o = orbit(), pj = onOrbit(o, TH_J), tj = tangent(o, TH_J);
       const reach = Math.hypot(pj[0] - gx, pj[1] - gy) * 0.6;
       // the downward handle is half the other, so the bend never overshoots the orbit's direction and turns back
       const lead = cubic([gx, gy], [gx, gy + reach * 0.5], [pj[0] - tj[0] * reach, pj[1] - tj[1] * reach], pj, 160);
       const ring = []; for (let i = 0; i <= 360; i++) ring.push(onOrbit(o, TH_J + (i / 360) * Math.PI * 2));
-      const lL = measure(lead), rL = measure(ring);
-      return { gx, gy, lead, lL, ring, rL, leadLen: lL[lL.length - 1], ringLen: rL[rL.length - 1], perPx: rL[rL.length - 1] / PER_TURN };
+      const lL = measure(lead), rL = measure(ring), leadLen = lL[lL.length - 1], ringLen = rL[rL.length - 1];
+      const target = ringLen / PER_TURN;
+      const plan = { gx, gy, y0, tB, tC, lead, lL, ring, rL, leadLen, ringLen, perPx: target, end: false };
+      if (tB == null) return plan;                           // no title to land on: it just keeps going round
+      // the leftmost point, where the ellipse's heading is straight up, and the last stretch eased onto the B
+      const c = Math.cos(o.tilt), s = Math.sin(o.tilt), thL = Math.PI + Math.atan2(-s * o.ry, o.rx * c), thF = thL - SPAN;
+      const pL = onOrbit(o, thL), D = tB - pL[0];
+      const fin = []; for (let i = 0; i <= 240; i++) { const t = i / 240, p = onOrbit(o, thF + t * SPAN); fin.push([p[0] + D * sm5(t), p[1]]); }
+      const fL = measure(fin), finLen = fL[fL.length - 1], E = Math.min(finLen, ringLen * 0.12); // E: the stretch that slows
+      // the orbit from the join to where the last stretch begins
+      const fr = (((thF - TH_J) % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) / (Math.PI * 2) * 360;
+      const arcJF = mix(rL[Math.floor(fr)], rL[Math.min(360, Math.floor(fr) + 1)], fr - Math.floor(fr));
+      // it lands as the title's centre reaches the landing point's height
+      const yEnd = tC - pL[1], S = yEnd - y0;
+      if (!(S > 0)) return plan;
+      // one pace everywhere but the slowing stretch: find it for each whole number of turns, keep the one nearest the aim
+      const solve = len => {                                 // (leadLen + len + finLen - E) / v + 2 * E / (v + 1) = S, for v
+        let lo = 1.0001, hi = 50;
+        for (let i = 0; i < 60; i++) { const v = (lo + hi) / 2; if ((leadLen + len + finLen - E) / v + 2 * E / (v + 1) > S) lo = v; else hi = v; }
+        return (lo + hi) / 2;
+      };
+      let best = null;
+      for (let n = 0; n <= 6; n++) {
+        const orbitLen = arcJF + n * ringLen, v = solve(orbitLen);
+        if ((leadLen + orbitLen + finLen - E) / v + 2 * E / (v + 1) > S * 1.001) continue; // cannot fit even at the cap
+        if (!best || Math.abs(v - target) < Math.abs(best.v - target)) best = { orbitLen, v };
+      }
+      if (!best) return plan;
+      const v = best.v, sLead = leadLen / v, sOrbit = best.orbitLen / v, sUni = (finLen - E) / v, sE = 2 * E / (v + 1);
+      return Object.assign(plan, { end: true, perPx: v, fin, fL, finLen, E, pL: [tB, pL[1]], orbitLen: best.orbitLen,
+        sLead, sOrbit, sUni, sE, qLand: sLead + sOrbit + sUni + sE });
     };
     const at = (pts, L, d) => {
       let lo = 0, hi = L.length - 1;
@@ -2671,8 +2710,18 @@
     };
     // where the star is after `q` scrolled pixels past the handoff
     const place = q => {
-      const P = path, d = q * P.perPx;
-      return d < P.leadLen ? at(P.lead, P.lL, d) : at(P.ring, P.rL, (d - P.leadLen) % P.ringLen);
+      const P = path, v = P.perPx;
+      if (!P.end) { const d = q * v; return d < P.leadLen ? at(P.lead, P.lL, d) : at(P.ring, P.rL, (d - P.leadLen) % P.ringLen); }
+      if (q < P.sLead) return at(P.lead, P.lL, q * v);
+      if (q < P.sLead + P.sOrbit) return at(P.ring, P.rL, ((q - P.sLead) * v) % P.ringLen);
+      const r = q - P.sLead - P.sOrbit;
+      if (r < P.sUni) return at(P.fin, P.fL, r * v);
+      if (r < P.sUni + P.sE) {
+        const r2 = r - P.sUni, d = P.finLen - P.E + v * r2 - (v - 1) * r2 * r2 / (2 * P.sE); // the pace eases from v to the page's 1
+        return at(P.fin, P.fL, Math.min(P.finLen, d));
+      }
+      // landed: it rides with the title, one pixel up for every pixel scrolled, which is the way it arrived
+      return [P.pL[0], P.pL[1] - (q - P.qLand)];
     };
     function drawStar(x, y, k, a, rays) {
       // the galaxy's finished star (bloom, warm halo, white point, four rays), scaled by k; `rays` dims the rays alone
@@ -2707,10 +2756,10 @@
       const liftMoved = lift !== prevLift; prevLift = lift;
       const bgTop = bg.getBoundingClientRect().top + scrollY;
       const y0 = g && g.yDone ? g.yDone : bgTop - H * 1.2;   // a page opened below the hold starts it a little early
-      // when it goes: as the Books title passes the middle of the window
-      let yEnd = 0;
-      if (books && books.offsetParent) { const br = books.getBoundingClientRect(); yEnd = Math.round(br.top + scrollY + br.height / 2 - H * 0.5); }
-      if (!path || path.gx !== gx || path.gy !== gy) path = build(gx, gy);
+      // the title it lands on: just before its B
+      let tB = null, tC = 0;
+      if (books && books.offsetParent) { const br = books.getBoundingClientRect(); tB = Math.round(br.left - 16); tC = Math.round(br.top + scrollY + br.height / 2); }
+      if (!path || path.gx !== gx || path.gy !== gy || path.y0 !== y0 || path.tB !== tB || path.tC !== tC) path = build(gx, gy, y0, tB, tC);
       // THE ROUTE: every scrolled pixel past the handoff is the same distance along it
       const q = lift < 0.999 ? 0 : Math.max(0, yE - y0);
       const [x, sy] = q > 0 ? place(q) : [gx, gy];
@@ -2721,16 +2770,20 @@
       const r = region.getBoundingClientRect();
       const u = Math.min(1, Math.max(0, (H * 0.66 - r.top) / (r.height + H * 0.33)));
       // AT THE TITLE IT JUST LEAVES (per user "when it reach there. do not have extra effect. just leave. give more room for
-      // whale"): still on the orbit, it fades out over the 120 scrolled pixels after the Books title passes the middle,
-      // so the footer's whale has the dark to itself
-      const leave = yEnd > y0 ? 1 - smooth((q - (yEnd - y0)) / 120) : smooth((1 - u) / 0.08);
+      // whale"): it reaches the B and fades out over the next 120 scrolled pixels, so the footer's whale has the dark to itself
+      const leave = path.end ? 1 - smooth((q - path.qLand) / 120) : smooth((1 - u) / 0.08);
       // A QUIETER STAR ON THE WAY (per user "I think the star movement is fine. But still a little distracting"): the
       // route and pace stay; as it shrinks it also dims to half (was 0.78) and lets its four rays go, so behind the
       // sections it is a soft point with a short tail, and the rays and full light belong to the galaxy's flare alone
       const aStar = (lift < 0.999 ? base * lift : mix(1, 0.5, shrink)) * leave;
       const rays = lift < 0.999 ? 1 : 1 - shrink;
-      // the tail: where it has just been, kept for TAIL_S seconds, so a still page shows no tail
-      if (aStar > 0.004 && (moved || liftMoved || !hist.length)) hist.push({ x, y: sy, t: now });
+      // the tail: where it has just been, kept for TAIL_S seconds, so a still page shows no tail. Once it has landed it
+      // sits still on the page, so the tail it arrived with rides up with the page too and adds nothing: a screen-space
+      // tail would draw its ride with the title as a straight line under it
+      const landed = path.end && q >= path.qLand;
+      if (landed && prevSy !== null && sy !== prevSy) for (const h of hist) h.y += sy - prevSy;
+      prevSy = sy;
+      if (aStar > 0.004 && !landed && (moved || liftMoved || !hist.length)) hist.push({ x, y: sy, t: now });
       while (hist.length && now - hist[0].t > TAIL_S * 1000) hist.shift();
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
