@@ -500,6 +500,15 @@
        use the site hairline. */
     .experience-list li { border-bottom-color: rgba(255, 255, 255, 0.08); }
     .experience-list li:first-child { border-top-color: rgba(255, 255, 255, 0.08); }
+    /* PHONE ROWS, TIGHTER (2026-10-04, per user "do 2" after "experience, education and recognition feels too long"). The 17
+       credential rows came to about 1,500px on a 390px phone, a third of the page, at about 78px a row: 12px above and below
+       and a 25.6px line each for the name and the detail. The name keeps 16px, the detail takes the ladder's 14px, the
+       leading drops to 1.35 and the padding to 10px, so a row is about 62px. Same words, same order, same hairlines; an
+       accordion was weighed and set aside (it hides the awards a skimmer looks for). Desktop is untouched. */
+    @media (max-width: 768px) {
+      .experience-list li { padding: 10px 0; row-gap: 0; line-height: 1.35; }
+      .experience-list .exp-company { font-size: 14px; }
+    }
     /* "SAY HELLO" TAKES FOCUS PROPERLY (2026-09-24): the ring hugs the word (it was a 1344x222 box that also covered
        the chat button), and a keyboard user who reaches it before the scroll reveal gets the word, lit, instead of an
        invisible link. The sweep writes each letter's opacity inline, so the lit state needs !important. */
@@ -561,6 +570,25 @@
       .deck { padding-bottom: 89px; }
       .about-vertical > .about-block:first-of-type { margin-bottom: 91px; }
       .testimonials { padding-bottom: 67px; }
+    }
+
+    /* THE STAR THAT STAYS (2026-10-04, per user, with somehowliving.tech as the reference: "the stardust orbit something
+       like this. Let it moving at the back when I scrolling"; then, with a screenshot of the galaxy's star, "can it have
+       something related to this dot. right now it go up, can we let it go down and let it be orbit something"; "it need to
+       be one star with tail something not many stars ... too distracting"; "not just at the left side. let it move
+       around"). The galaxy's star no longer lifts away: as the photographs rise it fades where it formed and this canvas
+       takes it on at that exact point. As you scroll it falls down and to the left past the photographs, shrinking to a
+       small star, lands low on the left beside Background, and from there goes round one wide orbit about the page (up
+       the left, across the top, down the right, back along the bottom), about one turn over Background, Experience,
+       Education and Recognition. It follows the scroll: still when the page is still, with a tail drawn from where it
+       has just been, so a scroll draws a short comet. It fades as Recognition leaves. Decoration only, from 1100px with
+       motion allowed. Tried and dropped the same day: a 96-mote thread, three orbits of motes, an orbit inside the label
+       column, and a star travelling at one steady speed on a spiral ("not this dumb slow one"); he chose this version
+       back by name ("The old scroll version", "it should follow my scrolling"). */
+    .story-thread { display: none; }
+    @media (min-width: 1100px) and (prefers-reduced-motion: no-preference) {
+      .story-thread { display: block; position: fixed; left: 0; top: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+      .about-vertical, .testimonials, .media-section { position: relative; z-index: 1; }
     }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
@@ -1080,7 +1108,10 @@
         const settle = v => { const p = 1 - v; return 1 - p * p * p; };
         const landPx = beatRun * LAND, rise = runway - landPx;
         const lift = rise > 40 ? smooth((sc - landPx) / (rise * 0.7)) : smooth((q - LEAD - 2 * STEP - SPAN * 0.6) / (SPAN * 0.4));
-        const liftTo = foot + 44;                             // the star lifts back toward the statement before it goes
+        // THE STAR NO LONGER LIFTS (2026-10-04, per user "right now it go up, can we let it go down and let it be orbit
+        // something"): it fades where it formed while the stardust orbit below takes it over at this exact point and carries
+        // it down into the page (see THE STARDUST ORBIT). It used to lift toward the statement as it went (foot + 44).
+        const liftTo = cy;
         // BOLDER (2026-09-17, per user "the visual can be bolder... right now it is too subtle"). Measured at
         // 1440x900: the field lit 1.1% of the screen at rest, and the ending shrank to a 186px ring and a 57px star
         // under 54px lines, so the two beats that carry the argument were the smallest things on the page. By
@@ -1145,7 +1176,7 @@
             const flare = Math.exp(-Math.pow((u2 - 0.86) / 0.20, 2));   // wider and gentler: a brightening as it arrives, not a pop
             a = mix(a, 0.95, u2) * (1 - 0.85 * u3) * mix(twinkle, 1, u2) * (1 + 0.35 * flare);
             r = mix(r, 1.25 * GROW, u2);
-            // 3. GOOD ENOUGH TO SHIP: they close on the star, which lifts and fades as the photographs rise
+            // 3. GOOD ENOUGH TO SHIP: they close on the star, which fades in place as the photographs rise (the orbit takes it on)
             y = mix(y, liftTo, lift); a *= 1 - lift;
           }
           // THE TEXT EDGE IS A HARD FLOOR, not a measured outcome. Before the scatter had real physics the
@@ -1158,6 +1189,7 @@
         });
         // the steady point, then the star
         const coreY = mix(cy, liftTo, lift), coreA = (0.06 + 0.94 * Math.max(e2 * e2 * 0.8, e3)) * (1 - lift) * (e2 > 0 ? 1 : 0); // lit by what arrives, not waiting there
+        window.__aboutStar = { x: cx, y: coreY, base: (0.06 + 0.94 * Math.max(e2 * e2 * 0.8, e3)) * (e2 > 0 ? 1 : 0), lift }; // read by the orbit's handoff
         if (coreA > 0.01) {
           // the star is the payoff, so it is sized like one (2026-09-17): a bloom that grows as the ring closes,
           // a larger point, and rays of up to about 90px that fade to their tips like the site's own sparks. The
@@ -2540,6 +2572,133 @@
       if (reduce) return;
       new IntersectionObserver(es => { es[es.length - 1].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
+  })();
+</script>
+<script>
+  // THE STAR THAT STAYS (see the CSS note): the galaxy's star, taken over where it fades, falls down and to the left as
+  // you scroll and then goes round one wide orbit about the sections, following the scroll, with a tail drawn from
+  // where it has just been.
+  (function () {
+    const mq = matchMedia('(min-width: 1100px)'), calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const region = document.querySelector('.about-vertical');
+    const bg = region && region.querySelector('.about-block');
+    if (!region || !bg || calm.matches) return;
+    const cv = document.createElement('canvas');
+    cv.className = 'story-thread'; cv.setAttribute('aria-hidden', 'true');
+    document.body.insertBefore(cv, document.body.firstChild);
+    const ctx = cv.getContext('2d');
+    // the galaxy's own point and glow, so the star that arrives is the star that left
+    const SPR = 48;
+    const sprite = c => {
+      const s = document.createElement('canvas'); s.width = s.height = SPR;
+      const g = s.getContext('2d'), h = SPR / 2, gr = g.createRadialGradient(h, h, 0, h, h, h);
+      gr.addColorStop(0, 'rgba(255,255,255,1)'); gr.addColorStop(0.14, 'rgba(' + c + ',0.95)');
+      gr.addColorStop(0.34, 'rgba(' + c + ',0.2)'); gr.addColorStop(1, 'rgba(' + c + ',0)');
+      g.fillStyle = gr; g.fillRect(0, 0, SPR, SPR); return s;
+    };
+    const sW = sprite('245,244,255'), sWarm = sprite('255,236,214');
+    const sGlow = (() => {
+      const s = document.createElement('canvas'); s.width = s.height = 128;
+      const g = s.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+      gr.addColorStop(0, 'rgba(255,246,232,1)'); gr.addColorStop(0.22, 'rgba(255,244,228,0.5)');
+      gr.addColorStop(0.55, 'rgba(255,240,222,0.12)'); gr.addColorStop(1, 'rgba(255,240,222,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 128, 128); return s;
+    })();
+    const smooth = u => { u = Math.min(1, Math.max(0, u)); return u * u * (3 - 2 * u); };
+    const mix = (a, b, t) => a + (b - a) * t;
+    const TAIL_S = 0.7;                                     // how long a point of the tail lives, in seconds
+    let W = 0, H = 0, dpr = 1, raf = 0, last = 0, still = 0, prevY = scrollY, prevLift = -1, yStart = null;
+    const hist = [];
+    const size = () => {
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = innerWidth; H = innerHeight;
+      cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    };
+    // THE ORBIT GOES ROUND THE PAGE (per user "not just at the left side. let it move around"): a wide ellipse around the
+    // sections, almost the width of the window, so the star circles the work instead of one column
+    const orbit = () => ({ x: W * 0.5, y: H * 0.52, rx: Math.min(W * 0.44, 700), ry: H * 0.33, tilt: -0.06 });
+    const TH0 = Math.PI * 0.82;                              // it lands low on the left, level with where it formed
+    const onOrbit = (o, th) => {
+      const ex = o.rx * Math.cos(th), ey = o.ry * Math.sin(th), c = Math.cos(o.tilt), s = Math.sin(o.tilt);
+      return [o.x + ex * c - ey * s, o.y + ex * s + ey * c];
+    };
+    function drawStar(x, y, k, a) {
+      // the galaxy's finished star (bloom, warm halo, white point, four rays), scaled by k
+      const Rg = 84 * k;
+      ctx.globalAlpha = Math.min(1, 0.42 * a); ctx.drawImage(sGlow, x - Rg, y - Rg, Rg * 2, Rg * 2);
+      const dot = (spr, r, al) => { const sz = r * 5.2; ctx.globalAlpha = Math.min(1, al); ctx.drawImage(spr, x - sz / 2, y - sz / 2, sz, sz); };
+      dot(sWarm, 8.5 * Math.max(0.5, k), a * 0.45); dot(sW, 4 * Math.max(0.55, k), a);
+      const len = 90 * k, ra = Math.min(1, a * 0.85);
+      ctx.globalAlpha = 1; ctx.lineWidth = 1.2;
+      for (const [dx, dy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+        const g = ctx.createLinearGradient(x, y, x + dx * len, y + dy * len);
+        g.addColorStop(0, 'rgba(255,255,255,' + ra.toFixed(3) + ')');
+        g.addColorStop(0.3, 'rgba(255,248,238,' + (ra * 0.4).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(255,248,238,0)');
+        ctx.strokeStyle = g; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx * len, y + dy * len); ctx.stroke();
+      }
+    }
+    function frame(now) {
+      raf = 0;
+      if (!mq.matches) { ctx.clearRect(0, 0, cv.width, cv.height); hist.length = 0; return; }
+      last = now;
+      const y = scrollY, moved = y !== prevY; prevY = y;
+      // where the galaxy's star is, how far it has let go, and how lit it was (a page opened below the hold has none)
+      const g = window.__aboutStar;
+      const lift = g ? g.lift : 1, gx = g ? g.x : W / 2, gy = g ? g.y : H * 0.71, base = g ? g.base : 1;
+      const liftMoved = lift !== prevLift; prevLift = lift;
+      if (yStart === null && lift >= 0.999) yStart = y;     // the scroll at which the galaxy let go
+      const o = orbit();
+      const land = onOrbit(o, TH0);
+      const yHome = bg.getBoundingClientRect().top + y - land[1]; // it lands as Background's top reaches it
+      const ys = yStart !== null ? Math.min(yStart, yHome - 1) : yHome - H;
+      // THE FALL: down and to the left as the photographs pass, dipping a little below its line, then onto the orbit
+      const d = lift < 0.999 ? 0 : smooth((y - ys) / Math.max(1, yHome - ys));
+      let x, sy;
+      if (y < yHome || lift < 0.999) {
+        const ex = 1 - Math.pow(1 - d, 3), ey = d * d;
+        x = mix(gx, land[0], ex); sy = mix(gy, land[1], ey) + Math.sin(Math.PI * d) * H * 0.06;
+      } else {
+        // THE ORBIT: up the left, across the top, down the right and back along the bottom, about one turn over the
+        // four sections, driven by the scroll alone
+        [x, sy] = onOrbit(o, TH0 + (y - yHome) / 250);
+      }
+      // it fades as Recognition leaves
+      const r = region.getBoundingClientRect();
+      const u = Math.min(1, Math.max(0, (H * 0.66 - r.top) / (r.height + H * 0.33)));
+      const aStar = (lift < 0.999 ? base * lift : mix(1, 0.78, smooth(d))) * smooth((1 - u) / 0.08);
+      const k = mix(1, 0.32, smooth(d));                    // from the galaxy's full star to a small one
+      // the tail: where it has just been, kept for TAIL_S seconds, so a still page shows no tail
+      if (aStar > 0.004 && (moved || liftMoved || !hist.length)) hist.push({ x, y: sy, t: now });
+      while (hist.length && now - hist[0].t > TAIL_S * 1000) hist.shift();
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      ctx.clearRect(0, 0, W, H);
+      if (aStar > 0.004) {
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+        for (let i = 1; i < hist.length; i++) {
+          const p0 = hist[i - 1], p1 = hist[i], f = 1 - (now - p1.t) / (TAIL_S * 1000);
+          if (f <= 0) continue;
+          const fa = Math.pow(f, 1.6) * aStar;
+          ctx.beginPath(); ctx.moveTo(p0.x, p0.y); ctx.lineTo(p1.x, p1.y);
+          ctx.strokeStyle = 'rgba(255,244,228,' + (fa * 0.10).toFixed(3) + ')'; ctx.lineWidth = 7 * f; ctx.stroke();
+          ctx.strokeStyle = 'rgba(255,248,238,' + (fa * 0.55).toFixed(3) + ')'; ctx.lineWidth = 0.5 + 1.6 * f; ctx.stroke();
+        }
+        drawStar(x, sy, k, aStar);
+        ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1;
+      }
+      // keep drawing while the page or the galaxy moves and while a tail is still fading; rest otherwise
+      still = (moved || liftMoved || hist.length > 1) ? 0 : still + 1;
+      if (still < 4) raf = requestAnimationFrame(frame);
+    }
+    const kick = () => { if (!raf && mq.matches) raf = requestAnimationFrame(frame); };
+    size();
+    addEventListener('resize', () => { size(); kick(); }, { passive: true });
+    addEventListener('scroll', kick, { passive: true });
+    mq.addEventListener('change', kick);
+    // the galaxy's spring keeps easing after the hand stops, so follow it while it is on screen
+    setInterval(() => { const g = window.__aboutStar; if (g && g.lift !== prevLift) kick(); }, 120);
+    kick();
   })();
 </script>
 </body>
