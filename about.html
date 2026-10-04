@@ -500,6 +500,15 @@
        use the site hairline. */
     .experience-list li { border-bottom-color: rgba(255, 255, 255, 0.08); }
     .experience-list li:first-child { border-top-color: rgba(255, 255, 255, 0.08); }
+    /* PHONE ROWS, TIGHTER (2026-10-04, per user "do 2" after "experience, education and recognition feels too long"). The 17
+       credential rows came to about 1,500px on a 390px phone, a third of the page, at about 78px a row: 12px above and below
+       and a 25.6px line each for the name and the detail. The name keeps 16px, the detail takes the ladder's 14px, the
+       leading drops to 1.35 and the padding to 10px, so a row is about 62px. Same words, same order, same hairlines; an
+       accordion was weighed and set aside (it hides the awards a skimmer looks for). Desktop is untouched. */
+    @media (max-width: 768px) {
+      .experience-list li { padding: 10px 0; row-gap: 0; line-height: 1.35; }
+      .experience-list .exp-company { font-size: 14px; }
+    }
     /* "SAY HELLO" TAKES FOCUS PROPERLY (2026-09-24): the ring hugs the word (it was a 1344x222 box that also covered
        the chat button), and a keyboard user who reaches it before the scroll reveal gets the word, lit, instead of an
        invisible link. The sweep writes each letter's opacity inline, so the lit state needs !important. */
