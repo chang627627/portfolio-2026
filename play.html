@@ -861,6 +861,13 @@
         </div>
         <img loading="lazy" decoding="async" width="1370" height="1148" src="images/pastel-floating-plaza.webp" alt="Pastel Floating Plaza, a painted plaza of pale arches and columns over a reflecting floor, with coral, blue and yellow ovals floating in the air and a burst of small colored shapes drifting toward the horizon" class="play-img-photo">
       </div>
+      <div class="play-card" style="--glow:#f19f65;--mo:12">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Every Return Changes You</h3><span class="play-year">2026</span></div>
+          <p>A fortune reimagined as a Möbius strip, where moving forward eventually becomes returning. The continuous surface turns repetition into transformation: you may come back to the same place, but never quite as the same person. Made with GPT Image 2.5.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="1122" height="1402" src="images/every-return-changes-you.webp" alt="Every Return Changes You, a fortune cookie whose paper slip unfurls into a Möbius strip washed in orange and violet, printed with the words every return changes you" class="play-img-photo">
+      </div>
       <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
@@ -1062,7 +1069,7 @@
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
        Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
-       24 cards: the columns end within 0.1% of each other, each runs 2026 to 2020 and ends on a 2020
+       25 cards: the columns end within 0.7% of each other, keeping his hand placements (Pastel Floating Plaza topping the middle column with Every Return Changes You under it, The Rib then Octocrab, No Signal Summer then Luma), each runs 2026 to 2020 and ends on a 2020
        film, Day Drift sits under Perfect Copy, and the two slideshows are in different columns. A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
@@ -1070,9 +1077,9 @@
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'Midjourney', 'The Rib', 'Octocrab', 'Fish Ocean', 'Whisper XR', 'Mirror', 'About the Teddy Bear'],
-        ['Pastel Floating Plaza', 'No Signal Summer', 'Luma', 'Robot Operator Console', 'New Craft Society', 'Market Street Booklet Kit', 'TickerPulse', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Vitruvian', 'Perfect Copy', 'Day Drift', 'Futuristic Starship Cockpit', 'Missing Pavilion', 'Running Dog', 'UN/FOLD'],
+        ['Scope', 'No Signal Summer', 'Luma', 'Perfect Copy', 'Day Drift', 'Futuristic Starship Cockpit', 'TickerPulse', 'Mirror', 'About the Teddy Bear'],
+        ['Pastel Floating Plaza', 'Every Return Changes You', 'Midjourney', 'The Rib', 'Octocrab', 'New Craft Society', 'Whisper XR', 'I Believe in a Thing Called Love'],
+        ['The Last Human Gestures', 'Vitruvian', 'Fish Ocean', 'Robot Operator Console', 'Market Street Booklet Kit', 'Missing Pavilion', 'Running Dog', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
