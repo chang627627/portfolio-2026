@@ -178,6 +178,15 @@
        4.2% at 1440, and nothing wraps from 1200 up. Two columns and phones keep 22px over their 16px captions, and the
        detail page's panel keeps its own 22px. */
     .play-grid.is-three .play-card .play-info h3 { font-size: 18px; }
+    /* TWO COLUMNS LOOK LIKE THREE (2026-10-04, per user "two columns one do not show the descriptions as well. use the
+       style three columns did"). From 769 to 1199px a card is now its piece with the name (18px) and year under it, no
+       caption or links, as in three columns. There is no detail page at this width, so the caption shows nowhere
+       here, as on phones; the slideshows keep their arrows and dots, the one way to switch them here. .is-two is set by
+       the deal script, so without the script the two columns keep their captions. */
+    .play-grid.is-two .play-info p,
+    .play-grid.is-two .play-info .play-link { display: none; }
+    .play-grid.is-two .play-card .play-info-top { margin-bottom: 0; }
+    .play-grid.is-two .play-card .play-info h3 { font-size: 18px; }
     .play-title-btn { position: relative; font: inherit; color: inherit; letter-spacing: inherit; line-height: inherit; text-align: left; background: none; border: 0; padding: 0; margin: 0; cursor: pointer; }
     .play-title-btn:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; border-radius: 4px; }
     /* NO HOVER LINE UNDER THE TITLE (2026-09-29, per user "cancel the hover line animation on play section's card").
@@ -793,7 +802,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1254" height="1254" src="images/gpt2-mech-crab.jpg" alt="Octocrab — pearl-white sci-fi crab creature with neon claws and a glowing core" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#102f5f;--mo:7">
+      <div class="play-card" style="--glow:#102f5f;--mo:7;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>The Rib</h3><span class="play-year">2026</span></div>
           <p>Creation begins with separation. In this retelling of Genesis, one whole becomes two equals, and distance makes loss possible. Only when there is an “I” and a “you” can there be someone to love. Made with GPT Image 2.5.</p>
@@ -846,14 +855,6 @@
         </div>
         <video class="build-film" src="images/robot-console.mp4" controls preload="none" poster="images/robot-console-poster.jpg" playsinline width="1280" height="716" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
-      <div class="play-card" style="--glow:#bbcbaf;--mo:10">
-        <div class="play-info">
-          <div class="play-info-top"><h3>New Craft Society</h3><span class="play-year">2026</span></div>
-          <p>A home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. Freelance, in active development: I am both a designer on it and one of the product engineers building it.</p>
-          <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="play-link">Visit the site <span class="arrow">↗</span></a>
-        </div>
-        <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
-      </div>
       <div class="play-card" style="--glow:#5990d8;--mo:12">
         <div class="play-info">
           <div class="play-info-top"><h3>Pastel Floating Plaza</h3><span class="play-year">2026</span></div>
@@ -895,13 +896,13 @@
           <div class="carousel-dots"></div>
         </div>
       </div>
-      <div class="play-card" style="--glow:#937965;--mo:13">
+      <div class="play-card" style="--glow:#efd2ae;--mo:15">
         <div class="play-info">
-          <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
-          <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
-          <div class="play-more" hidden><p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p></div>
+          <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
+          <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
+          <div class="play-more" hidden><p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p></div>
         </div>
-        <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
       </div>
       <div class="play-card" style="--glow:#736847;--mo:16">
         <div class="play-info">
@@ -910,6 +911,13 @@
           <div class="play-more" hidden><p>Solo project designing an 8x12m parametric pavilion, featuring a wave-like structure of metal and semi-transparent glass. Positioned at a pathway intersection, it enhances the park experience with light, water play, and a serene space for relaxation and socializing. Made in Rhino and Grasshopper.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1920" height="1243" src="images/pavilion.jpg" alt="Missing Pavilion" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#9ea4b0;--mo:17">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Running Dog</h3><span class="play-year">2020</span></div>
+          <p>A tri-gear mechanism modeled in SolidWorks. Rotating the primary crank transfers motion to two more gears in one linked movement, and a secondary crank on the central bar converts that rotation into vertical motion through a crank pin.</p>
+        </div>
+        <img loading="lazy" decoding="async" width="1920" height="1285" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
       </div>
       <div class="play-card" style="--glow:#98c37f;--mo:20" data-length="1:02">
         <div class="play-info">
@@ -932,7 +940,7 @@
         </div>
         <img width="1024" height="1536" src="images/last-human-gestures-card.jpg" alt="The Last Human Gestures — speculative archive of human behavior" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#4da5c7;--mo:6">
+      <div class="play-card" style="--glow:#4da5c7;--mo:6;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Vitruvian</h3><span class="play-year">2026</span></div>
           <p>Leonardo da Vinci's ideal human, redrawn in overlapping color layers that share one center but diverge toward the edges. One ideal gives way to many possible selves, all of them human. Made with GPT Image 2.5.</p>
@@ -983,6 +991,14 @@
         </div>
         <video class="build-film" src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
+      <div class="play-card" style="--glow:#bbcbaf;--mo:10">
+        <div class="play-info">
+          <div class="play-info-top"><h3>New Craft Society</h3><span class="play-year">2026</span></div>
+          <p>A home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. Freelance, in active development: I am both a designer on it and one of the product engineers building it.</p>
+          <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="play-link">Visit the site <span class="arrow">↗</span></a>
+        </div>
+        <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
+      </div>
       <div class="play-card play-card--desktop-only" style="--glow:#664f37;--mo:11">
         <div class="play-info">
           <div class="play-info-top"><h3>Whisper XR</h3><span class="play-year">2025</span></div>
@@ -1028,20 +1044,13 @@
           <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
         </div>
       </div>
-      <div class="play-card" style="--glow:#efd2ae;--mo:15">
+      <div class="play-card" style="--glow:#937965;--mo:13">
         <div class="play-info">
-          <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
-          <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
-          <div class="play-more" hidden><p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p></div>
+          <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
+          <p>Exhibited at SF's Ferry Building and reviewed by a jury that included Jony Ive. An interactive booklet of maps, stamps, and coupons for ULI San Francisco's Market Street Reimagined competition, built to revive foot traffic and support local businesses.</p>
+          <div class="play-more" hidden><p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p></div>
         </div>
-        <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
-      </div>
-      <div class="play-card" style="--glow:#9ea4b0;--mo:17">
-        <div class="play-info">
-          <div class="play-info-top"><h3>Running Dog</h3><span class="play-year">2020</span></div>
-          <p>A tri-gear mechanism modeled in SolidWorks. Rotating the primary crank transfers motion to two more gears in one linked movement, and a secondary crank on the central bar converts that rotation into vertical motion through a crank pin.</p>
-        </div>
-        <img loading="lazy" decoding="async" width="1920" height="1285" src="images/solidworks-trigear.jpg" alt="Running Dog, a tri-gear tilting mechanism modeled in SolidWorks" class="play-img-photo">
+        <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
       </div>
       <div class="play-card" style="--glow:#67bcda;--mo:19" data-length="1:35">
         <div class="play-info">
@@ -1069,17 +1078,20 @@
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
        Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
-       25 cards: the columns end within 0.7% of each other, keeping his hand placements (Pastel Floating Plaza topping the middle column with Fortune, Returned under it, The Rib then Octocrab, No Signal Summer then Luma), each runs 2026 to 2020 and ends on a 2020
-       film, Day Drift sits under Perfect Copy, and the two slideshows are in different columns. A new
+       23 cards (Vitruvian and The Rib hidden, 2026-10-04, per user "hide Vitruvian and The Rib and balance the columns
+       with the rules"): the columns end within 0.94% of each other (0.46% at 1440), keeping his hand placements (the top row Scope,
+       Pastel Floating Plaza, The Last Human Gestures; Fortune, Returned under Plaza; Luma under No Signal Summer), each
+       runs 2026 to 2020 and ends on a 2020 film, Day Drift sits under Perfect Copy, and the two slideshows are in
+       different columns. Found by trying every assignment; of those within 0.3 points of the closest (0.78%), the one that moves the fewest cards (6). A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'No Signal Summer', 'Luma', 'Perfect Copy', 'Day Drift', 'Futuristic Starship Cockpit', 'TickerPulse', 'Mirror', 'About the Teddy Bear'],
-        ['Pastel Floating Plaza', 'Fortune, Returned', 'Midjourney', 'The Rib', 'Octocrab', 'New Craft Society', 'Whisper XR', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Vitruvian', 'Fish Ocean', 'Robot Operator Console', 'Market Street Booklet Kit', 'Missing Pavilion', 'Running Dog', 'UN/FOLD'],
+        ['Scope', 'No Signal Summer', 'Luma', 'Midjourney', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
+        ['Pastel Floating Plaza', 'Fortune, Returned', 'Octocrab', 'New Craft Society', 'Market Street Booklet Kit', 'Whisper XR', 'I Believe in a Thing Called Love'],
+        ['The Last Human Gestures', 'Fish Ocean', 'Perfect Copy', 'Day Drift', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'Running Dog', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
@@ -1089,7 +1101,7 @@
       const wide = matchMedia('(min-width: 1200px)');
       // phones are a gallery (see .is-gallery in the head): one column, the piece with its title and year
       const phone = matchMedia('(max-width: 768px)');
-      let dealt = 'two';
+      let dealt = null; // the first deal always runs, so two columns get .is-two too
       // moveBefore keeps a moved card's state, so a film playing in it across 1200px goes on
       // playing (append would reload its player); browsers without it fall back to append
       const put = (col, card) => (col.moveBefore ? col.moveBefore(card, null) : col.append(card));
@@ -1100,6 +1112,7 @@
         home.forEach((cards, i) => cards.forEach(card => put(two[i], card)));
         third.remove(); // after the cards have left it, so none is ever detached
         grid.classList.toggle('is-three', mode === 'three');
+        grid.classList.toggle('is-two', mode === 'two');
         grid.classList.toggle('is-gallery', mode === 'gallery');
         if (mode === 'three') {
           grid.append(third);
