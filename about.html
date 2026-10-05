@@ -571,6 +571,28 @@
       .about-vertical > .about-block:first-of-type { margin-bottom: 91px; }
       .testimonials { padding-bottom: 67px; }
     }
+    /* RECOGNITION LINKS (2026-10-05, per user "can you comeup a way to add the link into the recognition part?", "for
+       same award won twice how to handle?", then "yeah, please do"). The thing that won is the link, in the detail:
+       each project to its own winner page (Red Dot's StoryBloom page is not public until November, so it opens the
+       notification the StoryBloom case study already links), each "Featured" to the listing, the ULI line to the
+       team's gallery entry; the two scholarships have no public page and stay plain. On 2026-09-22 the project names
+       here linked to their own case studies and were removed the same day ("remove the links in the recognition
+       part"); these go to the outside proof. The arrow is the pill's and the footer's, at rest, so a reader sees what
+       can be checked; on hover the link turns white and the arrow nudges 2px up and right on the 160ms clock; keyboard
+       focus gets the site's white ring. Desktop only (see below). */
+    .experience-list .rec-link { color: inherit; text-decoration: none; transition: color var(--dur-base) var(--ease-out); }
+    .experience-list .rec-arrow { display: inline-block; margin-left: 3px; font-size: 0.8em; opacity: 0.7; transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out); }
+    @media (hover: hover) {
+      .experience-list .rec-link:hover { color: var(--text); }
+      .experience-list .rec-link:hover .rec-arrow { transform: translate(2px, -2px); opacity: 1; }
+    }
+    .experience-list .rec-link:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 3px; border-radius: 4px; }
+    /* DESKTOP ONLY (per user, mid-build: "no phone. just show link on desktop"): on phones the rows read as plain text,
+       as before, with no arrow and nothing to tap; a screen reader can still follow them */
+    @media (max-width: 768px) {
+      .experience-list .rec-link { pointer-events: none; }
+      .experience-list .rec-arrow { display: none; }
+    }
     /* BOOKS HIDDEN (2026-10-05, per user "hide Books I'm reading lately"; markup kept, an inline display:none on the
        section). People I've worked with becomes the last section, so it carries the site's 280px from the last thing
        seen to the footer on desktop: its quotes end 14px inside its box, so 266 (it was 67 from 1100px and 96 below,
@@ -1385,26 +1407,27 @@
     <div class="about-block">
       <div class="section-meta"><span class="section-label-text">Recognition</span></div>
       <!-- Strongest first (2026-09-22), and each design award names the project that won
-           it, as plain text (links were tried and removed the same day, per user). The
+           it (links to the case studies were tried and removed the same day, per user). Since
+           2026-10-05 each winner links to its outside proof instead: see RECOGNITION LINKS. The
            mapping is the case studies' own Recognition rows: PollenNav took iF 2026, Red
            Dot 2025, NYPDA Silver 2025 and EPDA 2025; StoryBloom took Red Dot 2026 and NYPDA
            Silver 2026. Silver moved into the award name so the row does not read as a top
            win. -->
       <ul class="experience-list">
         <li>
-          <div class="exp-row"><span class="exp-role">Red Dot Design Award</span><span class="exp-company">PollenNav, StoryBloom</span><span class="exp-date">2025, 2026</span></div>
+          <div class="exp-row"><span class="exp-role">Red Dot Design Award</span><span class="exp-company"><a class="rec-link" href="https://www.red-dot.org/project/pollennav-85143" target="_blank" rel="noopener" aria-label="PollenNav, Red Dot Design Award 2025 (opens in a new tab)">PollenNav<span class="rec-arrow" aria-hidden="true">&#8599;</span></a>, <a class="rec-link" href="https://drive.google.com/file/d/1HCtIL7uSzCGC1EWR9ykP6ihrmdkdoTPs/view?usp=sharing" target="_blank" rel="noopener" aria-label="StoryBloom, Red Dot Design Award 2026 notification (opens in a new tab)">StoryBloom<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2025, 2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">iF Design Award</span><span class="exp-company">PollenNav</span><span class="exp-date">2026</span></div>
+          <div class="exp-row"><span class="exp-role">iF Design Award</span><span class="exp-company"><a class="rec-link" href="https://ifdesign.com/en/winner-ranking/project/pollennav/750958" target="_blank" rel="noopener" aria-label="PollenNav, iF Design Award 2026 (opens in a new tab)">PollenNav<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">NY Product Design Awards, Silver</span><span class="exp-company">PollenNav, StoryBloom</span><span class="exp-date">2025, 2026</span></div>
+          <div class="exp-row"><span class="exp-role">NY Product Design Awards, Silver</span><span class="exp-company"><a class="rec-link" href="https://nydesignawards.com/winner-info.php?id=3347" target="_blank" rel="noopener" aria-label="PollenNav, NY Product Design Awards Silver 2025 (opens in a new tab)">PollenNav<span class="rec-arrow" aria-hidden="true">&#8599;</span></a>, <a class="rec-link" href="https://nydesignawards.com/winner-info.php?id=4480" target="_blank" rel="noopener" aria-label="StoryBloom, NY Product Design Awards Silver 2026 (opens in a new tab)">StoryBloom<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2025, 2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">European Product Design Award</span><span class="exp-company">PollenNav</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">European Product Design Award</span><span class="exp-company"><a class="rec-link" href="https://www.productdesignaward.eu/winners/epda/2025/12238/" target="_blank" rel="noopener" aria-label="PollenNav, European Product Design Award 2025 (opens in a new tab)">PollenNav<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2025</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">ULI Market Street Reimagined Competition</span><span class="exp-company">Exhibited at Ferry Building</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">ULI Market Street Reimagined Competition</span><span class="exp-company"><a class="rec-link" href="https://uli.secure-platform.com/a/gallery/rounds/502/details/23241" target="_blank" rel="noopener" aria-label="ULI Market Street Reimagined Competition entry, exhibited at the Ferry Building (opens in a new tab)">Exhibited at Ferry Building<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2025</span></div>
         </li>
         <li>
           <div class="exp-row"><span class="exp-role">Bernard Osher Foundation Scholarship</span><span class="exp-company">Recipient</span><span class="exp-date">2024 – 2025</span></div>
@@ -1413,10 +1436,10 @@
           <div class="exp-row"><span class="exp-role">CCA IxD Departmental Scholarship</span><span class="exp-company">Recipient</span><span class="exp-date">2024 – 2025</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">BestPortfolio</span><span class="exp-company">Featured</span><span class="exp-date">2026</span></div>
+          <div class="exp-row"><span class="exp-role">BestPortfolio</span><span class="exp-company"><a class="rec-link" href="https://bestportfolio.in/portfolio/chang-mou" target="_blank" rel="noopener" aria-label="Featured on BestPortfolio (opens in a new tab)">Featured<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2026</span></div>
         </li>
         <li>
-          <div class="exp-row"><span class="exp-role">Wall of Portfolios</span><span class="exp-company">Featured</span><span class="exp-date">2025</span></div>
+          <div class="exp-row"><span class="exp-role">Wall of Portfolios</span><span class="exp-company"><a class="rec-link" href="https://www.wallofportfolios.in/portfolios/chang-mou/" target="_blank" rel="noopener" aria-label="Featured on Wall of Portfolios (opens in a new tab)">Featured<span class="rec-arrow" aria-hidden="true">&#8599;</span></a></span><span class="exp-date">2025</span></div>
         </li>
       </ul>
     </div>
