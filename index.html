@@ -761,8 +761,9 @@
     /* THE OPENING (2026-10-04, per user "these three elements motion I do not like too much. Can you come up some more
        2026 ideas?", "i mean the opening part ... heading, description and open to work", "you can do 1 and 2, meanwhile
        do research at the same time", then "we can push 1, Suggest then accept ... first"). How the heading, the sub and
-       the pill arrive. SUGGEST THEN ACCEPT is the opening; ?look=lightwrite shows the other one built that day, and
-       ?look=sweep the one before (a letter-by-letter blur-in wave, then a light beam across the heading, then the sub and
+       the pill arrive. STILL TYPE, THE LIGHT ARRIVES (3, below) is the opening since the same day (per user "push the
+       look still version"); ?look=accept keeps SUGGEST THEN ACCEPT (1, pushed first), ?look=lightwrite the other one
+       built that day, and ?look=sweep the one before (a letter-by-letter blur-in wave, then a light beam across the heading, then the sub and
        pill fading up; measured that day, the wave had not played since the kerning fix of 2026-09-22: the letters were
        already visible when it started, so the heading simply appeared). Neither new opening blurs or lifts the letters;
        the script reveals each part with classes on timers, and the sub and pill show anyway after 4s if it never runs.
@@ -781,19 +782,47 @@
       html.opening-accept .hero .hero-sub, html.opening-lightwrite .hero .hero-sub { opacity: 0; animation: opening-failsafe 0s linear 4s forwards; }
       html.opening-accept .hero .hero-sub.split, html.opening-lightwrite .hero .hero-sub.split { opacity: 1; }
       html.opening-accept .hero .hero-sub .w, html.opening-lightwrite .hero .hero-sub .w { opacity: 0; }
-      html.opening-accept .hero .hero-sub .w.on, html.opening-lightwrite .hero .hero-sub .w.on { opacity: 1; transition: opacity 0.22s var(--ease-out); }
+      html.opening-accept .hero .hero-sub .w.on, html.opening-lightwrite .hero .hero-sub .w.on { opacity: 1; transition: opacity 0.35s var(--ease-out); } /* Ask the work's word */
       html.opening-accept .hero .status-tag, html.opening-lightwrite .hero .status-tag {
         opacity: 0; animation: opening-failsafe 0s linear 4s forwards;
         transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out), opacity 0.45s var(--ease-out);
       }
       html.opening-accept .hero .status-tag.shown, html.opening-lightwrite .hero .status-tag.shown { opacity: 1; }
-      @keyframes opening-failsafe { to { opacity: 1; } }
-      /* 1: the suggestion, then its acceptance; the dot waits grey until it comes online */
-      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost { opacity: 0.3; transition: opacity 0.25s var(--ease-out); }
-      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost.on { opacity: 1; transition: opacity 0.16s var(--ease-out); }
+      @keyframes opening-failsafe { to { opacity: 1; transform: none; } }
+      /* 1: THE SITE'S OWN ARRIVAL (per user "the hero opening should align with the rest of the website's style as well.
+         Do not feel not cohesive"): everything else on the site rises a little as it fades in, on --ease-out (the cards
+         18 to 56px, the photos 56, the case studies' text 8, the hero's own sub and pill 16 over 0.8s), and Ask the work
+         types at 42ms a word with a 0.35s fade; the first cut of this opening only faded, in 0.16 to 0.45s, and typed at
+         24ms. Now the heading, the suggestion and the pill rise 16px over 0.8s, the sub streams at Ask the work's pace,
+         and the suggestion is accepted by the hero's light: each letter turns white as the beam reaches it, the light
+         the cursor, "Say hello", the galaxy and the prism all share. The dot waits grey until it comes online. */
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span { transform: translateY(16px); }
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.on { transform: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost { opacity: 0.3; transform: none; transition: opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out), filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost.on { opacity: 1; transition: opacity 0.35s var(--ease-out), transform 0.8s var(--ease-out), filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
+      html.opening-accept .hero .status-tag { transform: translateY(16px); transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out), opacity 0.8s var(--ease-out), transform 0.8s var(--ease-out); }
+      html.opening-accept .hero .status-tag.shown { transform: none; }
       html.opening-accept .hero .status-dot { background: rgba(255, 255, 255, 0.38); transition: background 0.3s var(--ease-out); animation: opening-dot-failsafe 0s linear 4s forwards; }
       @keyframes opening-dot-failsafe { to { background: #4ade80; } }
       html.opening-accept .hero .status-dot.dot-ignite { background: #4ade80; animation: dotIgnite 0.9s var(--ease-out), pulse 3s ease-in-out 0.9s infinite; }
+      /* 3, STILL TYPE, THE LIGHT ARRIVES (?look=still; per user "what you suggest me to do?" and "do", after the Mobbin
+         research: all ten heroes filmed, Microsoft AI, Giga, Sui, Grok's two, Framer, Luma AI, Fauna Robotics, Descript and
+         ClickUp AI, bring the headline, the line and the button in whole and keep them still, and move the light, the
+         background or the product instead). The heading, the sub and the pill arrive as one piece, the site's own
+         arrival (16px over 0.8s on --ease-out), as soon as the font is ready (html.hero-ready, set by the script; they
+         show anyway after 3s); nothing in them animates on its own. The light does the opening: the hero's specular
+         light eases onto the letters over 1.2s, and, as the block lands, THE LIGHT PASS (per user "you mean heading no
+         need any animation?", then "add the light pass"): the beam crosses the heading once (from 0.7s, 0.9s), the
+         words staying whole, and the pill's dot comes online as it leaves (1.45s, by CSS, so it never waits on the
+         beam); the stardust rises as it always has. The rise holds the block only while it runs (backwards fill), so the tilt the
+         hero writes inline on .hero-content takes over after. */
+      html.opening-still .hero .hero-content { opacity: 0; animation: opening-failsafe 0s linear 3s forwards; }
+      html.opening-still.hero-ready .hero .hero-content { opacity: 1; animation: opening-rise 0.8s var(--ease-out) backwards; }
+      @keyframes opening-rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+      html.opening-still .hero .hero-sub, html.opening-still .hero .status-tag { animation: none; opacity: 1; }
+      html.opening-still .hero .status-dot { background: rgba(255, 255, 255, 0.38); animation: opening-dot-failsafe 0s linear 4s forwards; }
+      html.opening-still.hero-ready .hero .status-dot { animation: opening-dot-online 0.35s var(--ease-out) 1.45s both, dotIgnite 0.9s var(--ease-out) 1.45s, pulse 3s ease-in-out 2.35s infinite; }
+      @keyframes opening-dot-online { from { background: rgba(255, 255, 255, 0.38); } to { background: #4ade80; } }
       /* 2: the beam's light eases on the letters as it passes (the engine sets the rise and decay per letter) */
       html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span { transition: filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
       html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span.on { transition: opacity 0.3s var(--ease-out), filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
@@ -802,8 +831,8 @@
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
     /* PREVIEW LOOK SWITCH: ?look=edge or ?look=all (bloom retired 2026-09-15). It also sets the hero's opening (see
-       THE OPENING at the end of the head's styles): suggest then accept, unless ?look=lightwrite or ?look=sweep asks
-       for one of the other two. */
+       THE OPENING at the end of the head's styles): still type, the light arrives, unless ?look=accept, ?look=lightwrite
+       or ?look=sweep asks for one of the other three. */
     (function () {
       var cls = document.documentElement.classList, keys = [];
       try {
@@ -813,7 +842,7 @@
       var all = ['edge', 'original'];
       if (keys.indexOf('all') !== -1) keys = keys.concat(all);
       keys.forEach(function (k) { if (all.indexOf(k) !== -1) cls.add('look-' + k); });
-      cls.add('opening-' + (keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'accept'));
+      cls.add('opening-' + (keys.indexOf('accept') !== -1 ? 'accept' : keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'still'));
     })();
   </script>
   <link rel="canonical" href="https://www.chang-mou.com/">
@@ -1718,10 +1747,17 @@
       h1.classList.add('lit', 'settled');
       return;
     }
-    // THE OPENING (see the note at the end of the head's styles): suggest then accept, or ?look=lightwrite; ?look=sweep
-    // runs the one before, below
+    // THE OPENING (see the note at the end of the head's styles): still type, the light arrives; ?look=accept and
+    // ?look=lightwrite run the other two built that day, ?look=sweep the one before, below
     const lookCls = document.documentElement.classList;
-    const opening = lookCls.contains('opening-accept') ? 'accept' : lookCls.contains('opening-lightwrite') ? 'lightwrite' : null;
+    const opening = lookCls.contains('opening-accept') ? 'accept' : lookCls.contains('opening-lightwrite') ? 'lightwrite' : lookCls.contains('opening-still') ? 'still' : null;
+    if (opening === 'still') {
+      // 3, STILL TYPE: the letters are whole from the start; the lockup rises in by CSS, and the light eases on
+      h1.classList.add('lit', 'settled');
+      lookCls.add('hero-ready');
+      armSpecular(spans, { delay: 700, dur: 900, rampIn: 1200 });          // the light pass, as the block lands
+      return;
+    }
     if (opening) { if (opening === 'accept') openAccept(); else openLightwrite(); return; }
 
     const rects = spans.map(s => s.getBoundingClientRect());
@@ -1751,28 +1787,40 @@
         return el;
       }).map((el, i, all) => { if (i === all.length - 1) sub.classList.add('split'); return el; });
     }
-    // 1, SUGGEST THEN ACCEPT
+    // 1, SUGGEST THEN ACCEPT, in the site's own arrival (see the note in the head's styles)
     function openAccept() {
       const lines = [...h1.querySelectorAll('.line-inner')];
       const l1 = [...lines[0].children], l2 = lines[1] ? [...lines[1].children] : [];
       const words = subWords(), pill = document.querySelector('.hero .status-tag'), dot = document.querySelector('.hero .status-dot');
-      const r = l2.map(g => g.getBoundingClientRect());
-      const x0 = Math.min(...r.map(q => q.left)), wide = Math.max(1, Math.max(...r.map(q => q.right)) - x0);
+      const heroEl = document.querySelector('.hero'), hr = heroEl.getBoundingClientRect();
+      const mid = el => { const q = el.getBoundingClientRect(); return (q.left + q.right) / 2 - hr.left; };
+      const gx = spans.map(mid), from = Math.min(...gx) - 260, to = Math.max(...gx) + 260;   // the engine's own beam travel
+      const l2x = l2.map(mid);
       const at = (ms, fn) => setTimeout(fn, ms);
-      at(40, () => l1.forEach(g => g.classList.add('on')));                     // line 1 simply appears
-      at(420, () => l2.forEach(g => g.classList.add('ghost')));                 // line 2 arrives as a suggestion
-      at(950, () => l2.forEach((g, i) => {                                       // and is accepted, left to right
-        g.style.transitionDelay = Math.round(((r[i].left + r[i].right) / 2 - x0) / wide * 280) + 'ms';
-        g.classList.add('on');
-      }));
-      at(1250, () => words.forEach((w, i) => { w.style.transitionDelay = i * 24 + 'ms'; w.classList.add('on'); })); // the sub streams in
-      at(1500, () => {
-        l2.forEach(g => { g.style.transitionDelay = ''; });
-        h1.classList.add('lit', 'settled');
-        armSpecular(spans, { beam: false });                                   // the light and the cursor, no beam
+      const ACCEPT = 950, BEAM = 900;
+      at(40, () => l1.forEach(g => g.classList.add('on')));                     // line 1 rises in
+      at(260, () => l2.forEach(g => g.classList.add('ghost')));                 // line 2 rises in as a suggestion
+      // accepted by the light: the beam crosses the heading and each suggested letter turns white as it arrives
+      let accepted = false;
+      const acceptAll = () => { if (accepted) return; accepted = true; l2.forEach(g => g.classList.add('on')); };
+      at(ACCEPT, () => {
+        armSpecular(spans, { delay: 0, dur: BEAM });                           // the light (desktop, like the engine)
+        const start = performance.now();
+        const tick = t => {
+          if (accepted) return;
+          const ph = (t - start) / BEAM;
+          const x = from + (to - from) * (0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, ph))));
+          l2.forEach((g, i) => { if (x >= l2x[i] - 40) g.classList.add('on'); });
+          if (ph >= 1) { acceptAll(); return; }
+          requestAnimationFrame(tick);
+        };
+        requestAnimationFrame(tick);
       });
-      at(1900, () => { if (pill) pill.classList.add('shown'); });
-      at(2200, () => { if (dot) dot.classList.add('dot-ignite'); });           // the dot comes online
+      at(ACCEPT + BEAM + 400, acceptAll);                                         // the loop is never the only way in
+      at(1300, () => words.forEach((w, i) => { w.style.transitionDelay = i * 42 + 'ms'; w.classList.add('on'); })); // Ask the work's pace
+      at(ACCEPT + BEAM + 100, () => { acceptAll(); h1.classList.add('lit', 'settled'); });
+      at(2000, () => { if (pill) pill.classList.add('shown'); });
+      at(2400, () => { if (dot) dot.classList.add('dot-ignite'); });           // the dot comes online
     }
     // 2, THE LIGHT WRITES IT
     function openLightwrite() {
@@ -1847,6 +1895,7 @@
       // IO has the loop off) instead of replaying it stale later.
       const IGN_DELAY = opts.delay ?? 180, IGN_DUR = opts.dur ?? 750, GX = 2 * 150 * 150;
       const ignStart = opts.beam === false ? -Infinity : performance.now() + IGN_DELAY;   // a preview opening may skip the beam
+      const armT = performance.now(), RAMP = opts.rampIn || 0;                            // and ease the light on instead
       // ignSeen: the pill only ignites if the beam actually rendered — a
       // visitor who scrolled away and missed it gets no orphan pulse
       let ignSeen = false, ignFired = false;
@@ -1928,6 +1977,7 @@
               const p = Math.exp(-(dx * dx) / (window.__heroDrag ? SXD : SX) - (dy * dy) / SY);
               I = p + I * (1 - p);   // screen blend: cursor wins locally, ambient fills the rest
             }
+            if (RAMP) { const k = Math.min(1, Math.max(0, (t - armT) / RAMP)); I *= k * k * (3 - 2 * k); } // ambient and cursor ease on
             if (igniting) {
               const gdx = c.x - ignX;
               I = 1 - (1 - I) * (1 - Math.exp(-(gdx * gdx) / GX));   // beam wins locally
