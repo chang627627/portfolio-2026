@@ -758,19 +758,62 @@
       .ask-by.on { animation: none; }
       .ask-answer.is-streaming .ask-mote { animation: none; }
     }
+    /* THE OPENING (2026-10-04, per user "these three elements motion I do not like too much. Can you come up some more
+       2026 ideas?", "i mean the opening part ... heading, description and open to work", "you can do 1 and 2, meanwhile
+       do research at the same time", then "we can push 1, Suggest then accept ... first"). How the heading, the sub and
+       the pill arrive. SUGGEST THEN ACCEPT is the opening; ?look=lightwrite shows the other one built that day, and
+       ?look=sweep the one before (a letter-by-letter blur-in wave, then a light beam across the heading, then the sub and
+       pill fading up; measured that day, the wave had not played since the kerning fix of 2026-09-22: the letters were
+       already visible when it started, so the heading simply appeared). Neither new opening blurs or lifts the letters;
+       the script reveals each part with classes on timers, and the sub and pill show anyway after 4s if it never runs.
+       1, SUGGEST THEN ACCEPT: line 1 simply appears; line 2 arrives as faint ghost text, the way an editor shows a
+       suggestion, and is accepted to white in one left-to-right pass; the sub streams in word by word, like Ask the
+       work's answers; the pill fades in and its dot comes online, grey to green.
+       2, THE LIGHT WRITES IT: the light beam that crossed the settled headline is now the reveal: each letter, each word
+       of the sub and the pill appear as the beam reaches them, lit, and the dot ignites as the beam passes it. */
+    /* the hidden states carry no transition, so a letter or word that is created visible hides at once instead of
+       fading out first; only the reveals ease. The sub stays hidden until the script has split it into words. */
+    @media (prefers-reduced-motion: no-preference) {
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span,
+      html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span { opacity: 0; transform: none; filter: none; transition: none; }
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.on,
+      html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span.on { opacity: 1; transition: opacity 0.3s var(--ease-out); }
+      html.opening-accept .hero .hero-sub, html.opening-lightwrite .hero .hero-sub { opacity: 0; animation: opening-failsafe 0s linear 4s forwards; }
+      html.opening-accept .hero .hero-sub.split, html.opening-lightwrite .hero .hero-sub.split { opacity: 1; }
+      html.opening-accept .hero .hero-sub .w, html.opening-lightwrite .hero .hero-sub .w { opacity: 0; }
+      html.opening-accept .hero .hero-sub .w.on, html.opening-lightwrite .hero .hero-sub .w.on { opacity: 1; transition: opacity 0.22s var(--ease-out); }
+      html.opening-accept .hero .status-tag, html.opening-lightwrite .hero .status-tag {
+        opacity: 0; animation: opening-failsafe 0s linear 4s forwards;
+        transition: border-color var(--dur-base) var(--ease-out), background var(--dur-base) var(--ease-out), opacity 0.45s var(--ease-out);
+      }
+      html.opening-accept .hero .status-tag.shown, html.opening-lightwrite .hero .status-tag.shown { opacity: 1; }
+      @keyframes opening-failsafe { to { opacity: 1; } }
+      /* 1: the suggestion, then its acceptance; the dot waits grey until it comes online */
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost { opacity: 0.3; transition: opacity 0.25s var(--ease-out); }
+      html.opening-accept .hero h1.sweep-in:not(.settled) .line-inner span.ghost.on { opacity: 1; transition: opacity 0.16s var(--ease-out); }
+      html.opening-accept .hero .status-dot { background: rgba(255, 255, 255, 0.38); transition: background 0.3s var(--ease-out); animation: opening-dot-failsafe 0s linear 4s forwards; }
+      @keyframes opening-dot-failsafe { to { background: #4ade80; } }
+      html.opening-accept .hero .status-dot.dot-ignite { background: #4ade80; animation: dotIgnite 0.9s var(--ease-out), pulse 3s ease-in-out 0.9s infinite; }
+      /* 2: the beam's light eases on the letters as it passes (the engine sets the rise and decay per letter) */
+      html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span { transition: filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
+      html.opening-lightwrite .hero h1.sweep-in:not(.settled) .line-inner span.on { transition: opacity 0.3s var(--ease-out), filter 0.45s var(--ease-out), text-shadow 0.45s var(--ease-out); }
+    }
   </style>
   <script>document.documentElement.classList.add('hero-js');</script>
   <script>
-    /* PREVIEW LOOK SWITCH: ?look=edge or ?look=all (bloom retired 2026-09-15) */
+    /* PREVIEW LOOK SWITCH: ?look=edge or ?look=all (bloom retired 2026-09-15). It also sets the hero's opening (see
+       THE OPENING at the end of the head's styles): suggest then accept, unless ?look=lightwrite or ?look=sweep asks
+       for one of the other two. */
     (function () {
+      var cls = document.documentElement.classList, keys = [];
       try {
         var m = /[?&]look=([^&#]*)/.exec(location.search);
-        if (!m) return;
-        var all = ['edge', 'original'];
-        var keys = decodeURIComponent(m[1]).split(',');
-        if (keys.indexOf('all') !== -1) keys = keys.concat(all);
-        keys.forEach(function (k) { if (all.indexOf(k) !== -1) document.documentElement.classList.add('look-' + k); });
+        if (m) keys = decodeURIComponent(m[1]).split(',');
       } catch (e) {}
+      var all = ['edge', 'original'];
+      if (keys.indexOf('all') !== -1) keys = keys.concat(all);
+      keys.forEach(function (k) { if (all.indexOf(k) !== -1) cls.add('look-' + k); });
+      cls.add('opening-' + (keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'accept'));
     })();
   </script>
   <link rel="canonical" href="https://www.chang-mou.com/">
@@ -1675,6 +1718,11 @@
       h1.classList.add('lit', 'settled');
       return;
     }
+    // THE OPENING (see the note at the end of the head's styles): suggest then accept, or ?look=lightwrite; ?look=sweep
+    // runs the one before, below
+    const lookCls = document.documentElement.classList;
+    const opening = lookCls.contains('opening-accept') ? 'accept' : lookCls.contains('opening-lightwrite') ? 'lightwrite' : null;
+    if (opening) { if (opening === 'accept') openAccept(); else openLightwrite(); return; }
 
     const rects = spans.map(s => s.getBoundingClientRect());
     const minX = Math.min(...rects.map(r => r.left));
@@ -1691,7 +1739,74 @@
       armSpecular(spans);
     }, SWEEP + GLYPH + 80);
 
-    function armSpecular(glyphs) {
+    // the sub's words as spans, for the two previews that reveal it word by word
+    function subWords() {
+      const sub = document.querySelector('.hero .hero-sub');
+      if (!sub) return [];
+      const text = sub.textContent.trim().split(/\s+/);
+      sub.textContent = '';
+      return text.map((w, i) => {
+        if (i) sub.append(' ');
+        const el = document.createElement('span'); el.className = 'w'; el.textContent = w; sub.append(el);
+        return el;
+      }).map((el, i, all) => { if (i === all.length - 1) sub.classList.add('split'); return el; });
+    }
+    // 1, SUGGEST THEN ACCEPT
+    function openAccept() {
+      const lines = [...h1.querySelectorAll('.line-inner')];
+      const l1 = [...lines[0].children], l2 = lines[1] ? [...lines[1].children] : [];
+      const words = subWords(), pill = document.querySelector('.hero .status-tag'), dot = document.querySelector('.hero .status-dot');
+      const r = l2.map(g => g.getBoundingClientRect());
+      const x0 = Math.min(...r.map(q => q.left)), wide = Math.max(1, Math.max(...r.map(q => q.right)) - x0);
+      const at = (ms, fn) => setTimeout(fn, ms);
+      at(40, () => l1.forEach(g => g.classList.add('on')));                     // line 1 simply appears
+      at(420, () => l2.forEach(g => g.classList.add('ghost')));                 // line 2 arrives as a suggestion
+      at(950, () => l2.forEach((g, i) => {                                       // and is accepted, left to right
+        g.style.transitionDelay = Math.round(((r[i].left + r[i].right) / 2 - x0) / wide * 280) + 'ms';
+        g.classList.add('on');
+      }));
+      at(1250, () => words.forEach((w, i) => { w.style.transitionDelay = i * 24 + 'ms'; w.classList.add('on'); })); // the sub streams in
+      at(1500, () => {
+        l2.forEach(g => { g.style.transitionDelay = ''; });
+        h1.classList.add('lit', 'settled');
+        armSpecular(spans, { beam: false });                                   // the light and the cursor, no beam
+      });
+      at(1900, () => { if (pill) pill.classList.add('shown'); });
+      at(2200, () => { if (dot) dot.classList.add('dot-ignite'); });           // the dot comes online
+    }
+    // 2, THE LIGHT WRITES IT
+    function openLightwrite() {
+      const heroEl = document.querySelector('.hero'), hr = heroEl.getBoundingClientRect();
+      const words = subWords(), pill = document.querySelector('.hero .status-tag'), dot = document.querySelector('.hero .status-dot');
+      const mid = el => { const q = el.getBoundingClientRect(); return (q.left + q.right) / 2 - hr.left; };
+      const items = [...spans.map(g => ({ el: g, x: mid(g) })), ...words.map(w => ({ el: w, x: mid(w) }))];
+      if (pill) items.push({ el: pill, x: pill.getBoundingClientRect().left - hr.left + 24, cls: 'shown' });
+      if (dot) items.push({ el: dot, x: mid(dot), cls: 'dot-ignite' });
+      const gx = spans.map(mid), from = Math.min(...gx) - 260, to = Math.max(...gx) + 260; // the engine's own beam travel
+      const DELAY = 120, DUR = 1300, start = performance.now() + DELAY;
+      let done = false;
+      const finish = () => {
+        if (done) return;
+        done = true;
+        items.forEach(it => it.el.classList.add(it.cls || 'on'));
+        h1.classList.add('lit', 'settled');
+      };
+      armSpecular(spans, { delay: DELAY, dur: DUR });                          // the beam is the reveal (desktop, like the engine)
+      const tick = t => {
+        if (done) return;
+        const ph = (t - start) / DUR;
+        if (ph >= 0) {
+          const x = from + (to - from) * (0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, ph)));
+          items.forEach(it => { if (!it.on && x >= it.x - 40) { it.on = true; it.el.classList.add(it.cls || 'on'); } });
+        }
+        if (ph > 1) { finish(); return; }
+        requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      setTimeout(finish, DELAY + DUR + 500);                                     // the loop is never the only way in
+    }
+
+    function armSpecular(glyphs, opts = {}) {
       if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
       const heroEl = document.querySelector('.hero');
       const orbsEl = heroEl.querySelector('.hero-orbs');
@@ -1730,8 +1845,8 @@
       // Ignition: phase computes from an ABSOLUTE start time, so a hidden tab
       // or an early scroll-away skips the beam (frames never render while the
       // IO has the loop off) instead of replaying it stale later.
-      const IGN_DELAY = 180, IGN_DUR = 750, GX = 2 * 150 * 150;
-      const ignStart = performance.now() + IGN_DELAY;
+      const IGN_DELAY = opts.delay ?? 180, IGN_DUR = opts.dur ?? 750, GX = 2 * 150 * 150;
+      const ignStart = opts.beam === false ? -Infinity : performance.now() + IGN_DELAY;   // a preview opening may skip the beam
       // ignSeen: the pill only ignites if the beam actually rendered — a
       // visitor who scrolled away and missed it gets no orphan pulse
       let ignSeen = false, ignFired = false;
