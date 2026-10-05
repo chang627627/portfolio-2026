@@ -84,6 +84,7 @@ Design Tools: Figma, Figma Make, FigJam, Sketch, InVision, Lottie, Adobe CC (XD,
 Recognition:
 - PollenNav: 4x international design award winner, including Red Dot Design Award, NY Product Design Awards, and European Product Design Award in 2025, plus iF Design Award in 2026.
 - StoryBloom: Silver Winner, NY Product Design Awards, 2026.
+- BestPortfolio (bestportfolio.in, a curated gallery of designer portfolios): Featured, October 2026.
 - Wall of Portfolios: Featured Portfolio, 2025.
 - ULI Market Street Reimagined Competition: exhibited at San Francisco Ferry Building, 2025.
 
