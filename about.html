@@ -571,6 +571,14 @@
       .about-vertical > .about-block:first-of-type { margin-bottom: 91px; }
       .testimonials { padding-bottom: 67px; }
     }
+    /* BOOKS HIDDEN (2026-10-05, per user "hide Books I'm reading lately"; markup kept, an inline display:none on the
+       section). People I've worked with becomes the last section, so it carries the site's 280px from the last thing
+       seen to the footer on desktop: its quotes end 14px inside its box, so 266 (it was 67 from 1100px and 96 below,
+       which left 81 and 110). Phones already ended on People (Books is off there) at 80px. The rule follows the hide:
+       show Books again and it stops applying. */
+    @media (min-width: 769px) {
+      .testimonials:has(+ .media-section[style*="display: none"]) { padding-bottom: 266px; }
+    }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
   <!-- Google Analytics -->
@@ -1452,7 +1460,8 @@
        the page's own black, nothing on hover.
        The covers carry their full alt: nothing else on the shelf names the book. The
        notes are the 2026-09-12 drafts, still kept and still unrendered. -->
-  <section class="media-section media-section--end">
+  <!-- Books I'm reading lately: hidden 2026-10-05 per user ("hide Books I'm reading lately"); markup kept, the page's own hide convention -->
+  <section class="media-section media-section--end" style="display: none">
     <div class="section-meta"><span class="section-label-text">Books I'm reading lately</span></div>
     <div class="shelf">
       <figure class="book">
