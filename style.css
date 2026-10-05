@@ -115,23 +115,9 @@ p, figcaption {
   transition: color var(--dur-base) var(--ease-out);
 }
 
-.about-block p a::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
+/* NO HOVER LINES (2026-10-05, per user "how about cancel the line animation of hover across whole site"): the 1px line that grew under About's in-text links on hover is gone; the hover is the colour alone, over their resting hairline. */
 .about-block p a:hover {
   color: var(--text);
-}
-
-.about-block p a:hover::after {
-  width: 100%;
 }
 
 /* Nav (2026-09-12): a full-width bar in the curated.design manner, replacing the 700px
@@ -258,21 +244,7 @@ nav:not(.side-nav)::before {
   transition: color var(--dur-base) var(--ease-out);
 }
 
-.nav-links a:not(.nav-cta)::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
-.nav-links a:not(.nav-cta):hover::after {
-  width: 100%;
-}
-
+/* NO HOVER LINES (2026-10-05, per user "how about cancel the line animation of hover across whole site"): the 1px line that grew under the header's links on hover is gone; the hover is the colour alone (grey to white). */
 .nav-links a:hover,
 .nav-links a.nav-active {
   color: var(--text);
@@ -2050,23 +2022,9 @@ footer {
   transition: color var(--dur-base) var(--ease-out);
 }
 
-.footer-links a::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
+/* NO HOVER LINES (2026-10-05, per user "how about cancel the line animation of hover across whole site"): the 1px line that grew under the footer's links on hover is gone; the hover is the colour alone and the arrow's nudge. */
 .footer-links a:hover {
   color: var(--text);
-}
-
-.footer-links a:hover::after {
-  width: 100%;
 }
 
 .footer-links .arrow {
@@ -4051,26 +4009,25 @@ footer {
   text-decoration: none;
   font-size: 14px;
   margin-top: 12px;
-  transition: color 0.2s ease;
+  transition: color var(--dur-base) var(--ease-out); /* the site's link clock (2026-10-05, per user "how to unify"): was 0.2s ease */
 }
 
-.impact-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width 0.3s ease;
+/* NO HOVER LINES (2026-10-05, per user "how about cancel the line animation of hover across whole site", then "do not
+   forget in study cases"): the 1px line that grew under the case studies' "View ↗" links on hover is gone; the hover is
+   the colour and the arrow's nudge, as in the footer and About's Recognition (the ↗ is its own span now). */
+.impact-link .arrow {
+  display: inline-block;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .impact-link:hover .arrow {
+    transform: translate(2px, -2px);
+  }
 }
 
 .impact-link:hover {
   color: var(--text);
-}
-
-.impact-link:hover::after {
-  width: 100%;
 }
 
 .impact-card {
@@ -4558,23 +4515,9 @@ footer {
   border-bottom: 1px solid var(--text-muted);
 }
 
-.play-link::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background: var(--text);
-  transition: width var(--dur-base) var(--ease-out);
-}
-
+/* NO HOVER LINES (2026-10-05, per user "how about cancel the line animation of hover across whole site"): the 1px line that grew under Play's links on hover is gone; the hover is the colour alone, over their resting hairline, and the arrow's nudge. */
 .play-link:hover {
   color: var(--text);
-}
-
-.play-link:hover::after {
-  width: 100%;
 }
 
 .play-link .arrow {
@@ -4908,7 +4851,6 @@ footer {
   .nav-links a {
     color: var(--text);
   }
-  .nav-links a::after { display: none; } /* no underline tick in the full-screen overlay */
 
   .nav-cta {
     font-size: 18px !important;

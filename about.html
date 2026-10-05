@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=344">
+  <link rel="stylesheet" href="style.css?v=345">
   <style>
     /* One real session, in the content-card family (surface, radius, 32px, no
        border) so it sits like the testimonial cards below it. */
@@ -580,7 +580,10 @@
        part"); these go to the outside proof. The arrow is the pill's and the footer's, at rest, so a reader sees what
        can be checked; on hover the link turns white and the arrow nudges 2px up and right on the 160ms clock; keyboard
        focus gets the site's white ring. Desktop only (see below). */
-    .experience-list .rec-link { color: inherit; text-decoration: none; transition: color var(--dur-base) var(--ease-out); }
+    .experience-list .rec-link { position: relative; display: inline-block; color: inherit; text-decoration: none; transition: color var(--dur-base) var(--ease-out); }
+    /* NO HOVER LINE (per user "how about cancel the line animation of hover across whole site"; the footer's line was
+       added here the same day to unify the links, then every hover line on the site went): the hover is the colour and
+       the arrow's nudge, as everywhere else. */
     .experience-list .rec-arrow { display: inline-block; margin-left: 3px; font-size: 0.8em; opacity: 0.7; transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base) var(--ease-out); }
     @media (hover: hover) {
       .experience-list .rec-link:hover { color: var(--text); }
