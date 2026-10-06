@@ -859,15 +859,15 @@
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#293548;--mo:12">
+      <div class="play-card" style="--glow:#f5e8d1;--mo:12">
         <div class="play-info">
           <div class="play-info-top"><h3>Mochi</h3><span class="play-year">2026</span></div>
           <p>Meta has Jolly. OpenAI has Dots. xAI has Grok Bot. Every AI company seems to be giving its agent a friendly face right now, mostly soft shapes, bright colors and big eyes.</p>
-          <p>For my own AI companion, I wanted something that feels less like an app icon and more like an object you might find on a lakeshore. So Mochi is a stone, with light living inside it.</p>
-          <p>Its eyes glow from within, and the light changes color with its mood: warm gold when it's happy, mint when it's curious, blue when it's thinking, rose when it feels love.</p>
-          <p>Every time it lands, rings spread across the water. That ripple is its signature, inspired by the moment a stone drops into still water. Mochi isn't squishy either. It moves with the weight of a real stone, and its charm lives in its eyes and small gestures.</p>
+          <p>So I made my own AI companion, and named it Mochi.</p>
+          <p>The idea came from the filling inside a real mochi. Mochi's light glows from within, like a filling showing through the skin, and its color changes with its mood: gold when it's happy, mint when it's curious, blue when it's thinking, pink when it feels love.</p>
+          <p>It isn't squishy, though. Mochi moves with a little weight, and its personality lives in its eyes and small gestures.</p>
         </div>
-        <video class="play-loop" src="images/mochi.mp4#t=6" poster="images/mochi-poster.jpg" width="1920" height="1080" muted loop playsinline preload="none" disablepictureinpicture aria-label="Mochi, a grey stone with glowing eyes that change color with its mood, landing on still water and sending out rings" style="width:100%;height:auto;display:block;"></video>
+        <video class="play-loop" src="images/mochi.mp4#t=6" poster="images/mochi-poster.jpg" width="1920" height="1080" muted loop playsinline preload="none" disablepictureinpicture aria-label="Mochi, a soft cream companion whose glow from within changes color with its mood, gold, mint, blue and pink" style="width:100%;height:auto;display:block;"></video>
       </div>
       <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
@@ -1469,7 +1469,7 @@
       clip.style.clipPath = 'inset(' + y.toFixed(3) + '% ' + x.toFixed(3) + '% round 8px)';
     });
     function showClip(item) {
-      // a loop that is the whole piece (Merge Mark) carries its own size; Midjourney's clips take the stills' frame
+      // a loop that is the whole piece (Merge Mark, Mochi) carries its own size; Midjourney's clips take the stills' frame
       const w = +item.getAttribute('width'), h = +item.getAttribute('height');
       const still = gallery && gallery.items.find((i) => i.tagName === 'IMG' && i.naturalWidth);
       if (w && h) {
