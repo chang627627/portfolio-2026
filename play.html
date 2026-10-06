@@ -233,7 +233,7 @@
     .lightbox-panel h3 { margin: 0; font-size: 22px; font-weight: 400; line-height: 1.2; letter-spacing: -0.01em; }
     .lightbox-panel .play-year { flex-shrink: 0; color: var(--text-muted); font-size: 13px; font-variant-numeric: tabular-nums; }
     .lightbox-panel p { margin: 0; color: var(--text-soft); font-size: 16px; line-height: 1.6; }
-    .lightbox-panel .play-more p + p { margin-top: 12px; }
+    .lightbox-panel p + p { margin-top: 12px; } /* a longer introduction, or a caption of several paragraphs (Mochi) */
     .lightbox-panel .play-link { margin-top: 20px; }
     .lightbox-stage__film { display: none; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; background: #000; outline: none; cursor: default; }
     .lightbox-stage.is-film .lightbox-stage__film { display: block; }
@@ -817,23 +817,6 @@
         </div>
         <img loading="lazy" decoding="async" width="1054" height="1492" src="images/gpt2-golden-flux.jpg" alt="Golden Flux — abstract poster of molten gold ribbons, orbiting trails, and grain on black" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#62399f;--mo:8">
-        <div class="play-info">
-          <div class="play-info-top"><h3>Midjourney</h3><span class="play-year">2026</span></div>
-          <p>Exploring different visual styles, moods, and worlds through prompt-driven image and video generation in Midjourney.</p>
-        </div>
-        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
-          <img decoding="async" src="images/mj1-whale.jpg" alt="Surreal whales in colorful clouds" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <img decoding="async" src="images/mj2-sunset.jpg" alt="Whales swimming through purple skies" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <img decoding="async" src="images/mj3-stairs.jpg" alt="Impossible architecture with floating stairs" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <img decoding="async" src="images/mj4-desert.jpg" alt="Moebius-inspired sci-fi landscape" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <img decoding="async" src="images/mj5-architecture.jpg" alt="Minimal surreal architecture" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <img decoding="async" src="images/mj6-city.jpg" alt="Futuristic neon city" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
-          <video src="images/mj7-shoe-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
-          <video src="images/mj8-gradient-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
-          <video src="images/mj9-portrait-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
-        </div>
-      </div>
       <div class="play-card" style="--glow:#82a0c4;--mo:12" data-length="0:23">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
@@ -868,6 +851,24 @@
         </div>
         <video class="play-loop" src="images/merge-mark.mp4#t=1.9" poster="images/merge-mark-poster.jpg" width="1080" height="1080" muted loop playsinline preload="none" disablepictureinpicture aria-label="Merge Mark, a blue circle and a red circle orbiting into one purple form that sinks into the surface and leaves a ripple" style="width:100%;height:auto;display:block;"></video>
       </div>
+      <div class="play-card" style="--glow:#534e51;--mo:9">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
+          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
+          <div class="play-more" hidden><p>Solo concept project exploring how neuroaesthetic interaction can support emotional regulation through art-based rituals. Inspired by Your Brain on Art, it uses body mapping, abstract visual expression, and sensory check-ins to help users externalize difficult feelings in a private, nonverbal way. A trauma-informed concept focused on calm interaction, emotional safety, and a more poetic alternative to conventional wellness apps. Made with Claude Code.</p></div>
+        </div>
+        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#293548;--mo:12">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Mochi</h3><span class="play-year">2026</span></div>
+          <p>Meta has Jolly. OpenAI has Dots. xAI has Grok Bot. Every AI company seems to be giving its agent a friendly face right now, mostly soft shapes, bright colors and big eyes.</p>
+          <p>For my own AI companion, I wanted something that feels less like an app icon and more like an object you might find on a lakeshore. So Mochi is a stone, with light living inside it.</p>
+          <p>Its eyes glow from within, and the light changes color with its mood: warm gold when it's happy, mint when it's curious, blue when it's thinking, rose when it feels love.</p>
+          <p>Every time it lands, rings spread across the water. That ripple is its signature, inspired by the moment a stone drops into still water. Mochi isn't squishy either. It moves with the weight of a real stone, and its charm lives in its eyes and small gestures.</p>
+        </div>
+        <video class="play-loop" src="images/mochi.mp4#t=6" poster="images/mochi-poster.jpg" width="1920" height="1080" muted loop playsinline preload="none" disablepictureinpicture aria-label="Mochi, a grey stone with glowing eyes that change color with its mood, landing on still water and sending out rings" style="width:100%;height:auto;display:block;"></video>
+      </div>
       <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Redbrick Coffee</h3><span class="play-year">2025</span></div>
@@ -895,13 +896,16 @@
           <div class="carousel-dots"></div>
         </div>
       </div>
-      <div class="play-card" style="--glow:#efd2ae;--mo:15">
+      <div class="play-card" style="--glow:#141c39;--mo:14" data-length="0:35">
         <div class="play-info">
-          <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
-          <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
-          <div class="play-more" hidden><p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p></div>
+          <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
+          <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
+          <div class="play-more" hidden><p>Solo project exploring what immersive flight can feel like inside a browser. Users can steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p></div>
+          <a href="https://mince-lemon-30902005.figma.site/" target="_blank" rel="noopener" class="play-link">Play it here <span class="arrow">↗</span></a>
         </div>
-        <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
+        <div class="play-video">
+          <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
+        </div>
       </div>
       <div class="play-card" style="--glow:#736847;--mo:16">
         <div class="play-info">
@@ -970,14 +974,6 @@
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#534e51;--mo:9">
-        <div class="play-info">
-          <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
-          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
-          <div class="play-more" hidden><p>Solo concept project exploring how neuroaesthetic interaction can support emotional regulation through art-based rituals. Inspired by Your Brain on Art, it uses body mapping, abstract visual expression, and sensory check-ins to help users externalize difficult feelings in a private, nonverbal way. A trauma-informed concept focused on calm interaction, emotional safety, and a more poetic alternative to conventional wellness apps. Made with Claude Code.</p></div>
-        </div>
-        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
-      </div>
       <div class="play-card play-card--desktop-only" style="--glow:#2057a5;--mo:7;display:none">
         <div class="play-info">
           <div class="play-info-top"><h3>Escape Velocity</h3><span class="play-year">2026</span></div>
@@ -1005,6 +1001,23 @@
           <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="play-link">Visit the site <span class="arrow">↗</span></a>
         </div>
         <img loading="lazy" decoding="async" width="1280" height="713" src="images/newcraft-card-1280.jpg" alt="New Craft Society" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#62399f;--mo:8">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Midjourney</h3><span class="play-year">2026</span></div>
+          <p>Exploring different visual styles, moods, and worlds through prompt-driven image and video generation in Midjourney.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+          <img decoding="async" src="images/mj1-whale.jpg" alt="Surreal whales in colorful clouds" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <img decoding="async" src="images/mj2-sunset.jpg" alt="Whales swimming through purple skies" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <img decoding="async" src="images/mj3-stairs.jpg" alt="Impossible architecture with floating stairs" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <img decoding="async" src="images/mj4-desert.jpg" alt="Moebius-inspired sci-fi landscape" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <img decoding="async" src="images/mj5-architecture.jpg" alt="Minimal surreal architecture" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <img decoding="async" src="images/mj6-city.jpg" alt="Futuristic neon city" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;background:var(--surface);">
+          <video src="images/mj7-shoe-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+          <video src="images/mj8-gradient-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+          <video src="images/mj9-portrait-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
+        </div>
       </div>
       <div class="play-card play-card--desktop-only" style="--glow:#664f37;--mo:11">
         <div class="play-info">
@@ -1040,17 +1053,6 @@
         </div>
         <img loading="lazy" decoding="async" width="2400" height="1058" src="images/copatible.jpg" alt="CoPatible" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#141c39;--mo:14" data-length="0:35">
-        <div class="play-info">
-          <div class="play-info-top"><h3>Futuristic Starship Cockpit</h3><span class="play-year">2025</span></div>
-          <p>What immersive flight can feel like inside a browser. Steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p>
-          <div class="play-more" hidden><p>Solo project exploring what immersive flight can feel like inside a browser. Users can steer through rotation-based controls, adjust thrust, manage onboard power systems, and engage warp while traveling through layered deep space. Made with Figma Make.</p></div>
-          <a href="https://mince-lemon-30902005.figma.site/" target="_blank" rel="noopener" class="play-link">Play it here <span class="arrow">↗</span></a>
-        </div>
-        <div class="play-video">
-          <button class="yt-facade" type="button" data-embed="https://www.youtube-nocookie.com/embed/bVPVKyckvwk?start=0&amp;autoplay=1&amp;rel=0&amp;modestbranding=1" aria-label="Play: Futuristic Starship Cockpit"><img class="yt-facade__poster" src="images/starship-poster.jpg" alt="" width="1280" height="720" loading="lazy" decoding="async"><span class="yt-facade__play" aria-hidden="true"></span></button>
-        </div>
-      </div>
       <div class="play-card" style="--glow:#937965;--mo:13">
         <div class="play-info">
           <div class="play-info-top"><h3>Market Street Booklet Kit</h3><span class="play-year">2025</span></div>
@@ -1058,6 +1060,14 @@
           <div class="play-more" hidden><p>CCA team project for ULI San Francisco's Market Street Reimagined competition. Designed to revive foot traffic and support local businesses, the interactive booklet used maps, stamps, and coupons to guide people through Market Street landmarks. Exhibited at the Ferry Building (July 23 – Aug 8, 2025) and reviewed by a jury that included Jony Ive.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1500" height="2000" src="images/market-street.jpg" alt="Market Street Booklet Kit" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#efd2ae;--mo:15">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Mirror</h3><span class="play-year">2023</span></div>
+          <p>Fast fashion e-commerce reimagined through a sustainability lens. Size-finding tools, eco-shipping, and sustainability labels to cut returns and nudge conscious purchasing.</p>
+          <div class="play-more" hidden><p>Solo project reimagining fast fashion e-commerce through a sustainability lens. I designed a user friendly shopping platform with size-finding tools, eco-shipping options, and sustainability labels to reduce returns and encourage conscious purchasing.</p></div>
+        </div>
+        <img loading="lazy" decoding="async" width="1920" height="1382" src="images/mirror1.jpg" alt="Mirror" class="play-img-photo">
       </div>
       <div class="play-card" style="--glow:#67bcda;--mo:19" data-length="1:35">
         <div class="play-info">
@@ -1085,22 +1095,24 @@
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
        Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
-       24 cards (Merge Mark joined 2026-10-06, per user "add Merge Mark ... balance the column's height"): the columns end
-       within 0.14% of each other (0.13% at 1440), keeping his hand placements (the top row Scope,
-       Pastel Floating Plaza, The Last Human Gestures; Fortune, Returned under Plaza; Luma under Merge Mark, per user
-       "make luma under Merge Mark"; it was under No Signal Summer), each
+       25 cards (Mochi joined 2026-10-06, per user "add it as name Mochi ... adjust the columns heights", then "balance the
+       columns height"): the columns end within 0.88% of each other (0.46% at 1440; Mochi's 16:9 card is one block too
+       coarse to split finer), keeping his hand placements (the top row Scope, Pastel Floating Plaza, The Last Human
+       Gestures; Fortune, Returned under Plaza; Luma under Merge Mark, per user "make luma under Merge Mark"), each
        runs 2026 to 2020 and ends on a 2020 film, Day Drift sits under Perfect Copy, and the two slideshows are in
-       different columns. Found by trying every assignment; of those within 0.3 points of the closest (0.06%), the one that moves the fewest cards (3:
-       Midjourney and Fish Ocean to the middle, Octocrab to the right; Merge Mark follows No Signal Summer, with Luma under it). A new
+       different columns. Found by trying every assignment; of those within 0.3 points of the closest (0.67%), the one that moves the fewest cards (5:
+       Merge Mark and Luma to the middle under Fortune, Returned, Octocrab and Running Dog left, Market Street Booklet Kit
+       right; Mochi then traded places with Robot Operator Console, per user "change poisition of mochi and robot", so it
+       follows Day Drift; keeping Merge Mark and Luma left cost 6 moves at 1.05% or more). A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'No Signal Summer', 'Merge Mark', 'Luma', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
-        ['Pastel Floating Plaza', 'Fortune, Returned', 'New Craft Society', 'Midjourney', 'Fish Ocean', 'Market Street Booklet Kit', 'Whisper XR', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Perfect Copy', 'Day Drift', 'Robot Operator Console', 'Octocrab', 'Futuristic Starship Cockpit', 'Running Dog', 'UN/FOLD'],
+        ['Scope', 'No Signal Summer', 'Octocrab', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'Running Dog', 'About the Teddy Bear'],
+        ['Pastel Floating Plaza', 'Fortune, Returned', 'Merge Mark', 'Luma', 'New Craft Society', 'Midjourney', 'Fish Ocean', 'Whisper XR', 'I Believe in a Thing Called Love'],
+        ['The Last Human Gestures', 'Perfect Copy', 'Day Drift', 'Mochi', 'Robot Operator Console', 'Market Street Booklet Kit', 'Futuristic Starship Cockpit', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
@@ -2256,9 +2268,10 @@
 </script>
 
 <script>
-  // Merge Mark (2026-10-06): the piece is its loop. Muted, it plays while on screen at every width and pauses off it;
-  // nothing loads until then (preload none). It waits on its poster, the one purple form at 1.9s, and starts from that
-  // frame (#t=1.9), so the poster never jumps into the clip. Reduced motion keeps the poster.
+  // Merge Mark and Mochi (2026-10-06): the piece is its loop. Muted, it plays while on screen at every width and pauses
+  // off it; nothing loads until then (preload none). Each waits on its poster (Merge Mark's one purple form at 1.9s,
+  // Mochi happy at 6s; both clips open on an empty frame) and starts from that frame (#t=), so the poster never jumps
+  // into the clip; the loop then plays the whole clip. Reduced motion keeps the poster.
   (function() {
     const loops = document.querySelectorAll('.play-grid video.play-loop');
     if (!loops.length) return;
