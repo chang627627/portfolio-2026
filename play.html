@@ -834,14 +834,6 @@
           <video src="images/mj9-portrait-432.mp4" loop muted playsinline preload="metadata" style="width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:8px;display:block;"></video>
         </div>
       </div>
-      <div class="play-card" style="--glow:#534e51;--mo:9">
-        <div class="play-info">
-          <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
-          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
-          <div class="play-more" hidden><p>Solo concept project exploring how neuroaesthetic interaction can support emotional regulation through art-based rituals. Inspired by Your Brain on Art, it uses body mapping, abstract visual expression, and sensory check-ins to help users externalize difficult feelings in a private, nonverbal way. A trauma-informed concept focused on calm interaction, emotional safety, and a more poetic alternative to conventional wellness apps. Made with Claude Code.</p></div>
-        </div>
-        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
-      </div>
       <div class="play-card" style="--glow:#82a0c4;--mo:12" data-length="0:23">
         <div class="play-info">
           <div class="play-info-top"><h3>Robot Operator Console</h3><span class="play-year">2026</span></div>
@@ -868,6 +860,13 @@
           <p>A fortune slip becomes a Möbius strip, returning to where it began while arriving there changed. The continuous loop turns repetition into transformation: every return carries a different perspective. Made with GPT Image 2.5.</p>
         </div>
         <img loading="lazy" decoding="async" width="1122" height="1402" src="images/every-return-changes-you.webp" alt="Fortune, Returned: a fortune cookie whose paper slip unfurls into a Möbius strip washed in orange and violet, printed with the words every return changes you" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#8045ef;--mo:12">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Merge Mark</h3><span class="play-year">2026</span></div>
+          <p>Two orbits, one mark. A blue circle and a red circle swing around each other and close the distance. Where they overlap, their pixels interleave, and from a distance the mix reads as purple, until they fold into a single purple form. The moment they become one, the form sinks into the surface and sends out a ripple, leaving nothing behind but the wave it made. Made with Claude.</p>
+        </div>
+        <video class="play-loop" src="images/merge-mark.mp4#t=1.9" poster="images/merge-mark-poster.jpg" width="1080" height="1080" muted loop playsinline preload="none" disablepictureinpicture aria-label="Merge Mark, a blue circle and a red circle orbiting into one purple form that sinks into the surface and leaves a ripple" style="width:100%;height:auto;display:block;"></video>
       </div>
       <div class="play-card" style="--glow:#c13137;--mo:10;display:none">
         <div class="play-info">
@@ -970,6 +969,14 @@
           <div class="play-more" hidden><p>A visual experiment about future nostalgia and the quiet beauty of being unreachable. What if the most peaceful memory of the future is not progress, but a summer when nothing was trying to reach us? Made with GPT Image 2.</p></div>
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-no-signal-summer.jpg" alt="No Signal Summer — sunset editorial poster with two figures overlooking a coast" class="play-img-photo">
+      </div>
+      <div class="play-card" style="--glow:#534e51;--mo:9">
+        <div class="play-info">
+          <div class="play-info-top"><h3>Luma</h3><span class="play-year">2026</span></div>
+          <p>A solo concept exploring how neuroaesthetic interaction can support emotional regulation. A trauma-informed, nonverbal alternative to conventional wellness apps, inspired by Your Brain on Art. Made with Claude Code.</p>
+          <div class="play-more" hidden><p>Solo concept project exploring how neuroaesthetic interaction can support emotional regulation through art-based rituals. Inspired by Your Brain on Art, it uses body mapping, abstract visual expression, and sensory check-ins to help users externalize difficult feelings in a private, nonverbal way. A trauma-informed concept focused on calm interaction, emotional safety, and a more poetic alternative to conventional wellness apps. Made with Claude Code.</p></div>
+        </div>
+        <img loading="lazy" decoding="async" width="2400" height="1058" src="images/luma-overview.jpg" alt="Luma" class="play-img-photo">
       </div>
       <div class="play-card play-card--desktop-only" style="--glow:#2057a5;--mo:7;display:none">
         <div class="play-info">
@@ -1078,20 +1085,22 @@
     /* THREE COLUMNS, the deal (see the .is-three note in the head). The markup keeps the two
        approved columns; from 1200px the cards move into these three, and back below it. Balanced in
        Chrome from 1200 to 2560 with the cards at title and year and the slideshows without controls,
-       23 cards (Vitruvian and The Rib hidden, 2026-10-04, per user "hide Vitruvian and The Rib and balance the columns
-       with the rules"): the columns end within 0.94% of each other (0.46% at 1440), keeping his hand placements (the top row Scope,
-       Pastel Floating Plaza, The Last Human Gestures; Fortune, Returned under Plaza; Luma under No Signal Summer), each
+       24 cards (Merge Mark joined 2026-10-06, per user "add Merge Mark ... balance the column's height"): the columns end
+       within 0.14% of each other (0.13% at 1440), keeping his hand placements (the top row Scope,
+       Pastel Floating Plaza, The Last Human Gestures; Fortune, Returned under Plaza; Luma under Merge Mark, per user
+       "make luma under Merge Mark"; it was under No Signal Summer), each
        runs 2026 to 2020 and ends on a 2020 film, Day Drift sits under Perfect Copy, and the two slideshows are in
-       different columns. Found by trying every assignment; of those within 0.3 points of the closest (0.78%), the one that moves the fewest cards (6). A new
+       different columns. Found by trying every assignment; of those within 0.3 points of the closest (0.06%), the one that moves the fewest cards (3:
+       Midjourney and Fish Ocean to the middle, Octocrab to the right; Merge Mark follows No Signal Summer, with Luma under it). A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'No Signal Summer', 'Luma', 'Midjourney', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
-        ['Pastel Floating Plaza', 'Fortune, Returned', 'Octocrab', 'New Craft Society', 'Market Street Booklet Kit', 'Whisper XR', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Fish Ocean', 'Perfect Copy', 'Day Drift', 'Robot Operator Console', 'Futuristic Starship Cockpit', 'Running Dog', 'UN/FOLD'],
+        ['Scope', 'No Signal Summer', 'Merge Mark', 'Luma', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
+        ['Pastel Floating Plaza', 'Fortune, Returned', 'New Craft Society', 'Midjourney', 'Fish Ocean', 'Market Street Booklet Kit', 'Whisper XR', 'I Believe in a Thing Called Love'],
+        ['The Last Human Gestures', 'Perfect Copy', 'Day Drift', 'Robot Operator Console', 'Octocrab', 'Futuristic Starship Cockpit', 'Running Dog', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
@@ -1448,11 +1457,17 @@
       clip.style.clipPath = 'inset(' + y.toFixed(3) + '% ' + x.toFixed(3) + '% round 8px)';
     });
     function showClip(item) {
+      // a loop that is the whole piece (Merge Mark) carries its own size; Midjourney's clips take the stills' frame
+      const w = +item.getAttribute('width'), h = +item.getAttribute('height');
       const still = gallery && gallery.items.find((i) => i.tagName === 'IMG' && i.naturalWidth);
-      if (still) {
+      if (w && h) {
+        clip.style.setProperty('--clip-w', w + 'px');
+        clip.style.setProperty('--clip-r', w + ' / ' + h);
+      } else if (still) {
         clip.style.setProperty('--clip-w', still.naturalWidth + 'px');
         clip.style.setProperty('--clip-r', still.naturalWidth + ' / ' + still.naturalHeight);
       }
+      if (item.getAttribute('poster')) clip.poster = item.getAttribute('poster'); else clip.removeAttribute('poster');
       clip.setAttribute('aria-label', titleOf(item.closest('.play-card')) + ', clip');
       clip.style.clipPath = ''; // the next clip's own shape sets it again once it loads
       clip.src = srcOf(item);
@@ -1763,12 +1778,15 @@
         // in the grid stop first (before the facade lookup: an inline embed gets its poster back).
         stopGridFilms();
         const facade = card.querySelector('.yt-facade');
+        const loop = card.querySelector('video.play-loop'); // a piece that is its loop opens looping, like a Midjourney clip
         if (buildFilm) {
           window.playStage({ film: buildFilm.getAttribute('src'), poster: buildFilm.getAttribute('poster'), ratio: buildFilm.getAttribute('width') + ' / ' + buildFilm.getAttribute('height'), title, opener: from, card, hold: true });
         } else if (facade) {
           const box = facade.closest('.play-video');
           const ratio = box && box.clientHeight ? box.clientWidth + ' / ' + box.clientHeight : '16 / 9';
           window.playStage({ url: facade.dataset.embed, title, ratio, poster: posterOf('.yt-facade__poster'), opener: from, card, restart: false, hold: true });
+        } else if (loop) {
+          openImage(loop, from);
         } else {
           const img = card.querySelector('.carousel-slide.active img') || card.querySelector('img[data-name]');
           if (!img) return false;
@@ -2235,6 +2253,21 @@
   } else if (chatMic) {
     chatMic.style.display = 'none';
   }
+</script>
+
+<script>
+  // Merge Mark (2026-10-06): the piece is its loop. Muted, it plays while on screen at every width and pauses off it;
+  // nothing loads until then (preload none). It waits on its poster, the one purple form at 1.9s, and starts from that
+  // frame (#t=1.9), so the poster never jumps into the clip. Reduced motion keeps the poster.
+  (function() {
+    const loops = document.querySelectorAll('.play-grid video.play-loop');
+    if (!loops.length) return;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)');
+    const run = (v, on) => { if (on && !calm.matches) v.play().catch(() => {}); else v.pause(); };
+    if (!('IntersectionObserver' in window)) { loops.forEach((v) => run(v, true)); return; }
+    const io = new IntersectionObserver((entries) => entries.forEach((e) => run(e.target, e.isIntersecting)), { rootMargin: '200px' });
+    loops.forEach((v) => io.observe(v));
+  })();
 </script>
 
 <script>
