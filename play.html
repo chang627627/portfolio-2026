@@ -358,8 +358,8 @@
        RUN, which opened the live build on the lightbox stage, retired 2026-09-28 per user "fish
        ocean should be like robot ... Do not say run"; its live build is the "Play it here" link
        under the caption). The script adds
-       .builds-on to <html> only at desktop width, so phones and a failed script keep the film
-       cards exactly as they were. */
+       .builds-on to <html> at every width (phones too since 2026-10-06), so only a failed script
+       keeps the film cards. */
     .build-stage { display: none; background: #000; }
     .builds-on .build-stage { display: block; }
     .builds-on .build-film:not(.is-on) { display: none !important; } /* !important: the film carries an inline display:block */
@@ -981,7 +981,7 @@
         </div>
         <img loading="lazy" decoding="async" width="1086" height="1448" src="images/gpt2-escape-velocity.jpg" alt="Escape Velocity — sci-fi editorial poster of an iridescent sphere pierced by a rocket trail" class="play-img-photo">
       </div>
-      <div class="play-card" style="--glow:#0d4a84;--mo:11" data-length="0:44">
+      <div class="play-card play-card--desktop-only" style="--glow:#0d4a84;--mo:11" data-length="0:44">
         <div class="play-info">
           <div class="play-info-top"><h3>Fish Ocean</h3><span class="play-year">2026</span></div>
           <p>A predator-prey ecosystem rebuilt from an old course project, now living in a glowing ASCII terminal where fish hunt, flee, feed, and breed, and the tank cycles through boom and collapse. Made with Claude Code.</p>
@@ -994,7 +994,7 @@
         </div>
         <video class="build-film" src="images/fish-ocean.mp4" controls preload="none" poster="images/fish-ocean-poster.jpg" playsinline width="1280" height="804" style="width:100%;height:auto;display:block;border-radius:8px;"></video>
       </div>
-      <div class="play-card" style="--glow:#bbcbaf;--mo:10">
+      <div class="play-card play-card--desktop-only" style="--glow:#bbcbaf;--mo:10">
         <div class="play-info">
           <div class="play-info-top"><h3>New Craft Society</h3><span class="play-year">2026</span></div>
           <p>A home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself. Freelance, in active development: I am both a designer on it and one of the product engineers building it.</p>
@@ -1874,19 +1874,19 @@
     });
   })();
 
-  // The builds (2026-09-24): on desktop the two code builds move at rest and their disc says
-  // what a click does. The loop's source is set only while the card is on screen and removed
-  // when it leaves (so the decode is dropped); it fades in on its first real frame. The disc plays
-  // the film in place, on Robot and Fish Ocean alike. Phones, reduced motion and a failed script
-  // keep the film cards.
+  // The builds (2026-09-24): the two code builds move at rest and their disc says what a click
+  // does. The loop's source is set only while the card is on screen and removed when it leaves (so
+  // the decode is dropped); it fades in on its first real frame. The disc plays the film in place,
+  // on Robot and Fish Ocean alike. Phones too since 2026-10-06 (per user "why mobile version are all
+  // cover ... just auto play all short video", then "use desktop as reference. if it autoplayed on desktop,
+  // do the same on mobile"; they had the film card, its poster still). Fish Ocean is not on phones at all
+  // (play-card--desktop-only, per user "no fish on mobile", then "I say no fucking fish on mobile"), so
+  // there it is Robot alone. Reduced motion keeps the poster, as on desktop; a failed script keeps the film cards.
   (function() {
     const stages = [...document.querySelectorAll('.build-stage')];
     if (!stages.length) return;
-    const desktop = window.matchMedia('(min-width: 769px)');
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const apply = () => document.documentElement.classList.toggle('builds-on', desktop.matches);
-    apply();
-    desktop.addEventListener('change', apply);
+    document.documentElement.classList.add('builds-on'); // every width since 2026-10-06 (phones were the film card)
 
     const unload = (v) => {
       if (!v.getAttribute('src')) return;
@@ -1902,7 +1902,7 @@
     if ('IntersectionObserver' in window) {
       io = new IntersectionObserver((entries) => entries.forEach((e) => {
         const v = e.target;
-        if (!e.isIntersecting || !desktop.matches || calm.matches) { unload(v); return; }
+        if (!e.isIntersecting || calm.matches) { unload(v); return; }
         if (e.intersectionRatio >= 0.35) {
           if (!v.getAttribute('src')) v.src = v.dataset.loop;
           v.play().catch(() => {});
@@ -2277,6 +2277,19 @@
     if (!loops.length) return;
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
     const run = (v, on) => { if (on && !calm.matches) v.play().catch(() => {}); else v.pause(); };
+    // A browser that will not start video on its own (iOS in Low Power Mode refuses even muted loops) starts it on a
+    // tap: every silent loop in the grid that is on screen, loaded and still paused (these, the builds' loops and the
+    // Midjourney clips) is played inside that gesture (2026-10-06, per user "just auto play all short video").
+    const kick = () => {
+      if (calm.matches) return;
+      document.querySelectorAll('.play-grid video[muted][loop]').forEach((v) => {
+        if (!v.paused || !v.getAttribute('src')) return;
+        const r = v.getBoundingClientRect();
+        if (r.bottom > 0 && r.top < innerHeight && r.width) v.play().catch(() => {});
+      });
+    };
+    document.addEventListener('touchend', kick, { passive: true });
+    document.addEventListener('click', kick);
     if (!('IntersectionObserver' in window)) { loops.forEach((v) => run(v, true)); return; }
     const io = new IntersectionObserver((entries) => entries.forEach((e) => run(e.target, e.isIntersecting)), { rootMargin: '200px' });
     loops.forEach((v) => io.observe(v));
