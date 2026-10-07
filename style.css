@@ -1911,14 +1911,21 @@ footer {
   /* Dawn reflection (2026-09-08): the hero went yellow-coral-violet-indigo,
      so its mirror runs indigo up top, violet, coral, amber at the bottom.
      The pre-dawn ramp (blue, magenta, red, amber) is kept on index.html
-     behind ?look=original. */
+     behind ?look=original.
+     FOLLOWS THE HERO'S FIX (2026-10-06, per user "did the footer need to change
+     accordingly?", then "do it"): the hero's fuller orange and sunlit gold in
+     place of the coral and amber, the gold at 0.60 (the amber was 0.64) because it
+     is brighter, so the footer line's white text keeps its contrast. Blended in
+     sRGB, as the hero's canvas blends: an OKLCH blend was tried and taken out the
+     same day, because it carried violet to orange round the wheel through a rose
+     the hero does not have ("where is the rose coming from?"). */
   background: linear-gradient(to bottom,
     transparent 0%,
     rgba(60, 20, 200, 0.68) 30%,
     rgba(140, 70, 255, 0.62) 52%,
-    rgba(255, 104, 48, 0.60) 70%,
-    rgba(255, 190, 35, 0.64) 88%,
-    rgba(255, 190, 35, 0.64) 100%);
+    rgba(250, 110, 29, 0.60) 70%,
+    rgba(255, 201, 41, 0.60) 88%,
+    rgba(255, 201, 41, 0.60) 100%);
   pointer-events: none;
   z-index: 0;
   -webkit-transform: translateZ(0);

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=345">
+  <link rel="stylesheet" href="style.css?v=346">
   <style>
     /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
        back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
@@ -351,7 +351,7 @@
     .yt-facade:focus-visible, .build-go:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -4px; }
     .play-grid .play-card img[tabindex]:focus-visible { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: -3px; }
 
-    /* THE BUILDS. Robot Operator Console and Fish Ocean are code, not films, so on desktop they
+    /* THE BUILDS. Robot Operator Console and Fish Ocean are code, not films, so they
        move at rest: a silent loop that loads only while the card is on screen and is dropped when
        it leaves, over a poster of its own first frame (the loop fades in once it is actually
        playing, so it never blinks in). The disc plays the film in the card on both (Fish Ocean's
@@ -440,9 +440,9 @@
     .footer-big-text:focus-visible .letter { opacity: 1 !important; }
     /* PHONES ARE A GALLERY (2026-10-01, per user "do it", the "title-and-year gallery" lead from the premium research,
        then "one column" and "no need detail page on mobile"): below 769px the script after the grid adds .is-gallery,
-       and the phone's one column (in --mo order) shows each piece with only its title and year under it. Taps do what
-       they always did on phones: an image opens the image viewer, a film plays in its card. There is no piece page on
-       phones, so the captions and links are not reachable there. Without the script phones keep their captions. */
+       and the phone's one column (in --mo order) shows each piece with only its title and year under it. On phones an
+       image opens nothing, and a film plays in its card (the YouTube discs, and since 2026-10-06 Robot's). There is no
+       piece page on phones, so the captions and links are not reachable there. Without the script phones keep their captions. */
     @media (max-width: 768px) {
       .play-grid.is-gallery .play-info p,
       .play-grid.is-gallery .play-info .play-link { display: none; }
@@ -2273,13 +2273,11 @@
   // Mochi happy at 6s; both clips open on an empty frame) and starts from that frame (#t=), so the poster never jumps
   // into the clip; the loop then plays the whole clip. Reduced motion keeps the poster.
   (function() {
-    const loops = document.querySelectorAll('.play-grid video.play-loop');
-    if (!loops.length) return;
     const calm = matchMedia('(prefers-reduced-motion: reduce)');
-    const run = (v, on) => { if (on && !calm.matches) v.play().catch(() => {}); else v.pause(); };
     // A browser that will not start video on its own (iOS in Low Power Mode refuses even muted loops) starts it on a
-    // tap: every silent loop in the grid that is on screen, loaded and still paused (these, the builds' loops and the
-    // Midjourney clips) is played inside that gesture (2026-10-06, per user "just auto play all short video").
+    // tap: every silent loop in the grid that is on screen, has a source and is still paused (these, the builds' loops
+    // and the Midjourney clips) is played inside that gesture (2026-10-06, per user "just auto play all short video").
+    // Set up before the check below, so it serves the other loops even if these two cards ever leave the page.
     const kick = () => {
       if (calm.matches) return;
       document.querySelectorAll('.play-grid video[muted][loop]').forEach((v) => {
@@ -2290,6 +2288,9 @@
     };
     document.addEventListener('touchend', kick, { passive: true });
     document.addEventListener('click', kick);
+    const loops = document.querySelectorAll('.play-grid video.play-loop');
+    if (!loops.length) return;
+    const run = (v, on) => { if (on && !calm.matches) v.play().catch(() => {}); else v.pause(); };
     if (!('IntersectionObserver' in window)) { loops.forEach((v) => run(v, true)); return; }
     const io = new IntersectionObserver((entries) => entries.forEach((e) => run(e.target, e.isIntersecting)), { rootMargin: '200px' });
     loops.forEach((v) => io.observe(v));
