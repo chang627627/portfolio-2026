@@ -105,6 +105,9 @@
        every width on 2026-10-03: see the two blocks below. */
     .play-grid.is-three .play-card:has(.play-title-btn:focus-visible) { outline: 2px solid rgba(240, 240, 240, 0.9); outline-offset: 4px; }
     .play-grid.is-three .play-title-btn:focus-visible { outline: none; }   /* the ring is the card's, round piece and name */
+    /* after the detail page is closed by mouse, no focus ring until the next key press (see closeNow) */
+    .play-ring-quiet .play-grid .play-card:has(:focus-visible),
+    .play-ring-quiet .play-grid :focus-visible { outline: none !important; }
     /* THE NAME AND YEAR COME BACK, AS ON HOME (2026-10-03, per user "add the name back to the play section's work, same
        style like home page. just name and year"). In three columns each piece now carries its name and year under it
        on the black page, flush with its edges, the year at the row's end: Home's frameless card of the same day, the
@@ -1659,9 +1662,19 @@
         }, 200);
       }
       clip.pause(); // it keeps its frame through the fade; the next opening clears it
-      if (opener) opener.focus({ preventScroll: true });
+      // focus goes back to the piece that opened the view, for keyboards and screen readers; after a close by mouse
+      // (a click on the empty space or the close button) Chrome sometimes marks that focus as keyboard focus and draws
+      // the white ring round the card (per user, with a screenshot: "everytime I click open the detail page ... and I go
+      // back. There's a white frame covering my works"), so the rings stay quiet until the next key press
+      if (opener) {
+        if (pointerLast) html.classList.add('play-ring-quiet');
+        opener.focus({ preventScroll: true });
+      }
       opener = null; morphImg = null; gallery = null;
     }
+    let pointerLast = false;
+    document.addEventListener('pointerdown', () => { pointerLast = true; }, true);
+    document.addEventListener('keydown', () => { pointerLast = false; html.classList.remove('play-ring-quiet'); }, true);
 
     // from: what takes focus back on close, when it is not the image itself (a title button)
     function openImage(img, from) {
