@@ -31,7 +31,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - The gap from the last content to the footer is 280px on desktop and 80px on phones, on every page.
 
 ### Footer (the ten pages with `.page-end`: every page except the decks, 404 and og-gen)
-- `.page-end` holds the glow (the hero's dawn reflected, indigo at the top, violet, the hero's orange, its gold at the bottom, blended in sRGB like the hero; the bottom stop stays warm, the gold at 0.60 so the footer line's white text keeps 4.5:1), the `.say-hello` band (380px top padding on desktop, 180px on phones) and the bar.
+- `.page-end` holds the glow (the hero's dawn reflected, indigo at the top, violet, the hero's orange, its gold at the bottom, blended in sRGB like the hero; the bottom stop stays warm, the gold at 0.64 (his call over 0.60, which had kept the footer line's white text at 4.5:1; it measures a median of about 4.45:1)), the `.say-hello` band (380px top padding on desktop, 180px on phones) and the bar.
 - Stardust embers rise from the glow's edge and cool as they rise; the pointer is ignored. The one event: a humpback whale made of the same motes forms, swims across the band above "Say hello" (25s, alternating direction; on phones too since 2026-10-03, about 215px long with its stars remade for that size: 0.6 of desktop's and 7px apart along the outline, a 16s crossing; it was off phones 2026-10-01 to 10-03), then lets go into dust. Its edge stays loose stipple.
 - "Say hello" (desktop only): letter spans with an ambient light sweep plus a cursor spotlight limited to the word's box. A click copies the email and shows "Email copied"; the mailto is only the fallback.
 - Bar: "© 2026 Chang Mou · Designed in the fog · 11:21 pm" (live San Francisco time, desktop only). Links: desktop LinkedIn / Email / GitHub / X; phones LinkedIn / Email / Resume / X.
@@ -73,7 +73,7 @@ Product designer portfolio aimed at YC and AI-startup hiring. Static HTML/CSS/JS
 - Comment mode (C) is shared through `api/comments.js` on the private Blob store, one immutable blob per comment. Pins are keyed by slide index, so inserting a slide moves them.
 
 ### Other files
-`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=346` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
+`404.html` (absolute paths, dawn hero, no footer or chat) · `og-gen.html` (share-card source, noindex) · `style.css` (shared; `?v=347` on all 11 pages that load it) · `api/chat.js` (Ask the work and the hidden chat; its prompt holds the resume and projects) · `api/luna.js` · `api/comments.js` · `llms.txt` · `sitemap.xml` · `robots.txt` · `vercel.json` (clean-URL rewrites only) · `.vercelignore` · `fonts/` (Neue Montreal Regular, Medium and Italic, plus three unused OFL faces) · `hero-fluid.js` (the retired fluid gradient, not loaded).
 
 ## Design system
 - Type: Neue Montreal, self-hosted `@font-face` in style.css (Fontshare delisted it), weight 400 everywhere; the one italic is hero line 2. Set `font-weight: 400` on every heading or browsers fake bold. Home size ladder: 104 hero, 38 titles, 16 body, 14, 13; new elements take a size from it.
