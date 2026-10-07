@@ -1119,16 +1119,18 @@
        the middle column's 2026 run (of two 5-move ties, the one that leaves No Signal Summer where it was). Then,
        per user ("switch day drift with where it lands. switch midjourney with souen,sliced"), Day Drift and Where It
        Lands traded places (so Perfect Copy is followed by Where It Lands), Midjourney and Rouen, Sliced traded places, and
-       then Midjourney and Fish Ocean ("switch midjourney with fish ocean as well"). A new
+       then Midjourney and Fish Ocean ("switch midjourney with fish ocean as well"); that left the columns 2.6% apart, and
+       TickerPulse and Futuristic Starship Cockpit then traded columns (the search's cheapest fix with all his placements
+       fixed, per user "do it and push"), for 0.44% at worst. A new
        card has to be listed here, or it falls to the end of the column it came from. Runs before
        first paint. */
     (() => {
       const grid = document.querySelector('.play-grid');
       if (!grid) return;
       const THREE = [
-        ['Scope', 'No Signal Summer', 'Merge Mark', 'Luma', 'Day Drift', 'TickerPulse', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
+        ['Scope', 'No Signal Summer', 'Merge Mark', 'Luma', 'Day Drift', 'Futuristic Starship Cockpit', 'Mirror', 'Missing Pavilion', 'About the Teddy Bear'],
         ['Pastel Floating Plaza', 'Fortune, Returned', 'Mochi', 'Rouen, Sliced', 'Midjourney', 'Fish Ocean', 'Whisper XR', 'Market Street Booklet Kit', 'I Believe in a Thing Called Love'],
-        ['The Last Human Gestures', 'Perfect Copy', 'Where It Lands', 'New Craft Society', 'Robot Operator Console', 'Octocrab', 'Futuristic Starship Cockpit', 'Running Dog', 'UN/FOLD'],
+        ['The Last Human Gestures', 'Perfect Copy', 'Where It Lands', 'New Craft Society', 'Robot Operator Console', 'Octocrab', 'TickerPulse', 'Running Dog', 'UN/FOLD'],
       ];
       const two = [...grid.querySelectorAll(':scope > .play-column')];
       const home = two.map(col => [...col.children]);
