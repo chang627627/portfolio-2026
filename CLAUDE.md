@@ -137,7 +137,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 **Case studies and decks**
 - NOVA's Final Design stays carousels, one frame at a time.
 - PollenNav: no invented prototype link.
-- Homewise: no principles list, no "The bet" section on the page, no separate human-in-the-loop section, no repo button in Collaboration.
+- Homewise: no principles list, no "The bet" section on the page, no separate human-in-the-loop section, no repo button in Collaboration; the Solution's 2x2 of stills and Collaboration's Figma plugin handoff block were cut 2026-10-07 (they previewed Final Design and read as tool documentation); the flat-colour "AI: Standing water" photo tiles in the prototype's scope document stay (2026-10-07, "leave them").
 - Countersign: no hypothetical ✕ column; never write "always" or "nothing" about its design system without checking the exceptions.
 - StoryBloom is never "solo".
 - About's margin labels stay put: sticky labels that stick, get knocked out by the next one and fade were built and dropped on 2026-10-01 ("this is terrible effect, drop it").
