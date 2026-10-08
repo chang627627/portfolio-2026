@@ -147,7 +147,6 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 
 ## Open items (known, not fixed)
 - The four decks still load Neue Montreal from Fontshare, which delisted it, so they render in the fallback font until they get their own `@font-face`. Thirteen other pages still carry the dead Fontshare `<link>` (harmless).
-- Home overflows to 352px at a 320px viewport (`div.project-info`).
 - `body.menu-open` does not lock scrolling (the flaw the lightbox had).
 - About: the photos no longer land about 110px under the statement, as older notes claim; measure before relying on it.
 - Footer, awaiting his call: the glow's amber hold never paints, a black band sits at the page bottom, and "Say hello" is under 3:1 at rest.
@@ -163,8 +162,8 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 - The post-push hook in `.claude/settings.json` fires only on `git push`. Its reminder means: log the story in the notes, one line here.
 - A style.css change bumps `?v=` on all 11 pages that load it (`grep -oh 'style\.css?v=[0-9]*' *.html | sort | uniq -c` shows one value).
 - Blocks pasted into every page: the footer stardust with the whale, "Say hello", the footer's local time, the chat widget, the lightbox. Edit one page, copy it verbatim, then confirm a single md5 across pages.
-- Update together: `api/chat.js`'s prompt and `llms.txt` whenever projects or roles change. A new page needs GA4 (`G-RRQ4XH93F3`), a canonical, a sitemap entry, og and twitter meta (`og-image.jpg?v=6`), the favicon (`favicon.svg?v=4`), the footer and chat blocks, and CreativeWork JSON-LD if it's a case study.
-- Resume: Drive id `1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ` in the nav and footer (21 links). Verify a new file with an anonymous `https://drive.google.com/uc?export=download&id=<ID>` fetch that returns `%PDF`.
+- Update together: `api/chat.js`'s prompt, `llms.txt` and its FAQ (mirrored in Home's FAQPage JSON-LD) whenever projects or roles change. A new page needs GA4 (`G-RRQ4XH93F3`), a canonical, a sitemap entry, og and twitter meta (`og-image.jpg?v=6`), the favicon (`favicon.svg?v=4`), the footer and chat blocks, and CreativeWork JSON-LD if it's a case study.
+- Resume: Drive id `1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ` in the nav and footer (21 links) and llms.txt. Verify a new file with an anonymous `https://drive.google.com/uc?export=download&id=<ID>` fetch that returns `%PDF`.
 - Share card: edit `og-gen.html`, render it with headless Chrome (`--force-device-scale-factor=2 --window-size=1200,630 --virtual-time-budget=6000`), `sips` it to a 1200×630 JPEG, bump `?v=`.
 - Tools: PIL lives in `/usr/bin/python3`; there is no ffmpeg (use `avconvert` presets, and a Swift `AVAssetImageGenerator` for exact frame-0 posters); `puppeteer-core` in the scratchpad drives the installed Chrome (call `deFocus` before shots of apps that focus on mount); read PDFs with a small swiftc PDFKit program; `gh` and `jq` are installed. Pasted images can be recovered from the session JSONL as base64.
 - The browser pane: rAF and IntersectionObserver stall while it isn't compositing (take a screenshot to wake it); `scroll-behavior: smooth` makes `scrollTo` animate (pass `behavior: 'instant'`); scroll-driven styles update a frame late (wait a double rAF); a running CSS transition outranks an inline `!important`; the pane can replay pointer events after a navigation; Chang shares it, so an unexplained change may be him.

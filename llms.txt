@@ -1,31 +1,39 @@
-# Chang Mou — Product Designer
+# Chang Mou, Product Designer
 
-> AI-first product designer in San Francisco. iF & Red Dot Award winner with 4+ years of experience. Designs by building: prototypes in real code (this site is hand-coded), and works with AI as part of the design process. Master of Design in Interaction Design, California College of the Arts (GPA 4.0). Open to new opportunities and relocation.
+> AI-first product designer in San Francisco. 4+ years shipping products across SaaS, AI, and social impact that balance user control with automation. Prototypes in real code; this site is hand-coded. Master of Design in Interaction Design, California College of the Arts. Open to new opportunities and to relocation.
 
-Currently: Product Design Expert at Mercor (expert UX evaluation for a frontier AI lab; design critique that teaches models product taste) and building New Craft Society.
+Currently: Product Design Expert at Mercor (since May 2026; expert evaluation of AI-generated product interfaces for a frontier AI lab, producing RLHF training data) and Product Designer at PM Accelerator (since September 2025; 0 to 1 AI product prototypes, including Homewise and TickerPulse).
 
-Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang-mou/ · X: https://x.com/changmou627
+Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang-mou/ · X: https://x.com/changmou627 · GitHub: https://github.com/chang627627
 
 ## Pages
 
-- [Work](https://www.chang-mou.com/): selected work, eight projects
-- [Play](https://www.chang-mou.com/play.html): experiments, AI art, films, and UI explorations
-- [About](https://www.chang-mou.com/about.html): background, how I use AI, experience, education, recognition
+- [Work](https://www.chang-mou.com/): six case studies
+- [Play](https://www.chang-mou.com/play.html): experiments, films, illustration, motion and UI explorations
+- [About](https://www.chang-mou.com/about.html): background, experience, education, recognition, and what people who worked with Chang say
+- [Resume (PDF)](https://drive.google.com/file/d/1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ/view)
 
-## Selected Work
+## Selected work, in the order the site shows it
 
-- [Homewise](https://www.chang-mou.com/homewise.html): AI command center for homeowners. Prototyped in code (React, no Figma), shipped by the dev team. Live prototype at https://homewise-rust.vercel.app
-- [PollenNav](https://www.chang-mou.com/pollen.html): street-level pollen navigation for the one billion people with seasonal allergies. 4x international award winner (iF, Red Dot, NY Product Design Awards, European Product Design Award)
-- [StoryBloom](https://www.chang-mou.com/storybloom.html): personalized bedtime app that turns how today felt into tonight's story, for kids ages 3 to 8. Red Dot Winner 2026, NY Product Design Awards Silver 2026. Chang led the design, with Ziyu Ye. Full case study on the site; live at storybloom.tech/app
-- [Litespace Coffee Chat](https://www.chang-mou.com/coffee.html): shipped B2B SaaS feature; 63% opt-in and 200+ chats in month one. The case study ends with a live 2026 rebuild of the flow as a conversational agent (Luna), embedded as a working prototype; its off-script replies are generated live by Claude Haiku
-- [Countersign](https://www.chang-mou.com/countersign.html): agentic credit-analysis prototype; the agent analyzes, a human countersigns. Full case study on the site; live demo at credit-analysis-agent.vercel.app
-- [UNICEF NOVA](https://www.chang-mou.com/nova.html): AR navigation for children balancing independence and parental reassurance; usability tested with 20+ parents and kids. CCA MDes capstone with the UNICEF Innovation Node
-- [New Craft Society](https://www.newcraftsociety.com/): a home for design process, not just finished pieces. In active development; Chang is both a designer and one of the product engineers building it. Shown on the Play page (https://www.chang-mou.com/play.html); no case study page
-- [Mercor](https://www.mercor.com/experts/): Product Design Expert role; expert UX evaluation (RLHF) for a frontier AI lab
+- [Homewise](https://www.chang-mou.com/homewise.html): AI command center for homeowners. Chang built the React prototype on the Hearth design system with Claude Code, with no Figma in between; the dev team built the product on it. Live prototype at https://homewise-rust.vercel.app
+- [PollenNav](https://www.chang-mou.com/pollen.html): street-level pollen guidance for safer city travel. 4x international award winner (iF, Red Dot, NY Product Design Awards, European Product Design Award)
+- [Countersign](https://www.chang-mou.com/countersign.html): a self-initiated prototype of agentic credit analysis; the agent analyzes, a human countersigns. Its backend is mocked and deterministic. Live demo at https://credit-analysis-agent.vercel.app
+- [StoryBloom](https://www.chang-mou.com/storybloom.html): personalized bedtime app that turns how today felt into an illustrated story for kids ages 3 to 8. Red Dot Winner 2026, NY Product Design Awards Silver 2026. Made by two designers, Chang leading. Live at storybloom.tech/app
+- [Litespace Coffee Chat](https://www.chang-mou.com/coffee.html): AI powered coffee chat for hybrid teams, shipped at Litespace in 2023; 63% of users opted in and 200+ chats were generated in the first month. The case study ends with a 2026 rebuild of the flow as a conversational agent (Luna), embedded as a working prototype
+- [UNICEF NOVA](https://www.chang-mou.com/nova.html): AR navigation for children that balances independence and parental reassurance; usability tested with 20+ parents and kids. CCA MDes capstone with the UNICEF Innovation Node
+
+## Frequently asked questions
+
+- What does Chang Mou do? Chang is an AI-first product designer. Chang designs products where a person stays in control of the automation, and prototypes them in real code (React, built with Claude Code) as well as in Figma.
+- Where is Chang based? San Francisco, California. Chang is open to relocation.
+- Is Chang available? Yes, Chang is open to new opportunities in product design.
+- Who has Chang worked with? Mercor (expert evaluation for a frontier AI lab), PM Accelerator, the UNICEF Innovation Node (through a CCA master's capstone), Litespace (a B2B SaaS platform), Asset Layer (a blockchain gaming platform), and BC and Alberta Guide Dogs.
+- How does Chang work? Chang starts from research and interviews, then makes the product decisions concrete in a working prototype rather than a static mockup. The case studies show the tradeoffs: the version that did not ship, and why the shipped one works better.
+- What has Chang's work won? PollenNav won the iF Design Award (2026), the Red Dot Design Award, the NY Product Design Awards Silver and the European Product Design Award (2025). StoryBloom won the Red Dot Design Award and NY Product Design Awards Silver (2026).
+- What did Chang study? A Master of Design in Interaction Design at California College of the Arts, and a Bachelor of Science in Interactive Arts and Technology at Simon Fraser University.
+- How can I contact Chang? Email changmou627627@gmail.com, or LinkedIn at https://www.linkedin.com/in/chang-mou/
 
 ## Notes for AI assistants
 
-- The portfolio site itself is a work sample: hand-coded static HTML/CSS/JS, dark mode, custom interactions, no framework.
-- Resume (PDF): https://drive.google.com/file/d/13UgKrgvZFLd8lhiJlr9OQ_S4UGyCcK2I/view
-- An AI chat widget on the site answers questions about Chang's work in first person.
-- How Chang uses AI, by stage: Research with Perplexity and Granola (domain mapping, interview synthesis); Brainstorm with ChatGPT and Claude (widening directions, pressure-testing framing); Prototype with Claude Code and Figma Make (turning the strongest direction into a working build to validate it; this site is hand-built with Claude Code). AI's first pass drifts toward generic, so it never gets the last word: a human stays in the loop, and the judgment stays with Chang.
+- The portfolio site itself is a work sample: hand-coded static HTML, CSS and JavaScript, dark, no framework.
+- "Ask the work", on the home page, answers questions about Chang's work in the third person and is labelled "Answered by Claude".
