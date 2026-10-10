@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Every relative path resolves from the site root, so the page works at /play/<piece> as well (2026-10-09, see EACH
+       PIECE HAS ITS OWN LINK in the lightbox script). -->
+  <base href="/">
   <title>Play — Chang Mou</title>
   <meta name="description" content="Experiments, explorations, and things built for fun.">
   <meta property="og:type" content="website">
@@ -19,12 +22,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <!-- ?look=ink PREVIEW (2026-10-09, per user "try ... Tint the black"): the page black and surface nudged toward the
-       dawn's indigo at the same lightness (oklch 0.145 and 0.218, chroma 0.009, hue 280). ?look=ink turns it on for this
-       tab and carries it across pages; ?look=black turns it off. Not the live look until he picks it. -->
-  <style>html.look-ink { --bg: #090a0e; --surface: #191a1e; }</style>
-  <script>try{var lk=/[?&]look=([^&#]*)/.exec(location.search),ss=sessionStorage;if(lk&&/(^|,)ink(,|$)/.test(lk[1]))ss.setItem('look-ink','1');if(lk&&/(^|,)black(,|$)/.test(lk[1]))ss.removeItem('look-ink');if(ss.getItem('look-ink'))document.documentElement.classList.add('look-ink');}catch(e){}</script>
-  <link rel="stylesheet" href="style.css?v=349">
+  <link rel="stylesheet" href="style.css?v=350">
   <style>
     /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
        back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
@@ -1599,6 +1597,7 @@
       lightbox.classList.toggle('is-piece', on);
       panel.replaceChildren();
       if (on) {
+        urlOpen(card);
         stopGridFilms();
         const info = card.querySelector('.play-info').cloneNode(true);
         info.querySelectorAll('.play-title-btn').forEach((b) => b.replaceWith(...b.childNodes));
@@ -1642,7 +1641,8 @@
     // decoded within 300ms: today's fade.
     const html = document.documentElement;
     const calmMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const canMorph = () => !!document.startViewTransition && !calmMotion.matches;
+    let noMorph = false; // a piece opened from its link appears in place: its card is not where the eye is
+    const canMorph = () => !noMorph && !!document.startViewTransition && !calmMotion.matches;
     let morphToken = 0;
     function morph(kind, from, to, update) {
       const token = ++morphToken;
@@ -1673,6 +1673,7 @@
 
     function closeNow() {
       if (!lightbox.classList.contains('open')) return;
+      urlClose();
       lightbox.classList.remove('open');
       lightbox.setAttribute('aria-hidden', 'true');
       document.documentElement.style.overflow = '';
@@ -1924,6 +1925,59 @@
 
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+
+    // EACH PIECE HAS ITS OWN LINK (2026-10-09, per user "make these each sub pages ... have its own URLs? So sometimes I
+    // just share these works to other people without just giving them the whole play pages", then for phones "open Play
+    // scrolled to that piece, centred on screen", and "No need to preview"). /play/<name> is this same page (vercel.json
+    // rewrites it; <base href="/"> keeps every path at the root); the name is the title, lower case, words joined by
+    // hyphens (UN/FOLD is unfold). In three columns opening a piece puts its link in the address bar and Back closes it;
+    // arriving on a link opens that piece's detail page in place, with Play scrolled behind to its card, so closing lands
+    // there. Below 1200 there is no detail page, so the link brings its card to the middle of the screen. No link
+    // previews: every link shares Play's own card. A hidden piece or an unknown name is just Play.
+    const PIECE_PATH = /^\/play\/([a-z0-9-]+)\/?$/;
+    const slugOf = (card) => titleOf(card).toLowerCase().replace(/&/g, 'and').replace(/['’\/]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const cardBySlug = (s) => [...document.querySelectorAll('.play-grid .play-card')].find((c) => c.getClientRects().length && slugOf(c) === s);
+    const playTitle = document.title;
+    let urlPushed = false;
+    function urlOpen(card) {
+      const path = '/play/' + slugOf(card);
+      document.title = titleOf(card) + ' — Chang Mou';
+      if (location.pathname === path) return; // arrived on this link, or came back to it with Forward
+      history.pushState({ piece: slugOf(card) }, '', path);
+      urlPushed = true;
+    }
+    function urlClose() {
+      document.title = playTitle;
+      if (!PIECE_PATH.test(location.pathname)) { urlPushed = false; return; } // closed by Back: the address has already moved
+      if (urlPushed) { urlPushed = false; history.back(); }                  // step off our own entry, so Back never reopens it
+      else history.replaceState(null, '', '/play');                          // arrived on the link: Play's own address
+    }
+    function openFromLink(card) {
+      noMorph = true;
+      try { window.playPiece.open(card, card.querySelector('.play-title-btn')); } finally { noMorph = false; }
+    }
+    window.addEventListener('popstate', () => {
+      const m = PIECE_PATH.exec(location.pathname), open = lightbox.classList.contains('open');
+      if (!m && open) { urlPushed = false; closeLightbox(); return; }
+      if (m && !open && pieceMode()) { const card = cardBySlug(m[1]); if (card) { urlPushed = false; openFromLink(card); } }
+    });
+    const arrived = PIECE_PATH.exec(location.pathname);
+    if (arrived) {
+      const card = cardBySlug(arrived[1]);
+      if (!card) history.replaceState(null, '', '/play');
+      else {
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        const centre = () => card.scrollIntoView({ block: 'center', behavior: 'instant' });
+        centre();
+        if (pieceMode()) openFromLink(card);
+        else {
+          // centre again once everything above it has loaded, unless the visitor has already moved
+          let moved = false;
+          ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((t) => addEventListener(t, () => { moved = true; }, { once: true, passive: true }));
+          addEventListener('load', () => { if (!moved) centre(); }, { once: true });
+        }
+      }
+    }
   })();
 
   // The builds (2026-09-24): the two code builds move at rest and their disc says what a click

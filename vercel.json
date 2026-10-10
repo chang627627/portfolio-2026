@@ -10,6 +10,7 @@
     { "source": "/countersignslide", "destination": "/countersignslide.html" },
     { "source": "/about", "destination": "/about.html" },
     { "source": "/play", "destination": "/play.html" },
+    { "source": "/play/:piece", "destination": "/play.html" },
     { "source": "/pollen", "destination": "/pollen.html" },
     { "source": "/coffee", "destination": "/coffee.html" }
   ],

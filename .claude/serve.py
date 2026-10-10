@@ -35,6 +35,9 @@ RANGE_RE = re.compile(r'bytes=(\d*)-(\d*)')
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def translate_path(self, path):
+        # Production's rewrites for Play: /play and /play/<piece> are play.html (vercel.json; each piece's own link).
+        if re.match(r'^/play(/[a-z0-9-]+)?/?$', path.split('?', 1)[0].split('#', 1)[0]):
+            return os.path.join(ROOT, 'play.html')
         # Keep .git/.claude out of the served tree.
         parts = path.split('?', 1)[0].split('#', 1)[0].split('/')
         if any(p.startswith('.') and p not in ('', '.', '..') for p in parts):
