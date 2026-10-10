@@ -8,7 +8,7 @@
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=4">
   <link rel="preload" href="/fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="/style.css?v=347">
+  <link rel="stylesheet" href="/style.css?v=348">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
   <script>
@@ -124,9 +124,6 @@
         hamburger.setAttribute('aria-expanded', String(open));
       };
       hamburger.addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && navLinks.classList.contains('open')) { setMenu(false); hamburger.focus(); }
-      });
     }
   </script>
 </body>

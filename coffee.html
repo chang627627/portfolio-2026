@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=347">
+  <link rel="stylesheet" href="style.css?v=348">
   <script>
     // Opened from a prerender (the home cards' speculation rules): hold the cover's arrival until the page is shown
     if (document.prerendering) {
@@ -737,9 +737,6 @@
       btn.setAttribute('aria-expanded', String(open));
     };
     btn.addEventListener('click', () => set(!links.classList.contains('open')));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
-    });
   })();
 
   // Footer scroll reveal
@@ -1022,9 +1019,6 @@
 
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
-    });
   })();
 </script>
 

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=347">
+  <link rel="stylesheet" href="style.css?v=348">
   <style>
     /* PLAY CARDS ARE CARDS AGAIN (2026-09-29, per user "study case thumbnail and work in the play section needs to be
        back to "card" which means it will have the frame. I want the card the top side is image or video and bottom is
@@ -1335,9 +1335,6 @@
       btn.setAttribute('aria-expanded', String(open));
     };
     btn.addEventListener('click', () => set(!links.classList.contains('open')));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
-    });
   })();
 
   const footerText = document.querySelector('.footer-big-text');
@@ -1491,7 +1488,7 @@
       stage.classList.remove('is-film');
     };
     // A piece with several images (the Whisper XR and TickerPulse slides, Midjourney's stills) is
-    // browsed here: previous and next under the caption, or the arrow keys. A slideshow's detail page
+    // browsed here: previous and next under the caption (the arrow keys were removed 2026-10-09). A slideshow's detail page
     // and its card are separate (per user "what I want is detail page and play page are separated.
     // when I click page 5 of whisper xr on play page. the detail page still show page 1"): it always
     // opens on the first slide, and stepping never moves the card, which it closes back into as it
@@ -1922,13 +1919,6 @@
 
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
-      if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight') && gallery && lightbox.classList.contains('open')) {
-        e.preventDefault();
-        stepGallery(e.key === 'ArrowRight' ? 1 : -1);
-      }
-    });
   })();
 
   // The builds (2026-09-24): the two code builds move at rest and their disc says what a click

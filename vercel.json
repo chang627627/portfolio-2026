@@ -12,5 +12,8 @@
     { "source": "/play", "destination": "/play.html" },
     { "source": "/pollen", "destination": "/pollen.html" },
     { "source": "/coffee", "destination": "/coffee.html" }
+  ],
+  "headers": [
+    { "source": "/fonts/(.*)", "headers": [ { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" } ] }
   ]
 }

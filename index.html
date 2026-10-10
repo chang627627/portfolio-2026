@@ -26,7 +26,7 @@
        2.01s), so the gradient and the dust, drawn by the page, stood still while the beam and the pill, run by the
        compositor, went on, and then the field jumped. 5 returns in 6 with the two preloads, 0 in 6 without. style.css's
        @font-face still loads both faces as soon as the page lays out, and the headline waits for them (fonts.ready). -->
-  <link rel="stylesheet" href="style.css?v=347">
+  <link rel="stylesheet" href="style.css?v=348">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -458,6 +458,13 @@
         .project-grid .project-card:nth-child(-n+2) {
           animation-name: card-arrive;
           animation-range: entry 0% entry 70%;
+        }
+        /* Rows two and on (2026-10-09, per user "do 4"): style.css's card-rise ran linearly over entry 5% to 45%, so a
+           card stopped at the window's foot could rest at 0.3 opacity with 76px showing. Same keyframes, still
+           scroll-linked, finished by about 120px of card on screen. Not --ease-out: on a scroll timeline it pops. */
+        .project-grid .project-card:nth-child(n+3) {
+          animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+          animation-range: entry 0% entry 30%;
         }
         .project-grid .project-card.arrive-now {
           animation-name: card-arrive-now;
@@ -2244,9 +2251,6 @@
       btn.setAttribute('aria-expanded', String(open));
     };
     btn.addEventListener('click', () => set(!links.classList.contains('open')));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
-    });
   })();
 
   // SELECTED WORK hairline draws itself in on first view. The collapsed state
@@ -2899,14 +2903,6 @@
       }
       press(null);
       askClaude(raw.slice(0, 500), t);
-    });
-
-    // "/" puts the cursor in the line, unless you are already typing somewhere
-    addEventListener('keydown', function (e) {
-      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
-      var t = e.target; if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
-      e.preventDefault(); input.focus();
-      bar.scrollIntoView({ block: 'center', behavior: reduce ? 'instant' : 'smooth' });
     });
 
     // The light crosses the line when the section comes into view and then every few seconds while it stays on screen.

@@ -19,7 +19,7 @@
   <link rel="icon" type="image/svg+xml" href="favicon.svg?v=4">
   <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
   <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=347">
+  <link rel="stylesheet" href="style.css?v=348">
   <script>
     // Opened from a prerender (the home cards' speculation rules): hold the cover's arrival until the page is shown
     if (document.prerendering) {
@@ -756,9 +756,6 @@
       btn.setAttribute('aria-expanded', String(open));
     };
     btn.addEventListener('click', () => set(!links.classList.contains('open')));
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && links.classList.contains('open')) { set(false); btn.focus(); }
-    });
   })();
 
   // Footer scroll reveal
@@ -1001,7 +998,6 @@
       const v = wrap.querySelector('video');
       v.removeAttribute('controls');
       wrap.classList.add('hw-clip--player');
-      wrap.tabIndex = 0;
       wrap.setAttribute('role', 'group');
       wrap.setAttribute('aria-label', 'Video player');
       wrap.insertAdjacentHTML('beforeend',
@@ -1016,7 +1012,6 @@
       const disc = wrap.querySelector('.hw-player-play');
       const toggleBtn = wrap.querySelector('[data-act="toggle"]');
       const muteBtn = wrap.querySelector('[data-act="mute"]');
-      const fsBtn = wrap.querySelector('[data-act="fs"]');
       const seek = wrap.querySelector('.hw-seek');
       const time = wrap.querySelector('.hw-time');
       let raf = 0, idle = 0, dragging = false;
@@ -1039,7 +1034,6 @@
           const p = v.play(); if (p && p.catch) p.catch(() => {});
         } else { v.pause(); }
       };
-      const nudge = s => { if (v.duration) { v.currentTime = Math.max(0, Math.min(v.duration, v.currentTime + s)); paint(); } };
       const toggleFs = () => {
         if (fsOn()) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
         else if (wrap.requestFullscreen) { wrap.requestFullscreen(); }
@@ -1074,18 +1068,6 @@
       seek.addEventListener('change', () => { dragging = false; paint(); });
 
       ['pointermove', 'pointerdown', 'focusin'].forEach(e => wrap.addEventListener(e, wake));
-      wrap.addEventListener('keydown', e => {
-        const t = e.target, onWrap = t === wrap, onSeek = t === seek;
-        if (!onWrap && !onSeek) return; // buttons keep their own Space and Enter
-        const k = e.key;
-        if (onWrap && (k === ' ' || k === 'k' || k === 'K')) { e.preventDefault(); toggle(); }
-        else if (k === 'ArrowLeft') { e.preventDefault(); nudge(-5); }
-        else if (k === 'ArrowRight') { e.preventDefault(); nudge(5); }
-        else if (onWrap && (k === 'm' || k === 'M')) { e.preventDefault(); muteBtn.click(); }
-        else if (onWrap && (k === 'f' || k === 'F') && fsBtn) { e.preventDefault(); toggleFs(); }
-        else return;
-        wake();
-      });
       paint();
     });
   })();
@@ -1148,9 +1130,6 @@
 
     lightbox.addEventListener('click', closeLightbox);
     lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
-    });
   })();
 </script>
 
