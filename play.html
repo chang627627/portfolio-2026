@@ -1939,11 +1939,17 @@
     const cardBySlug = (s) => [...document.querySelectorAll('.play-grid .play-card')].find((c) => c.getClientRects().length && slugOf(c) === s);
     const playTitle = document.title;
     let urlPushed = false;
+    // Entries this page pushes carry { own: true }, which survives Forward and a reload, so closing always knows whether
+    // it can step back off its entry (ours) or must rewrite it (a link someone opened). Fixes from the 2026-10-09 review.
+    const ours = () => !!(history.state && history.state.own);
     function urlOpen(card) {
       const path = '/play/' + slugOf(card);
       document.title = titleOf(card) + ' — Chang Mou';
-      if (location.pathname === path) return; // arrived on this link, or came back to it with Forward
-      history.pushState({ piece: slugOf(card) }, '', path);
+      if (location.pathname === path) { urlPushed = ours(); return; }  // arrived on this link, Forward, or a reload
+      if (PIECE_PATH.test(location.pathname)) {                       // another piece's address left by a narrower window: reuse it
+        history.replaceState({ own: ours() }, '', path); urlPushed = ours(); return;
+      }
+      history.pushState({ own: true }, '', path);
       urlPushed = true;
     }
     function urlClose() {
@@ -1956,26 +1962,37 @@
       noMorph = true;
       try { window.playPiece.open(card, card.querySelector('.play-title-btn')); } finally { noMorph = false; }
     }
+    // centre on the card's own place, not where its scroll-in rise (18px low until it is in view) draws it
+    const centre = (card) => {
+      const r = card.getBoundingClientRect(), dy = new DOMMatrixReadOnly(getComputedStyle(card).transform).m42 || 0;
+      window.scrollTo({ top: scrollY + r.top - dy + r.height / 2 - innerHeight / 2, behavior: 'instant' });
+    };
     window.addEventListener('popstate', () => {
       const m = PIECE_PATH.exec(location.pathname), open = lightbox.classList.contains('open');
       if (!m && open) { urlPushed = false; closeLightbox(); return; }
-      if (m && !open && pieceMode()) { const card = cardBySlug(m[1]); if (card) { urlPushed = false; openFromLink(card); } }
+      const card = m && cardBySlug(m[1]);
+      if (!card || open) return;
+      if (pieceMode()) openFromLink(card); else centre(card); // below 1200 a piece's address brings its card to the middle
     });
     const arrived = PIECE_PATH.exec(location.pathname);
     if (arrived) {
       const card = cardBySlug(arrived[1]);
       if (!card) history.replaceState(null, '', '/play');
       else {
-        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        const centre = () => card.scrollIntoView({ block: 'center', behavior: 'instant' });
-        centre();
+        if (location.pathname !== '/play/' + arrived[1]) history.replaceState(history.state, '', '/play/' + arrived[1]); // /play/scope/ is /play/scope
+        // the browser must not put back an old scroll over the arrival, but only until it has settled: the entry then
+        // gets ordinary restoration back, so returning to Play from another page keeps the visitor's place
+        const manual = 'scrollRestoration' in history;
+        if (manual) history.scrollRestoration = 'manual';
+        centre(card);
+        let moved = false;
         if (pieceMode()) openFromLink(card);
-        else {
-          // centre again once everything above it has loaded, unless the visitor has already moved
-          let moved = false;
-          ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((t) => addEventListener(t, () => { moved = true; }, { once: true, passive: true }));
-          addEventListener('load', () => { if (!moved) centre(); }, { once: true });
-        }
+        else ['wheel', 'touchstart', 'pointerdown', 'keydown'].forEach((t) => addEventListener(t, () => { moved = true; }, { once: true, passive: true }));
+        // once everything above it has loaded: centre again (below 1200, unless the visitor has moved), then hand back
+        addEventListener('load', () => {
+          if (!pieceMode() && !moved) centre(card);
+          if (manual) requestAnimationFrame(() => { history.scrollRestoration = 'auto'; });
+        }, { once: true });
       }
     }
   })();
