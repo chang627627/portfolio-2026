@@ -26,7 +26,12 @@
        2.01s), so the gradient and the dust, drawn by the page, stood still while the beam and the pill, run by the
        compositor, went on, and then the field jumped. 5 returns in 6 with the two preloads, 0 in 6 without. style.css's
        @font-face still loads both faces as soon as the page lays out, and the headline waits for them (fonts.ready). -->
-  <link rel="stylesheet" href="style.css?v=348">
+  <!-- ?look=ink PREVIEW (2026-10-09, per user "try ... Tint the black"): the page black and surface nudged toward the
+       dawn's indigo at the same lightness (oklch 0.145 and 0.218, chroma 0.009, hue 280). ?look=ink turns it on for this
+       tab and carries it across pages; ?look=black turns it off. Not the live look until he picks it. -->
+  <style>html.look-ink { --bg: #090a0e; --surface: #191a1e; }</style>
+  <script>try{var lk=/[?&]look=([^&#]*)/.exec(location.search),ss=sessionStorage;if(lk&&/(^|,)ink(,|$)/.test(lk[1]))ss.setItem('look-ink','1');if(lk&&/(^|,)black(,|$)/.test(lk[1]))ss.removeItem('look-ink');if(ss.getItem('look-ink'))document.documentElement.classList.add('look-ink');}catch(e){}</script>
+  <link rel="stylesheet" href="style.css?v=349">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -477,8 +482,10 @@
         }
       }
     }
+    /* No scale (2026-10-09, per user "I want to keep the 24 pixels raised for the whole time"): it was
+       translateY(56px) scale(0.96), and each card shrinking toward its own centre opened row one's 24px gap to 50px. */
     @keyframes card-arrive {
-      from { opacity: 0; transform: translateY(56px) scale(0.96); }
+      from { opacity: 0; transform: translateY(56px); }
       to { opacity: 1; transform: none; }
     }
     @keyframes card-arrive-now {
@@ -606,7 +613,7 @@
        read as an empty outlined box. Same element and z-index, only its start moves: 48px, black by 85%. Page-scoped
        so 404.html, which shares the rule, is untouched. */
     @media (max-width: 768px) {
-      .hero::after { height: 48px; background: linear-gradient(to bottom, rgba(10, 10, 10, 0) 0%, #0a0a0a 85%); }
+      .hero::after { height: 48px; background: linear-gradient(to bottom, transparent 0%, var(--bg) 85%); }
       /* MORE BLUE UNDER THE PILL (2026-10-03, per user, with a phone screenshot: "for mobile version, the open to new
          opportunity get too close the dark"). With 40px under the pill the field's box ended 13px below it (434px hero,
          box foot 421, pill foot 394), so the pill sat on the edge of the dark. 104px gives the hero 64px more room; the
