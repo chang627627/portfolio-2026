@@ -10,8 +10,10 @@ body.menu-open {
 }
 
 :root {
-  --bg: #0a0a0a;
-  --surface: #1a1a1a;
+  /* Tinted toward the dawn's indigo at the old lightness (2026-10-09, per user "I think it's good" after ?look=ink):
+     oklch 0.145 and 0.218, chroma 0.009, hue 280. Were #0a0a0a and #1a1a1a. */
+  --bg: #090a0e;
+  --surface: #191a1e;
   --text: #f0f0f0;
   --text-muted: #888;
   --text-soft: #a0a0a0; /* mid-tier grey for long-read body text (bio, quotes); --text-muted stays for dates/metadata */
