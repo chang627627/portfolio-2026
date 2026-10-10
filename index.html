@@ -616,7 +616,13 @@
        read as an empty outlined box. Same element and z-index, only its start moves: 48px, black by 85%. Page-scoped
        so 404.html, which shares the rule, is untouched. */
     @media (max-width: 768px) {
-      .hero::after { height: 48px; background: linear-gradient(to bottom, transparent 0%, var(--bg) 85%); }
+      /* THE LIGHT FADES ON ITS OWN (2026-10-10, per user "mobile's hero transit to black unnaturally"). The hero clipped
+         the field at its foot and a 48px black overlay sat on the cut, so the colour fell from 2.5 to 0.3 luminance in
+         about 36px and stopped dead; a longer eased overlay only moved the line up, since any straight fade across the
+         round glow reads as a horizon. Now the hero stops clipping its foot on phones (the sides stay clipped) and the overlay goes: the field's own blur
+         carries the light out over the empty space above the first card, as the taller desktop hero does by itself. */
+      .hero { overflow: clip visible; } /* the sides stay clipped (the blur's spill would widen the page), the foot opens */
+      .hero::after { display: none; }
       /* MORE BLUE UNDER THE PILL (2026-10-03, per user, with a phone screenshot: "for mobile version, the open to new
          opportunity get too close the dark"). With 40px under the pill the field's box ended 13px below it (434px hero,
          box foot 421, pill foot 394), so the pill sat on the edge of the dark. 104px gives the hero 64px more room; the
