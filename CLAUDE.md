@@ -156,7 +156,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 - The production deck-comments store holds six of Chang's own working notes on coffeeslide; deleting them needs his OK.
 - Countersign's product repo: `design-preview.html` has stale typography labels and PlanReview lacks a focus style (fixes not pushed there).
 - The live Homewise prototype still shows a "Task confidence" figure a prober could find.
-- New Craft Society's Play cover is a placeholder, and its "Made with" line waits for him to name the stack.
+- New Craft Society's "Made with" line waits for him to name the stack (its Play cover is a fresh 1920 recording of the site's hero since 2026-10-09).
 
 ## Workflow and tooling
 - Preview: `.claude/launch.json` runs `python3 .claude/serve.py` (threaded, HTTP Range support, `Cache-Control: no-cache` so the pane never shows a stale page, serves the worktree, 403s dotfiles). If the harness asks for `/tmp/portfolio/serve.py` (the stale primary checkout's config), recreate it as a copy of `.claude/serve.py` with ROOT set to the worktree; never rsync copies. `/api/*` does not run locally.
