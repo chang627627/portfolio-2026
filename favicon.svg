@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- The rising sun (2026-10-10, his pick of four): a half sun on the horizon of the painted dawn, its light in three
-       strokes on the sea, in the hero's colours; drawn crisp so it reads at 16px; the horizon cuts it half and half, per user -->
+  <!-- The rising sun over the hills (2026-10-10, with the Hills hero, his pick of three): the sun cut half and half by
+       the horizon, behind a far and a near rolling hill, in the hero's colours; drawn crisp so it reads at 16px -->
   <defs>
     <clipPath id="c"><circle cx="16" cy="16" r="16"/></clipPath>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
@@ -12,17 +12,19 @@
       <stop offset="0" stop-color="#fff0c2"/>
       <stop offset="1" stop-color="#ffb066"/>
     </linearGradient>
-    <linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#3a3170"/>
-      <stop offset="1" stop-color="#151c4a"/>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4b4a86"/>
+      <stop offset="1" stop-color="#2c2f63"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1f2550"/>
+      <stop offset="1" stop-color="#121735"/>
     </linearGradient>
   </defs>
   <g clip-path="url(#c)">
-    <rect width="32" height="16" fill="url(#sky)"/>
-    <rect y="16" width="32" height="16" fill="url(#sea)"/>
+    <rect width="32" height="32" fill="url(#sky)"/>
     <path d="M9.5 16a6.5 6.5 0 0 1 13 0z" fill="url(#sun)"/>
-    <rect x="9" y="18.6" width="14" height="1.4" rx="0.7" fill="#ffc277" opacity="0.85"/>
-    <rect x="11.5" y="22.2" width="9" height="1.2" rx="0.6" fill="#ffc277" opacity="0.55"/>
-    <rect x="13.5" y="25.6" width="5" height="1.1" rx="0.55" fill="#ffc277" opacity="0.35"/>
+    <path d="M0 16.6C6 14.4 10 15.4 16 16.2S26 15 32 16.4V32H0z" fill="url(#far)"/>
+    <path d="M0 20.5C7 16.8 15 17.6 21 20.2S29 22.6 32 21.4V32H0z" fill="url(#near)"/>
   </g>
 </svg>
