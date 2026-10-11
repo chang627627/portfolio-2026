@@ -562,6 +562,15 @@
        once that canvas is in, the stylesheet's own background and blur step aside */
     .hero .hero-orbs--g2.is-painted { background: none !important; }
     .hero .hero-orbs--g2.is-blurred { filter: none !important; }
+    /* A PAINTED DAWN (exploring 2026-10-10, ?look=sea|hills|ridges): the shader's box, under the dust and the type */
+    .hero-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .look-sky .hero .hero-orbs--g2 { display: none; }
+    .footer-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .look-sky-foot .footer-glow { display: none; }
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-sky { animation: sky-arrive 1.2s var(--ease-out) both; }
+      @keyframes sky-arrive { from { opacity: 0; } }
+    }
     /* ORIGINAL (the pre-2026-09-08 "g2" ramp, kept for comparison and for
        going back): ?look=original restores it on this page, hero and footer.
        Values are copies of style.css's .hero-orbs--g2 and .footer-glow as
@@ -877,6 +886,9 @@
       var all = ['edge', 'original', 'dawn'];
       if (keys.indexOf('all') !== -1) keys = keys.concat(all);
       keys.forEach(function (k) { if (all.indexOf(k) !== -1) cls.add('look-' + k); });
+      // A PAINTED DAWN (exploring 2026-10-10): ?look=sea, ?look=hills or ?look=ridges swaps the gradient for a shader
+      // recreating a painted dawn (hero-sky-<name>.js)
+      ['sea', 'hills', 'ridges'].forEach(function (k) { if (keys.indexOf(k) !== -1 && !window.HERO_SKY) { window.HERO_SKY = k; cls.add('look-sky'); } });
       cls.add('opening-' + (keys.indexOf('accept') !== -1 ? 'accept' : keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'still'));
     })();
   </script>
@@ -1211,6 +1223,7 @@
     (() => {
       const orbs = document.querySelector('.hero .hero-orbs--g2');
       if (!orbs || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (window.HERO_SKY) return;                                          // ?look=sea|hills|ridges: the painted dawn paints the hero
       const NAMES = ['yellow', 'warm', 'pink', 'azure', 'cyan', 'blue'];   // the stylesheet's layer order, top first
       const BLUR = 32, M = 3 * BLUR, SCALE = 0.25;                          // CSS px; the blur's spill is 3 sigma
       // DAWN, CLEANED (2026-10-06): each pool falls off on a bell (a smoothstep) instead of a straight line, so it has
@@ -1351,6 +1364,62 @@
         show();
         size(); draw();
       }).observe(orbs);
+    })();
+  </script>
+  <script>
+    /* A PAINTED DAWN (exploring 2026-10-10, per user: lauradang.com's painted hero, "use gpt to generate the image and
+       use it as reference for shader coding", "use dawn theme, current gradient does not matter"). ChatGPT painted three
+       dawns; each is recreated as a fragment shader in hero-sky-<name>.js that moves slowly and answers the cursor.
+       Only behind ?look=sea, ?look=hills or ?look=ridges; if WebGL fails the gradient comes back. */
+    (() => {
+      const name = window.HERO_SKY, hero = document.querySelector('.hero');
+      if (!name || !hero) return;
+      const box = document.createElement('div');
+      box.className = 'hero-sky';
+      hero.insertBefore(box, hero.firstChild);
+      const fail = () => { box.remove(); document.documentElement.classList.remove('look-sky'); };
+      // the horizon sits 40px under the pill, so the heading, sub and pill are all on the night blue (per user "put them
+      // in the dark part"); measured by offsets, which the opening's rise does not move, and again on every resize
+      const pill = hero.querySelector('.status-tag');
+      let horizon = 0.545;
+      // the footer's horizon, just under the page's bottom edge (1 is the edge): low enough that the bar's 13-14px white
+      // text keeps at least the 4.45:1 it had on the old glow; the phone footer is short and its links sit centred over the dawn
+      const footHorizon = () => matchMedia('(max-width: 768px)').matches ? 1.16 : 1.09;
+      const measure = () => {
+        if (!pill || !hero.offsetHeight) return;
+        let y = 0;
+        for (let e = pill; e && e !== hero; e = e.offsetParent) y += e.offsetTop;
+        horizon = Math.min(0.9, (y + pill.offsetHeight + 40) / hero.offsetHeight);
+      };
+      measure();
+      if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+      const s = document.createElement('script');
+      s.src = 'hero-sky-' + name + '.js';
+      s.onload = () => {
+        if (!window.HeroSky) return fail();
+        try { window.HeroSky.mount(box, { horizon: () => horizon }); } catch (e) { return fail(); }
+        if (box.classList.contains('sky-failed')) return fail();
+        // THE FOOTER IN THE SAME PAINTING (per user "change the footer to match the hero's style. keep whale animation
+        // first"): the sky without the sea (a sea under the whale was rejected 2026-09-27), the dawn just under the page's
+        // bottom edge, dark where the whale swims; it ignores the pointer, as the footer's dust does, and the dawn lifts a
+        // little as the footer comes into view
+        const end = document.querySelector('.page-end');
+        if (!end) return;
+        const foot = document.createElement('div');
+        foot.className = 'footer-sky';
+        end.insertBefore(foot, end.firstChild);
+        const reveal = () => {
+          const r = end.getBoundingClientRect();
+          return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
+        };
+        try {
+          window.HeroSky.mount(foot, { footer: true, horizon: footHorizon, pointer: [0, 0], scroll: () => 0.6 * reveal() });
+          if (foot.classList.contains('sky-failed')) foot.remove(); else document.documentElement.classList.add('look-sky-foot');
+        } catch (e) { foot.remove(); }
+      };
+      s.onerror = fail;
+      document.head.appendChild(s);
     })();
   </script>
   <!-- The Living Gradient (hero-fluid.js) is retired, per Chang: its field animated
@@ -1668,6 +1737,8 @@
       POOLS[2][2] = 255; POOLS[2][3] = 90;  POOLS[2][4] = 190;
       POOLS[3][2] = 70;  POOLS[3][3] = 140; POOLS[3][4] = 255;
     }
+    // ?look=sea|hills|ridges: the painted dawn's motes are the night's last stars, a cool white
+    if (window.HERO_SKY) POOLS.forEach((p) => { p[2] = 205; p[3] = 218; p[4] = 255; });
     const poolPx = POOLS.map(() => ({ x: 0, y: 0 }));
     let poolsRead = false;
     const readPools = () => {
