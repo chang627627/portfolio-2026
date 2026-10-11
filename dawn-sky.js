@@ -1,7 +1,13 @@
-/* HeroSky: a painted dawn over a sea of clouds, drawn by one fragment shader.
-   window.HeroSky.mount(container, opts) -> { destroy(), frame(t) }
-   opts: { time: freeze at this time (one frame, no loop), pointer: [nx, ny] fixed,
-           scroll: fixed scroll progress, scale: backing scale (default 0.5) } */
+/* DawnSky: the painted dawn (2026-10-10), drawn by one fragment shader. On Home it paints the hero (the night sky with its
+   wisps, the gold breaking at a horizon 40px under the pill, a sea painted in the sky's own strokes); on every page with
+   the footer it paints .page-end (the same sky, no sea, the dawn just under the page's bottom edge). ChatGPT painted the
+   reference; the story is in .claude/notes/hero.md and footer.md.
+   window.DawnSky.mount(container, opts) -> { destroy(), frame(t) }
+   opts: { time: freeze at this time (one frame, no loop), pointer: [nx, ny] fixed, scroll: a number or a function for
+           the scroll progress, horizon: a number or a function (where the horizon sits, a share of the height from the
+           top; above 1 is under the bottom edge), footer: true for the footer's mode, scale: backing scale (default 0.5),
+           fade: ms for the canvas to fade in on its first painted frame, onDrawn(), onFail(): called when the painting
+           cannot run (no WebGL, a shader error, a context lost for good), so the page can put its own light back } */
 (function () {
   'use strict';
 
@@ -20,7 +26,7 @@ uniform float uScroll;
 uniform float uHorizon;                       // where the horizon sits, as a share of the height from the top
 uniform float uFoot;                          // 1 in the footer: the page's black fades in at the top, nothing at the foot
 
-const float H0 = 0.545;                       // the cloud horizon, fraction of height from the top
+const float H0 = 0.545;                       // the reference's horizon, fraction of height from the top
 const vec3 BG = vec3(9.0, 10.0, 14.0) / 255.0;
 const float SEA_FLOW = 0.05;                   // how fast the strokes on the water drift in
 // per user "overall need to be darker. otherwise we can not see the text" (0.72), then raised again once the type sat on
@@ -236,34 +242,31 @@ void main(){
     if (!gl) {
       container.classList.add('sky-failed');
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      if (opts.onFail) opts.onFail();
       return noop();
     }
 
-    var prog = null, buf = null, loc = {};
-    var lost = false, destroyed = false;
+    var prog = null, buf = null, vs = null, fs = null, loc = {};
+    var lost = false, destroyed = false, ready = false, drawn = false, lostTimer = 0;
+    // the GPU builds the shader in the background where the browser can (KHR_parallel_shader_compile): asking for the
+    // result at once made the page wait about 90ms on a first visit, right as the hero's opening began
+    var parallel = gl.getExtension('KHR_parallel_shader_compile');
 
-    function compile(type, src) {
-      var s = gl.createShader(type);
-      gl.shaderSource(s, src);
-      gl.compileShader(s);
-      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS) && !gl.isContextLost()) {
-        var log = gl.getShaderInfoLog(s);
-        gl.deleteShader(s);
-        throw new Error('HeroSky shader: ' + log);
-      }
-      return s;
-    }
-
-    function build() {
-      var vs = compile(gl.VERTEX_SHADER, VERT);
-      var fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    function startBuild() {
+      ready = false;
+      vs = gl.createShader(gl.VERTEX_SHADER); gl.shaderSource(vs, VERT); gl.compileShader(vs);
+      fs = gl.createShader(gl.FRAGMENT_SHADER); gl.shaderSource(fs, FRAG); gl.compileShader(fs);
       prog = gl.createProgram();
       gl.attachShader(prog, vs);
       gl.attachShader(prog, fs);
       gl.bindAttribLocation(prog, 0, 'aPos');
       gl.linkProgram(prog);
+    }
+
+    function finishBuild() {
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS) && !gl.isContextLost()) {
-        throw new Error('HeroSky link: ' + gl.getProgramInfoLog(prog));
+        var log = gl.getShaderInfoLog(fs) || gl.getShaderInfoLog(vs) || gl.getProgramInfoLog(prog);
+        throw new Error('DawnSky shader: ' + log);
       }
       gl.deleteShader(vs);
       gl.deleteShader(fs);
@@ -281,18 +284,47 @@ void main(){
       loc.foot = gl.getUniformLocation(prog, 'uFoot');
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.BLEND);
+      ready = true;
     }
 
-    try { build(); } catch (err) {
+    // calls done once the GPU has finished building (at once where the browser cannot build in the background)
+    function whenBuilt(done) {
+      if (destroyed || lost) return;
+      if (parallel && !gl.getProgramParameter(prog, parallel.COMPLETION_STATUS_KHR)) {
+        requestAnimationFrame(function () { whenBuilt(done); });
+        return;
+      }
+      try { finishBuild(); } catch (err) { return failNow(err); }
+      done();
+    }
+
+    // the painting cannot run: let the page put its own light back (the hero's gradient, the footer's glow)
+    function failNow(err) {
+      if (destroyed) return;
+      if (err && window.console) console.error(String(err.message || err));
+      container.classList.add('sky-failed');
+      api.destroy();
+      if (opts.onFail) opts.onFail();
+    }
+
+    // a canvas that fades in on its first painted frame, over whatever the page shows meanwhile
+    var fadeMs = typeof opts.fade === 'number' && !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? opts.fade : 0;
+    if (fadeMs) canvas.style.opacity = '0';
+
+    try { startBuild(); } catch (err) {
       if (window.console) console.error(String(err && err.message || err));
       container.classList.add('sky-failed');
       if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+      var ext0 = gl.getExtension('WEBGL_lose_context');
+      if (ext0) ext0.loseContext();
+      if (opts.onFail) opts.onFail();
       return noop();
     }
 
     // ---- size
-    var cssW = 0, cssH = 0;
+    var cssW = 0, cssH = 0, dprSeen = window.devicePixelRatio || 1;
     function resize() {
+      dprSeen = window.devicePixelRatio || 1;
       var r = container.getBoundingClientRect();
       cssW = Math.max(1, r.width); cssH = Math.max(1, r.height);
       var k = Math.min(window.devicePixelRatio || 1, 2) * scale;
@@ -343,7 +375,7 @@ void main(){
     }
 
     function draw(time) {
-      if (lost || destroyed) return;
+      if (lost || destroyed || !ready) return;
       gl.viewport(0, 0, canvas.width, canvas.height);
       gl.useProgram(prog);
       gl.uniform2f(loc.res, canvas.width, canvas.height);
@@ -353,6 +385,15 @@ void main(){
       gl.uniform1f(loc.horizon, typeof opts.horizon === 'function' ? opts.horizon() : typeof opts.horizon === 'number' ? opts.horizon : 0.545);
       gl.uniform1f(loc.foot, opts.footer ? 1 : 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (!drawn) {
+        drawn = true;
+        container.classList.add('sky-drawn');
+        if (fadeMs) {
+          canvas.style.transition = 'opacity ' + fadeMs + 'ms cubic-bezier(0.16, 1, 0.3, 1)';
+          requestAnimationFrame(function () { requestAnimationFrame(function () { canvas.style.opacity = '1'; }); });
+        }
+        if (opts.onDrawn) opts.onDrawn();
+      }
     }
 
     // ---- loop
@@ -367,11 +408,12 @@ void main(){
       last = now;
       simTime += dt;
       if (!fixedPointer) stepPointer(dt, now);
+      if ((window.devicePixelRatio || 1) !== dprSeen) resize();
       draw(simTime);
       raf = requestAnimationFrame(tick);
     }
     function start() {
-      if (!live || running || lost || destroyed || !onScreen || document.hidden) return;
+      if (!live || running || lost || destroyed || !ready || !onScreen || document.hidden) return;
       running = true; last = 0;
       raf = requestAnimationFrame(tick);
     }
@@ -420,30 +462,32 @@ void main(){
     function onLost(e) {
       e.preventDefault();
       lost = true;
+      ready = false;
       stop();
       container.classList.add('sky-lost');
+      // a context the browser does not give back within 1.5s (it can block WebGL after GPU crashes) is a failure
+      lostTimer = setTimeout(function () { failNow('DawnSky: the WebGL context was lost'); }, 1500);
     }
     function onRestored() {
+      clearTimeout(lostTimer);
+      if (destroyed) return;
       lost = false;
-      try { build(); } catch (err) {
-        if (window.console) console.error(String(err && err.message || err));
-        container.classList.add('sky-failed');
-        return;
-      }
-      container.classList.remove('sky-lost');
-      resize();
-      if (live) start(); else redrawStill();
+      try { startBuild(); } catch (err) { return failNow(err); }
+      whenBuilt(function () {
+        container.classList.remove('sky-lost');
+        resize();
+        if (live) start(); else redrawStill();
+      });
     }
     canvas.addEventListener('webglcontextlost', onLost, false);
     canvas.addEventListener('webglcontextrestored', onRestored, false);
 
-    if (live) start(); else redrawStill();
-
-    return {
+    var api = {
       destroy: function () {
         if (destroyed) return;
         stop();
         destroyed = true;
+        clearTimeout(lostTimer);
         if (ro) ro.disconnect(); else window.removeEventListener('resize', onWinResize);
         if (io) io.disconnect();
         document.removeEventListener('visibilitychange', onVis);
@@ -457,10 +501,13 @@ void main(){
       },
       frame: function (time) {
         if (destroyed || lost) return;
-        draw(typeof time === 'number' ? time : simTime);
+        if (typeof time === 'number') draw(time); else if (live) draw(simTime); else redrawStill();
       }
     };
+
+    whenBuilt(function () { if (live) start(); else redrawStill(); });
+    return api;
   }
 
-  window.HeroSky = { mount: mount };
+  window.DawnSky = { mount: mount };
 })();

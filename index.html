@@ -562,11 +562,23 @@
        once that canvas is in, the stylesheet's own background and blur step aside */
     .hero .hero-orbs--g2.is-painted { background: none !important; }
     .hero .hero-orbs--g2.is-blurred { filter: none !important; }
-    /* A PAINTED DAWN (exploring 2026-10-10, ?look=sea|hills|ridges): the shader's box, under the dust and the type */
-    .hero-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    /* THE PAINTED DAWN (2026-10-10, the hero since that day): the shader's box, under the dust and the type */
+    .hero-sky {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      /* a still stand-in in the painting's own colours (sampled at 1440: the gold at 80% of the hero, the pill's
+         horizon), there from the first paint until the painting's first frame fades in over it */
+      background: linear-gradient(to bottom, rgb(13, 28, 66) 0%, rgb(13, 28, 66) 20%, rgb(15, 30, 70) 30%, rgb(23, 41, 91) 40%,
+        rgb(37, 56, 112) 50%, rgb(65, 74, 128) 60%, rgb(93, 86, 128) 66%, rgb(124, 91, 114) 72%, rgb(155, 97, 100) 76%,
+        rgb(172, 98, 90) 80%, rgb(103, 56, 73) 82%, rgb(72, 45, 57) 85%, rgb(25, 24, 37) 90%, rgb(10, 12, 18) 95%, #090a0e 100%);
+    }
+    @media (max-width: 768px) {
+      .hero-sky {
+        background: linear-gradient(to bottom, rgb(13, 28, 66) 0%, rgb(13, 28, 66) 15%, rgb(20, 34, 71) 30%, rgb(24, 42, 92) 45%,
+          rgb(59, 73, 127) 60%, rgb(110, 96, 126) 70%, rgb(160, 105, 104) 78%, rgb(217, 139, 112) 84%, rgb(200, 135, 108) 87%,
+          rgb(128, 72, 90) 89%, rgb(80, 47, 61) 92%, rgb(19, 18, 23) 96%, #090a0e 100%);
+      }
+    }
     .look-sky .hero .hero-orbs--g2 { display: none; }
-    .footer-sky { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
-    .look-sky-foot .footer-glow { display: none; }
     @media (prefers-reduced-motion: no-preference) {
       .hero-sky { animation: sky-arrive 1.2s var(--ease-out) both; }
       @keyframes sky-arrive { from { opacity: 0; } }
@@ -886,12 +898,15 @@
       var all = ['edge', 'original', 'dawn'];
       if (keys.indexOf('all') !== -1) keys = keys.concat(all);
       keys.forEach(function (k) { if (all.indexOf(k) !== -1) cls.add('look-' + k); });
-      // A PAINTED DAWN (exploring 2026-10-10): ?look=sea, ?look=hills or ?look=ridges swaps the gradient for a shader
-      // recreating a painted dawn (hero-sky-<name>.js)
-      ['sea', 'hills', 'ridges'].forEach(function (k) { if (keys.indexOf(k) !== -1 && !window.HERO_SKY) { window.HERO_SKY = k; cls.add('look-sky'); } });
+      // THE PAINTED DAWN IS THE HERO (2026-10-10, per user, "yes" to making ?look=sea the default): dawn-sky.js paints it.
+      // ?look=gradient brings back the gradient hero and the footer's glow (the older ?look=dawn and ?look=original are
+      // gradient looks too); so does a browser without WebGL
+      var gradient = ['gradient', 'dawn', 'original'].some(function (k) { return keys.indexOf(k) !== -1; });
+      if (gradient) cls.add('look-gradient'); else { window.HERO_SKY = 'sea'; cls.add('look-sky'); }
       cls.add('opening-' + (keys.indexOf('accept') !== -1 ? 'accept' : keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'still'));
     })();
   </script>
+  <link rel="preload" href="dawn-sky.js?v=1" as="script">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -1220,10 +1235,13 @@
        ?look=original still works), positions from the same custom properties every frame, so the CSS animations,
        Lightfall's lean, the scroll lag and the stardust's colour sampling keep working untouched. Reduced motion keeps
        the stylesheet's background, which then never moves; a browser whose canvas cannot blur keeps the element's blur. */
-    (() => {
+    // Since 2026-10-10 the painted dawn is the hero (dawn-sky.js, below): this painter runs for ?look=gradient, or once
+    // the painting has failed (no WebGL, a shader error), so the hero is never left without its light
+    window.paintHeroGradient = () => {
+      if (window.paintHeroGradient.ran) return;
+      window.paintHeroGradient.ran = true;
       const orbs = document.querySelector('.hero .hero-orbs--g2');
       if (!orbs || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      if (window.HERO_SKY) return;                                          // ?look=sea|hills|ridges: the painted dawn paints the hero
       const NAMES = ['yellow', 'warm', 'pink', 'azure', 'cyan', 'blue'];   // the stylesheet's layer order, top first
       const BLUR = 32, M = 3 * BLUR, SCALE = 0.25;                          // CSS px; the blur's spill is 3 sigma
       // DAWN, CLEANED (2026-10-06): each pool falls off on a bell (a smoothstep) instead of a straight line, so it has
@@ -1364,27 +1382,39 @@
         show();
         size(); draw();
       }).observe(orbs);
-    })();
+    };
+    if (!window.HERO_SKY) window.paintHeroGradient();
   </script>
   <script>
-    /* A PAINTED DAWN (exploring 2026-10-10, per user: lauradang.com's painted hero, "use gpt to generate the image and
-       use it as reference for shader coding", "use dawn theme, current gradient does not matter"). ChatGPT painted three
-       dawns; each is recreated as a fragment shader in hero-sky-<name>.js that moves slowly and answers the cursor.
-       Only behind ?look=sea, ?look=hills or ?look=ridges; if WebGL fails the gradient comes back. */
+    /* THE PAINTED DAWN IS THE HERO (2026-10-10; per user: lauradang.com's painted hero, "use gpt to generate the image and
+       use it as reference for shader coding", "use dawn theme, current gradient does not matter", then "yes" to making
+       it the default). ChatGPT painted the reference; dawn-sky.js recreates it as one fragment shader that moves slowly
+       and answers the cursor. ?look=gradient keeps the gradient; if WebGL fails, the gradient comes back. The loader is
+       shared with the footer's painting (the block after .page-end), so the file loads once. */
     (() => {
-      const name = window.HERO_SKY, hero = document.querySelector('.hero');
-      if (!name || !hero) return;
+      const hero = document.querySelector('.hero');
+      if (!window.HERO_SKY || !hero) return;
+      const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
+        if (window.DawnSky) return ok(window.DawnSky);
+        const s = document.createElement('script');
+        s.src = 'dawn-sky.js?v=1';
+        s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
+        s.onerror = no;
+        document.head.appendChild(s);
+      })));
       const box = document.createElement('div');
       box.className = 'hero-sky';
+      box.setAttribute('aria-hidden', 'true');
       hero.insertBefore(box, hero.firstChild);
-      const fail = () => { box.remove(); document.documentElement.classList.remove('look-sky'); };
+      const fail = () => {
+        box.remove();
+        document.documentElement.classList.remove('look-sky');
+        if (window.paintHeroGradient) window.paintHeroGradient();
+      };
       // the horizon sits 40px under the pill, so the heading, sub and pill are all on the night blue (per user "put them
       // in the dark part"); measured by offsets, which the opening's rise does not move, and again on every resize
       const pill = hero.querySelector('.status-tag');
       let horizon = 0.545;
-      // the footer's horizon, just under the page's bottom edge (1 is the edge): low enough that the bar's 13-14px white
-      // text keeps at least the 4.45:1 it had on the old glow; the phone footer is short and its links sit centred over the dawn
-      const footHorizon = () => matchMedia('(max-width: 768px)').matches ? 1.16 : 1.09;
       const measure = () => {
         if (!pill || !hero.offsetHeight) return;
         let y = 0;
@@ -1394,32 +1424,12 @@
       measure();
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
-      const s = document.createElement('script');
-      s.src = 'hero-sky-' + name + '.js';
-      s.onload = () => {
-        if (!window.HeroSky) return fail();
-        try { window.HeroSky.mount(box, { horizon: () => horizon }); } catch (e) { return fail(); }
-        if (box.classList.contains('sky-failed')) return fail();
-        // THE FOOTER IN THE SAME PAINTING (per user "change the footer to match the hero's style. keep whale animation
-        // first"): the sky without the sea (a sea under the whale was rejected 2026-09-27), the dawn just under the page's
-        // bottom edge, dark where the whale swims; it ignores the pointer, as the footer's dust does, and the dawn lifts a
-        // little as the footer comes into view
-        const end = document.querySelector('.page-end');
-        if (!end) return;
-        const foot = document.createElement('div');
-        foot.className = 'footer-sky';
-        end.insertBefore(foot, end.firstChild);
-        const reveal = () => {
-          const r = end.getBoundingClientRect();
-          return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
-        };
-        try {
-          window.HeroSky.mount(foot, { footer: true, horizon: footHorizon, pointer: [0, 0], scroll: () => 0.6 * reveal() });
-          if (foot.classList.contains('sky-failed')) foot.remove(); else document.documentElement.classList.add('look-sky-foot');
-        } catch (e) { foot.remove(); }
-      };
-      s.onerror = fail;
-      document.head.appendChild(s);
+      let inst = null;
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (inst && still) inst.frame(); });
+      load().then((sky) => {
+        try { inst = sky.mount(box, { horizon: () => horizon, fade: 600, onFail: fail }); } catch (e) { fail(); }
+      }, fail);
     })();
   </script>
   <!-- The Living Gradient (hero-fluid.js) is retired, per Chang: its field animated
@@ -1630,6 +1640,63 @@
       })();
     </script>
   </div>
+  <script>
+    /* THE FOOTER IN THE PAINTED DAWN (2026-10-10, per user "change the footer to match the hero's style. keep whale
+       animation first", then "yes" to every page with the footer). dawn-sky.js paints .page-end: the hero's sky without
+       its sea (a sea under the whale was rejected 2026-09-27), the page's black fading into night blue where the whale
+       swims, wisps round "Say hello", the dawn just under the page's bottom edge, low enough that the bar's white text
+       keeps more than the 4.45:1 it had on the glow (1.16 on phones, whose links sit centred over it). It ignores the
+       pointer, as the footer's dust does; the dawn lifts a little as the footer comes into view. The whale and its dust
+       are untouched. The painting starts once the footer is within a screen of view and fades in over the glow, which
+       goes only after the first painted frame and comes back if the painting ever fails (no WebGL, a context lost for
+       good), or on Home's ?look=gradient. Pasted verbatim on the ten pages with .page-end: edit on index.html, copy,
+       check one md5. */
+    (() => {
+      const end = document.querySelector('.page-end');
+      if (!end || document.documentElement.classList.contains('look-gradient')) return;
+      const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
+        if (window.DawnSky) return ok(window.DawnSky);
+        const s = document.createElement('script');
+        s.src = 'dawn-sky.js?v=1';
+        s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
+        s.onerror = no;
+        document.head.appendChild(s);
+      })));
+      const reveal = () => {
+        const r = end.getBoundingClientRect();
+        return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
+      };
+      const horizon = () => (matchMedia('(max-width: 768px)').matches ? 1.16 : 1.13);
+      let started = false;
+      const start = () => {
+        if (started) return;
+        started = true;
+        load().then((sky) => {
+          const glow = end.querySelector('.footer-glow');
+          const box = document.createElement('div');
+          box.className = 'footer-sky';
+          box.setAttribute('aria-hidden', 'true');
+          box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none';
+          end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);   // over the glow, under the dust and the whale
+          let hideAt = 0;
+          const restore = () => { clearTimeout(hideAt); box.remove(); if (glow) glow.style.display = ''; };
+          try {
+            sky.mount(box, {
+              footer: true, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore,
+              onDrawn: () => { hideAt = setTimeout(() => { if (glow) glow.style.display = 'none'; }, 650); },
+            });
+          } catch (e) { restore(); }
+        }).catch(() => {});
+      };
+      // once the page has loaded and the footer is within a screen of view, so it never competes with the page's arrival
+      const watch = () => {
+        if (!('IntersectionObserver' in window)) return start();
+        const io = new IntersectionObserver((es) => { if (es[es.length - 1].isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '100% 0px' });
+        io.observe(end);
+      };
+      if (document.readyState === 'complete') watch(); else addEventListener('load', watch, { once: true });
+    })();
+  </script>
 
 <script>
   // Light-sweep reveal + specular type (replaced the width-pinned scramble

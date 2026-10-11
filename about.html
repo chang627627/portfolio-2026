@@ -1634,6 +1634,63 @@
       })();
     </script>
   </div>
+  <script>
+    /* THE FOOTER IN THE PAINTED DAWN (2026-10-10, per user "change the footer to match the hero's style. keep whale
+       animation first", then "yes" to every page with the footer). dawn-sky.js paints .page-end: the hero's sky without
+       its sea (a sea under the whale was rejected 2026-09-27), the page's black fading into night blue where the whale
+       swims, wisps round "Say hello", the dawn just under the page's bottom edge, low enough that the bar's white text
+       keeps more than the 4.45:1 it had on the glow (1.16 on phones, whose links sit centred over it). It ignores the
+       pointer, as the footer's dust does; the dawn lifts a little as the footer comes into view. The whale and its dust
+       are untouched. The painting starts once the footer is within a screen of view and fades in over the glow, which
+       goes only after the first painted frame and comes back if the painting ever fails (no WebGL, a context lost for
+       good), or on Home's ?look=gradient. Pasted verbatim on the ten pages with .page-end: edit on index.html, copy,
+       check one md5. */
+    (() => {
+      const end = document.querySelector('.page-end');
+      if (!end || document.documentElement.classList.contains('look-gradient')) return;
+      const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
+        if (window.DawnSky) return ok(window.DawnSky);
+        const s = document.createElement('script');
+        s.src = 'dawn-sky.js?v=1';
+        s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
+        s.onerror = no;
+        document.head.appendChild(s);
+      })));
+      const reveal = () => {
+        const r = end.getBoundingClientRect();
+        return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
+      };
+      const horizon = () => (matchMedia('(max-width: 768px)').matches ? 1.16 : 1.13);
+      let started = false;
+      const start = () => {
+        if (started) return;
+        started = true;
+        load().then((sky) => {
+          const glow = end.querySelector('.footer-glow');
+          const box = document.createElement('div');
+          box.className = 'footer-sky';
+          box.setAttribute('aria-hidden', 'true');
+          box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none';
+          end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);   // over the glow, under the dust and the whale
+          let hideAt = 0;
+          const restore = () => { clearTimeout(hideAt); box.remove(); if (glow) glow.style.display = ''; };
+          try {
+            sky.mount(box, {
+              footer: true, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore,
+              onDrawn: () => { hideAt = setTimeout(() => { if (glow) glow.style.display = 'none'; }, 650); },
+            });
+          } catch (e) { restore(); }
+        }).catch(() => {});
+      };
+      // once the page has loaded and the footer is within a screen of view, so it never competes with the page's arrival
+      const watch = () => {
+        if (!('IntersectionObserver' in window)) return start();
+        const io = new IntersectionObserver((es) => { if (es[es.length - 1].isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '100% 0px' });
+        io.observe(end);
+      };
+      if (document.readyState === 'complete') watch(); else addEventListener('load', watch, { once: true });
+    })();
+  </script>
 
 <script>
   // Logo letter stagger
