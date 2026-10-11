@@ -465,26 +465,9 @@
        (120px from 0.92, about 70px of scroll apart, a 4px settle: "no that obvious, be more subtle") and one
        between the two (84px from 0.94, about 45px apart, a 3px settle) were each built and reverted, and he
        chose this one: "back to the original very subtle wave version". */
-    @media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
-      @supports (animation-timeline: view()) {
-        .deck-card {
-          animation-name: photo-arrive;
-          animation-timeline: view();
-          animation-range: entry calc(var(--i, 0) * 8%) entry calc(76% + var(--i, 0) * 8%);
-          animation-duration: auto;
-          animation-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
-          animation-fill-mode: both;
-        }
-        .deck-card:nth-child(4n + 2) { --i: 1; }
-        .deck-card:nth-child(4n + 3) { --i: 2; }
-        .deck-card:nth-child(4n + 4) { --i: 3; }
-      }
-    }
-    @keyframes photo-arrive {
-      0% { opacity: 0; translate: 0 56px; scale: 0.96; }
-      35% { opacity: 1; }
-      100% { opacity: 1; translate: 0 0; scale: 1; }
-    }
+    /* CANCELLED (2026-10-10, per user, with a capture of the second row mid-wave: "cancel the wave motion"): the photos
+       no longer arrive at all; they are simply there, at every width, as phones and reduced motion always had them. The
+       rule and its keyframes are gone (git 7d0649b has them). */
 
     /* ---- Text pass, 2026-09-22 (per user "all five"). ----------------------------
        THE BIO'S PARAGRAPHS READ AS FOUR: they were 8px apart, less than a line's own
@@ -603,6 +586,14 @@
        show Books again and it stops applying. */
     @media (min-width: 769px) {
       .testimonials:has(+ .media-section[style*="display: none"]) { padding-bottom: 266px; }
+    }
+    /* PEOPLE HIDDEN (2026-10-10, per user "remove People I've worked with part"; markup kept, an inline display:none on
+       the section). Recognition, the last block of .about-vertical, ends the page and carries the site's gap from the
+       last thing seen to the footer: its 96px section margin left 109 on desktop and 126 on phones, so 267 and 50 make
+       280 and 80. The rule follows the hide: show People again and it stops applying. */
+    .about-vertical:has(+ .testimonials[style*="display: none"]) > .about-block:last-child { margin-bottom: 267px; }
+    @media (max-width: 768px) {
+      .about-vertical:has(+ .testimonials[style*="display: none"]) > .about-block:last-child { margin-bottom: 50px; }
     }
   </style>
   <link rel="canonical" href="https://www.chang-mou.com/about.html">
@@ -1476,7 +1467,8 @@
   </section>
 
   <!-- Testimonials -->
-  <section class="testimonials">
+  <!-- People I've worked with: hidden 2026-10-10 per user ("remove People I've worked with part"); markup kept, the page's own hide convention -->
+  <section class="testimonials" style="display: none">
     <div class="section-meta"><span class="section-label-text">People I've worked with</span></div>
     <div class="testimonial-list">
       <div class="testimonial-card">
