@@ -343,6 +343,56 @@ void main(){
     "  return mix(col, cc, inside);",
     "}",
     "",
+    "#ifdef SOFT_CLOUDS",
+    "// SOFT HELPERS for ?look=clouds: the hero's bank mask again (the same segments as in main()), to look toward the light",
+    "float bankMask(vec2 cp){",
+    "  float m = 0.0;",
+    "  m = max(m, segM(cp, vec2(-60.0, 212.0), vec2(445.0, 352.0), 84.0));",
+    "  m = max(m, segM(cp, vec2(-90.0, 322.0), vec2(300.0, 404.0), 70.0));",
+    "  m = max(m, 0.95*segM(cp, vec2(190.0, 396.0), vec2(650.0, 434.0), 36.0));",
+    "  m = max(m, 0.8*segM(cp, vec2(20.0, 461.0), vec2(660.0, 467.0), 20.0));",
+    "  m = max(m, 0.5*segM(cp, vec2(-90.0, 30.0), vec2(290.0, 140.0), 90.0));",
+    "  m = max(m, 0.42*segM(cp, vec2(280.0, 88.0), vec2(470.0, 150.0), 34.0));",
+    "  m = max(m, segM(cp, vec2(1085.0, 228.0), vec2(1540.0, 70.0), 96.0));",
+    "  m = max(m, segM(cp, vec2(1180.0, 372.0), vec2(1540.0, 300.0), 90.0));",
+    "  m = max(m, 0.62*segM(cp, vec2(700.0, 456.0), vec2(1540.0, 432.0), 44.0));",
+    "  m = max(m, 0.45*segM(cp, vec2(820.0, 414.0), vec2(1250.0, 392.0), 24.0));",
+    "  return m;",
+    "}",
+    "// the cloud's threshold for a mask value",
+    "float softTh(float m){ return mix(0.80, 0.30, smoothstep(0.0, 0.8, m)); }",
+    "// a cheap look at the density: only the shape's first octave (one value noise), the billows at their mean and the long",
+    "// streak st taken from the point itself (it barely changes over a few dozen px)",
+    "float softLo(vec2 q, float st){ return 0.51*vnoise(ROT*q) + 0.265 + st; }",
+    "// the soft clouds' own noise space: the deck's, with the puffs larger and taller (rounder heaps, flatter only near the",
+    "// horizon) and about a third of its curl toward the corners (the full curl slants the lumps into ledges there)",
+    "vec2 softQ(vec2 p, float t){",
+    "  float sx = clamp((973.0 - p.x)/300.0, -6.0, 6.0);",
+    "  float uncurl = -0.65*(-90.0*log(0.5*(exp(sx) + exp(-sx))))/20.0;   // deckQ's shear term, about two thirds taken back",
+    "  return (cloudQ(p, t) - vec2(0.0, uncurl*(uFoot > 0.5 ? 0.8 : 1.0)))*vec2(0.8, 0.64);",
+    "}",
+    "// the soft clouds' density, 5 value-noise octaves like fbmCl: one smooth octave for the heaps, then three billow octaves",
+    "// (round bumps, softly creased between) for the cauliflower on them, and the long streak (st, returned); lo is the",
+    "// heap alone (the billows at their mean), dm the shape without its finest octave (at its mean)",
+    "float softD(vec2 q, float sa, out float st, out float lo, out float dm){",
+    "  vec2 p = ROT*q;",
+    "  float s = 0.5*vnoise(p); p = ROT*p*2.02 + vec2(1.7, 9.2);",
+    "  st = sa*(vnoise(q*vec2(0.2, 0.62) + vec2(3.3, 8.8)) - 0.5);",
+    "  lo = s/0.98 + 0.265 + st;",
+    "  float v = 2.0*vnoise(p) - 1.0; p = ROT*p*2.02 + vec2(1.7, 9.2);",
+    "  float b = 0.26*sqrt(v*v + 0.12);                           // a softened abs: round bumps, soft creases",
+    "  v = 2.0*vnoise(p) - 1.0; p = ROT*p*2.02 + vec2(1.7, 9.2);",
+    "  b += 0.15*sqrt(v*v + 0.08);",
+    "  dm = (s + b)/0.98 + 0.052 + st;",
+    "  v = 2.0*vnoise(p) - 1.0;",
+    "  b += 0.07*sqrt(v*v + 0.05);",
+    "  return (s + b)/0.98 + 0.02 + st;",
+    "}",
+    "#endif",
+    "#ifdef SOFT_CLOUDS",
+    "uniform float uMask;                          // 1: draw the cloud cover instead of the scene, for the page's stars",
+    "float gCloud = 0.0;",
+    "#endif",
     "void main(){",
     "  vec2 fc = gl_FragCoord.xy;",
     "  float aspect = uRes.x/uRes.y;",
@@ -439,6 +489,66 @@ void main(){
     "      vec2 L = normalize(normalize(vec2(sun.x, 526.0) - cp) + vec2(0.0, 1.1));",
     "      float d1 = fbmCl(cloudQ(cp + L*7.0, t) + wq, sa);",
     "      float th = mix(0.80, 0.30, m);",
+    "#ifdef SOFT_CLOUDS",
+    "      // REAL DAWN CLOUDS (2026-10-11, per user \"the cloud looks like the anime. The rest of the element I think it is ok\"):",
+    "      // the same banks in the same places, lit like the reference: each point asks how much cloud lies between it and the",
+    "      // light (a full look 5px along it, cheap looks at 12, 26 and 46px; the finest grain left out so the light falls on",
+    "      // lumps, not speckle), so the faces turned to the sun glow and the light fades gradually into slate bodies. The light",
+    "      // comes up from the low sun onto the high clouds and down onto the crowns of the low banks; only the lower clouds",
+    "      // turn warm (dusty rose, then peach), the high ones keep a cool lavender grey. A look up gives the crowns the sky's",
+    "      // cool light. Heaps have crisp, lumpy outlines; thin cloud lets the sky through. Cost per cloud pixel: the warp, then",
+    "      // 14 value-noise octaves (softD twice, softLo four times) against the anime's 10, and five looks at the bank mask.",
+    "      vec2 wq2 = wq*0.6;",
+    "      float lowW = smoothstep(220.0, 440.0, y);",
+    "      vec2 Ls = normalize(vec2(sun.x, 526.0) - cp);                 // toward the sun, low on the horizon",
+    "      float bankW = smoothstep(330.0, 440.0, y);                     // the low banks near the horizon",
+    "      vec2 Lm = normalize(Ls + vec2(0.0, -mix(0.15, 1.25, bankW)));  // the sun's light: from below on the high clouds, onto the crowns of the low ones",
+    "      float fr = 0.4*(w.x - 0.5)*(1.0 - smoothstep(0.45, 0.95, m));",
+    "      float st, st1, lo0, lo1, dm0, dm1;",
+    "      float th0 = softTh(m);",
+    "      float e0 = softD(softQ(cp, t) + wq2, sa, st, lo0, dm0) + fr - th0;     // depth into the cloud",
+    "      vec2 p1 = cp + Lm*5.0;",
+    "      float th1 = softTh(uFoot > 0.5 ? m : bankMask(p1));",
+    "      float e1 = softD(softQ(p1, t) + wq2, sa, st1, lo1, dm1) + fr - th1;",
+    "      vec2 p2 = cp + Lm*12.0; vec2 p3 = cp + Lm*26.0; vec2 p4 = cp + Lm*46.0; vec2 pU = cp + vec2(0.0, -20.0);",
+    "      float e2 = softLo(softQ(p2, t) + wq2, st) + fr - softTh(uFoot > 0.5 ? m : bankMask(p2));",
+    "      float e3 = softLo(softQ(p3, t) + wq2, st) + fr - softTh(uFoot > 0.5 ? m : bankMask(p3));",
+    "      float e4 = softLo(softQ(p4, t) + wq2, st) + fr - softTh(uFoot > 0.5 ? m : bankMask(p4));",
+    "      float eU = softLo(softQ(pU, t) + wq2, st) + fr - softTh(uFoot > 0.5 ? m : bankMask(pU));",
+    "      float e0m = dm0 + fr - th0;                                    // the lumps without their finest grain",
+    "      float e1m = dm1 + fr - th1;",
+    "      // the light's path: through how much cloud (density), and, on the thin low banks, past how much cloud at all (cover)",
+    "      float cover = 1.4*smoothstep(-0.02, 0.08, e1m) + 0.9*smoothstep(-0.02, 0.08, e2) + 0.5*smoothstep(-0.02, 0.08, e3);",
+    "      float sunL = exp(-1.5*max(e0m, 0.0) - 2.5*max(e1m, 0.0) - 0.6*max(e2, 0.0) - 0.4*max(e3, 0.0) - 0.25*max(e4, 0.0) - 0.6*bankW*cover*(1.0 - 0.6*nearSun));",
+    "      float skyL = exp(-1.5*max(e0, 0.0) - 4.0*max(eU, 0.0));       // the sky's light from above, on the crowns",
+    "      float heap = lo0 + fr - th0;                                   // the heap alone: thick (cumulus) or thin (a wisp)",
+    "      float eA = e0 + (e0 - heap)*smoothstep(0.3, 0.8, m)*mix(1.0, 0.25, smoothstep(0.04, 0.22, heap));   // the outline lumpy, no holes deep in a heap",
+    "      float kap = mix(6.0, 60.0, smoothstep(-0.05, 0.2, heap));       // thin cloud lets the sky through; a thick heap has a crisp edge",
+    "      float thick = max(smoothstep(-0.05, 0.2, heap), bankW);       // the low banks keep crisp edges",
+    "      float a = smoothstep(-0.015, mix(0.1, 0.02, thick), eA)*(1.0 - exp(-kap*max(eA + 0.02, 0.0)))*smoothstep(0.03, 0.12, m);",
+    "      // lighter than the sky behind them, not darker (per user \"the real dawn clouds are too dark\"): a soft blue-grey body",
+    "      vec3 body = mix(C(58.0, 68.0, 100.0), C(74.0, 76.0, 104.0), smoothstep(150.0, 320.0, y));",
+    "      body = mix(body, C(104.0, 88.0, 108.0), smoothstep(320.0, 450.0, y));",
+    "      vec3 skyC = mix(C(84.0, 92.0, 124.0), C(128.0, 108.0, 128.0), smoothstep(200.0, 420.0, y));   // cool crowns high, mauve low",
+    "      float warmW = smoothstep(150.0, 340.0, y);                     // the sun reaches the lower clouds; the high ones keep the sky's cool",
+    "      vec3 halfC = mix(C(88.0, 92.0, 122.0), C(166.0, 110.0, 120.0), warmW);                     // half light: grey-blue high, rose low",
+    "      vec3 sunC = mix(C(104.0, 104.0, 132.0), C(184.0, 114.0, 122.0), smoothstep(170.0, 290.0, y));   // lavender grey high, dusty rose",
+    "      sunC = mix(sunC, C(228.0, 134.0, 114.0), smoothstep(280.0, 380.0, y));",
+    "      sunC = mix(sunC, C(246.0, 148.0, 108.0), smoothstep(370.0, 450.0, y));",
+    "      sunC = mix(sunC, C(252.0, 174.0, 124.0), nearSun*smoothstep(360.0, 460.0, y)*0.6);",
+    "      float glow = (0.8 + 0.2*lift)*(1.0 + 0.25*sc);",
+    "      float li = clamp(sunL*mix(0.9, 1.3 + 0.3*nearSun, lowW)*glow, 0.0, 1.0);",
+    "      li = 0.18 + 0.82*li;                                            // a little less shadow (per user: \"reduce the shadow of the clouds a little. do not change the shape\")",
+    "      vec3 cc = mix(body, skyC, 0.2 + skyL*0.45);",
+    "      cc = mix(cc, halfC, smoothstep(0.0, 0.4, li));",
+    "      cc = mix(cc, sunC, smoothstep(0.25, 0.7, li));",
+    "      cc = mix(cc, col, 0.3*(1.0 - smoothstep(0.0, 0.5, li)));        // the shadowed bodies are thin: the sky shows through",
+    "      vec2 cv = vec2((cp.x - 720.0)/560.0, (cp.y - 312.0)/120.0); cv *= cv;",
+    "      float calm = exp(-cv.x*cv.x - cv.y*cv.y);                       // the headline keeps clear sky: wider and quieter there",
+    "      float top = smoothstep(250.0, 110.0, cp.y)*(1.0 - smoothstep(700.0, 1000.0, cp.x));",
+    "      col = mix(col, cc, 0.88*a*(1.0 - 0.88*top)*(1.0 - 0.65*calm));",
+    "      gCloud = a;                                                   // how much cloud is here, for the stars",
+    "#else",
     "      float a = smoothstep(th, th + mix(0.04, 0.018, smoothstep(380.0, 440.0, cp.y)), d0)*smoothstep(0.1, 0.4, m);",
     "      // light: full where the sample toward the sun has left the cloud, fading over the puff's body",
     "      float lit = (1.0 - smoothstep(th - 0.02, th + 0.17, d1))*smoothstep(-0.06, 0.02, d0 - d1);   // only faces turned to the sun",
@@ -471,6 +581,7 @@ void main(){
     "      vec3 cc = mix(body, shadow, shadeS*0.8);",
     "      cc = mix(cc, rimC, litA*(1.0 - 0.9*top)*(1.0 - 0.5*calm));",
     "      col = mix(col, cc, a*mix(0.8, 1.0, litA)*(1.0 - 0.5*top)*(1.0 - 0.45*calm));",
+    "#endif",
     "    }",
     "  }",
     "",
@@ -638,10 +749,15 @@ void main(){
     "  col = mix(col, PAGE, fade);",
     "  col += (hash12(fc + fract(t*7.13)*61.0) - 0.5)*(1.0/255.0)*max(uFoot, 1.0 - fade);   // the footer's fade from black is dithered too, or it bands",
     "  gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);",
+    "#ifdef SOFT_CLOUDS",
+    "  if (uMask > 0.5) gl_FragColor = vec4(gCloud, 0.0, 0.0, 1.0);",
+    "#endif",
     "}"
   ].join('\n');
 
-  var SCENES = { sea: FRAG, hills: FRAG_HILLS };
+  // the hills with real dawn clouds instead of anime ones (a preview, ?look=clouds)
+  var FRAG_HILLS_SOFT = '#define SOFT_CLOUDS 1\n' + FRAG_HILLS;
+  var SCENES = { sea: FRAG, hills: FRAG_HILLS, hillsSoft: FRAG_HILLS_SOFT };
 
   var MAX_PIXELS = 1600000;
 
@@ -710,6 +826,7 @@ void main(){
       loc.scroll = gl.getUniformLocation(prog, 'uScroll');
       loc.horizon = gl.getUniformLocation(prog, 'uHorizon');
       loc.foot = gl.getUniformLocation(prog, 'uFoot');
+      loc.mask = gl.getUniformLocation(prog, 'uMask');
       gl.disable(gl.DEPTH_TEST);
       gl.disable(gl.BLEND);
       ready = true;
@@ -802,6 +919,23 @@ void main(){
       return Math.max(0, Math.min(1, y / bottom));
     }
 
+    // the cloud cover at low resolution (about 64 cells across), so the page can hide its stars behind the clouds: drawn
+    // into the corner of the canvas and read back before the frame itself covers it; twice a second while running
+    var maskTick = 0, maskBuf = null;
+    function readMask() {
+      var mw = 64, mh = Math.max(8, Math.round(64 * canvas.height / canvas.width));
+      if (!maskBuf || maskBuf.length !== mw * mh * 4) maskBuf = new Uint8Array(mw * mh * 4);
+      gl.viewport(0, 0, mw, mh);
+      gl.uniform2f(loc.res, mw, mh);
+      gl.uniform1f(loc.mask, 1);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.readPixels(0, 0, mw, mh, gl.RGBA, gl.UNSIGNED_BYTE, maskBuf);
+      gl.uniform1f(loc.mask, 0);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(loc.res, canvas.width, canvas.height);
+      opts.onCloudMask(maskBuf, mw, mh);
+    }
+
     function draw(time) {
       if (lost || destroyed || !ready) return;
       gl.viewport(0, 0, canvas.width, canvas.height);
@@ -812,6 +946,7 @@ void main(){
       gl.uniform1f(loc.scroll, scrollProgress());
       gl.uniform1f(loc.horizon, typeof opts.horizon === 'function' ? opts.horizon() : typeof opts.horizon === 'number' ? opts.horizon : 0.545);
       gl.uniform1f(loc.foot, opts.footer ? 1 : 0);
+      if (opts.onCloudMask && loc.mask && (maskTick++ % 30 === 0 || !drawn)) readMask();
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       if (!drawn) {
         drawn = true;

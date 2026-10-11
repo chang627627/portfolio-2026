@@ -461,7 +461,9 @@
         started = true;
         load().then((sky) => {
           try {
-            sky.mount(box, { footer: true, scene: 'hills', horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore });
+            // the footer's clouds are drawn like the hero's: real dawn clouds since 2026-10-11 (?look=anime keeps the old ones)
+            const scene = /[?&]look=[^&#]*anime/.test(location.search) ? 'hills' : 'hillsSoft';
+            sky.mount(box, { footer: true, scene, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore });
           } catch (e) { restore(); }
         }, restore);
       };
