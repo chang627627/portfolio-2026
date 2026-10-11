@@ -1425,6 +1425,7 @@
         horizon = Math.min(0.9, (y + pill.offsetHeight + 40) / hero.offsetHeight);
       };
       measure();
+      window.heroSkyHorizon = () => horizon;               // the hero's dust keeps its stars above the land
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
       if (window.HERO_SKY === 'ridges') {                 // the ridges preview, its own file
@@ -1821,6 +1822,26 @@
     }
     // ?look=sea|hills|ridges: the painted dawn's motes are the night's last stars, a cool white
     if (window.HERO_SKY) POOLS.forEach((p) => { p[2] = 205; p[3] = 218; p[4] = 255; });
+    // THE STARS KEEP TO THE SKY (2026-10-10, per user "do" to my read of "does the star need to raise from the grass?"):
+    // under the painted dawn a star belongs to the sky, so one born over the land never shows (it would seem to rise out
+    // of the hills) and one that drifts down to the land's outline fades out above it. The outline mirrors dawn-sky.js's
+    // hills (the far ridge, the wooded hill with its trees, the foreground crest with its grass) in its 1440 x 800 design
+    // frame, slid down by the same horizon; noise is left out, so the fade starts 28px above it. The sea's is its horizon.
+    const bump = (x, c, w, h) => { const d = (x - c) / w; return h * Math.exp(-d * d); };
+    const ridgeFar = (x) => 495 - bump(x, 390, 45, 12) - bump(x, 590, 45, 4) - bump(x, 450, 160, 2.2) + bump(x, 800, 140, 12)
+      + bump(x, 975, 60, 4) + bump(x, 1060, 60, 7.8) + bump(x, 1200, 160, 2.2) - bump(x, 1290, 40, 13.5) - bump(x, 1420, 80, 8) - bump(x, 120, 140, 6);
+    const hillL = (x) => 463 + 0.085 * x + 6e-5 * x * x - bump(x, 680, 110, 22);
+    const crestG = (x) => 532 + 0.092 * x + 6e-6 * x * x;
+    const skyAt = (x, y) => {                          // 1 in open sky, 0 on or behind the land
+      if (!window.HERO_SKY || !window.heroSkyHorizon) return 1;
+      const hz = window.heroSkyHorizon();
+      if (window.HERO_SKY !== 'hills') { const top = hz * heroH; return 1 - Math.min(1, Math.max(0, (y - (top - 24)) / 26)); }
+      const k = 800 / heroH, cx = 720 + 220 * Math.min(1, Math.max(0, 1.6 - heroW / heroH));
+      const dx = (x - heroW / 2) * k + cx, sy = y * k - (hz * 800 - 497);
+      const top = Math.min(ridgeFar(dx), hillL(dx) - 18, crestG(dx) - 64);
+      const f = Math.min(1, Math.max(0, (sy - (top - 28)) / 30));
+      return 1 - f * f * (3 - 2 * f);
+    };
     const poolPx = POOLS.map(() => ({ x: 0, y: 0 }));
     let poolsRead = false;
     const readPools = () => {
@@ -1922,7 +1943,9 @@
         m.vx = m.vx * damp + (Math.random() - 0.5) * 0.04 * k;
         m.vy = m.vy * damp - m.buoy * k;             // buoyant: stardust rises
         m.x += m.vx * k; m.y += m.vy * k * (1 + open * m.lift);
-        const a = (u < 0.12 ? u / 0.12 : 1 - (u - 0.12) / 0.88) * m.b;   // quick in, long out
+        if (m.sky === undefined) m.sky = skyAt(m.x + ox, m.y + oy) > 0.5;   // born in the sky, or over the land
+        if (!m.sky) continue;
+        const a = (u < 0.12 ? u / 0.12 : 1 - (u - 0.12) / 0.88) * m.b * skyAt(m.x + ox, m.y + oy);   // quick in, long out
         const c = m.c, rgb = c[0] + ',' + c[1] + ',' + c[2];
         if (m.kind === 1) {
           // bokeh: a soft disc, no core, low alpha
