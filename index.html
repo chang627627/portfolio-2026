@@ -565,17 +565,17 @@
     /* THE PAINTED DAWN (2026-10-10, the hero since that day): the shader's box, under the dust and the type */
     .hero-sky {
       position: absolute; inset: 0; z-index: 0; pointer-events: none;
-      /* a still stand-in in the painting's own colours (sampled at 1440: the gold at 80% of the hero, the pill's
-         horizon), there from the first paint until the painting's first frame fades in over it */
-      background: linear-gradient(to bottom, rgb(13, 28, 66) 0%, rgb(13, 28, 66) 20%, rgb(15, 30, 70) 30%, rgb(23, 41, 91) 40%,
-        rgb(37, 56, 112) 50%, rgb(65, 74, 128) 60%, rgb(93, 86, 128) 66%, rgb(124, 91, 114) 72%, rgb(155, 97, 100) 76%,
-        rgb(172, 98, 90) 80%, rgb(103, 56, 73) 82%, rgb(72, 45, 57) 85%, rgb(25, 24, 37) 90%, rgb(10, 12, 18) 95%, #090a0e 100%);
+      /* a still stand-in in the painting's own colours (Hills, sampled at 1440: the dawn at about 78% of the hero, under
+         the pill, then the hills), there from the first paint until the painting's first frame fades in over it */
+      background: linear-gradient(to bottom, rgb(15, 34, 66) 0%, rgb(15, 34, 66) 15%, rgb(24, 45, 77) 30%, rgb(41, 55, 87) 40%,
+        rgb(72, 75, 100) 50%, rgb(86, 82, 95) 58%, rgb(95, 78, 95) 64%, rgb(140, 97, 96) 70%, rgb(157, 103, 94) 74%,
+        rgb(177, 115, 91) 78%, rgb(40, 50, 73) 81%, rgb(38, 47, 66) 88%, rgb(15, 19, 29) 92%, rgb(10, 11, 17) 96%, #090a0e 100%);
     }
     @media (max-width: 768px) {
       .hero-sky {
-        background: linear-gradient(to bottom, rgb(13, 28, 66) 0%, rgb(13, 28, 66) 15%, rgb(20, 34, 71) 30%, rgb(24, 42, 92) 45%,
-          rgb(59, 73, 127) 60%, rgb(110, 96, 126) 70%, rgb(160, 105, 104) 78%, rgb(217, 139, 112) 84%, rgb(200, 135, 108) 87%,
-          rgb(128, 72, 90) 89%, rgb(80, 47, 61) 92%, rgb(19, 18, 23) 96%, #090a0e 100%);
+        background: linear-gradient(to bottom, rgb(15, 36, 68) 0%, rgb(15, 35, 68) 15%, rgb(23, 42, 76) 30%, rgb(36, 54, 87) 45%,
+          rgb(76, 78, 102) 58%, rgb(126, 99, 107) 68%, rgb(152, 108, 94) 76%, rgb(189, 128, 93) 82%, rgb(195, 140, 96) 86%,
+          rgb(86, 76, 90) 89%, rgb(66, 55, 61) 92%, rgb(13, 15, 21) 96%, #090a0e 100%);
       }
     }
     .look-sky .hero .hero-orbs--g2 { display: none; }
@@ -902,7 +902,10 @@
       // ?look=gradient brings back the gradient hero and the footer's glow (the older ?look=dawn and ?look=original are
       // gradient looks too); so does a browser without WebGL
       var gradient = ['gradient', 'dawn', 'original'].some(function (k) { return keys.indexOf(k) !== -1; });
-      if (gradient) cls.add('look-gradient'); else { window.HERO_SKY = 'sea'; cls.add('look-sky'); }
+      // HILLS IS THE HERO (2026-10-10, per user "use hills", after "can i see another two version"): ?look=sea keeps the
+      // sea that was the hero before it, ?look=ridges the third painting as built (hero-sky-ridges.js)
+      var alt = keys.indexOf('sea') !== -1 ? 'sea' : keys.indexOf('ridges') !== -1 ? 'ridges' : '';
+      if (gradient) cls.add('look-gradient'); else { window.HERO_SKY = alt || 'hills'; cls.add('look-sky'); }
       cls.add('opening-' + (keys.indexOf('accept') !== -1 ? 'accept' : keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'still'));
     })();
   </script>
@@ -1424,11 +1427,22 @@
       measure();
       if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+      if (window.HERO_SKY === 'ridges') {                 // the ridges preview, its own file
+        const s = document.createElement('script');
+        s.src = 'hero-sky-' + window.HERO_SKY + '.js';
+        s.onload = () => {
+          try { window.HeroSky.mount(box, { horizon: () => horizon }); } catch (e) { return fail(); }
+          if (box.classList.contains('sky-failed')) fail();
+        };
+        s.onerror = fail;
+        document.head.appendChild(s);
+        return;
+      }
       let inst = null;
       const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { if (inst && still) inst.frame(); });
       load().then((sky) => {
-        try { inst = sky.mount(box, { horizon: () => horizon, fade: 600, onFail: fail }); } catch (e) { fail(); }
+        try { inst = sky.mount(box, { scene: window.HERO_SKY, horizon: () => horizon, fade: 600, onFail: fail }); } catch (e) { fail(); }
       }, fail);
     })();
   </script>
@@ -1642,8 +1656,9 @@
   </div>
   <script>
     /* THE FOOTER IN THE PAINTED DAWN (2026-10-10, per user "change the footer to match the hero's style. keep whale
-       animation first", then "yes" to every page with the footer). dawn-sky.js paints .page-end: the hero's sky without
-       its sea (a sea under the whale was rejected 2026-09-27), the page's black fading into night blue where the whale
+       animation first", then "yes" to every page with the footer; Hills' sky since the hero became Hills, per user "don't
+       you think the footer need the change to match the hills?"). dawn-sky.js paints .page-end: the hero's sky with its
+       land under the bottom edge (a horizon under the whale was rejected 2026-09-27), the page's black fading into night blue where the whale
        swims, wisps round "Say hello", the dawn just under the page's bottom edge, low enough that the bar's white text
        keeps more than the 4.45:1 it had on the glow (1.16 on phones, whose links sit centred over it). It ignores the
        pointer, as the footer's dust does; the dawn lifts a little as the footer comes into view. The whale and its dust
@@ -1666,7 +1681,7 @@
         const r = end.getBoundingClientRect();
         return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
       };
-      const horizon = () => (matchMedia('(max-width: 768px)').matches ? 1.16 : 1.13);
+      const horizon = () => (matchMedia('(max-width: 768px)').matches ? 1.2 : 1.2);
       let started = false;
       const start = () => {
         if (started) return;
@@ -1682,7 +1697,7 @@
           const restore = () => { clearTimeout(hideAt); box.remove(); if (glow) glow.style.display = ''; };
           try {
             sky.mount(box, {
-              footer: true, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore,
+              footer: true, scene: 'hills', horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore,
               onDrawn: () => { hideAt = setTimeout(() => { if (glow) glow.style.display = 'none'; }, 650); },
             });
           } catch (e) { restore(); }
