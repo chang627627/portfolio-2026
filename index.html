@@ -580,6 +580,10 @@
       }
     }
     .look-sky .hero .hero-orbs--g2 { display: none; }
+    /* THE SUB IN TWO ROWS (2026-10-12, per user "two rows not three", then "no need to change the word. just make three
+       row to two": the calmer sub, "...as more of the work gets automated...", ran to three lines at 520px with
+       "site included." alone; it fits two at 540, so 580 leaves room for another browser's metrics: 556 / 506px) */
+    @media (min-width: 769px) { .hero .hero-sub { max-width: 580px; } }
     @media (prefers-reduced-motion: no-preference) {
       .hero-sky { animation: sky-arrive 1.2s var(--ease-out) both; }
       @keyframes sky-arrive { from { opacity: 0; } }
@@ -1074,7 +1078,7 @@
         <span class="line" aria-hidden="true"><span class="line-inner" data-text="AI-first product designer.">AI-first product designer.</span></span>
         <span class="hero-sr">I&#39;m Chang Mou. AI-first product designer.</span>
       </h1>
-      <p class="hero-sub">4+ years shipping products across SaaS, AI, and social impact that balance user control with automation. I prototype in real code, this site included.</p>
+      <p class="hero-sub">4+ years designing across SaaS, AI, and social impact, keeping people in control as more of the work gets automated. I prototype in real code, this site included.</p>
       <!-- Hire-state pill, back in the hero (2026-09-13, per user, to attract
            recruiters), replacing the "Built with Claude Code" repo link. A live
            mailto on the .status-tag glass treatment, with the green .status-dot
@@ -1647,7 +1651,7 @@
     <!-- Footer -->
     <footer>
       <div class="footer-bottom">
-        <p class="footer-copy">© 2026 Chang Mou · Designed in the fog<span class="footer-time"></span></p>
+        <p class="footer-copy">© 2026 Chang Mou · San Francisco<span class="footer-time"></span></p>
         <div class="footer-links">
           <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
           <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
