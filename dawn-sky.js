@@ -3059,7 +3059,10 @@ void main(){
       }
     };
 
-    whenBuilt(function () { if (live) start(); else redrawStill(); });
+    // the first frame is painted as soon as the shader is built, on screen or not, so a painting prepared ahead of view (the
+    // footer's) has drawn and faded in before anyone scrolls to it (per user "the cloud at the footer sometimes rendered
+    // after its in the sight"); the loop itself still runs only on screen
+    whenBuilt(function () { if (live) { draw(simTime); start(); } else redrawStill(); });
     return api;
   }
 
