@@ -4,40 +4,28 @@
   <meta name="robots" content="noindex">
 <meta charset="UTF-8">
 <title>OG Image Generator</title>
-<link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
 <style>
   @font-face { font-family: 'Neue Montreal'; src: url('fonts/NeueMontreal-Regular.woff2') format('woff2'); font-weight: 400; font-style: normal; }
-  html, body { margin: 0; padding: 0; background: #0a0a0a; width: 1200px; height: 630px; overflow: hidden; }
+  @font-face { font-family: 'Neue Montreal'; src: url('fonts/NeueMontreal-Italic.woff2') format('woff2'); font-weight: 400; font-style: italic; }
+  html, body { margin: 0; padding: 0; background: #090a0e; width: 1200px; height: 630px; overflow: hidden; }
   .og-card {
     width: 1200px;
     height: 630px;
-    background: #0a0a0a;
+    background: #090a0e;
     position: relative;
     overflow: hidden;
     font-family: 'Neue Montreal', -apple-system, sans-serif;
     font-weight: 400;
     color: #f0f0f0;
   }
-  /* Hero g2 hues filling the full frame — warm (yellow/red/pink) across the top
-     flowing into blue across the bottom, mirroring the live hero + favicon.
-     Wide ~64% stops + a warm→blue base so no dark areas show; full-bleed inset
-     so blur(60px) never reveals an edge. */
-  .mesh {
-    position: absolute;
-    inset: -12%;
-    pointer-events: none;
-    z-index: 0;
-    background:
-      radial-gradient(ellipse 100% 56% at 42% 2%, rgba(255, 214, 0, 0.90), transparent 62%),
-      radial-gradient(ellipse 112% 52% at 40% 30%, rgba(255, 104, 48, 0.88), transparent 60%),
-      radial-gradient(ellipse 112% 52% at 60% 54%, rgba(140, 70, 255, 0.82), transparent 60%),
-      radial-gradient(ellipse 132% 64% at 46% 84%, rgba(60, 20, 200, 0.90), transparent 66%),
-      linear-gradient(180deg, #3a1a0c, #14094a);
-    filter: blur(60px);
-  }
+  /* THE SHARE CARD IS THE SUNRISE (2026-10-12, per user, with a capture of the LinkedIn preview still in the purple
+     gradient: "change my portfolio linkedin cover"): the Home hero's own painted sky (dawn-sky.js, scene sunrise),
+     one still frame, the sun and hills along the bottom. The sky's box runs taller than the card so the hero's fade
+     into the page's black falls below the card's edge. */
+  .sky { position: absolute; left: 0; top: 0; width: 1200px; height: 735px; z-index: 0; }
   .content {
     position: absolute;
-    inset: 0;
+    inset: 0 0 110px;
     z-index: 2;
     display: flex;
     align-items: center;
@@ -46,25 +34,34 @@
   h1 {
     margin: 0;
     text-align: center;
-    font-size: 84px;
+    font-size: 86px;
     font-weight: 400;
-    line-height: 1.16;
-    letter-spacing: -0.03em;
+    line-height: 1.12;
+    letter-spacing: -0.04em;
     color: #ffffff;
+    text-shadow: 0 0 28px rgba(255, 255, 255, 0.22);
   }
-  h1 .next {
-    /* the second line is the ROLE now, not a flourish: it must stay legible
-       at feed-thumbnail size, and the hero sets both lines in white */
-    color: #ffffff;
-  }
+  /* line 2 is the role, in the site's one italic, as on the hero */
+  h1 .next { font-style: italic; }
 </style>
 </head>
 <body>
   <div class="og-card" id="card">
-    <div class="mesh"></div>
+    <div class="sky" id="sky"></div>
     <div class="content">
-      <h1>I&rsquo;m Chang Mou.<br><span class="next">AI-first product designer.</span></h1>
+      <h1>I'm Chang Mou.<br><span class="next">AI-first product designer.</span></h1>
     </div>
   </div>
+  <script src="dawn-sky.js?v=6"></script>
+  <script>
+    // one still frame of the hero's sunrise; data-ready is set once it is painted and the fonts are in
+    document.fonts.ready.then(() => {
+      window.DawnSky.mount(document.getElementById('sky'), {
+        scene: 'sunrise', time: 6, pointer: [0, 0], scroll: 0, horizon: 0.66, scale: 1, fade: 0,
+        onDrawn: () => { document.documentElement.dataset.ready = '1'; },
+        onFail: () => { document.documentElement.dataset.ready = 'failed'; }
+      });
+    });
+  </script>
 </body>
 </html>
