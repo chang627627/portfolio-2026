@@ -389,7 +389,7 @@
       const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
         if (window.DawnSky) return ok(window.DawnSky);
         const s = document.createElement('script');
-        s.src = 'dawn-sky.js?v=1';
+        s.src = 'dawn-sky.js?v=3';
         s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
         s.onerror = no;
         document.head.appendChild(s);
@@ -408,8 +408,8 @@
       box.className = 'footer-sky';
       box.setAttribute('aria-hidden', 'true');
       box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(to bottom,'
-        + 'rgb(9,10,14) 0%,rgb(10,12,17) 10%,rgb(11,16,26) 20%,rgb(14,23,38) 30%,rgb(17,30,52) 40%,rgb(19,36,64) 50%,'
-        + 'rgb(22,42,74) 60%,rgb(30,51,87) 70%,rgb(49,66,99) 80%,rgb(73,80,107) 88%,rgb(100,92,110) 94%,rgb(131,104,109) 100%)';
+        + 'rgb(9,10,14) 0%,rgb(11,14,25) 10%,rgb(16,23,51) 20%,rgb(22,33,82) 30%,rgb(27,39,104) 40%,rgb(31,41,119) 50%,'
+        + 'rgb(35,39,123) 60%,rgb(44,38,127) 70%,rgb(60,40,130) 80%,rgb(96,61,138) 88%,rgb(127,86,147) 94%,rgb(153,96,136) 100%)';
       end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);     // over the glow, under the dust and the whale
       if (glow) glow.style.display = 'none';
       const restore = () => { box.remove(); if (glow) glow.style.display = ''; };
@@ -419,8 +419,11 @@
         started = true;
         load().then((sky) => {
           try {
-            // the footer's clouds are drawn like the hero's: real dawn clouds since 2026-10-11 (?look=anime keeps the old ones)
-            const scene = /[?&]look=[^&#]*anime/.test(location.search) ? 'hills' : 'hillsSoft';
+            // the page is one day since 2026-10-11 (per user "make the page one day. You arrive at sunrise and reach the footer
+            // at dusk"): the hero is the sunrise, the footer dusk, so the whale's stars belong to its sky; ?look=bluehour keeps
+            // the real dawn clouds at blue hour, ?look=anime the anime clouds before them
+            const look = (/[?&]look=([^&#]*)/.exec(location.search) || [])[1] || '';
+            const scene = /anime/.test(look) ? 'hills' : /bluehour/.test(look) ? 'hillsSoft' : 'dusk';
             sky.mount(box, { footer: true, scene, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore });
           } catch (e) { restore(); }
         }, restore);
