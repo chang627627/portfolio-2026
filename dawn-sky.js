@@ -9,7 +9,7 @@
            fade: ms for the canvas to fade in on its first painted frame, onDrawn(), onFail(): called when the painting
            cannot run (no WebGL, a shader error, a context lost for good), so the page can put its own light back,
            scene: 'sunrise' (the hero and the footer since 2026-10-11), 'hillsSoft' (the same hills at blue hour, ?look=bluehour),
-           'night' (every footer since 2026-10-11), 'dusk' (the footer before it, ?look=dusk),
+           'night' (every footer: moonlight, the moon out of frame, since 2026-10-11), 'dusk' (?look=dusk),
            'hills' (with the anime clouds, ?look=anime) or 'sea' (the fallback scene) } */
 (function () {
   'use strict';
@@ -1991,7 +1991,7 @@ void main(){
     "}"
   ].join('\n');
 
-  // ---- NIGHT (2026-10-11, every footer, per user "I think hero is good but i need the footer to match, not the rose style
+  // ---- NIGHT (2026-10-11, reworked 2026-10-12 as moonlight (see nightFoot), every footer, per user "I think hero is good but i need the footer to match, not the rose style
   // which is little bit off. i mean hero's vibe but the night version", then "do"): the sunrise's world a few hours after
   // sunset, lit by a moon out of frame. Built from FRAG_SUNRISE; only its footer mode is used (an early return in main()
   // when uFoot > 0.5: nightFoot()): the hero's cobalt deepened (OKLab, hue 264 to 259) out of the page's black, a cool
@@ -2213,29 +2213,20 @@ void main(){
     "vec3 nightFoot(vec2 P, float Ppage, float t){",
     "  float s = clamp(Ppage/800.0, 0.0, 1.0);",
     "  // the sky: deep navy cobalt, lighter and clearer toward the bottom edge (one smooth curve, no stops to band)",
-    "  float sL = 0.25 + 0.15*pow(s, 3.2) + 0.04*smoothstep(690.0, 800.0, Ppage);   // and clearer still in the line's band, under the hairline",
-    "  vec3 lb = lab(vec3(sL, 0.105 + 0.29*(sL - 0.25), 264.0 - 5.0*s));   // chroma follows lightness: as saturated as the gamut allows, never clipped",
-    "  // the horizon's airglow along the bottom edge, wide and even (not a light under the middle): clear cobalt, faint pale silver",
-    "  float gx = (P.x - 720.0)/650.0;",
-    "  float gw = exp(-gx*gx)*exp(-(800.0 - Ppage)/60.0);",
-    "  lb = mix(lb, lab(vec3(0.55, 0.15, 258.0)), 0.8*gw);",
-    "  lb = mix(lb, lab(vec3(0.68, 0.09, 254.0)), 0.25*gw*gw);",
-    "  // THE MOON (2026-10-12, per user \"the footer's visual a little bit boring. Can you think how to make it more creative?\",",
-    "  // then \"try it\"): the night's light source, the hero's sun turned to night: rising half cut by the bottom edge between",
-    "  // the two heaps, a soft pale disc with faint broad shading (no craters: the rest is painted, not photographed), a tight",
-    "  // halo and a low glow along the horizon, wider than tall so the sky round \"Say hello\" keeps its depth",
+    "  // MOONLIGHT (2026-10-12, per user, after a deeper night (\"Too dark and not dreamy\"), still stars with halos (\"why there",
+    "  // are some fixed dots have the glow\"), \"I think current footer's vibe is too depressed\", then a twilight whose warm glow",
+    "  // along the bottom \"hint it is the day time\", and \"I want the the feeling that we can see the moonlight but moon do not",
+    "  // have to be there\"): night in the hero's blue, lit from high above the frame by a moon out of it: the heaps' crowns",
+    "  // silver-white, a clear cobalt at the bottom edge, no warm light anywhere",
     "  vec2 fp = vec2(P.x, Ppage);",
-    "  vec2 mc = vec2(720.0, 806.0);",
-    "  float mr = 80.0;",
-    "  float md = length(fp - mc);",
-    "  vec2 wd = (fp - mc)/vec2(520.0, 170.0);",
-    "  lb = mix(lb, lab(vec3(0.60, 0.12, 257.0)), 0.5*exp(-dot(wd, wd)));",
-    "  lb = mix(lb, lab(vec3(0.84, 0.045, 250.0)), 0.62*exp(-max(md - mr, 0.0)/34.0));",
+    "  vec3 lb = lab(vec3(0.30 + 0.08*smoothstep(0.25, 0.9, s), 0.13, 264.0 - 4.0*s));",
+    "  float gx = (P.x - 720.0)/700.0;",
+    "  float gw = exp(-gx*gx)*exp(-(800.0 - Ppage)/90.0);",
+    "  lb = mix(lb, lab(vec3(0.46, 0.14, 258.0)), 0.6*gw);           // clear cobalt, brighter toward the bottom edge",
+    "  // (a soft silver haze from the moon's corner, the upper right, was built and removed at once, per user \"maybe remove",
+    "  // the moon light. because it comes from one side is so strange\": the light is even, from above)",
+    "  vec2 MOON = vec2(720.0, -900.0);                               // the light, high above the frame's middle",
     "  vec3 col = labRGB(lb);",
-    "  vec2 mp = (fp - mc)/mr;",
-    "  float mare = smoothstep(0.48, 0.72, fbm4(mp*1.5 + vec2(3.1, 7.4)));   // a few broad, soft grey-blue patches",
-    "  vec3 mcol = mix(C(244.0, 247.0, 255.0), C(204.0, 214.0, 236.0), 0.5*mare)*(1.0 - 0.08*dot(mp, mp));   // and a little darker toward the limb",
-    "  col = mix(col, mcol, 1.0 - smoothstep(mr - 1.5, mr + 0.5, md));",
     "  float m = footM(fp);",
     "  if (m > 0.02) {",
     "    // the hero's real clouds, step for step (same density, same looks toward the light, same outline), lit from above",
@@ -2246,8 +2237,7 @@ void main(){
     "    vec2 wq = (w - 0.5)*vec2(1.0, 0.4);",
     "    float sa = mix(0.48, 0.22, smoothstep(390.0, 450.0, cp.y));",
     "    vec2 wq2 = wq*0.6;",
-    "    // the light: still from above on the crowns, and now also from the moon at the bottom edge on the inner sides",
-    "    vec2 Lm = normalize(normalize(vec2(720.0, -900.0) - fp) + 0.9*normalize(mc - fp));",
+    "    vec2 Lm = normalize(MOON - fp);                                 // toward the light, high above the frame's middle",
     "    float fr = 0.4*(w.x - 0.5)*(1.0 - smoothstep(0.45, 0.95, m));",
     "    float st, st1, lo0, lo1, dm0, dm1;",
     "    float th0 = softTh(m);",
@@ -2273,7 +2263,7 @@ void main(){
     "    body = mix(body, C(20.0, 48.0, 114.0), smoothstep(755.0, 800.0, Ppage));   // the bases, darker than the horizon's glow behind them",
     "    vec3 skyC = C(58.0, 98.0, 180.0);",
     "    vec3 halfC = C(78.0, 118.0, 196.0);",
-    "    vec3 moonC = C(170.0, 198.0, 240.0);",
+    "    vec3 moonC = C(208.0, 224.0, 252.0);                            // the faces the moon reaches: silver-white",
     "    float li = clamp(moonL*2.6, 0.0, 1.0);",
     "    li = 0.32 + 0.68*li;",
     "    li *= 1.0 - 0.6*smoothstep(690.0, 745.0, Ppage);   // the heaps' lower halves, where the line's text sits, in shade",
@@ -2316,7 +2306,7 @@ void main(){
     "  // THE FOOTER'S NIGHT: the footer is painted by nightFoot alone (it ignores the pointer), out of the page's black at its top",
     "  if (uFoot > 0.5) {",
     "    vec3 nc = nightFoot(P, Ppage, t);",
-    "    float nf = 1.0 - smoothstep(0.0, 420.0, Ppage);",
+    "    float nf = 1.0 - smoothstep(0.0, 300.0, Ppage);   // (420 until \"Too dark and not dreamy\": the sky now rises out of the black sooner)",
     "    nc = mix(nc, PAGE, nf);",
     "    nc += (hash12(fc + fract(t*7.13)*61.0) - 0.5)*(1.0/255.0);   // dithered, or the fade from black bands",
     "    gl_FragColor = vec4(clamp(nc, 0.0, 1.0), 1.0);",

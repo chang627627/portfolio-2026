@@ -1330,16 +1330,17 @@
     (() => {
       const end = document.querySelector('.page-end');
       if (!end || document.documentElement.classList.contains('look-gradient')) return;
-      // the page is one day (2026-10-11): the hero is the sunrise, the footer the night after it (per user "hero's vibe but the
-      // night version"), its stars and the whale in a moonlit sky; ?look=dusk keeps the rose dusk it had first that day,
-      // ?look=bluehour the real dawn clouds at blue hour, ?look=anime the anime clouds; the embers read FOOT_SCENE
+      // the page is one day (2026-10-11): the hero is the sunrise, the footer the night after it, lit by a moon out of frame
+      // (per user "hero's vibe but the night version", then "I want the the feeling that we can see the moonlight but moon do
+      // not have to be there"); ?look=dusk keeps the rose dusk, ?look=bluehour the real dawn clouds at blue hour,
+      // ?look=anime the anime clouds; the embers read FOOT_SCENE
       const look = (/[?&]look=([^&#]*)/.exec(location.search) || [])[1] || '';
       const scene = /anime/.test(look) ? 'hills' : /bluehour/.test(look) ? 'hillsSoft' : /dusk/.test(look) ? 'dusk' : 'night';
       window.FOOT_SCENE = scene;
       const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
         if (window.DawnSky) return ok(window.DawnSky);
         const s = document.createElement('script');
-        s.src = 'dawn-sky.js?v=4';
+        s.src = 'dawn-sky.js?v=5';
         s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
         s.onerror = no;
         document.head.appendChild(s);
@@ -1358,8 +1359,8 @@
       box.className = 'footer-sky';
       box.setAttribute('aria-hidden', 'true');
       box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(to bottom,'
-        + 'rgb(9,10,14) 0%,rgb(9,12,21) 10%,rgb(8,16,36) 20%,rgb(6,21,56) 30%,rgb(4,27,76) 40%,rgb(3,32,89) 50%,'
-        + 'rgb(3,35,95) 60%,rgb(3,40,104) 70%,rgb(4,49,118) 80%,rgb(12,63,138) 88%,rgb(29,82,164) 94%,rgb(44,98,184) 100%)';
+        + 'rgb(9,10,14) 0%,rgb(9,15,31) 10%,rgb(8,25,67) 20%,rgb(6,35,100) 30%,rgb(7,41,113) 40%,rgb(9,46,118) 50%,'
+        + 'rgb(13,52,124) 60%,rgb(17,57,129) 70%,rgb(20,62,135) 80%,rgb(25,68,141) 88%,rgb(29,73,148) 94%,rgb(29,73,148) 100%)';
       end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);     // over the glow, under the dust and the whale
       if (glow) glow.style.display = 'none';
       const restore = () => { box.remove(); if (glow) glow.style.display = ''; };
@@ -1476,7 +1477,7 @@
       footerEl.addEventListener('mouseleave', () => { cursorX = null; });
     }
 
-    const BASE = 0.35;     // unlit letter opacity
+    const BASE = 0.65;     // unlit letter opacity: about 4.7:1 on the twilight sky, so the call to action leads (2026-10-12, per user "do 1 and 2"; was 0.35, about 2.9:1)
     const AMB = 0.28;      // ambient peak — idle tops out ~0.53, half the
                            // cursor's 1.0, so the word rests as a quiet
                            // watermark and hovering is a real step up
@@ -2548,7 +2549,8 @@
       const parent = cv.parentElement;
       const stopSel = cv.dataset.stop || '';
       const ctx = cv.getContext('2d');
-      // at birth: gold, coral, violet; under the footer's night, moonlit white and blues (per user "hero's vibe but the night version")
+      // at birth: gold, coral, violet; under the footer's moonlit night, moonlit white and blues (per user "hero's vibe but the
+      // night version"; the twilight's warm ones for an hour on 2026-10-12, until its warm glow read as day)
       const WARM = window.FOOT_SCENE === 'night' ? [[236, 242, 255], [178, 204, 255], [132, 168, 255]] : [[255, 190, 35], [255, 104, 48], [140, 70, 255]];
       const WARM_P = [0.5, 0.82];                                    // their shares
       const COOL = [150, 200, 255];                                  // what they cool toward
