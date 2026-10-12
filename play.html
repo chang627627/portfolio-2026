@@ -571,8 +571,10 @@
     const SPRING = 16;                  // rad/s: how tightly the drawn scene follows the scroll (the About galaxy's spring;
                                         // it replaced a per-frame EASE of 0.14, which ran twice as fast at 120Hz as at 60)
     const CLEAR = 40;                   // no light rises closer than this under the statement
-    const FAN = [ // top to bottom, the dawn as a spectrum
-      [255, 222, 120], [255, 176, 80], [255, 118, 76], [210, 110, 255], [120, 120, 255], [110, 205, 255],
+    const FAN = [ // top to bottom, the dawn as a spectrum: the Home hero's sunrise since 2026-10-12 (per user, "do" to my read that
+      // the rays still carried the retired gradient hero's gold, orange, coral, violet, periwinkle and cyan): the sun's gold,
+      // peach, rose, the pale sky over the haze, azure, cobalt (luminous versions, since they are faint light on black)
+      [255, 220, 140], [255, 184, 122], [246, 146, 136], [148, 198, 255], [108, 162, 255], [84, 120, 255],
     ];
     const WHITE = [255, 248, 236];
 
@@ -588,7 +590,7 @@
       g.fillStyle = grad; g.fillRect(0, 0, SPR, SPR);
       return s;
     }
-    const fanSprites = FAN.map(sprite), whiteSprite = sprite(WHITE), edgeSprite = sprite([235, 232, 255]);
+    const fanSprites = FAN.map(sprite), whiteSprite = sprite(WHITE), edgeSprite = sprite([232, 238, 255]);   // the prism's edges: a cool white (was a faint lavender)
     const hash = (i) => { const x = Math.sin(i * 127.1 + 311.7) * 43758.5453; return x - Math.floor(x); };
     const mix = (a, b, t) => a + (b - a) * t;
     const smooth = (u) => u * u * (3 - 2 * u);
