@@ -2009,7 +2009,7 @@ footer {
   /* no hairline since 2026-10-13: the floor of clouds runs behind the bar, and the line cut straight across it */
   border-top: 1px solid transparent;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;   /* the links alone on the right since the line on the left went (2026-10-13) */
   align-items: center;
   position: relative;
   z-index: 3;

@@ -26,7 +26,7 @@
        2.01s), so the gradient and the dust, drawn by the page, stood still while the beam and the pill, run by the
        compositor, went on, and then the field jumped. 5 returns in 6 with the two preloads, 0 in 6 without. style.css's
        @font-face still loads both faces as soon as the page lays out, and the headline waits for them (fonts.ready). -->
-  <link rel="stylesheet" href="style.css?v=351">
+  <link rel="stylesheet" href="style.css?v=353">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -1625,23 +1625,20 @@
             // word (it sat just under the word at first; moved down per user "do not get too close")
             const row = document.querySelector('.page-end .footer-links');
             if (row && row.offsetHeight) { const r = row.getBoundingClientRect(), b = box.getBoundingClientRect(); note.style.top = Math.round(r.top + r.height / 2 - b.top - note.offsetHeight / 2) + 'px'; }
-            // In a narrow desktop window the centred note ran into the (c) line and the links (6px either side at 769px
-            // wide), so there it takes the (c) line's place for its two seconds and the line steps aside (2026-09-22)
-            const copy = document.querySelector('.page-end .footer-copy');
-            let swap = false;
+            // The bar holds only the links, on the right, since its line went (2026-10-13; until then the (c) line held
+            // the left end and the note took its place in a narrow window). Where the links reach under the centred note,
+            // in a narrow desktop window, the note moves to the bar's left inset instead.
+            const bar = document.querySelector('.page-end .footer-bottom');
             note.style.left = '0'; note.style.textAlign = 'center';
-            if (copy && copy.offsetWidth && row && row.offsetHeight) {
+            if (bar && row && row.offsetHeight) {
               const rg = document.createRange(); rg.selectNodeContents(note);
-              const n = rg.getBoundingClientRect(), c = copy.getBoundingClientRect(), r = row.getBoundingClientRect();
-              swap = n.left - c.right < 32 || r.left - n.right < 32;
-              if (swap) { note.style.left = Math.round(c.left - box.getBoundingClientRect().left) + 'px'; note.style.textAlign = 'left'; }
+              const n = rg.getBoundingClientRect(), r = row.getBoundingClientRect();
+              if (r.left - n.right < 32) { note.style.left = Math.round(bar.getBoundingClientRect().left + parseFloat(getComputedStyle(bar).paddingLeft) - box.getBoundingClientRect().left) + 'px'; note.style.textAlign = 'left'; }
             }
-            if (copy) { copy.style.transition = 'opacity 0.16s'; copy.style.opacity = swap ? '0' : ''; }
             note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
             clearTimeout(timer);
             timer = setTimeout(() => {
               note.style.transitionDuration = '0.4s'; note.style.opacity = '0';
-              if (copy) { copy.style.transition = 'opacity 0.4s'; copy.style.opacity = ''; }
             }, 2000);
           }, () => { location.href = link.href; });      // copy refused: fall back to the mailto
         });
@@ -1651,7 +1648,6 @@
     <!-- Footer -->
     <footer>
       <div class="footer-bottom">
-        <p class="footer-copy">© 2026 Chang Mou · San Francisco<span class="footer-time"></span></p>
         <div class="footer-links">
           <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
           <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
@@ -1661,26 +1657,6 @@
         </div>
       </div>
     </footer>
-    <script>
-      // Footer local time (2026-09-10): appends " · 4:32 pm", San Francisco time, to the © line.
-      // Text only: if anything fails the line simply ends at "fog". The © line is desktop-only
-      // (hidden at 768px and below), so phones never see it. Per-page paste like the chat widget:
-      // edit it on index.html, then copy verbatim to the other nine pages.
-      (function () {
-        var el = document.querySelector('.footer-time');
-        if (!el || !window.Intl || !Intl.DateTimeFormat) return;
-        var fmt;
-        try {
-          fmt = new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit', hour12: true, timeZone: 'America/Los_Angeles' });
-        } catch (e) { return; }
-        function tick() {
-          var t = fmt.format(new Date()).replace(/\s*(AM|PM)$/i, function (m, p) { return ' ' + p.toLowerCase(); });
-          el.textContent = ' · ' + t;
-        }
-        tick();
-        setInterval(tick, 10000);
-      })();
-    </script>
   </div>
   <script>
     /* THE FOOTER IN THE PAINTED DAWN (2026-10-10, per user "change the footer to match the hero's style. keep whale
