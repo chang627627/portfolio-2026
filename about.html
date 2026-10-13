@@ -1636,7 +1636,7 @@
       const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
         if (window.DawnSky) return ok(window.DawnSky);
         const s = document.createElement('script');
-        s.src = 'dawn-sky.js?v=7';
+        s.src = 'dawn-sky.js?v=8';
         s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
         s.onerror = no;
         document.head.appendChild(s);
