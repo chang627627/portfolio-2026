@@ -1953,6 +1953,17 @@ footer {
   padding: 0 48px;
 }
 
+/* THE FOOTER, ASYMMETRIC (2026-10-13, per user, after a preview behind ?look=asym: "do it"): "Say hello" on the page's
+   left inset at desktop widths (phones hide the word), the whale's open sky and the moon to its right, the word bottom-left
+   and the moon bottom-right balancing on a diagonal; its size unchanged. The negative margin takes back the S's side
+   bearing so its ink meets the 48px line the copyright starts on. Out-specifies the pages' own centring
+   (.footer-big-text { width: fit-content; margin-inline: auto } in index, about and play). */
+@media (min-width: 769px) {
+  .say-hello,
+  .say-hello .footer-big { text-align: left; }
+  .say-hello .footer-big .footer-big-text { margin-inline: -0.025em 0; }
+}
+
 .footer-big-text {
   display: block;
   font-size: clamp(90px, 14vw, 220px);
@@ -1995,7 +2006,8 @@ footer {
 
 .footer-bottom {
   padding: 32px 48px;
-  border-top: 1px solid rgba(255,255,255,0.06);
+  /* no hairline since 2026-10-13: the floor of clouds runs behind the bar, and the line cut straight across it */
+  border-top: 1px solid transparent;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -5045,7 +5057,7 @@ footer {
     padding: 24px 24px;
     justify-content: center;
     margin-top: 0;
-    border-top: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid transparent;   /* (no hairline over the floor of clouds, as on desktop, 2026-10-13) */
   }
 
   .footer-links {

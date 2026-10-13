@@ -26,7 +26,7 @@
        2.01s), so the gradient and the dust, drawn by the page, stood still while the beam and the pill, run by the
        compositor, went on, and then the field jumped. 5 returns in 6 with the two preloads, 0 in 6 without. style.css's
        @font-face still loads both faces as soon as the page lays out, and the headline waits for them (fonts.ready). -->
-  <link rel="stylesheet" href="style.css?v=350">
+  <link rel="stylesheet" href="style.css?v=351">
   <!-- INSTANT CASE STUDIES (2026-09-30, per user "do it"): while a work card is hovered (about 200ms, or pressed on
        touch), Chrome prerenders its case study in the background, so the click opens it with no load. Same-origin
        links on .project-card only, so the hidden external cards never qualify. Browsers without speculation rules
@@ -923,7 +923,7 @@
       cls.add('opening-' + (keys.indexOf('accept') !== -1 ? 'accept' : keys.indexOf('lightwrite') !== -1 ? 'lightwrite' : keys.indexOf('sweep') !== -1 ? 'sweep' : 'still'));
     })();
   </script>
-  <link rel="preload" href="dawn-sky.js?v=6" as="script">
+  <link rel="preload" href="dawn-sky.js?v=7" as="script">
   <link rel="canonical" href="https://www.chang-mou.com/">
   <script type="application/ld+json">
   {
@@ -1414,7 +1414,7 @@
       const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
         if (window.DawnSky) return ok(window.DawnSky);
         const s = document.createElement('script');
-        s.src = 'dawn-sky.js?v=6';
+        s.src = 'dawn-sky.js?v=7';
         s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
         s.onerror = no;
         document.head.appendChild(s);
@@ -1697,17 +1697,18 @@
     (() => {
       const end = document.querySelector('.page-end');
       if (!end || document.documentElement.classList.contains('look-gradient')) return;
-      // the page is one day (2026-10-11): the hero is the sunrise, the footer the night after it, lit by a moon out of frame
+      // the page is one day (2026-10-11): the hero is the sunrise, the footer the night after it, asymmetric since 2026-10-13
+      // (a row of clouds along the bottom, a moon behind the right one; ?look=corners keeps the two corner heaps); before that, lit by a moon out of frame
       // (per user "hero's vibe but the night version", then "I want the the feeling that we can see the moonlight but moon do
       // not have to be there"); ?look=dusk keeps the rose dusk, ?look=bluehour the real dawn clouds at blue hour,
       // ?look=anime the anime clouds; the embers read FOOT_SCENE
       const look = (/[?&]look=([^&#]*)/.exec(location.search) || [])[1] || '';
-      const scene = /anime/.test(look) ? 'hills' : /bluehour/.test(look) ? 'hillsSoft' : /dusk/.test(look) ? 'dusk' : 'night';
+      const scene = /anime/.test(look) ? 'hills' : /bluehour/.test(look) ? 'hillsSoft' : /dusk/.test(look) ? 'dusk' : /corners/.test(look) ? 'nightCorners' : 'night';
       window.FOOT_SCENE = scene;
       const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
         if (window.DawnSky) return ok(window.DawnSky);
         const s = document.createElement('script');
-        s.src = 'dawn-sky.js?v=6';
+        s.src = 'dawn-sky.js?v=7';
         s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
         s.onerror = no;
         document.head.appendChild(s);
@@ -1727,7 +1728,7 @@
       box.setAttribute('aria-hidden', 'true');
       box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(to bottom,'
         + 'rgb(9,10,14) 0%,rgb(9,15,31) 10%,rgb(8,25,67) 20%,rgb(6,35,100) 30%,rgb(7,41,113) 40%,rgb(9,46,118) 50%,'
-        + 'rgb(13,52,124) 60%,rgb(17,57,129) 70%,rgb(20,62,135) 80%,rgb(25,68,141) 88%,rgb(29,73,148) 94%,rgb(29,73,148) 100%)';
+        + 'rgb(13,52,124) 60%,rgb(18,58,130) 70%,rgb(38,78,147) 80%,rgb(48,88,156) 88%,rgb(40,79,154) 94%,rgb(40,75,147) 100%)';
       end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);     // over the glow, under the dust and the whale
       if (glow) glow.style.display = 'none';
       const restore = () => { box.remove(); if (glow) glow.style.display = ''; };
