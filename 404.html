@@ -7,7 +7,6 @@
   <meta name="description" content="This page doesn't exist. The work does.">
   <meta name="robots" content="noindex">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=8">
-  <link rel="preload" href="/fonts/NeueMontreal-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="/style.css?v=353">
   <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
@@ -17,11 +16,21 @@
     gtag('js', new Date());
     gtag('config', 'G-RRQ4XH93F3');
   </script>
+  <script>
+    // LOST IN THE FOG, LITERALLY (2026-10-13, per user "redesign the 404 page. Make it creative", then "do"): the hero's
+    // own sunrise (dawn-sky.js, scene sunrise) under a drifting fog bank that the cursor clears. The painting is the
+    // default; without WebGL the dawn gradient below comes back, still under the fog.
+    window.HERO_SCENE = 'sunrise';
+    document.documentElement.classList.add('look-sky');
+  </script>
+  <link rel="preload" href="/dawn-sky.js?v=8" as="script">
   <style>
-    /* 404-only: two pills side by side under the sub; .status-tag brings its
-       own 40px top margin and 1.35s entrance. Absolute asset paths ("/style.css",
-       "/index.html") on purpose — a 404 renders at arbitrary broken URLs, so
-       relative paths would 404 too. */
+    /* 404-only. Absolute asset paths ("/style.css", "/index.html") on purpose: a 404 renders at arbitrary broken URLs,
+       so relative paths would 404 too. No font preload here: on a page with motion, Chrome holds frames for a
+       preloaded font and the fog would stand still, then jump (CLAUDE.md's traps). */
+    /* the page is one screen: the scene fills it, the lockup in its middle */
+    .hero { min-height: 100vh; min-height: 100svh; box-sizing: border-box; overflow: hidden; }
+    /* two buttons side by side under the sub; .status-tag brings its own top margin and entrance */
     .notfound-tags {
       display: flex;
       justify-content: center;
@@ -33,10 +42,20 @@
     }
     /* plain-text headline (no per-glyph machinery on this page) */
     .hero h1 { position: relative; z-index: 2; }
-    /* DAWN, copied verbatim from index.html's hero override (2026-09-13).
-       style.css's .hero-orbs--g2 still carries the retired red/magenta/blue
-       ramp, so without this the 404 showed the old gradient. Keep the two
-       blocks in step if the home palette changes. */
+    /* the sub in full white here (0.82 elsewhere): over the fog it needs it to keep 4.5:1 */
+    .hero .hero-sub { color: #fff; }
+    .hero .hero-content { z-index: 3; }
+    /* the painting's box, as on Home, with Home's still stand-in until its first frame */
+    .hero-sky {
+      position: absolute; inset: 0; z-index: 0; pointer-events: none;
+      background: linear-gradient(to bottom, rgb(17, 53, 132) 0%, rgb(17, 53, 132) 15%, rgb(32, 72, 148) 30%, rgb(47, 87, 160) 40%,
+        rgb(43, 91, 162) 50%, rgb(59, 103, 166) 58%, rgb(64, 106, 166) 64%, rgb(105, 129, 170) 70%, rgb(180, 165, 160) 74%,
+        rgb(207, 157, 124) 78%, rgb(131, 126, 134) 81%, rgb(68, 77, 110) 88%, rgb(27, 33, 54) 92%, rgb(12, 13, 20) 96%, #090a0e 100%);
+    }
+    .look-sky .hero .hero-orbs--g2 { display: none; }
+    /* the fog: a canvas over the painting and under the type */
+    .hero .fog { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    /* the fallback without WebGL: DAWN, copied verbatim from index.html's hero override (2026-09-13) */
     .hero .hero-orbs--g2 {
       background:
         radial-gradient(ellipse 92% 52% at var(--g2-yellow-x) calc(var(--g2-yellow-y) + var(--g2-lift)), rgba(255, 214, 0, 0.90), transparent 62%),
@@ -49,21 +68,7 @@
   </style>
 </head>
 <body>
-  <!-- Nav -->
-  <nav>
-    <a href="/index.html" class="logo">Chang Mou</a>
-    <button class="hamburger" aria-label="Menu">
-      <span></span>
-      <span></span>
-    </button>
-    <div class="nav-links">
-      <a href="/index.html">Work</a>
-      <a href="/play.html">Play</a>
-      <a href="/about.html">About</a>
-      <a href="https://drive.google.com/file/d/1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ/view?usp=sharing" target="_blank">Resume</a>
-    </div>
-  </nav>
-
+  <!-- no header on the 404 (2026-10-13, per user "404 page do not need header"): the two buttons are its way out -->
   <!-- Hero -->
   <section class="hero">
     <div class="hero-orbs hero-orbs--g2"></div>
@@ -71,60 +76,204 @@
       <h1>Lost in the fog.</h1>
       <p class="hero-sub">This page doesn't exist. The work does.</p>
       <div class="notfound-tags">
-        <a class="status-tag" href="/index.html">Back to the work <span class="arrow">↗</span></a>
+        <!-- (the ↗ only marks links that leave the site, so "Back to the work" has none) -->
+        <a class="status-tag" href="/index.html">Back to the work</a>
         <a class="status-tag" href="mailto:changmou627627@gmail.com">Say hello <span class="arrow">↗</span></a>
       </div>
     </div>
   </section>
 
   <script>
-    // Same Lightfall + tilt gating as the home hero, minus the type machinery.
+    // THE SUNRISE UNDER THE FOG: the hero's painting (Home's loader and mount, with absolute paths), its horizon 40px
+    // under the buttons, so the sun comes up just below "Back to the work"
     const hero = document.querySelector('.hero');
-    const heroContent = document.querySelector('.hero-content');
-    const heroOrbs = hero.querySelector('.hero-orbs');
-    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const motionOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (finePointer && motionOK) {
-      const ORB_X = 180, ORB_Y = 26;
-      heroOrbs.style.left = '-12%';
-      heroOrbs.style.right = '-12%';
-      heroOrbs.style.transition = 'translate 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
-      let cx = 0, cy = 0, raf = null;
-      const apply = () => {
-        raf = null;
-        const rect = hero.getBoundingClientRect();
-        const nx = (cx - rect.left) / rect.width - 0.5;
-        const ny = (cy - rect.top) / rect.height - 0.5;
-        heroContent.style.transform = `perspective(1000px) rotateX(${ny * -3}deg) rotateY(${nx * 3}deg)`;
-        heroOrbs.style.translate = `${nx * ORB_X}px ${ny * ORB_Y}px`;
+    const tags = hero.querySelector('.notfound-tags');
+    let horizon = 0.62;
+    const measure = () => {
+      if (!tags || !hero.offsetHeight) return;
+      let y = 0;
+      for (let e = tags; e && e !== hero; e = e.offsetParent) y += e.offsetTop;
+      horizon = Math.min(0.9, (y + tags.offsetHeight + 40) / hero.offsetHeight);
+    };
+    measure();
+    window.heroSkyHorizon = () => horizon;
+    if ('ResizeObserver' in window) new ResizeObserver(measure).observe(hero);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+    (() => {
+      const box = document.createElement('div');
+      box.className = 'hero-sky';
+      box.setAttribute('aria-hidden', 'true');
+      hero.insertBefore(box, hero.firstChild);
+      const fail = () => { box.remove(); document.documentElement.classList.remove('look-sky'); };
+      const s = document.createElement('script');
+      s.src = '/dawn-sky.js?v=8';
+      s.onload = () => {
+        if (!window.DawnSky) return fail();
+        try { window.DawnSky.mount(box, { scene: 'sunrise', horizon: () => horizon, fade: 600, onFail: fail }); } catch (e) { fail(); }
       };
-      hero.addEventListener('mousemove', (e) => {
-        cx = e.clientX; cy = e.clientY;
-        if (!raf) raf = requestAnimationFrame(apply);
-      });
-      hero.addEventListener('mouseleave', () => {
-        if (raf) { cancelAnimationFrame(raf); raf = null; }
-        heroContent.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
-        heroOrbs.style.translate = '0px 0px';
-      });
-    }
+      s.onerror = fail;
+      document.head.appendChild(s);
+    })();
 
-    // Hamburger (standard pattern) — the overlay nav still works on a 404.
-    // phone menu (2026-09-24): aria-expanded, aria-controls, Escape closes and returns focus
-    const hamburger = document.querySelector('.hamburger'), navLinks = document.querySelector('.nav-links');
-    if (hamburger && navLinks) {
-      navLinks.id = navLinks.id || 'site-menu';
-      hamburger.setAttribute('aria-controls', navLinks.id);
-      hamburger.setAttribute('aria-expanded', 'false');
-      const setMenu = (open) => {
-        hamburger.classList.toggle('active', open);
-        navLinks.classList.toggle('open', open);
-        document.body.classList.toggle('menu-open', open);
-        hamburger.setAttribute('aria-expanded', String(open));
+    // THE FOG. A 2D canvas at half resolution (fog is soft): a body of fog, blue and dim behind the type and warmer and
+    // brighter toward the sun; denser wisps and thinner patches drifting across it at two speeds (two seamless noise
+    // tiles); the sun's glow through it. The page's one event is the cursor: it opens a soft clearing where it is, and
+    // the clearing closes behind it over about three seconds. Phones (no fine pointer) and reduced motion get the fog
+    // thinning around the sun on its own instead (reduced motion: one still frame, no drift).
+    (() => {
+      const cv = document.createElement('canvas');
+      cv.className = 'fog';
+      cv.setAttribute('aria-hidden', 'true');
+      hero.insertBefore(cv, hero.querySelector('.hero-content'));
+      const ctx = cv.getContext('2d');
+      if (!ctx) return;
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const lantern = fine && !reduce;
+      const Q = 0.5;                                    // backing px per CSS px
+
+      // a seamless value-noise tile (white, the noise in its alpha), 4 octaves on periodic grids
+      const tile = (N, seed, lo, hi) => {
+        const c = document.createElement('canvas'); c.width = c.height = N;
+        const g = c.getContext('2d'), img = g.createImageData(N, N), d = img.data;
+        let s = seed;
+        const rnd = () => (s = (s * 16807) % 2147483647) / 2147483647;
+        const octs = [[3, 0.5], [6, 0.27], [12, 0.15], [24, 0.08]].map(([p, a]) => ({ p, a, v: Array.from({ length: p * p }, rnd) }));
+        const sm = (t) => t * t * (3 - 2 * t);
+        for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+          let v = 0;
+          for (const o of octs) {
+            const fx = x / N * o.p, fy = y / N * o.p, x0 = Math.floor(fx), y0 = Math.floor(fy);
+            const tx = sm(fx - x0), ty = sm(fy - y0), x1 = (x0 + 1) % o.p, y1 = (y0 + 1) % o.p;
+            const a = o.v[y0 * o.p + x0], b = o.v[y0 * o.p + x1], c2 = o.v[y1 * o.p + x0], e = o.v[y1 * o.p + x1];
+            v += o.a * ((a + (b - a) * tx) * (1 - ty) + (c2 + (e - c2) * tx) * ty);
+          }
+          const k = Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+          const i = (y * N + x) * 4;
+          d[i] = d[i + 1] = d[i + 2] = 255; d[i + 3] = Math.round(255 * k * k * (3 - 2 * k));
+        }
+        g.putImageData(img, 0, 0);
+        return c;
       };
-      hamburger.addEventListener('click', () => setMenu(!navLinks.classList.contains('open')));
-    }
+      const wisps = ctx.createPattern(tile(160, 1234567, 0.42, 0.78), 'repeat');
+      const thins = ctx.createPattern(tile(160, 7654321, 0.45, 0.80), 'repeat');
+
+      let W = 0, H = 0, sunX = 0, sunY = 0, R = 200;
+      const size = () => {
+        const r = hero.getBoundingClientRect();
+        W = r.width; H = r.height;
+        cv.width = Math.max(1, Math.round(W * Q)); cv.height = Math.max(1, Math.round(H * Q));
+        R = Math.min(260, Math.max(150, 0.16 * Math.min(W, H) + 90));
+      };
+      // where the painting's sun sits (dawn-sky.js: the scene's sun at design x 973, on the horizon, in a frame 800
+      // design px tall centred on design x cx); read each frame, since the horizon is measured again as fonts land
+      const sunAt = () => {
+        const cx = 720 + 220 * Math.min(1, Math.max(0, 1.6 - W / H));
+        sunX = (973 - cx) * H / 800 + W / 2;
+        sunY = horizon * H + 7 * H / 800;
+      };
+      size();
+      if ('ResizeObserver' in window) new ResizeObserver(() => { size(); if (!running) draw(performance.now()); }).observe(hero);
+
+      // the lantern: where the cursor is (held open while it rests there) and a trail that closes behind it
+      const CLOSE = 3000;
+      const trail = [];
+      const cur = { x: 0, y: 0, on: false, s: 0 };
+      if (lantern) {
+        window.addEventListener('pointermove', (e) => {
+          const r = hero.getBoundingClientRect();
+          const x = e.clientX - r.left, y = e.clientY - r.top, now = performance.now();
+          cur.x = x; cur.y = y; cur.on = true;
+          const last = trail[trail.length - 1];
+          if (!last || Math.hypot(x - last.x, y - last.y) > R * 0.22) trail.push({ x, y, t: now });
+          if (trail.length > 48) trail.shift();
+        }, { passive: true });
+        document.documentElement.addEventListener('pointerleave', () => { cur.on = false; });
+      }
+
+      const t0 = performance.now();
+      let last = t0;
+      const clear = (x, y, r, a) => {
+        const g = ctx.createRadialGradient(x * Q, y * Q, 0, x * Q, y * Q, r * Q);
+        g.addColorStop(0, `rgba(0,0,0,${a})`);
+        g.addColorStop(0.45, `rgba(0,0,0,${a * 0.7})`);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.fillRect((x - r) * Q, (y - r) * Q, 2 * r * Q, 2 * r * Q);
+      };
+      const draw = (now) => {
+        const t = reduce ? 9000 : now - t0;
+        const dt = Math.min(100, now - last); last = now;
+        sunAt();
+        const w = cv.width, h = cv.height, hz = horizon * h;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.globalAlpha = 1;
+        ctx.clearRect(0, 0, w, h);
+        // the body: dim blue behind the type (the sub keeps 4.5:1), lit only from the buttons down, a luminous lavender
+        // bank where the sun comes up, then low fog over the land, deepening toward the bottom edge
+        const body = ctx.createLinearGradient(0, 0, 0, h);
+        const at = (y) => Math.min(0.995, Math.max(0.005, y / h));
+        body.addColorStop(0, 'rgba(50, 60, 120, 0.90)');
+        body.addColorStop(at(hz - 0.32 * h), 'rgba(68, 80, 142, 0.88)');
+        body.addColorStop(at(hz - 0.09 * h), 'rgba(76, 86, 148, 0.88)');
+        body.addColorStop(at(hz), 'rgba(166, 154, 182, 0.88)');
+        body.addColorStop(at(hz + 0.05 * h), 'rgba(150, 146, 186, 0.90)');
+        body.addColorStop(at(hz + 0.22 * h), 'rgba(96, 102, 156, 0.92)');
+        body.addColorStop(1, 'rgba(46, 52, 96, 0.94)');
+        ctx.fillStyle = body;
+        ctx.fillRect(0, 0, w, h);
+        // the sun behind the fog: a warm glow, wide and low
+        const sx = sunX * Q, sy = sunY * Q, sr = Math.max(W, H) * 0.42 * Q;
+        const glow = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr);
+        glow.addColorStop(0, 'rgba(255, 214, 160, 0.42)');
+        glow.addColorStop(0.18, 'rgba(250, 196, 160, 0.22)');
+        glow.addColorStop(0.5, 'rgba(200, 170, 190, 0.07)');
+        glow.addColorStop(1, 'rgba(200, 170, 190, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, w, h);
+        // denser wisps, drifting right; thinner patches, drifting left (both very slow)
+        const sc = Math.max(W, H) / 160 * 0.55 * Q;
+        ctx.save();
+        ctx.globalAlpha = 0.24;
+        wisps.setTransform(new DOMMatrix().translateSelf((t * 0.010 * Q) % (160 * sc), Math.sin(t / 9000) * 6 * Q).scaleSelf(sc, sc * 0.55));
+        ctx.fillStyle = wisps;
+        ctx.filter = 'none';
+        ctx.globalCompositeOperation = 'source-atop';    // only where there is fog, tinted by what is under it
+        ctx.fillRect(0, 0, w, h);
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.globalAlpha = 0.20;
+        thins.setTransform(new DOMMatrix().translateSelf(-(t * 0.006 * Q) % (160 * sc * 1.3), 0).scaleSelf(sc * 1.3, sc * 0.7));
+        ctx.fillStyle = thins;
+        ctx.fillRect(0, 0, w, h);
+        ctx.restore();
+        ctx.globalCompositeOperation = 'destination-out';
+        if (lantern) {
+          // the clearing: the cursor's own (eased in, held while it rests) and the trail closing behind it
+          cur.s += ((cur.on ? 1 : 0) - cur.s) * Math.min(1, dt / (cur.on ? 220 : CLOSE / 2));
+          while (trail.length && now - trail[0].t > CLOSE) trail.shift();
+          for (const p of trail) {
+            const k = 1 - (now - p.t) / CLOSE;
+            clear(p.x, p.y, R, 0.55 * k * k * (3 - 2 * k));
+          }
+          if (cur.s > 0.01) clear(cur.x, cur.y, R * 1.1, 0.92 * cur.s);
+        } else {
+          // no cursor to clear it: the fog thins around the sun on its own, over about four seconds
+          const k = Math.min(1, t / 4000), e = 1 - Math.pow(1 - k, 3);
+          clear(sunX, sunY - 0.05 * H, Math.max(W, H) * (0.18 + 0.22 * e), 0.78 * e);
+        }
+      };
+      let running = false;
+      const loop = (now) => {
+        if (!running) return;
+        draw(now);
+        requestAnimationFrame(loop);
+      };
+      const start = () => { if (running || reduce) return; running = true; requestAnimationFrame(loop); };
+      document.addEventListener('visibilitychange', () => { if (document.hidden) running = false; else start(); });
+      draw(performance.now());
+      start();
+    })();
+
   </script>
 </body>
 </html>
