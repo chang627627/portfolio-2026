@@ -37,23 +37,12 @@
   <!-- the card grid must be parsed before the first frame, so a return from a case study can find its card -->
   <link rel="expect" href="#work" blocking="render">
   <script>
-    // A LINK TO A PLACE ON HOME OPENS THERE (2026-10-13): "← Back" (index.html#<study>) and the other pages' Work
-    // (index.html#work) put the page at their target before its first frame, so it never shows the hero and then
-    // scrolls (the site's smooth scrolling would animate it), and the return morph below finds its card on screen.
-    // Registered first, so it runs before the morph measures. The back and forward buttons keep their own place.
-    addEventListener('pagereveal', function () {
-      if (window.navigation && navigation.activation && /^(traverse|reload)$/.test(navigation.activation.navigationType)) return;
-      var to = location.hash && document.getElementById(location.hash.slice(1));
-      if (!to) return;
-      // measured by offsets, not the box on screen: row one is mid-rise as the page opens (card-arrive), and a box that
-      // is still moving put the card 28px too high once it settled
-      var y = 0;
-      for (var e = to; e; e = e.offsetParent) y += e.offsetTop;
-      scrollTo({ top: y - (parseFloat(getComputedStyle(to).scrollMarginTop) || 0), behavior: 'instant' });
-      // then the anchor leaves the address: while the page loads Chrome keeps snapping back to it, measuring the rising
-      // card, and on phones it ended 28px high (and the address stays clean to share)
-      history.replaceState(history.state, '', location.pathname + location.search);
-    });
+    // HOME ALWAYS OPENS ON THE HERO (2026-10-14, per user "everytime no matter where to return to the home page. just go
+    // to the hero section not the thumbnail. I want them to see my beautiful hero over and over again"): every link back
+    // is plain index.html (the card landing of 2026-10-13 is gone), and the browser's back and forward buttons land at
+    // the top too, whether the page is rebuilt (no scroll restoration) or comes back from the back-forward cache
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    addEventListener('pageshow', function (e) { if (e.persisted) scrollTo({ top: 0, behavior: 'instant' }); });
   </script>
   <script>
     // THE CARD GROWS INTO THE COVER (2026-10-01, per user "i want the open study case in the home page have similar smooth
@@ -603,12 +592,6 @@
        row to two": the calmer sub, "...as more of the work gets automated...", ran to three lines at 520px with
        "site included." alone; it fits two at 540, so 580 leaves room for another browser's metrics: 556 / 506px) */
     @media (min-width: 769px) { .hero .hero-sub { max-width: 580px; } }
-    /* BACK LANDS ON THE CARD (2026-10-13, per user "do 2,3,5", after khushiwork.framer.website, which keeps Work (#work)
-       apart from home): each case study's "← Back" opens Home at its card (index.html#<study>), the other pages' Work at
-       #work; both land clear of the 52px header */
-    #work .project-img[id] { scroll-margin-top: 96px; }   /* the id sits on the plate, not the card's link: a link that is
-       a page's target takes focus, and its white focus ring showed round the card (per user "why there is a white frame") */
-    #work { scroll-margin-top: -52px; }   /* (#work opens with about 148px of its own padding: "Show me" lands 96px down) */
     @media (prefers-reduced-motion: no-preference) {
       .hero-sky { animation: sky-arrive 1.2s var(--ease-out) both; }
       @keyframes sky-arrive { from { opacity: 0; } }
@@ -1509,7 +1492,7 @@
     <div class="project-grid">
 
       <a href="homewise.html" class="project-card" style="--plate-light: #E2E8DC; --plate-deep: #C6D2BB; --plate-base: #D4DDCB;">
-        <div id="homewise" class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" srcset="images/homewise-card-960.jpg 960w, images/homewise-card.jpg 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/homewise-card.jpg" srcset="images/homewise-card-960.jpg 960w, images/homewise-card.jpg 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Homewise" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/homewise-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Homewise</h3><span class="project-year">2026</span></div>
@@ -1520,7 +1503,7 @@
       </a>
 
       <a href="pollen.html" class="project-card" style="--plate-light: #D6E6F5; --plate-deep: #C8D8EC; --plate-base: #DCE8F3;">
-        <div id="pollen" class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
           <div class="card-awards"><img src="images/if-award.png" alt="iF Design Award"><img src="images/reddot-award.png" alt="Red Dot Award"><img src="images/ny-product-design-silver-160.png" alt="NY Product Design Award Silver 2025"><img src="images/european-product-design-award.png" alt="European Product Design Award"></div>
           <img src="images/pollennav-card.webp" srcset="images/pollennav-card-960.webp 960w, images/pollennav-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="PollenNav" style="width: 65%; object-fit: contain; display: block;">
         </div>
@@ -1534,7 +1517,7 @@
       </a>
 
       <a href="countersign.html" class="project-card" style="--plate-light: #E9F3F4; --plate-deep: #C9DEE1; --plate-base: #DAE9EB;">
-        <div id="countersign" class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop-gate.webp" alt="" aria-hidden="true" decoding="async"></div>
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center;"><img src="images/credit-agent-card.png?v=5" srcset="images/credit-agent-card-960.png 960w, images/credit-agent-card.png?v=5 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Countersign credit analysis agent" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop" data-loop="images/countersign-loop-gate.webp" alt="" aria-hidden="true" decoding="async"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>Countersign</h3><span class="project-year">2026</span></div>
@@ -1545,7 +1528,7 @@
       </a>
 
       <a href="storybloom.html" class="project-card" style="--plate-light: #EEE3F0;">
-        <div id="storybloom" class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
+        <div class="project-img project-img--cover" style="background-color: #EEE3F0; display: flex; align-items: center; justify-content: center; position: relative;">
           <div class="card-awards"><img src="images/reddot-winner-2026.svg" alt="Red Dot Award Winner 2026"><img src="images/ny-product-design-silver-2026-160.png" alt="NY Product Design Award Silver 2026"></div>
           <!-- ONE PHONE, THE LIVE APP (2026-10-13, per user "只弄一个手机"): the still is the live app's first screen
                (storybloom.tech/app at 1920x1080, its own phone on its own wash, the page's label and reset button
@@ -1566,7 +1549,7 @@
       </a>
 
       <a href="coffee.html" class="project-card" style="--plate-light: #DFE0FF; --plate-deep: #C3C4F2; --plate-base: #D0D1FD;">
-        <div id="coffee" class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
+        <div class="project-img project-img--lit" style="display: flex; align-items: center; justify-content: center; position: relative;">
           <!-- The Product Hunt #1 badge (Litespace's own 2023 launch, not this feature's) was removed 2026-10-07 per user
                ("remove the badge of coffee chat and nova"); images/producthunt-1-litespace.svg stays on disk. -->
           <img src="images/coffeechat-card.webp" srcset="images/coffeechat-card-960.webp 960w, images/coffeechat-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="Coffee Chat" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"></div>
@@ -1580,7 +1563,7 @@
       </a>
 
       <a href="nova.html" class="project-card" style="--plate-light: #FFFFFF;">
-        <div id="nova" class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative;">
+        <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center; position: relative;">
           <!-- The CCA and UNICEF partner credits in the top-left slot were removed 2026-10-07 per user ("remove the badge
                of coffee chat and nova"); the case study keeps its partner logos. -->
           <img class="card-still--swap" src="images/nova-card.webp" srcset="images/nova-card-960.webp 960w, images/nova-card.webp 1920w" sizes="(max-width: 768px) calc(65vw - 31px), 900px" alt="UNICEF NOVA cover" loading="lazy" decoding="async" style="width: 65%; object-fit: contain; display: block;"><img class="card-loop card-loop--cover" data-loop="images/nova-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
