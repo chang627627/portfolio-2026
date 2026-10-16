@@ -100,7 +100,7 @@ Rejected or settled by Chang, most more than once. The reasons are in the notes.
 - Tool credits ("Built with Claude Code") anywhere on the site. Bringing Chang's AI back unless he asks.
 - Returning to Home never lands on a card or the work: every link back and the browser's back button open the hero (2026-10-14, superseding the card landing built the day before).
 - View transitions: no rise of the root. The card-to-cover morph is part of the site (2026-10-01: the clicked card's plate grows into the cover; `case-cover`); other navigations keep the staged pure-opacity crossfade (250ms out, 420ms in from 100ms), and the case study's title, intro and details settle in after it (`case-arrive`).
-- Case studies: TL;DR or summary layers, numbered section labels, stated-principles lists, "show the win first" reorders. Work cards never link to GitHub repos. No overlays on work thumbnails other than award badges.
+- Case studies: TL;DR or summary layers, numbered section labels, stated-principles lists, "show the win first" reorders. Copy cut to about 500 words a study (2026-10-15, "too short"); the length he asked for sits halfway between that and the copy before it (case-studies.md). Work cards never link to GitHub repos. No overlays on work thumbnails other than award badges.
 
 **Home hero**
 - The hero stays a centred stack: the sub moved to the bottom-left edge and the pill to the bottom-right (headline, sizes and height unchanged) was built and reverted on sight (2026-10-01).
