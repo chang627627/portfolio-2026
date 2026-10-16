@@ -22,6 +22,7 @@ Contact: changmou627627@gmail.com · LinkedIn: https://www.linkedin.com/in/chang
 - [Litespace Coffee Chat](https://www.chang-mou.com/coffee.html): AI powered coffee chat for hybrid teams, shipped at Litespace in 2023; 63% of users opted in and 200+ chats were generated in the first month. The case study ends with a 2026 rebuild of the flow as a conversational agent (Luna), embedded as a working prototype
 - [UNICEF NOVA](https://www.chang-mou.com/nova.html): AR navigation for children that balances independence and parental reassurance; usability tested with 20+ parents and kids. CCA MDes capstone with the UNICEF Innovation Node
 - [CoPatible](https://www.chang-mou.com/copatible.html): AI powered social app for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment. A solo concept: Chang designed it and built the React prototype with Claude Code. The matching signals are simulated in the prototype. Live prototype at https://copatible-2026.vercel.app
+- [New Craft Society](https://www.newcraftsociety.com/): a home for design process, not just finished pieces. Shipped and live; Chang is a designer on it and one of the product engineers who built it. It has no case study page; the home card links to the site
 
 ## Frequently asked questions
 

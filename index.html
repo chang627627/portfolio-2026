@@ -1615,7 +1615,7 @@
           <div class="project-info-left">
             <div class="project-info-top"><h3>New Craft Society</h3><span class="project-year">2026</span></div>
             <p>A home for design process, not just finished pieces</p>
-            <div class="card-meta"><span class="card-tag card-tag--type">Freelance</span><span class="card-tag">Design Community</span><span class="card-tag">Web App</span><span class="card-tag">Building</span></div>
+            <div class="card-meta"><span class="card-tag card-tag--type">Freelance</span><span class="card-tag">Design Community</span><span class="card-tag">Web App</span><span class="card-tag">Shipped</span></div>
           </div>
         </div>
       </a>
@@ -2857,7 +2857,7 @@
       coffee: 'coffee chat litespace hybrid remote teams team pairing pairings matching social b2b saas enterprise dashboard web shipped launched ai professional 2023',
       nova: 'unicef nova ar augmented reality glasses wearable wearables hardware kids kid children child family parents safety navigation academic speculative 2025',
       copatible: 'copatible co companion ai social friends friendship connection people meet meetup circle circles voice check in transition new city moved mobile app ios phone prototype code personal 2026',
-      ncs: 'new craft society ncs design process designers community rough work case study writes itself web app building freelance 2026'
+      ncs: 'new craft society ncs design process designers community rough work case study writes itself web app shipped launched live freelance 2026'
     };
     // every answer is a fact already on the home page or in the case study it names, and opens with its chip's own
     // words (per user, so the answer reads as the chip's); [id] renders the project's name
@@ -2866,10 +2866,10 @@
         text: '' },   // All shows every row and no answer
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
         text: 'Two AI agents, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
-      { id: 'awards', label: 'Award winners', ids: ['pollennav', 'storybloom'], alias: ['award', 'awards', 'award winner', 'award winners', 'winner', 'winners', 'red dot', 'reddot'],
-        text: 'Two award winners, both mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
-      { id: 'shipped', label: 'Shipped', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
-        text: 'Two shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
+      { id: 'awards', label: 'Awards', ids: ['pollennav', 'storybloom'], alias: ['award', 'awards', 'award winner', 'award winners', 'winner', 'winners', 'red dot', 'reddot'],
+        text: 'Awards for two mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
+      { id: 'shipped', label: 'Shipped', ids: ['homewise', 'coffee', 'ncs'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
+        text: 'Three shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month. And New Craft Society is live at newcraftsociety.com.' },
       { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee', 'ncs'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
         text: 'Four on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; [coffee], a feature of the Litespace platform for hybrid teams; and New Craft Society, a home for design process, not just finished pieces.' },
       { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova', 'copatible'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
@@ -2983,7 +2983,7 @@
     var resumeLink = document.querySelector('.nav-links a[href*="drive.google.com"]');
     var PAGES = {
       play: { href: 'play.html', label: 'Go to the Play page', says: /\b(?:the )?Play page\b/g,
-        asks: /\b(play|playground|experiments?|experimental|side (?:projects?|work)|hobby projects?|fun projects?|art|artwork|illustrations?|midjourney|gpt image|image generation|3d|animation|animated|films?|videos?|motion|renders?|unity|vr|virtual reality|new craft society)\b/i },
+        asks: /\b(play|playground|experiments?|experimental|side (?:projects?|work)|hobby projects?|fun projects?|art|artwork|illustrations?|midjourney|gpt image|image generation|3d|animation|animated|films?|videos?|motion|renders?|unity|vr|virtual reality)\b/i },
       about: { href: 'about.html', label: 'Go to the About page', says: /\b(?:the )?About page\b/g,
         asks: /\b(about (?:you|chang)|who are you|who is chang|background|bio|biography|experience|work history|career|jobs?|employers?|education|school|degree|masters?|university|college|studied|hobby|hobbies|outside (?:of )?work|free time|books?|reading|testimonials?|references?|recommendations?|colleagues|personality)\b/i },
       resume: { href: resumeLink ? resumeLink.getAttribute('href') : '', label: 'Open my resume', ext: true, says: /\b(?:Chang['’]s|my) resume\b/gi,
