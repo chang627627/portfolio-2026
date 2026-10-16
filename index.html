@@ -1576,6 +1576,23 @@
         </div>
       </a>
 
+      <a href="copatible.html" class="project-card" style="--plate-light: #E7E5E1;">
+        <div class="project-img project-img--cover" style="background-color: #E7E5E1; display: flex; align-items: center; justify-content: center; position: relative;">
+          <!-- THE CASE STUDY'S COVER IS THE CARD (2026-10-16, per user "we can use the cover image as thumbnail at the home
+               page so far", then "add it to the home page"): three real phones of the live prototype on its own card stock,
+               full bleed like StoryBloom's; the same composition as images/copatible-cover.jpg, lossless WebP from the 2x
+               captures. -->
+          <img src="images/copatible-card.webp" srcset="images/copatible-card-960.webp 960w, images/copatible-card-1280.webp 1280w, images/copatible-card.webp 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="CoPatible" width="1920" height="1080" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+        </div>
+        <div class="project-info">
+          <div class="project-info-left">
+            <div class="project-info-top"><h3>CoPatible</h3><span class="project-year">2026</span></div>
+            <p>AI powered social app for people in a life transition</p>
+            <div class="card-meta"><span class="card-tag card-tag--type">Personal</span><span class="card-tag">Social</span><span class="card-tag">Mobile App</span><span class="card-tag">AI Companion</span></div>
+          </div>
+        </div>
+      </a>
+
       <a href="https://www.mercor.com/mission/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #FFFFFF; display: none;">
         <div class="project-img" style="background: #FFFFFF; display: flex; align-items: center; justify-content: center;"><img src="images/mercor-card.png" alt="Mercor" loading="lazy" decoding="async" style="width: 55%; object-fit: contain; display: block;"></div>
         <div class="project-info">
@@ -2820,12 +2837,12 @@
     var phone = matchMedia('(max-width: 768px)');
     if (phone.matches) return;   // desktop only: phones keep the plain grid
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var ID = { 'homewise.html': 'homewise', 'pollen.html': 'pollennav', 'countersign.html': 'countersign', 'storybloom.html': 'storybloom', 'coffee.html': 'coffee', 'nova.html': 'nova' };
+    var ID = { 'homewise.html': 'homewise', 'pollen.html': 'pollennav', 'countersign.html': 'countersign', 'storybloom.html': 'storybloom', 'coffee.html': 'coffee', 'nova.html': 'nova', 'copatible.html': 'copatible' };
     var cards = [].slice.call(document.querySelectorAll('#work .project-card')).filter(function (c) { return ID[c.getAttribute('href')] && getComputedStyle(c).display !== 'none'; });
     if (!cards.length) return;
     var byId = {};
     cards.forEach(function (c) { byId[ID[c.getAttribute('href')]] = c; });
-    var NAME = { homewise: 'Homewise', pollennav: 'PollenNav', countersign: 'Countersign', storybloom: 'StoryBloom', coffee: 'Coffee Chat', nova: 'NOVA' };
+    var NAME = { homewise: 'Homewise', pollennav: 'PollenNav', countersign: 'Countersign', storybloom: 'StoryBloom', coffee: 'Coffee Chat', nova: 'NOVA', copatible: 'CoPatible' };
     // words each project answers to, for questions typed in by hand
     var KW = {
       homewise: 'ai agent agents agentic approval human loop hitl home homes homeowner homeowners repair repairs contractor contractors quote quotes bids scope dashboard web saas shipped code prototype professional workspace 2026',
@@ -2833,12 +2850,13 @@
       countersign: 'ai agent agents agentic approval gate human loop hitl countersign credit fintech finance financial lending bank deal deals covenant covenants underwriting dashboard web code personal 2026',
       storybloom: 'story stories bedtime sleep kids kid children child family parents wellness mobile app ios phone ai generative award awards winner red dot reddot personal 2026',
       coffee: 'coffee chat litespace hybrid remote teams team pairing pairings matching social b2b saas enterprise dashboard web shipped launched ai professional 2023',
-      nova: 'unicef nova ar augmented reality glasses wearable wearables hardware kids kid children child family parents safety navigation academic speculative 2025'
+      nova: 'unicef nova ar augmented reality glasses wearable wearables hardware kids kid children child family parents safety navigation academic speculative 2025',
+      copatible: 'copatible co companion ai social friends friendship connection people meet meetup circle circles voice check in transition new city moved mobile app ios phone prototype code personal 2026'
     };
     // every answer is a fact already on the home page or in the case study it names, and opens with its chip's own
     // words (per user, so the answer reads as the chip's); [id] renders the project's name
     var Q = [
-      { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
+      { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova', 'copatible'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
         text: '' },   // All shows every row and no answer
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
         text: 'Two AI agents, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
@@ -2848,8 +2866,8 @@
         text: 'Two shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
       { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
         text: 'Three on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
-      { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
-        text: 'Three across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, and [nova] for AR navigation that keeps children independent and parents reassured.' }
+      { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova', 'copatible'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
+        text: 'Four across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, [nova] for AR navigation that keeps children independent and parents reassured, and [copatible], a social app that turns a voice check-in into a small circle of people.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
     var bar = document.createElement('div');
     bar.className = 'ask-bar';
@@ -3025,7 +3043,7 @@
     // the page falls back to matching the question's words against each project's tags.
     var history = [];
     var NAMES = /\b(Homewise|PollenNav|Countersign|StoryBloom|(?:Litespace )?Coffee Chat|NOVA)\b/g;
-    var NAME_ID = { Homewise: 'homewise', PollenNav: 'pollennav', Countersign: 'countersign', StoryBloom: 'storybloom', 'Coffee Chat': 'coffee', 'Litespace Coffee Chat': 'coffee', NOVA: 'nova' };
+    var NAME_ID = { Homewise: 'homewise', PollenNav: 'pollennav', Countersign: 'countersign', StoryBloom: 'storybloom', 'Coffee Chat': 'coffee', 'Litespace Coffee Chat': 'coffee', NOVA: 'nova', CoPatible: 'copatible' };
     var escHtml = function (t) { return t.replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
     function withinLimit() { // shared with the chat widget's own daily count
       try {

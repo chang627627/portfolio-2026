@@ -31,7 +31,7 @@
     addEventListener('pagereveal', function (e) {
       if (!e.viewTransition || !window.navigation || !navigation.activation || !navigation.activation.from) return;
       var from = new URL(navigation.activation.from.url).pathname.replace(/\.html$/, '').replace(/^\/+/, '');
-      if (!/^(|index|homewise|pollen|countersign|storybloom|coffee|nova)$/.test(from)) return;
+      if (!/^(|index|homewise|pollen|countersign|storybloom|coffee|nova|copatible)$/.test(from)) return;
       var html = document.documentElement;
       html.classList.add('vt-case');
       e.viewTransition.finished.finally(function () { html.classList.remove('vt-case'); });

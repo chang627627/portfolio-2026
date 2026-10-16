@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoPatible — Chang Mou</title>
+  <meta name="description" content="A solo concept for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://www.chang-mou.com/copatible.html">
+  <meta property="og:title" content="CoPatible — Chang Mou">
+  <meta property="og:description" content="A solo concept for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment.">
+  <meta property="og:image" content="https://www.chang-mou.com/images/copatible-og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="CoPatible — Chang Mou">
+  <meta name="twitter:description" content="A solo concept for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment.">
+  <meta name="twitter:image" content="https://www.chang-mou.com/images/copatible-og.jpg">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg?v=8">
+  <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+  <link href="https://api.fontshare.com/v2/css?f[]=neue-montreal@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=353">
+  <script>
+    // Opened from a prerender (the home cards' speculation rules): hold the cover's arrival until the page is shown
+    if (document.prerendering) {
+      document.documentElement.classList.add('is-prerendering');
+      document.addEventListener('prerenderingchange', function () { document.documentElement.classList.remove('is-prerendering'); }, { once: true });
+    }
+    // THE CARD GROWS INTO THE COVER (2026-10-01): arriving from Home, whose clicked card shares this cover's name, or from
+    // another case study, the page comes up at once under the morph instead of the staged crossfade (html.vt-case, style.css)
+    addEventListener('pagereveal', function (e) {
+      if (!e.viewTransition || !window.navigation || !navigation.activation || !navigation.activation.from) return;
+      var from = new URL(navigation.activation.from.url).pathname.replace(/\.html$/, '').replace(/^\/+/, '');
+      if (!/^(|index|homewise|pollen|countersign|storybloom|coffee|nova|copatible)$/.test(from)) return;
+      var html = document.documentElement;
+      html.classList.add('vt-case');
+      e.viewTransition.finished.finally(function () { html.classList.remove('vt-case'); });
+    });
+  </script>
+  <style>
+    /* The ten plates open in the shared lightbox (2026-09-09). */
+    img.project-img-full { cursor: zoom-in; }
+    /* THE LIVE PROTOTYPE AT STORYBLOOM'S SIZE, WITH A RESTART (2026-10-16, per user "the last interactive prototype has
+       no refresh button also can you make it the same size like storybloom did"). The app draws a fixed 427x880 phone,
+       so a plain 640px frame would cut it off: the app runs in a 912px tall frame, its natural height, scaled by
+       640/912 into StoryBloom's 640px box, and clicks map through the scale. CoPatible has no reset of its own, so the
+       restart is Coffee Chat's (style.css .agent-restart), wired by the embed script below. */
+    .agent-embed.cp-live { display: block; height: 640px; padding: 0; overflow: hidden; background: #E7E5E1; }
+    .agent-embed.cp-live iframe { position: absolute; left: 0; top: 0; width: calc(100% / 0.70175); max-width: none; height: 912px; border-radius: 0; background: #E7E5E1; transform: scale(0.70175); transform-origin: 0 0; }
+  </style>
+  <link rel="canonical" href="https://www.chang-mou.com/copatible.html">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": "CoPatible",
+    "genre": "Design case study",
+    "url": "https://www.chang-mou.com/copatible.html",
+    "description": "A solo concept for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment.",
+    "author": {
+      "@type": "Person",
+      "name": "Chang Mou",
+      "url": "https://www.chang-mou.com/"
+    }
+  }
+  </script>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RRQ4XH93F3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RRQ4XH93F3');
+  </script>
+</head>
+<body>
+
+  <!-- Nav -->
+  <nav>
+    <a href="index.html" class="logo logo--back">← Back</a>
+    <button class="hamburger" aria-label="Menu">
+      <span></span>
+      <span></span>
+    </button>
+    <div class="nav-links">
+      <a href="index.html" class="nav-active">Work</a>
+      <a href="play.html">Play</a>
+      <a href="about.html">About</a>
+      <a href="https://drive.google.com/file/d/1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ/view?usp=sharing" target="_blank">Resume</a>
+    </div>
+  </nav>
+
+  <!-- Cover (top, content width) -->
+  <img width="1920" height="1080" src="images/copatible-cover.jpg" alt="CoPatible: Co's follow-up with the five signal tiles, a circle with Co's note, and Home with Co's memory card" class="case-cover" style="--plate-light: #E7E5E1;">
+  <!-- Project Hero -->
+  <section class="project-hero">
+    <h1>CoPatible</h1>
+    <p class="project-hero-sub">AI powered social app for people in a life transition. Co, an AI companion, turns a short voice check-in into a small circle of people in the same moment.</p>
+  </section>
+
+  <!-- Side Navigation -->
+  <nav class="side-nav">
+    <a href="#problem" class="side-nav-link">Problem</a>
+    <a href="#insight" class="side-nav-link">Insight</a>
+    <a href="#checkin" class="side-nav-link">The check-in</a>
+    <a href="#design-language" class="side-nav-link">Design language</a>
+    <a href="#left-out" class="side-nav-link">What I left out</a>
+    <a href="#final-design" class="side-nav-link">Final Design</a>
+    <a href="#reflection" class="side-nav-link">Reflection</a>
+    <a href="#live" class="side-nav-link">Try it live</a>
+  </nav>
+
+  <!-- Project Content -->
+  <section class="project-content">
+    <div class="project-details">
+      <div class="project-detail-item">
+        <h3>Project Type</h3>
+        <p>Personal</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Timeline</h3>
+        <p>Oct 2026</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Team</h3>
+        <p>Solo, design and build</p>
+      </div>
+      <div class="project-detail-item">
+        <h3>Tools</h3>
+        <p>React + Vite<br>Claude Code</p>
+      </div>
+    </div>
+
+    <!-- What I Did -->
+    <div class="project-section">
+      <h2>What I did</h2>
+      <ul class="project-list">
+        <li>Designed the loop from a voice check-in to a circle and back.</li>
+        <li>Defined Co's five signals and the rule that she asks only for what's missing.</li>
+        <li>Built the prototype in React with Claude Code.</li>
+      </ul>
+    </div>
+
+    <!-- Problem -->
+    <div id="problem" class="project-section">
+      <p class="section-label">Problem</p>
+      <h2>New city, no one to call</h2>
+      <p>A move, a new job, a fresh start. CoPatible is for people in the middle of one: fine on their own, still short on friends nearby. Profiles and event lists never ask how you feel right now.</p>
+    </div>
+
+    <!-- Insight -->
+    <div id="insight" class="project-section">
+      <p class="section-label">Insight</p>
+      <h2>Match the moment first</h2>
+      <p>The useful match isn't only someone with your hobbies. It's someone who wants the same kind of evening. So you say how you feel, and Co answers with a small circle and a real plan.</p>
+    </div>
+
+    <!-- The check-in -->
+    <div id="checkin" class="project-section">
+      <p class="section-label">The check-in</p>
+      <h2>Say it out loud, once</h2>
+      <p>Voice comes first, with a photo as the fallback. Co listens for five signals, mood, energy, activity, social and timing, each a two letter tile: solid is heard, outline is asking, dashed is missing.</p>
+      <p>Co asks only about what's missing, two questions at most. In the prototype the signals are simulated: the transcript is scripted, and each signal goes missing about a third of the time.</p>
+    </div>
+
+    <!-- Design language -->
+    <div id="design-language" class="project-section">
+      <p class="section-label">Design language</p>
+      <h2>Calm, set in print</h2>
+      <p>A calm broadsheet: Newsreader and IBM Plex Mono on newsprint, ruled lines instead of rounded cards, and no shadows, glows, blur or gradients.</p>
+      <p>Color works like card stock, so it carries meaning. Canary is Co, each kind of circle has its own stock, and a pink highlight marks the key phrase.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="900" src="images/copatible-design-language.jpg" alt="The Broadsheet design language: the wordmark, Newsreader and IBM Plex Mono, the card-stock palette, the five signal tiles in their three states, and the ticket stubs" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- What I left out -->
+    <div id="left-out" class="project-section">
+      <p class="section-label">What I left out</p>
+      <h2>Less to fill in, nothing to perform</h2>
+    </div>
+
+    <div class="problem-grid problem-grid--2col">
+      <div class="problem-card">
+        <h3>The category screen</h3>
+        <p>Cut, because the check-in already says what you need.</p>
+      </div>
+      <div class="problem-card">
+        <h3>A text box</h3>
+        <p>Replaced by a photo, which carries more context than a typed line.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Picking people afterward</h3>
+        <p>No "Stay connected?" pick for each person. Feedback asks how it felt, and the chat stays open.</p>
+      </div>
+      <div class="problem-card">
+        <h3>Public profiles</h3>
+        <p>Profiles stay private, with no follower counts or leaderboards. Nobody should have to perform.</p>
+      </div>
+    </div>
+
+    <!-- Final Design -->
+    <div id="final-design" class="project-section">
+      <p class="section-label">Final Design</p>
+      <h2>From how you feel to who you meet</h2>
+    </div>
+
+    <div class="deliverable">
+      <h4>One question, then you're in</h4>
+      <p>No profile up front. The basics wait until after your first match, when they can improve the next one.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="1080" src="images/copatible-onboarding.jpg" alt="Onboarding: the welcome screen, one question about what brought you here, and Home with Co&#x27;s first note" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Voice first, with the words on screen</h4>
+      <p>A few spoken sentences carry what a form needs a field for each, and you check what Co heard before anything is matched.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="1080" src="images/copatible-checkin.jpg" alt="The voice check-in: tap to start, the live transcript while you talk, and what Co heard" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Every question has a visible reason</h4>
+      <p>The tile Co is asking about turns from dashed to outline, and she stops at two.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="1080" src="images/copatible-followups.jpg" alt="Co&#x27;s follow-ups: the five signal tiles at three of five, the second question answered, and the circles that are ready" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>Co explains every match</h4>
+      <p>A note in Co's voice says why the circle fits, so the match percentage is never the only reason to go.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="1080" src="images/copatible-circle.jpg" alt="A circle: the ticket and Co&#x27;s note on why she picked it, the people in it, and the chat that stays open" class="project-img-full" style="border-radius: var(--radius);">
+
+    <div class="deliverable">
+      <h4>The moment is what you share</h4>
+      <p>Co's memory card keeps one line from a past circle, and sharing passes it along as a private moment, never a profile.</p>
+    </div>
+    <img loading="lazy" decoding="async" width="1920" height="1080" src="images/copatible-after.jpg" alt="After the circle: how it felt, Co&#x27;s memory card on Home, and the share card" class="project-img-full" style="border-radius: var(--radius);">
+
+    <!-- Reflection -->
+    <div id="reflection" class="project-section">
+      <p class="section-label">Reflection</p>
+      <h2>Co is defined by what she doesn't ask</h2>
+      <p>CoPatible is a study in asking. Co asks two questions at most, and her tiles show what she heard and what is still missing. The bet I would test first: an AI product earns trust by showing what it heard and asking only for what it missed.</p>
+    </div>
+
+    <!-- Try it live -->
+    <div id="live" class="project-section project-section--desktop-only">
+      <p class="section-label">Try it live</p>
+      <h2>Check in with Co, right here</h2>
+      <p>The prototype itself, not a recording. The mic records nothing: the transcript is scripted and the signals vary, so each run can ask different questions.</p>
+      <div class="agent-embed cp-live">
+        <iframe data-src="https://copatible-2026.vercel.app" title="CoPatible, the live prototype"></iframe>
+        <button class="agent-restart" aria-label="Restart the prototype" title="Restart">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+        </button>
+      </div>
+    </div>
+
+
+  <!-- Case-study chain: previous / next in home-grid order, with the card preview on hover -->
+  <div class="case-nav" role="navigation" aria-label="More case studies">
+    <a class="case-nav-link case-nav-link--prev" href="nova.html">
+      <span class="case-nav-label"><span class="case-nav-arrow">&larr;</span> Previous</span>
+      <span class="case-nav-title" aria-label="UNICEF NOVA"><span class="g" style="--i:0;--r:9">U</span><span class="g" style="--i:1;--r:8">N</span><span class="g" style="--i:2;--r:7">I</span><span class="g" style="--i:3;--r:6">C</span><span class="g" style="--i:4;--r:5">E</span><span class="g" style="--i:5;--r:4">F</span> <span class="g" style="--i:6;--r:3">N</span><span class="g" style="--i:7;--r:2">O</span><span class="g" style="--i:8;--r:1">V</span><span class="g" style="--i:9;--r:0">A</span></span>
+    </a>
+    <a class="case-nav-link case-nav-link--next" href="homewise.html">
+      <span class="case-nav-label">Next <span class="case-nav-arrow">&rarr;</span></span>
+      <span class="case-nav-title" aria-label="Homewise"><span class="g" style="--i:0;--r:7">H</span><span class="g" style="--i:1;--r:6">o</span><span class="g" style="--i:2;--r:5">m</span><span class="g" style="--i:3;--r:4">e</span><span class="g" style="--i:4;--r:3">w</span><span class="g" style="--i:5;--r:2">i</span><span class="g" style="--i:6;--r:1">s</span><span class="g" style="--i:7;--r:0">e</span></span>
+    </a>
+  </div>
+  </section>
+
+  <!-- Back to Top -->
+  <button class="back-to-top" aria-label="Back to top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+  </button>
+
+  <!-- Lightbox (2026-09-09): the Play page's, verbatim; opens the ten plates.
+       CSS lives in style.css. -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&#10005;</button>
+    <img loading="lazy" decoding="async" id="lightboxImg" src="" alt="">
+  </div>
+
+  <!-- Page end: glow spans Say hello + footer so the warm glow reaches the page bottom -->
+  <div class="page-end">
+    <div class="footer-glow"></div>
+    <canvas class="px-dissolve" data-edge="top" data-stop=".footer-big" aria-hidden="true"></canvas>
+
+    <!-- Say hello -->
+    <section class="say-hello">
+      <div class="footer-big">
+        <a href="mailto:changmou627627@gmail.com" class="footer-big-text" aria-label="Say hello by email"><span class="letter">S</span><span class="letter">a</span><span class="letter">y</span><span class="letter"> </span><span class="letter">h</span><span class="letter">e</span><span class="letter">l</span><span class="letter">l</span><span class="letter">o</span></a>
+      </div>
+    </section>
+    <script>
+      // "SAY HELLO" COPIES THE EMAIL (2026-09-22, per user "do both"). A click puts the address on the clipboard, and a
+      // small line fades in under the word for two seconds to say so, since the word itself cannot change (its letters
+      // carry the light). The line exists only after a click. IT ONLY COPIES (per user "when email copied do not
+      // navigate to somewhere else. just copied"): the click is cancelled, so no mail app opens over the confirmation;
+      // the mailto stays in the href as the fallback if the copy is refused. The aria-label on the link fixes a screen
+      // reader naming it "S a y h e l l o", one letter span at a time. Without the Clipboard API (or outside a secure
+      // context) it is simply the mailto it was.
+      (function () {
+        const link = document.querySelector('.say-hello .footer-big-text'), box = link && link.parentElement;
+        if (!box || !navigator.clipboard || !window.isSecureContext) return;
+        const note = document.createElement('div');
+        note.setAttribute('role', 'status');
+        note.style.cssText = 'position:absolute;left:0;right:0;top:calc(100% + 32px);z-index:4;text-align:center;font-size:13px;' +
+          'letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.85);text-shadow:0 1px 4px rgba(0,0,0,0.4);' +
+          'opacity:0;transition:opacity 0.4s var(--ease-out);pointer-events:none;';
+        box.appendChild(note);
+        let timer = 0;
+        link.addEventListener('click', e => {
+          e.preventDefault();                             // copy only; the mailto is the fallback below
+          navigator.clipboard.writeText('changmou627627@gmail.com').then(() => {
+            note.textContent = 'Email copied';
+            // level with the footer links row, in its empty middle between the (c) line and the links, well clear of the
+            // word (it sat just under the word at first; moved down per user "do not get too close")
+            const row = document.querySelector('.page-end .footer-links');
+            if (row && row.offsetHeight) { const r = row.getBoundingClientRect(), b = box.getBoundingClientRect(); note.style.top = Math.round(r.top + r.height / 2 - b.top - note.offsetHeight / 2) + 'px'; }
+            // The bar holds only the links, on the right, since its line went (2026-10-13; until then the (c) line held
+            // the left end and the note took its place in a narrow window). Where the links reach under the centred note,
+            // in a narrow desktop window, the note moves to the bar's left inset instead.
+            const bar = document.querySelector('.page-end .footer-bottom');
+            note.style.left = '0'; note.style.textAlign = 'center';
+            if (bar && row && row.offsetHeight) {
+              const rg = document.createRange(); rg.selectNodeContents(note);
+              const n = rg.getBoundingClientRect(), r = row.getBoundingClientRect();
+              if (r.left - n.right < 32) { note.style.left = Math.round(bar.getBoundingClientRect().left + parseFloat(getComputedStyle(bar).paddingLeft) - box.getBoundingClientRect().left) + 'px'; note.style.textAlign = 'left'; }
+            }
+            note.style.transitionDuration = '0.16s'; note.style.opacity = '1';
+            clearTimeout(timer);
+            timer = setTimeout(() => {
+              note.style.transitionDuration = '0.4s'; note.style.opacity = '0';
+            }, 2000);
+          }, () => { location.href = link.href; });      // copy refused: fall back to the mailto
+        });
+      })();
+    </script>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-bottom">
+        <div class="footer-links">
+          <a href="https://www.linkedin.com/in/chang-mou/" target="_blank">LinkedIn <span class="arrow">↗</span></a>
+          <a href="mailto:changmou627627@gmail.com">Email <span class="arrow">↗</span></a>
+          <a class="footer-link--mobile-only" href="https://drive.google.com/file/d/1CQdyuv-mrg4z3fl8lx9AjBogtB7nejsQ/view?usp=sharing" target="_blank">Resume <span class="arrow">↗</span></a>
+          <a class="footer-link--desktop-only" href="https://github.com/chang627627" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+          <a href="https://x.com/changmou627" target="_blank" rel="noopener">X <span class="arrow">↗</span></a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    /* THE FOOTER IN THE PAINTED DAWN (2026-10-10, per user "change the footer to match the hero's style. keep whale
+       animation first", then "yes" to every page with the footer; Hills' sky since the hero became Hills, per user "don't
+       you think the footer need the change to match the hills?"). dawn-sky.js paints .page-end: the hero's sky with its
+       land under the bottom edge (a horizon under the whale was rejected 2026-09-27), the page's black fading into night blue where the whale
+       swims, wisps round "Say hello", the dawn just under the page's bottom edge, low enough that the bar's white text
+       keeps more than the 4.45:1 it had on the glow (1.16 on phones, whose links sit centred over it). It ignores the
+       pointer, as the footer's dust does; the dawn lifts a little as the footer comes into view. The whale and its dust
+       are untouched. A still stand-in in the same colours holds from the first paint; the painting starts once the footer
+       is within a screen of view and fades in over it. The glow comes back only if the painting fails (no WebGL, a context
+       lost for good), or on Home's ?look=gradient. Pasted verbatim on the ten pages with .page-end: edit on index.html, copy,
+       check one md5. */
+    (() => {
+      const end = document.querySelector('.page-end');
+      if (!end || document.documentElement.classList.contains('look-gradient')) return;
+      // the page is one day (2026-10-11): the hero is the sunrise, the footer the night after it, asymmetric since 2026-10-13
+      // (a row of clouds along the bottom, a moon behind the right one; ?look=corners keeps the two corner heaps); before that, lit by a moon out of frame
+      // (per user "hero's vibe but the night version", then "I want the the feeling that we can see the moonlight but moon do
+      // not have to be there"); ?look=dusk keeps the rose dusk, ?look=bluehour the real dawn clouds at blue hour,
+      // ?look=anime the anime clouds; the embers read FOOT_SCENE
+      const look = (/[?&]look=([^&#]*)/.exec(location.search) || [])[1] || '';
+      const scene = /anime/.test(look) ? 'hills' : /bluehour/.test(look) ? 'hillsSoft' : /dusk/.test(look) ? 'dusk' : /corners/.test(look) ? 'nightCorners' : 'night';
+      window.FOOT_SCENE = scene;
+      const load = window.loadDawnSky || (window.loadDawnSky = () => window.dawnSkyReady || (window.dawnSkyReady = new Promise((ok, no) => {
+        if (window.DawnSky) return ok(window.DawnSky);
+        const s = document.createElement('script');
+        s.src = 'dawn-sky.js?v=8';
+        s.onload = () => (window.DawnSky ? ok(window.DawnSky) : no());
+        s.onerror = no;
+        document.head.appendChild(s);
+      })));
+      const reveal = () => {
+        const r = end.getBoundingClientRect();
+        return r.height ? Math.max(0, Math.min(1, (innerHeight - r.top) / r.height)) : 0;
+      };
+      const horizon = () => (matchMedia('(max-width: 768px)').matches ? 1.2 : 1.2);
+      // the footer shows its sky from the first paint (per user: "the footer some times is the gradient version (old), when I
+      // see it, it will switch"): a still stand-in in the painting's own colours (sampled at 1440 and 390, the same in
+      // both) replaces the glow at once, and the live painting fades in over it when the footer comes near. The glow
+      // returns only if the painting cannot run.
+      const glow = end.querySelector('.footer-glow');
+      const box = document.createElement('div');
+      box.className = 'footer-sky';
+      box.setAttribute('aria-hidden', 'true');
+      box.style.cssText = 'position:absolute;inset:0;z-index:0;pointer-events:none;background:linear-gradient(to bottom,'
+        + 'rgb(9,10,14) 0%,rgb(9,15,31) 10%,rgb(8,25,67) 20%,rgb(6,35,100) 30%,rgb(7,41,113) 40%,rgb(9,46,118) 50%,'
+        + 'rgb(13,52,124) 60%,rgb(18,58,130) 70%,rgb(38,78,147) 80%,rgb(48,88,156) 88%,rgb(40,79,154) 94%,rgb(40,75,147) 100%)';
+      end.insertBefore(box, glow ? glow.nextSibling : end.firstChild);     // over the glow, under the dust and the whale
+      if (glow) glow.style.display = 'none';
+      const restore = () => { box.remove(); if (glow) glow.style.display = ''; };
+      let started = false;
+      const start = () => {
+        if (started) return;
+        started = true;
+        load().then((sky) => {
+          try {
+            sky.mount(box, { footer: true, scene, horizon, pointer: [0, 0], scroll: () => 0.6 * reveal(), fade: 600, onFail: restore });
+          } catch (e) { restore(); }
+        }, restore);
+      };
+      // prepared ahead of view (2026-10-12, per user "the cloud at the footer sometimes rendered after its in the sight": it
+      // waited until the footer was a screen away, then fetched, built and faded in, so a quick scroll arrived first): once
+      // the page has loaded and the browser is idle, or sooner if the footer comes within two screens, the script loads,
+      // the shader builds and the first frame is painted off screen; its loop still runs only while it is in view
+      const watch = () => {
+        const idle = window.requestIdleCallback || ((f) => setTimeout(f, 300));
+        idle(start, { timeout: 1500 });
+        if (!('IntersectionObserver' in window)) return;
+        const io = new IntersectionObserver((es) => { if (es[es.length - 1].isIntersecting) { io.disconnect(); start(); } }, { rootMargin: '200% 0px' });
+        io.observe(end);
+      };
+      if (document.readyState === 'complete') watch(); else addEventListener('load', watch, { once: true });
+    })();
+  </script>
+
+<script>
+  // Logo letter stagger
+  const logo = document.querySelector('.logo');
+  if (logo) {
+    const text = logo.textContent;
+    logo.innerHTML = [...text].map((ch, i) =>
+      `<span style="--d:${i * 30}ms">${ch === ' ' ? '&nbsp;' : ch}</span>`
+    ).join('');
+  }
+
+  // Phone menu (2026-09-24): the button says whether the menu is open and which element it controls,
+  // and Escape closes it and hands focus back to the button.
+  (function () {
+    const btn = document.querySelector('.hamburger'), links = document.querySelector('.nav-links');
+    if (!btn || !links) return;
+    links.id = links.id || 'site-menu';
+    btn.setAttribute('aria-controls', links.id);
+    btn.setAttribute('aria-expanded', 'false');
+    const set = (open) => {
+      btn.classList.toggle('active', open);
+      links.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+    };
+    btn.addEventListener('click', () => set(!links.classList.contains('open')));
+  })();
+
+  // Footer scroll reveal
+  const footerText = document.querySelector('.footer-big-text');
+  if (footerText) {
+    let lastScroll = window.scrollY;
+    let isVisible = false;
+    const observer = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !isVisible) {
+        footerText.classList.add('visible');
+        isVisible = true;
+      }
+    }, { threshold: 0.1 });
+    observer.observe(footerText);
+
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+      const rect = footerText.getBoundingClientRect();
+      const atBottom = (window.innerHeight + currentScroll) >= document.body.scrollHeight - 10;
+      if (isVisible && currentScroll < lastScroll && !atBottom) {
+        footerText.classList.remove('visible');
+        isVisible = false;
+      } else if (!isVisible && currentScroll > lastScroll) {
+        if (rect.top < window.innerHeight) {
+          footerText.classList.add('visible');
+          isVisible = true;
+        }
+      }
+      lastScroll = currentScroll;
+    }, { passive: true });
+  }
+
+  // Letter light on "Say hello" — ambient sweep + cursor spotlight.
+  // Same grammar as the headline specular: the ambient sweep runs on its own
+  // so a visitor who never hovers still sees the word lit (the old hover-only
+  // spotlight was an easter egg), and the cursor layers on top via screen
+  // blend — the mousemove handler only RECORDS the pointer; all painting
+  // happens in one rAF loop that is IntersectionObserver-gated to the footer
+  // being on-screen. Reduced motion gets a fully static word (no sweep, no
+  // spotlight — same gating call as Lightfall/tilt).
+  const footerEl = document.querySelector('.say-hello');
+  const letters = document.querySelectorAll('.footer-big-text .letter');
+  if (footerEl && letters.length &&
+      !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const bigTextEl = document.querySelector('.footer-big-text');
+    let cursorX = null;
+
+    // The stylesheet eases .letter opacity over 0.3s. This loop writes that
+    // same property every frame, so the transition would retarget forever and
+    // render a ~150ms-lagged smear instead of the value computed — and since
+    // textShadow is NOT in the transition list, the bloom would run ahead of
+    // the glow it is paired with. Same fix, same reason, as the scroll-CTA.
+    letters.forEach((l) => { l.style.transition = 'none'; });
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      footerEl.addEventListener('mousemove', (e) => {
+        // Only treat the cursor as a light source when it is actually over
+        // the word (where the hand cursor shows), not the whole tall padded
+        // band above it.
+        const first = letters[0].getBoundingClientRect();
+        const last = letters[letters.length - 1].getBoundingClientRect();
+        const pad = 16;
+        cursorX = (e.clientY < first.top - pad || e.clientY > first.bottom + pad ||
+                   e.clientX < first.left - pad || e.clientX > last.right + pad)
+          ? null : e.clientX;
+      });
+      footerEl.addEventListener('mouseleave', () => { cursorX = null; });
+    }
+
+    const BASE = 0.65;     // unlit letter opacity: about 4.7:1 on the twilight sky, so the call to action leads (2026-10-12, per user "do 1 and 2"; was 0.35, about 2.9:1)
+    const AMB = 0.28;      // ambient peak — idle tops out ~0.53, half the
+                           // cursor's 1.0, so the word rests as a quiet
+                           // watermark and hovering is a real step up
+                           // (0.6 then 0.35 both judged too bright by user)
+    const SIG_A = 220;     // ambient pool width (px)
+    const SIG_C = 150;     // cursor pool width (px)
+    const PERIOD = 7000;   // one full sweep bounce (ms)
+    let sweepRaf = 0, sweepRunning = false;
+    const sweepT0 = performance.now();
+
+    const sweepFrame = (now) => {
+      const first = letters[0].getBoundingClientRect();
+      const last = letters[letters.length - 1].getBoundingClientRect();
+      const left = first.left;
+      const width = Math.max(1, last.right - left);
+      // The ambient light drifts back and forth across the word.
+      const ambX = left + width * (0.5 + 0.45 * Math.sin((now - sweepT0) / PERIOD * Math.PI * 2));
+      letters.forEach((letter) => {
+        const r = letter.getBoundingClientRect();
+        if (!r.width) return;                              // the space span
+        const cx = r.left + r.width / 2;
+        const da = ambX - cx;
+        const a = AMB * Math.exp(-(da * da) / (2 * SIG_A * SIG_A));
+        let I = a;
+        if (cursorX !== null) {
+          const dc = cursorX - cx;
+          const c = Math.exp(-(dc * dc) / (2 * SIG_C * SIG_C));
+          I = c + a * (1 - c);                             // screen blend, cursor on top
+        }
+        letter.style.opacity = (BASE + (1 - BASE) * I).toFixed(3);
+        letter.style.textShadow = I > 0.04
+          ? '0 0 32px rgba(255, 255, 255, ' + (0.3 * I).toFixed(3) + ')'
+          : 'none';
+      });
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStart = () => {
+      // bigTextEl is display:none on mobile — no point painting hidden glyphs
+      if (sweepRunning || getComputedStyle(bigTextEl).display === 'none') return;
+      sweepRunning = true;
+      sweepRaf = requestAnimationFrame(sweepFrame);
+    };
+    const sweepStop = () => { sweepRunning = false; cancelAnimationFrame(sweepRaf); };
+    new IntersectionObserver((es) => { es[0].isIntersecting ? sweepStart() : sweepStop(); },
+      { rootMargin: '80px' }).observe(footerEl);
+  }
+
+  // Side nav scroll tracking
+  const sideNav = document.querySelector('.side-nav');
+  // Reduced motion: jump instead of animating the whole viewport.
+  const smoothOK = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const scrollBehavior = () => (smoothOK ? 'smooth' : 'auto');
+
+  const sideNavLinks = document.querySelectorAll('.side-nav-link');
+  const sections = [];
+  sideNavLinks.forEach(link => {
+    const id = link.getAttribute('href').slice(1);
+    const el = document.getElementById(id);
+    if (el) sections.push({ id, el });
+  });
+
+  const projectHero = document.querySelector('.project-hero');
+  if (sideNav && projectHero) {
+    const checkNav = () => {
+      const heroBottom = projectHero.getBoundingClientRect().bottom;
+      sideNav.classList.toggle('visible', heroBottom < 100);
+    };
+    window.addEventListener('scroll', checkNav, { passive: true });
+    checkNav();
+  }
+
+  let locked = false;
+  let userScrolled = false;
+  window.addEventListener('wheel', () => { userScrolled = true; }, { passive: true });
+  window.addEventListener('touchmove', () => { userScrolled = true; }, { passive: true });
+
+  if (sections.length) {
+    const updateActive = () => {
+      if (locked) {
+        if (userScrolled) {
+          locked = false;
+          userScrolled = false;
+        } else {
+          return;
+        }
+      }
+      const atBottom = (window.innerHeight + window.scrollY) >= document.body.scrollHeight - 50;
+      if (atBottom) {
+        sideNavLinks.forEach(link => link.classList.remove('active'));
+        sideNavLinks[sideNavLinks.length - 1].classList.add('active');
+        return;
+      }
+      let current = null;
+      const offset = window.innerHeight * 0.35;
+      sections.forEach(s => {
+        const top = s.el.getBoundingClientRect().top;
+        if (top <= offset) current = s.id;
+      });
+      sideNavLinks.forEach(link => link.classList.remove('active'));
+      if (current) {
+        const activeLink = document.querySelector(`.side-nav-link[href="#${current}"]`);
+        if (activeLink) activeLink.classList.add('active');
+      }
+    };
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  sideNavLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const id = link.getAttribute('href').slice(1);
+      const target = document.getElementById(id);
+      if (target) {
+        locked = true;
+        userScrolled = false;
+        sideNavLinks.forEach(l => l.classList.remove('active'));
+        link.classList.add('active');
+        const y = target.getBoundingClientRect().top + window.scrollY - 120;
+        window.scrollTo({ top: y, behavior: scrollBehavior() });
+      }
+    });
+  });
+
+  // Back to top button
+  const backToTop = document.querySelector('.back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.classList.toggle('visible', window.scrollY > 400);
+    }, { passive: true });
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: scrollBehavior() });
+    });
+  }
+</script>
+
+<script>
+  const footerGlow = document.querySelector('.footer-glow');
+  const footerSection = document.querySelector('.page-end');
+  if (footerGlow && footerSection) {
+    window.addEventListener('scroll', () => {
+      const rect = footerSection.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const footerVisible = Math.max(0, vh - rect.top);
+      const progress = Math.min(1, footerVisible / rect.height);
+      footerGlow.style.height = (progress * rect.height * 1.2) + 'px';
+    }, { passive: true });
+  }
+</script>
+
+<script>
+  // Live CoPatible embed: load on approach so the app never costs the initial
+  // page load. On mobile the section is display:none, so it has no box, the
+  // observer never fires, and phones never fetch the app. The restart's
+  // contentWindow reload throws cross-origin, so the catch resets src instead.
+  (function () {
+    var frame = document.querySelector('.agent-embed iframe[data-src]');
+    if (!frame) return;
+    var restart = document.querySelector('.agent-restart');
+    if (restart) restart.addEventListener('click', function () {
+      if (!frame.src) { frame.src = frame.dataset.src; return; }
+      try { frame.contentWindow.location.reload(); }
+      catch (err) { frame.src = frame.dataset.src; }
+    });
+    if (!('IntersectionObserver' in window)) { frame.src = frame.dataset.src; return; }
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) {
+        frame.src = frame.dataset.src;
+        io.disconnect();
+      }
+    }, { rootMargin: '200px 0px' });
+    io.observe(frame);
+  })();
+</script>
+
+<script>
+  // Workflow clips (Homewise's, verbatim): drive a bottom progress bar + defer play to viewport
+  (function() {
+    const vids = document.querySelectorAll('video[preload="metadata"]');
+
+    // Progress bar — rAF while playing so it's smooth and resets cleanly on loop
+    vids.forEach(v => {
+      const bar = v.closest('.hw-clip')?.querySelector('.hw-clip-progress-bar');
+      if (!bar) return;
+      let raf;
+      const tick = () => {
+        if (v.duration) bar.style.width = (v.currentTime / v.duration * 100) + '%';
+        raf = requestAnimationFrame(tick);
+      };
+      v.addEventListener('play', () => { cancelAnimationFrame(raf); tick(); });
+      v.addEventListener('pause', () => cancelAnimationFrame(raf));
+    });
+
+    // Play only when scrolled into view, pause when out
+    if (!('IntersectionObserver' in window)) { vids.forEach(v => v.play().catch(() => {})); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.play().catch(() => {}); }
+        else { e.target.pause(); }
+      });
+    }, { rootMargin: '200px' });
+    vids.forEach(v => io.observe(v));
+  })();
+</script>
+
+<script>
+  // Lightbox: the Play page's IIFE, pointed at the plates
+  (function() {
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+    const lightboxClose = document.getElementById('lightboxClose');
+    if (!lightbox) return;
+
+    document.querySelectorAll('img.project-img-full').forEach(img => {
+      img.addEventListener('click', (e) => {
+        e.stopPropagation();
+        lightboxImg.src = img.currentSrc || img.src;
+        lightboxImg.alt = img.alt;
+        lightbox.classList.add('open');
+        lightbox.setAttribute('aria-hidden', 'false');
+        document.documentElement.style.overflow = 'hidden'; // lock the viewport: html carries overflow-x: hidden, so a body lock never reached it (fixed 2026-09-15)
+      });
+    });
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      document.documentElement.style.overflow = '';
+    }
+
+    lightbox.addEventListener('click', closeLightbox);
+    lightboxClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+  })();
+</script>
+
+<!-- Chat Widget -->
+<button class="chat-toggle" id="chatToggle" aria-label="Ask AI">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L13.5 8.5L20 10L13.5 11.5L12 18L10.5 11.5L4 10L10.5 8.5L12 2Z"/><path d="M19 15L19.8 17.2L22 18L19.8 18.8L19 21L18.2 18.8L16 18L18.2 17.2L19 15Z"/></svg>
+</button>
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-panel-header">
+<button class="chat-close" id="chatClose" aria-label="Close">&#10005;</button>
+  </div>
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-msg assistant">Hey, I'm Chang. Well, the AI version. Feel free to ask me anything.</div>
+  </div>
+  <div class="chat-bottom">
+    <div class="chat-starters" id="chatStarters">
+      <button class="chat-starter" data-prompt="What tools do you use?">Tools</button>
+      <button class="chat-starter" data-prompt="Tell me about your AI workflow">AI workflow</button>
+      <button class="chat-starter" data-prompt="What kind of projects do you work on?">Projects</button>
+      <button class="chat-starter" data-prompt="Are you available for work?">Availability</button>
+    </div>
+    <form class="chat-input-form" id="chatForm">
+      <input type="text" class="chat-input" id="chatInput" placeholder="What would you like to know?" autocomplete="off">
+      <button type="button" class="chat-mic" id="chatMic" aria-label="Voice input">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <button type="submit" class="chat-send" aria-label="Send">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg>
+      </button>
+    </form>
+    <p class="chat-powered">Powered by Claude Haiku 4.5</p>
+  </div>
+</div>
+<script>
+  const chatToggle = document.getElementById('chatToggle');
+  const chatPanel = document.getElementById('chatPanel');
+  const chatClose = document.getElementById('chatClose');
+  const chatForm = document.getElementById('chatForm');
+  const chatInput = document.getElementById('chatInput');
+  const chatMessages = document.getElementById('chatMessages');
+  const chatStarters = document.getElementById('chatStarters');
+  const chatHistory = [];
+
+  chatToggle.addEventListener('click', () => {
+    chatPanel.classList.toggle('open');
+    chatToggle.classList.toggle('hidden');
+  });
+  chatClose.addEventListener('click', () => {
+    chatPanel.classList.remove('open');
+    chatToggle.classList.remove('hidden');
+  });
+  document.querySelectorAll('.chat-starter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      chatInput.value = btn.dataset.prompt;
+      sendMessage();
+    });
+  });
+
+  chatForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    sendMessage();
+  });
+
+  function checkLimit() {
+    if (localStorage.getItem('chat_unlimited') === 'true') return true;
+    const today = new Date().toDateString();
+    const stored = JSON.parse(localStorage.getItem('chat_usage') || '{}');
+    if (stored.date !== today) { stored.date = today; stored.count = 0; }
+    if (stored.count >= 10) return false;
+    stored.count++;
+    localStorage.setItem('chat_usage', JSON.stringify(stored));
+    return true;
+  }
+
+  async function sendMessage() {
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    if (!checkLimit()) {
+      appendMessage('assistant', 'You\'ve reached the daily limit of 10 questions. Feel free to reach out at changmou627627@gmail.com for more!');
+      return;
+    }
+
+    chatInput.value = '';
+
+    appendMessage('user', message);
+    chatHistory.push({ role: 'user', content: message });
+
+    const typing = document.createElement('div');
+    typing.className = 'chat-msg assistant typing';
+    typing.innerHTML = '<span></span><span></span><span></span>';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, history: chatHistory }),
+      });
+      const data = await res.json();
+      typing.remove();
+
+      if (data.reply) {
+        appendMessage('assistant', data.reply);
+        chatHistory.push({ role: 'assistant', content: data.reply });
+      } else {
+        appendMessage('assistant', 'Sorry, something went wrong. Please try again.');
+      }
+    } catch (err) {
+      typing.remove();
+      appendMessage('assistant', 'Sorry, I couldn\'t connect. Please try again.');
+    }
+  }
+
+  function appendMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'chat-msg ' + role;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Speech recognition
+  const chatMic = document.getElementById('chatMic');
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (SpeechRecognition && chatMic) {
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = true;
+    let isListening = false;
+
+    chatMic.addEventListener('click', () => {
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    recognition.addEventListener('start', () => {
+      isListening = true;
+      chatMic.classList.add('listening');
+    });
+
+    recognition.addEventListener('result', (e) => {
+      const transcript = Array.from(e.results).map(r => r[0].transcript).join('');
+      chatInput.value = transcript;
+      if (e.results[0].isFinal) {
+        recognition.stop();
+        sendMessage();
+      }
+    });
+
+    recognition.addEventListener('end', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+
+    recognition.addEventListener('error', () => {
+      isListening = false;
+      chatMic.classList.remove('listening');
+    });
+  } else if (chatMic) {
+    chatMic.style.display = 'none';
+  }
+</script>
+
+
+<script>
+  // Footer stardust (2026-09-09): the dawn glow sheds its dust upward. Embers ignite along
+  // the light's faint upper edge, just above "Say hello", with a small flare, rise into
+  // the dark and thin out, cooling from the glow's own amber and coral toward lilac and
+  // ice as they climb, and the emission follows the glow's scroll reveal, so the dust
+  // rises as the light does. Every ten to twenty seconds one shooting star crosses the
+  // band, never over the text. Different from the hero's dust by design: that is weather
+  // with no source; this has one. It replaces the pixel dissolve and its Pac-Man (both
+  // retired 2026-09-09 per user). Time only runs while the footer is on screen, so a
+  // return never finds the field dead; reduced motion gets one still frame.
+  // THE WHALE (2026-09-10): on desktop the footer's one event is a humpback made of the same
+  // motes instead of the meteor. Embers ignite at the glow's edge and rise into a constellation
+  // nose first, it swims once across the band above "Say hello" on a shallow surfacing arc with a
+  // travelling body wave and a hinged fluke, then lets go tail first and every mote lives out an
+  // ember's life. It ignores the pointer like the rest of the dust. ?fx=-whale brings the meteor
+  // back to compare; reduced motion never sees it.
+  // ON PHONES TOO (2026-09-15, per user "do 1,2,3" on the curated.design pass): the whale was gated
+  // to fine-pointer desktops, so phone visitors got a starfield and a link row, the most generic
+  // screen on the site. It now forms and swims on every screen: sized to the phone's width
+  // (about 200px at 375) inside the same band, a shorter crossing since the band is narrower,
+  // the stars a little larger so the animal reads at that size, and the meteor retired there
+  // as on desktop (one event per surface). It stays abstract and still ignores touch.
+  // Off phones on 2026-10-01 ("no need whale on mobile"); BACK ON PHONES, ITS STARS REMADE FOR ITS
+  // SIZE (2026-10-03, per user "can we bring back the whale to the mobile footer? we need to remake
+  // the stardust size of whale for the mobile version"): at 375-390 the whale is about 215px long,
+  // under half the desktop 500, but its stars kept desktop pixel sizes (and grew 1.25x), so it read
+  // as a few heavy blobs, and its outline kept desktop's 13px spacing, so it had a third of the
+  // stars per length. Now its stars are 0.6 of their desktop size and 7px apart (anchors clear 5px),
+  // about desktop's stars per length: the same animal, scaled down.
+  (function () {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const FX = (new URLSearchParams(location.search).get('fx') || '').split(',');
+    const whaleOn = !FX.includes('-whale') && !FX.includes('off');
+    const phoneMQ = matchMedia('(max-width: 768px)'); // the same breakpoint the footer's CSS uses, so the whale's size always matches its band
+    document.querySelectorAll('.px-dissolve').forEach(cv => {
+      if (getComputedStyle(cv).display === 'none') return;
+      const parent = cv.parentElement;
+      const stopSel = cv.dataset.stop || '';
+      const ctx = cv.getContext('2d');
+      // at birth: gold, coral, violet; under the footer's moonlit night, moonlit white and blues (per user "hero's vibe but the
+      // night version"; the twilight's warm ones for an hour on 2026-10-12, until its warm glow read as day)
+      const WARM = window.FOOT_SCENE === 'night' ? [[236, 242, 255], [178, 204, 255], [132, 168, 255]] : [[255, 190, 35], [255, 104, 48], [140, 70, 255]];
+      const WARM_P = [0.5, 0.82];                                    // their shares
+      const COOL = [150, 200, 255];                                  // what they cool toward
+      const RATE = 12.5 / 1327;      // motes per second per px of width: about 70 alive on a laptop, 20 on a phone
+      const LIFE = [3.6, 6.0], RISE = [22, 38], MAX = 560; // room for a let-go whale on top of the ambient field
+      const SHAPE_POINT = 0.55, SHAPE_BOKEH = 0.3; // the rest sparks
+      const METEOR = [10, 20];       // seconds between shooting stars
+      let W = 0, H = 0, bTop = 0, bBot = 0, wTop = 0, running = false, raf = 0, last = 0, T = 0, acc = 0, seeded = false, nextMeteor = 0;
+      const motes = [], meteors = [];
+      cv._parts = motes; // for probing
+      const rnd = (a, b) => a + Math.random() * (b - a);
+      const gauss = () => (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+      const mix = (a, b, k) => [Math.round(a[0] + (b[0] - a[0]) * k), Math.round(a[1] + (b[1] - a[1]) * k), Math.round(a[2] + (b[2] - a[2]) * k)];
+      const lift = (c, L) => mix(c, [255, 255, 255], L);
+      // the glow's own reveal, the same measure the scroll script drives its height with
+      function progress() { const r = parent.getBoundingClientRect(); return Math.min(1, Math.max(0, window.innerHeight - r.top) / r.height); }
+      function born(age0) {
+        const u = Math.random();
+        const shape = u < SHAPE_POINT ? 0 : u < SHAPE_POINT + SHAPE_BOKEH ? 1 : 2;
+        const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
+        const span = bBot - bTop;
+        const m = {
+          x: rnd(-30, W + 30),
+          y: bBot - span * 0.32 * Math.random() * Math.random() + rnd(-4, 8), // dense at the edge, thinning above it
+          shape, c0: lift(warm, 0.2), c1: lift(COOL, 0.45),
+          r: shape === 1 ? rnd(3, 7) : rnd(1.0, 1.9), // the site's one mote: the home hero's numbers
+          b: rnd(0.5, 1), vx: gauss() * 6, vy: gauss() * 4,
+          rise: rnd(RISE[0], RISE[1]) * (shape === 1 ? 0.6 : 1),
+          flare: age0 ? 0 : 1, // seeded motes are already old; everything else ignites
+          ray: rnd(5, 9), rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
+          born: T - (age0 || 0), life: rnd(LIFE[0], LIFE[1]) * (shape === 1 ? 1.3 : 1),
+        };
+        if (age0) { m.y -= m.rise * age0; m.x += m.vx * age0; }
+        motes.push(m);
+        if (motes.length > MAX) motes.splice(0, motes.length - MAX);
+      }
+      function env(u) { return u < 0.02 ? u / 0.02 : u < 0.5 ? 1 : Math.pow(1 - (u - 0.5) / 0.5, 1.3); }
+      function drawMote(m, c, a, r) {
+        const col = `rgb(${c[0]}, ${c[1]}, ${c[2]})`;
+        if (m.shape === 1) {
+          const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, r);
+          g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.20 * a).toFixed(3)})`);
+          g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill();
+          return;
+        }
+        // a bright hard centre with a fast falloff: reads as an ember, not a bubble
+        const gr = r * 2.8;
+        const g = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, gr);
+        g.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.55 * a).toFixed(3)})`);
+        g.addColorStop(0.35, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.16 * a).toFixed(3)})`);
+        g.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(m.x, m.y, gr, 0, Math.PI * 2); ctx.fill();
+        ctx.globalAlpha = a; ctx.fillStyle = col; ctx.beginPath(); ctx.arc(m.x, m.y, r, 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1;
+        if (m.shape === 2) {
+          // four thin rays that breathe, brightest at the centre, on the base radius
+          const L = m.r * m.ray * (1 + 0.25 * Math.sin(T * 2.86 + m.ph));
+          ctx.lineWidth = 1; ctx.lineCap = 'round';
+          for (let k = 0; k < 4; k++) {
+            const ang = m.rot + k * Math.PI / 2, ex = m.x + Math.cos(ang) * L, ey = m.y + Math.sin(ang) * L;
+            const lg = ctx.createLinearGradient(m.x, m.y, ex, ey);
+            lg.addColorStop(0, `rgba(${c[0]}, ${c[1]}, ${c[2]}, ${(0.9 * a).toFixed(3)})`);
+            lg.addColorStop(1, `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0)`);
+            ctx.strokeStyle = lg; ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(ex, ey); ctx.stroke();
+          }
+        }
+      }
+      // one shooting star: a bright head with a fading streak, across the band, never over the text
+      function shoot() {
+        const span = bBot - bTop, len = Math.min(520, Math.max(220, W * 0.36));
+        const dir = Math.random() < 0.5 ? 1 : -1;
+        const y0 = bTop + span * rnd(0.1, 0.4), y1 = Math.min(bTop + span * 0.9, y0 + span * rnd(0.12, 0.55));
+        const x0 = dir > 0 ? rnd(-20, W - len - 20) : rnd(len + 20, W + 20);
+        const life = rnd(0.38, 0.52);
+        meteors.push({ x: x0, y: y0, vx: dir * len / life, vy: (y1 - y0) / life, born: T, life, tail: rnd(90, 140) });
+      }
+      cv._shoot = shoot; // for probing
+      // The whale. Shape in whale units: x 0 (nose) to 1 (fluke tips), y down, midline 0. Closed body
+      // outline nose -> back -> dorsal -> stalk -> fluke -> belly; the long pectoral fin is its own polygon.
+      const WB = [[0,-0.02],[0.02,-0.055],[0.06,-0.066],[0.15,-0.072],[0.3,-0.075],[0.45,-0.075],[0.55,-0.072],[0.58,-0.076],[0.595,-0.086],[0.61,-0.096],[0.62,-0.09],[0.63,-0.07],[0.67,-0.063],[0.72,-0.052],[0.78,-0.037],[0.845,-0.032],[0.832,-0.075],[0.826,-0.115],[0.836,-0.138],[0.858,-0.142],[0.878,-0.125],[0.89,-0.1],[0.898,-0.078],[0.925,-0.062],[0.96,-0.045],[1,-0.022],[0.985,-0.004],[0.95,0.004],[0.905,0.002],[0.87,-0.004],[0.845,-0.012],[0.78,0],[0.72,0.023],[0.67,0.046],[0.61,0.063],[0.55,0.08],[0.49,0.092],[0.44,0.098],[0.38,0.1],[0.32,0.098],[0.26,0.075],[0.21,0.052],[0.15,0.035],[0.09,0.015],[0.035,-0.006],[0.01,-0.017]];
+      const WF = [[0.245,0.068],[0.285,0.115],[0.335,0.165],[0.395,0.212],[0.44,0.24],[0.465,0.25],[0.462,0.222],[0.435,0.195],[0.395,0.15],[0.365,0.118],[0.348,0.096],[0.335,0.086]];
+      const WF2 = [[0.215,0.055],[0.225,0.1],[0.24,0.145],[0.26,0.18],[0.276,0.195],[0.285,0.175],[0.29,0.14],[0.285,0.105],[0.27,0.078]]; // the far flipper, seen past the body: forward of the near one, hanging more steeply, half as bright
+      // POLISH (2026-09-11, from the judged workflow: light over a hierarchy). Ten anchor stars at the joints, five of them
+      // the old sparks with rays: [x, y, spark, magnitude, part]. The outline is a loose stipple around them, the interior dim,
+      // a pool of light crosses nose to tail, the animal breathes, and the fluke tips shed embers on each beat. No lines, no fill.
+      const W_ANCHORS = [[0.003,-0.02,0,1,'body'],[0.25,0,0,2,'body'],[0.19,-0.022,1,1,'body'],[0.29,0.085,0,1,'body'],[0.465,0.247,1,1,'fin'],[0.61,-0.096,1,1,'body'],[0.845,-0.022,0,1,'body'],[0.898,-0.078,0,2,'fluke'],[0.858,-0.142,1,1,'fluke'],[1,-0.022,1,1,'fluke']]; // nose, jaw corner, eye, fin root, fin tip, dorsal, stalk, notch, fluke top, fluke far tip
+      const OUT_PX = 13, OUT_DROP = 0.08, OUT_SLIDE = 0.3, MID_KEEP = 0.5, MID_JIT = 1.2; // outline stars about 13px apart, 8% dropped, slid up to 30% along the curve, faint jittered midpoints between half of them
+      const FILL_AT_460 = [22, 3, 2];          // interior stars in the body, near fin and far fin at a 460px whale, scaling with area
+      const ANCHOR_CLEAR = 9;                  // px: no outline or fill star this close to an anchor
+      const POOL_SIG2 = 0.0392, POOL_CYCLE = 8, POOL_OUT = 0.45, POOL_IN = 0.9, POOL_R = 0.3, POOL_LIFT = 0.5; // the light that crosses nose to tail every 8s: gains on outline and interior, radius, lift toward white
+      const BREATH_T = 5.5, BREATH_A = 0.08;   // the whole animal breathes 8% in brightness
+      const WAKE_N = 2, WAKE_LIFE = [1.8, 2.6], WAKE_B = [0.38, 0.62]; // embers shed by each fluke tip on every beat
+      const W_MOUTH = [[0.005,-0.028],[0.08,-0.016],[0.16,-0.006],[0.23,0.004],[0.25,0]]; // the long jaw, curling up at the corner
+      const W_PLEATS = [[[0.03,0],[0.15,0.03],[0.3,0.062]], [[0.045,0.014],[0.165,0.047],[0.32,0.082]]]; // ventral grooves along the throat, fainter still
+      const W_FLUKE = [15, 30], W_HINGE = [0.845, -0.022]; // the fluke is WB[15..30], stalk top to stalk bottom; it turns about the stalk's centre
+      const W_A = 0.05, W_P = 2.6;            // body wave: amplitude (of length) and beat period (s)
+      const W_SWIM = 25, W_GATHER = 1.5, W_LET = 2.0; // the crossing (18s until 2026-09-11, slowed per user "how to make the whale more obvious?"), each mote's rise into place, the tail-first let-go
+      const SETTLE_PULSE = 0.3, FIELD_DIM = 0.3, WHALE_R = 1.15; // the click when the last star lands, how much the ambient field steps back while it swims, the whale's stars a little larger than the field's
+      const WHALE = [34, 50];                 // seconds between whale starts (a desktop crossing takes about 27s, so 7 to 23s of empty band between them; a phone crossing about 18s, so 16 to 32s; was 45 to 75, then 28 to 45 with the 18s crossing)
+      let whale = null, nextWhale = 0, lastDir = -1; // directions alternate: the first goes left to right, the next comes back
+      let rScale = 1; // the stars' size: smaller on phones, where the whale is under half the size (set per spawn)
+      // The sparks' rays scale with the animal (2026-09-22): they were sized for a 500px whale, so on a 206px phone
+      // whale each cross spanned about a fifth of the body and it read as a scatter of stars (set per spawn)
+      let rayK = 1, outPx = OUT_PX, anchorClear = ANCHOR_CLEAR; // the outline's spacing and the anchors' clearance, tighter on phones (set per spawn)
+      function catmull(pts, per, closed) {
+        const out = [], n = pts.length;
+        for (let i = 0; i < (closed ? n : n - 1); i++) {
+          const p0 = closed ? pts[(i - 1 + n) % n] : pts[Math.max(i - 1, 0)], p1 = pts[i], p2 = pts[(i + 1) % n], p3 = closed ? pts[(i + 2) % n] : pts[Math.min(i + 2, n - 1)];
+          for (let k = 0; k < per; k++) {
+            const t = k / per, t2 = t * t, t3 = t2 * t;
+            out.push([0.5 * (2 * p1[0] + (-p0[0] + p2[0]) * t + (2 * p0[0] - 5 * p1[0] + 4 * p2[0] - p3[0]) * t2 + (-p0[0] + 3 * p1[0] - 3 * p2[0] + p3[0]) * t3),
+              0.5 * (2 * p1[1] + (-p0[1] + p2[1]) * t + (2 * p0[1] - 5 * p1[1] + 4 * p2[1] - p3[1]) * t2 + (-p0[1] + 3 * p1[1] - 3 * p2[1] + p3[1]) * t3)]);
+          }
+        }
+        return out;
+      }
+      function resample(poly, n) { // n points evenly spaced by arc length around a closed polyline
+        const L = [0];
+        for (let i = 1; i <= poly.length; i++) { const a = poly[i - 1], b = poly[i % poly.length]; L.push(L[L.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
+        const tot = L[L.length - 1], out = [];
+        for (let k = 0; k < n; k++) {
+          const d = tot * k / n;
+          for (let i = 1; i < L.length; i++) if (L[i] >= d) { const a = poly[i - 1], b = poly[i % poly.length], seg = L[i] - L[i - 1], t = seg ? (d - L[i - 1]) / seg : 0; out.push([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, i - 1]); break; }
+        }
+        return out;
+      }
+      function inside(poly, x, y) { let c = false; for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) { const a = poly[i], b = poly[j]; if ((a[1] > y) !== (b[1] > y) && x < (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1] + 1e-12) + a[0]) c = !c; } return c; }
+      function sampleInside(poly, n) {
+        let x0 = 9, x1 = -9, y0 = 9, y1 = -9; poly.forEach(p => { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+        const out = []; let guard = 0;
+        while (out.length < n && guard++ < 20000) { const x = rnd(x0, x1), y = rnd(y0, y1); if (inside(poly, x, y)) out.push([x, y]); }
+        return out;
+      }
+      function whaleMote(p, kind, part) { // the site's one mote, anchored in whale space, in four magnitudes
+        const spark = kind === 'spark', interior = kind === 'fill' || kind === 'mouth' || kind === 'pleat';
+        const q = Math.random(), warm = WARM[q < WARM_P[0] ? 0 : q < WARM_P[1] ? 1 : 2];
+        const dim = part === 'fin2' ? 0.35 : 1; // the far flipper reads as behind the body (0.5 for an hour on 2026-09-11, then a third per user)
+        const r = spark ? 1.8 : kind === 'anchor' ? rnd(1.5, 1.7) : kind === 'anchor2' ? rnd(1.3, 1.5) : kind === 'outline' ? rnd(1.0, 1.4) : kind === 'outline3' ? rnd(0.55, 0.75) : rnd(0.8, 1.1);
+        const b = spark ? 1 : kind === 'anchor' ? rnd(0.9, 1) : kind === 'anchor2' ? rnd(0.72, 0.82) : kind === 'outline' ? rnd(0.66, 0.92) : kind === 'outline3' ? rnd(0.3, 0.45) : rnd(0.26, 0.4); // lifted a tier on 2026-09-11 per user "a little too dark"
+        return { s: p[0], t: p[1], part, kind, shape: spark ? 2 : 0, r: r * WHALE_R * rScale, b: dim * b, k: interior ? 1 : 0,
+          c0: lift(warm, 0.2), c1: lift(COOL, 0.45), ray: rnd(6, 8) * rayK, rot: Math.random() < 0.5 ? 0 : Math.PI / 4, ph: Math.random() * 6.283,
+          x: 0, y: 0, bx: 0, by: 0, gd: 0, rel: 0, done: false };
+      }
+      function flukeAngle(age) { // the hinged fluke's turn, the wave's slope at the stalk
+        const tw = 2 * Math.PI / W_P * age, sh = W_HINGE[0], ph = 2 * Math.PI * 0.85 * sh - tw;
+        return Math.atan(W_A * (2 * sh * Math.sin(ph) + sh * sh * 2 * Math.PI * 0.85 * Math.cos(ph))) * 1.5;
+      }
+      function sampleAlong(poly, L) { // stars along a closed polyline: OUT_PX apart, some dropped, each slid along the curve, faint midpoints between
+        const C = [0];
+        for (let i = 1; i <= poly.length; i++) { const a = poly[i - 1], b = poly[i % poly.length]; C.push(C[C.length - 1] + Math.hypot(b[0] - a[0], b[1] - a[1])); }
+        const tot = C[C.length - 1], sp = outPx / L, n = Math.max(3, Math.floor(tot / sp)), out = [];
+        const at = d => { d = ((d % tot) + tot) % tot; for (let i = 1; i < C.length; i++) if (C[i] >= d) { const a = poly[i - 1], b = poly[i % poly.length], seg = C[i] - C[i - 1], t = seg ? (d - C[i - 1]) / seg : 0; return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, i - 1]; } return [poly[0][0], poly[0][1], 0]; };
+        for (let i = 0; i < n; i++) {
+          if (Math.random() >= OUT_DROP) out.push({ p: at((i + rnd(-OUT_SLIDE, OUT_SLIDE)) * sp), kind: 'outline' });
+          if (Math.random() < MID_KEEP) { const m = at((i + 0.5) * sp); out.push({ p: [m[0] + gauss() * MID_JIT / L, m[1] + gauss() * MID_JIT / L, m[2]], kind: 'outline3' }); }
+        }
+        return out;
+      }
+      function whalePoint(m, age) { // whale-space kinematics to canvas px
+        const w = whale, S = w.swim, u = Math.min(1, Math.max(0, age / S));
+        const f = Math.min(age, S) / S + Math.max(0, age - S) * 0.4 / S; // it slows while letting go
+        const cs = w.dir > 0 ? w.cx0 : w.cx1, ce = w.dir > 0 ? w.cx1 : w.cx0;
+        const cx = cs + (ce - cs) * f, cy = w.cyEnd - w.arc * Math.sin(Math.PI * u) + 2 * Math.sin(2 * Math.PI * age / 5 + w.ph);
+        const tw = 2 * Math.PI / W_P * age, wave = s => W_A * s * s * Math.sin(2 * Math.PI * 0.85 * s - tw);
+        let ss = m.s, tt;
+        if (m.part === 'fluke') { // hinged at the stalk, turned by the wave's slope there
+          const sh = W_HINGE[0], shy = W_HINGE[1], th = flukeAngle(age);
+          const dx = m.s - sh, dy = m.t - shy, c = Math.cos(th), sn = Math.sin(th);
+          ss = sh + dx * c - dy * sn; tt = wave(sh) + shy + dx * sn + dy * c;
+        } else if (m.part === 'fin') { // a slow flap about its root
+          const th = 0.10 * Math.sin(age * 1.85 + 1), hx = 0.29, hy = 0.085, dx = m.s - hx, dy = m.t - hy, c = Math.cos(th), sn = Math.sin(th);
+          ss = hx + dx * c - dy * sn; tt = wave(hx) + hy + dx * sn + dy * c;
+        } else if (m.part === 'fin2') { // the far flipper flaps a beat behind the near one
+          const th = 0.08 * Math.sin(age * 1.85 + 2.3), hx = 0.24, hy = 0.062, dx = m.s - hx, dy = m.t - hy, c = Math.cos(th), sn = Math.sin(th);
+          ss = hx + dx * c - dy * sn; tt = wave(hx) + hy + dx * sn + dy * c;
+        } else tt = m.t + wave(m.s);
+        return [cx + w.dir * (0.5 - ss) * w.L + 0.6 * Math.sin(age * 3 + m.ph), cy + tt * w.L + 0.6 * Math.cos(age * 2.7 + m.ph)];
+      }
+      function spawnWhale() {
+        if (whale || !whaleOn) return;
+        const span = bBot - bTop, arc = span * 0.035, phone = phoneMQ.matches;
+        // the band decides the size: the whale is 0.389 of its length tall, plus the fin's flap.
+        // On a phone the width decides instead: 55% of it, so the animal reads at 375
+        const L = phone ? Math.min(W * 0.55, (span - 38 - arc) / 0.424) : Math.min(W * 0.35, 500, (span - 38 - arc) / 0.424);
+        if (L < 120) return;
+        rScale = phone ? 0.6 : 1; outPx = phone ? 7 : OUT_PX; anchorClear = phone ? 5 : ANCHOR_CLEAR;
+        rayK = Math.min(1, L / 500);
+        const swim = phone ? 16 : W_SWIM; // a narrower band, a shorter crossing
+        const dir = -lastDir; lastDir = dir; // (2026-09-11, per user: left to right, then right to left, as a loop)
+        const body = catmull(WB, 10, true), fin = catmull(WF, 10, true), fin2 = catmull(WF2, 10, true), list = [], ka = (L / 460) * (L / 460);
+        const F0 = W_FLUKE[0] * 10, F1 = W_FLUKE[1] * 10, flukePoly = body.slice(F0, F1); // catmull emits 10 points per vertex
+        const isFluke = p => inside(flukePoly, p[0], p[1]) || p[0] > W_HINGE[0];
+        const clear = p => !W_ANCHORS.some(a => Math.hypot(p[0] - a[0], p[1] - a[1]) * L < anchorClear); // anchors stand alone
+        W_ANCHORS.forEach(a => list.push(whaleMote(a, a[2] ? 'spark' : a[3] === 2 ? 'anchor2' : 'anchor', a[4])));
+        sampleAlong(body, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, o.p[2] >= F0 && o.p[2] < F1 ? 'fluke' : 'body')); });
+        sampleAlong(fin, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, 'fin')); });
+        sampleAlong(fin2, L).forEach(o => { if (clear(o.p)) list.push(whaleMote(o.p, o.kind, 'fin2')); });
+        sampleInside(body, Math.max(4, Math.round(FILL_AT_460[0] * ka))).forEach(p => { if (clear(p)) list.push(whaleMote(p, 'fill', isFluke(p) ? 'fluke' : 'body')); });
+        sampleInside(fin, Math.max(1, Math.round(FILL_AT_460[1] * ka))).forEach(p => list.push(whaleMote(p, 'fill', 'fin')));
+        sampleInside(fin2, Math.max(1, Math.round(FILL_AT_460[2] * ka))).forEach(p => list.push(whaleMote(p, 'fill', 'fin2')));
+        const k = L / 240;
+        catmull(W_MOUTH, Math.max(2, Math.round(3 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => { if (clear(p)) list.push(whaleMote(p, 'mouth', 'body')); });
+        W_PLEATS.forEach(pl => catmull(pl, Math.max(2, Math.round(4 * k)), false).filter((p, i) => i % 2 === 0).forEach(p => list.push(whaleMote(p, 'pleat', 'body'))));
+        // on a phone the whale is over half the width, so its ends may start and finish past the edges
+        // Centred on the page both ways (2026-09-22): the margins were 20px left and 60px right, so every crossing
+        // ran 20px left of the centred word; the travel length, and so the speed, is unchanged.
+        const cx0 = phone ? 0.4 * L : 0.55 * L + 40, cx1 = phone ? W - 0.4 * L : W - 0.55 * L - 40;
+        // Vertically it sits in the middle of the lit band (2026-09-22): it used to hang 30px under the band's top,
+        // so its back rode the glow's near-black edge (10-16px of room) while 90-137px stayed empty down to the word.
+        // Over a crossing, with the wave, the arc and the flap, the whale spans cyEnd - arc - 0.18L to cyEnd + 0.263L
+        // (measured); equal room above and below it, between the band's top and the cap tops of "Say hello", gives
+        // the line below. The caps sit 0.147em under the word's box; on phones the word is hidden, so the band
+        // ends at its line.
+        const txt = document.querySelector('.say-hello .footer-big-text');
+        const inkTop = txt && txt.offsetParent ? wTop + parseFloat(getComputedStyle(txt).fontSize) * 0.147 : wTop;
+        whale = { born: T, dir, L, arc, swim, cx0, cx1, cyEnd: (bTop + inkTop + arc - 0.083 * L) / 2, motes: list, ph: Math.random() * 6.283, thPrev: 0, dPrev: 0 };
+        nextWhale = T + rnd(WHALE[0], WHALE[1]);
+        list.forEach(m => { // each ember ignites at the glow's edge under its place and rises into it, nose first
+          const a = whalePoint(m, 0);
+          m.bx = a[0] + gauss() * 70; m.by = bBot - span * 0.28 * Math.random() * Math.random() + rnd(-4, 8);
+          m.gd = m.s * 1.1 + rnd(0, 0.5); m.rel = swim + (1 - m.s) * W_LET + rnd(0, 0.5);
+          m.x = m.bx; m.y = m.by;
+        });
+        whale.settle = Math.max(...list.map(m => m.gd)) + W_GATHER; // when the last star lands
+      }
+      cv._whale = spawnWhale; cv._whaleOn = whaleOn; cv._whaleMotes = () => whale ? whale.motes : null; cv._presence = () => whalePresence(); // for probing
+      cv._whaleBox = () => { if (!whale) return null; let n = 0, x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; whale.motes.forEach(m => { if (m.done) return; n++; x0 = Math.min(x0, m.x); x1 = Math.max(x1, m.x); y0 = Math.min(y0, m.y); y1 = Math.max(y1, m.y); }); return { n, x0, x1, y0, y1, age: T - whale.born, L: whale.L, dir: whale.dir, bBot }; };
+      function whalePresence() { if (!whale) return 0; const age = T - whale.born; return Math.min(1, Math.max(0, age / 1.2)) * Math.min(1, Math.max(0, 1 - (age - whale.swim) / W_LET)); }
+      function drawWhale(dt) {
+        if (!whale) return;
+        const w = whale, age = T - w.born, span = bBot - bTop;
+        const sc = ((age % POOL_CYCLE) / POOL_CYCLE) * 1.6 - 0.3; // the pool's centre runs past both ends so it fully leaves
+        const ps = age - w.settle, pulse = ps < 0 ? 0 : ps < 0.12 ? ps / 0.12 : Math.pow(Math.max(0, 1 - (ps - 0.12) / 0.5), 1.5); // the click when the last star lands
+        const br = (1 + BREATH_A * Math.sin(2 * Math.PI * age / BREATH_T)) * (1 + SETTLE_PULSE * pulse);
+        let alive = 0;
+        for (const m of w.motes) {
+          if (m.done) continue;
+          const ma = age - m.gd;
+          if (ma < 0) { alive++; continue; }        // not yet ignited
+          if (age >= m.rel) {                       // let go: from here on it is an ordinary ember
+            m.done = true;
+            const vx = (w.cx1 - w.cx0) / w.swim * w.dir * 0.35;
+            motes.push({ x: m.x, y: m.y, shape: m.shape, c0: m.c0, c1: m.c1, r: m.r, b: m.b, vx: vx + gauss() * 8, vy: gauss() * 4, rise: rnd(RISE[0], RISE[1]) * 0.8, flare: 0, ray: m.ray, rot: m.rot, ph: m.ph, born: T - 0.15, life: rnd(LIFE[0], LIFE[1]) });
+            if (motes.length > MAX) motes.splice(0, motes.length - MAX);
+            continue;
+          }
+          alive++;
+          const k = Math.min(1, ma / W_GATHER), e = 1 - Math.pow(1 - k, 3), a0 = whalePoint(m, age);
+          if (dt && k < 1) { m.by -= 14 * dt; m.bx += gauss() * 2 * dt; } // the ember drifts up while it gathers
+          m.x = m.bx + (a0[0] - m.bx) * e; m.y = m.by + (a0[1] - m.by) * e;
+          const h = Math.min(1, Math.max(0, (bBot - m.y) / span)), fl = Math.exp(-ma / 0.12);
+          const g = Math.exp(-(m.s - sc) * (m.s - sc) / POOL_SIG2); // the light passing over this star
+          const a = Math.min(1, m.b * (0.45 + 0.55 * e) * (1 - 0.3 * h * h) * (1 + 0.9 * fl) * br * (1 + (m.k ? POOL_IN : POOL_OUT) * g));
+          let c = mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9));
+          if (g > 0.02) c = lift(c, POOL_LIFT * g);
+          drawMote(m, c, a, m.r * (1 + 0.9 * fl) * (1 + POOL_R * g) * (1 + 0.35 * pulse)); // the settle click swells the stars too, since the bright ones are already at full alpha
+        }
+        if (dt && age < w.swim) { // on each beat's reversal the landed fluke tips shed a couple of embers into the field
+          const th = flukeAngle(age), d = th - w.thPrev;
+          if (d !== 0 && w.dPrev !== 0 && Math.sign(d) !== Math.sign(w.dPrev)) {
+            const vx = (w.cx1 - w.cx0) / w.swim * w.dir * 0.3;
+            for (const m of w.motes) {
+              if (m.done || m.part !== 'fluke' || m.shape !== 2 || age - m.gd < W_GATHER) continue;
+              for (let i = 0; i < WAKE_N; i++) motes.push({ x: m.x, y: m.y, shape: 0, c0: m.c0, c1: m.c1, r: rnd(1, 1.6), b: rnd(WAKE_B[0], WAKE_B[1]), vx: vx + gauss() * 6, vy: gauss() * 4, rise: rnd(RISE[0], RISE[1]) * 0.8, flare: 0, ray: 6, rot: 0, ph: Math.random() * 6.283, born: T - 0.15, life: rnd(WAKE_LIFE[0], WAKE_LIFE[1]) });
+            }
+            if (motes.length > MAX) motes.splice(0, motes.length - MAX);
+          }
+          w.dPrev = d; w.thPrev = th;
+        }
+        if (!alive) whale = null;
+      }
+      function drawMeteors() {
+        for (let i = meteors.length - 1; i >= 0; i--) {
+          const s = meteors[i], u = (T - s.born) / s.life;
+          if (u >= 1) { meteors.splice(i, 1); continue; }
+          const a = u < 0.15 ? u / 0.15 : Math.pow(1 - (u - 0.15) / 0.85, 1.2);
+          const hx = s.x + s.vx * (T - s.born), hy = s.y + s.vy * (T - s.born);
+          const sp = Math.hypot(s.vx, s.vy), tx = hx - s.vx / sp * s.tail, ty = hy - s.vy / sp * s.tail;
+          const lg = ctx.createLinearGradient(hx, hy, tx, ty);
+          lg.addColorStop(0, `rgba(255, 240, 210, ${(0.9 * a).toFixed(3)})`);
+          lg.addColorStop(1, 'rgba(255, 240, 210, 0)');
+          ctx.strokeStyle = lg; ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(tx, ty); ctx.stroke();
+          const g = ctx.createRadialGradient(hx, hy, 0, hx, hy, 7);
+          g.addColorStop(0, `rgba(255, 244, 220, ${(0.8 * a).toFixed(3)})`);
+          g.addColorStop(1, 'rgba(255, 244, 220, 0)');
+          ctx.fillStyle = g; ctx.beginPath(); ctx.arc(hx, hy, 7, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      function draw(dt) {
+        if (cv.offsetParent === null) return;
+        T += dt;
+        if (!seeded) { seeded = true; nextMeteor = T + rnd(METEOR[0], METEOR[1]); nextWhale = T + 0.6; const n = Math.round(RATE * W * (LIFE[0] + LIFE[1]) / 2 * 0.7); for (let i = 0; i < n; i++) born(Math.random() * LIFE[0]); }
+        if (dt) {
+          const p = progress();
+          acc += RATE * W * (0.15 + 0.85 * p) * dt; while (acc >= 1) { acc--; born(0); }
+          if (whaleOn) { if (!whale && T >= nextWhale) { if (p > (phoneMQ.matches ? 0.3 : 0.5)) spawnWhale(); else nextWhale = T + 0.5; } } // a phone's band is short, so it starts forming sooner
+          else if (T >= nextMeteor) { if (p > 0.5) { shoot(); nextMeteor = T + rnd(METEOR[0], METEOR[1]); } else nextMeteor = T + 2; }
+        }
+        ctx.clearRect(0, 0, W, H);
+        ctx.globalCompositeOperation = 'lighter';
+        const span = bBot - bTop, fieldDim = 1 - FIELD_DIM * whalePresence();
+        for (let i = motes.length - 1; i >= 0; i--) {
+          const m = motes[i];
+          const age = T - m.born, u = age / m.life;
+          if (u >= 1) { motes[i] = motes[motes.length - 1]; motes.pop(); continue; }
+          if (dt) {
+            m.vx = m.vx * 0.985 + gauss() * 1.0; m.vy = m.vy * 0.985 + gauss() * 1.0;
+            m.x += m.vx * dt; m.y += (m.vy - m.rise) * dt;
+          }
+          const h = Math.min(1, Math.max(0, (bBot - m.y) / span));      // height above the light's edge, 0 to 1
+          const fl = m.flare ? Math.exp(-Math.max(0, age) / 0.12) : 0;   // the ignition
+          const a = Math.min(1, m.b * env(Math.max(0, u)) * (1 - 0.55 * h * h) * (1 + 0.9 * fl)) * fieldDim; // thinner the higher it climbs; the field steps back while the whale swims
+          if (a <= 0.003) continue;
+          drawMote(m, mix(m.c0, m.c1, Math.pow(Math.min(1, h * 1.4), 0.9)), a, m.r * (1 + 0.9 * fl)); // and cooler
+        }
+        drawWhale(dt);
+        drawMeteors();
+        ctx.globalCompositeOperation = 'source-over';
+      }
+      function layout() {
+        const dpr = Math.min(2, window.devicePixelRatio || 1);
+        // a phone fires resize whenever its address bar collapses or returns, and the footer's box
+        // does not change, so an unchanged size must not throw away the whale mid-swim (2026-09-15)
+        if (W && parent.clientWidth === W && parent.clientHeight === H && cv.width === Math.round(W * dpr)) return;
+        W = parent.clientWidth; H = parent.clientHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        let b1 = 0.34;
+        const el = stopSel && document.querySelector(stopSel);
+        if (el) b1 = Math.max(0.12, (el.getBoundingClientRect().top - parent.getBoundingClientRect().top) / H - 0.04);
+        bTop = 0; bBot = H * b1; wTop = bBot + H * 0.04;
+        if (whale) { whale = null; nextWhale = T + 3; }
+      }
+      cv._draw = draw; // for probing: step the simulation without waiting on frames
+      function loop(ts) { const t = ts / 1000; const dt = last ? Math.min(0.05, Math.max(0, t - last)) : 0.016; last = t; draw(dt); raf = requestAnimationFrame(loop); }
+      function start() { if (running || reduce) return; running = true; last = 0; raf = requestAnimationFrame(loop); }
+      function stop() { running = false; cancelAnimationFrame(raf); }
+      layout();
+      draw(0);
+      window.addEventListener('resize', () => { layout(); draw(0); }, { passive: true });
+      if (reduce) return;
+      new IntersectionObserver(es => { es[es.length - 1].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
+    });
+  })();
+</script>
+</body>
+</html>
