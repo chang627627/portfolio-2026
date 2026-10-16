@@ -554,6 +554,48 @@
       .about-vertical > .about-block:first-of-type { margin-bottom: 91px; }
       .testimonials { padding-bottom: 67px; }
     }
+    /* THE PHOTOGRAPHS DRIFT PAST ON THEIR OWN (2026-10-15, per user, in four turns: "make my photos like
+       https://tryditto.com/ carousel no need to interact and drag or something. just let it play itself ... Do not
+       let it related with the scroll down"; "the direction is right. but i have my own carousel style ... do not copy
+       ditto"; "make the photo same size"; then, after his old drum was rebuilt, "maybe use the what ditto did. I think
+       give photo the angle is bad, which looks it get distorted"; Ditto's 2deg tilt was tried and dropped the same
+       day, "maybe no tilt"). So: Ditto's mechanics, a flat row that runs edge to edge and moves at one steady pace
+       for ever, with no pause, no drag, no hover and nothing tied to the scroll; and his own cards, the one-size 3:4
+       photographs of the old carousel (280px, 28px apart, at its 48px a second). Straight cards: no tilt, no 3D
+       turn, no dimming at the sides. The markup's three identical sets loop by moving the track a
+       third of its width: each card carries its gap as a right margin, so a third is exactly one set (8 x 308px,
+       51.33s at 48px a second). Reduced motion keeps the still 4x2 grid. Comes after the 1100px block so it
+       outranks the grid there. */
+    @media (prefers-reduced-motion: no-preference) {
+      .deck {
+        display: block;
+        max-width: none;
+        margin-left: 0;
+        margin-right: 0;
+        padding-left: 0;
+        padding-right: 0;
+        overflow-x: clip;       /* edge to edge; clip, not hidden, so the deck never becomes a scroll container */
+      }
+      .deck > .deck-track {
+        width: max-content;
+        flex-wrap: nowrap;
+        gap: 0;
+        animation: deck-drift 51.33s linear infinite;
+      }
+      .deck .deck-card {
+        flex: none;
+        width: 280px;
+        aspect-ratio: 3 / 4;
+        margin-right: 28px;
+      }
+      .deck .deck-card:nth-child(n + 9) { display: block; }
+    }
+    /* phones: smaller cards at the same pace (8 x 220px, 36.67s) */
+    @media (max-width: 768px) and (prefers-reduced-motion: no-preference) {
+      .deck > .deck-track { animation-duration: 36.67s; }
+      .deck .deck-card { width: 200px; margin-right: 20px; }
+    }
+    @keyframes deck-drift { to { translate: -33.3333% 0; } }
     /* RECOGNITION LINKS (2026-10-05, per user "can you comeup a way to add the link into the recognition part?", "for
        same award won twice how to handle?", then "yeah, please do"). The thing that won is the link, in the detail:
        each project to its own winner page (Red Dot's StoryBloom page is not public until November, so it opens the
@@ -764,7 +806,7 @@
       if (!card) return;
       const off = offsetIn(card, ds);
       if (!(off >= 0)) return;
-      const lift = 0;                                      // no focus scale on the grid, so its painted top is its box top
+      const lift = 0;                                      // the drifting row (2026-10-15) paints exactly its box: nothing scales, turns or tilts
       const target = pin.offsetTop + runway + foot + GAP + lift - off; // the deck-pin's document top: the card's painted top is GAP under the anchor at release (the pin no longer starts at document 0, so its own offset is in here)
       dp.style.marginTop = '0px';
       let m = target - dp.offsetTop; dp.style.marginTop = m + 'px';
@@ -1274,7 +1316,7 @@
   })();
 </script>
 
-  <!-- Photo Deck (scroll-driven, pinned for one pass) -->
+  <!-- Photo Deck: drifts past on its own, like Ditto's row (2026-10-15) -->
   <div class="deck-pin">
    <div class="deck-stage">
   <section class="deck" aria-label="Personal photo deck">
@@ -1289,23 +1331,23 @@
       <div class="deck-card" style="--ar: 0.75"><img src="images/food.jpeg" width="600" height="800" alt="Home cooking" loading="eager"></div>
       <div class="deck-card" style="--ar: 1.3333"><img src="images/pier39.jpg?v=2" width="1920" height="1440" alt="Sea lions at Pier 39" loading="eager"></div>
       <!-- Set 2 (middle - seeded at start) -->
-      <div class="deck-card"><img src="images/profile.jpg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/jenga.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/pier.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/building.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/talk1.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/talk2.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/food.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/pier39.jpg?v=2" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.4035"><img src="images/profile.jpg" width="800" height="570" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/jenga.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/pier.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/building.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/talk1.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/talk2.jpeg" width="800" height="600" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/food.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/pier39.jpg?v=2" width="1920" height="1440" alt="" aria-hidden="true"></div>
       <!-- Set 3 -->
-      <div class="deck-card"><img src="images/profile.jpg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/jenga.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/pier.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/building.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/talk1.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/talk2.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/food.jpeg" alt="" aria-hidden="true"></div>
-      <div class="deck-card"><img src="images/pier39.jpg?v=2" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.4035"><img src="images/profile.jpg" width="800" height="570" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/jenga.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/pier.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/building.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/talk1.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/talk2.jpeg" width="800" height="600" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 0.75"><img src="images/food.jpeg" width="600" height="800" alt="" aria-hidden="true"></div>
+      <div class="deck-card" style="--ar: 1.3333"><img src="images/pier39.jpg?v=2" width="1920" height="1440" alt="" aria-hidden="true"></div>
     </div>
   </section>
    </div>
@@ -1832,7 +1874,7 @@
   }
 </script>
 
-<!-- Photo Deck: scroll-driven, pinned for one pass -->
+<!-- Photo Deck: the drift's pace and off-screen rest (the retired scroll engine sits below its return) -->
 <script>
 (function() {
   const track = document.querySelector('[data-deck]');
@@ -1847,10 +1889,18 @@
 
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Every width renders the static 4x2 grid via CSS now (2026-09-20, per user) — no
-  // pin, no scroll drive, no drum. Everything below this point is the retired engine,
-  // kept in place so the behaviour is one `return` away if it is ever wanted back.
+  // THE ROW DRIFTS ON ITS OWN (2026-10-15, per user): the page CSS runs it, a flat
+  // marquee of one-size cards, so the photographs move with or without this script.
+  // This only rests the row while it is off screen. Nothing reads the pointer or the
+  // page scroll. Reduced motion keeps the 4x2 grid, where this changes nothing.
+  // Everything below the return is the retired scroll-driven engine (2026-09-12 to
+  // 09-20), kept so it is one `return` away.
   track.classList.add('is-ready');
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver((es) => {             // the LAST entry: a fast scroll can batch several
+      track.style.animationPlayState = es[es.length - 1].isIntersecting ? '' : 'paused';
+    }, { rootMargin: '200px 0px' }).observe(document.querySelector('.deck') || track);
+  }
   return;
 
   const deckEl = document.querySelector('.deck') || track;
