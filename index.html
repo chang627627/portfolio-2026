@@ -1604,12 +1604,17 @@
         </div>
       </a>
 
-      <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="display: none; --plate-light: #C2DBBC;">
-        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-card.png" srcset="images/newcraft-card-960.jpg 960w, images/newcraft-card-1280.jpg 1280w, images/newcraft-card.png 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="New Craft Society" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"><img class="card-loop card-loop--cover" data-loop="images/newcraft-loop.webp" alt="" aria-hidden="true" decoding="async"></div>
+      <!-- NEW CRAFT SOCIETY IS BACK (2026-10-16, per user "maybe bring back the NCS to fill the last gap"): with CoPatible the
+           seventh card, NCS makes the eighth and fills the last row; its description cut to one line, no period.
+           A HI-FI STILL, NO LOOP (same day, per user "NCS's thumbnail is not hi-fi"): the still is a fresh 2x capture of
+           newcraftsociety.com in a 1280x720 window (the wordmark reads at card size), and the 860px loop Play replaced on
+           2026-10-09 as "so foggy" is gone from this card. -->
+      <a href="https://www.newcraftsociety.com/" target="_blank" rel="noopener" class="project-card" style="--plate-light: #C2DBBC;">
+        <div class="project-img project-img--cover" style="background-color: #C2DBBC; display: flex; align-items: center; justify-content: center;"><img src="images/newcraft-home.jpg" srcset="images/newcraft-home-960.jpg 960w, images/newcraft-home-1280.jpg 1280w, images/newcraft-home.jpg 1920w" sizes="(max-width: 768px) calc(100vw - 48px), 1400px" alt="New Craft Society" width="1920" height="1080" loading="lazy" decoding="async" style="width: 100%; height: 100%; object-fit: cover; display: block;"></div>
         <div class="project-info">
           <div class="project-info-left">
             <div class="project-info-top"><h3>New Craft Society</h3><span class="project-year">2026</span></div>
-            <p>A home for design process, not just finished pieces. Drop in rough work as it happens and the case study writes itself</p>
+            <p>A home for design process, not just finished pieces</p>
             <div class="card-meta"><span class="card-tag card-tag--type">Freelance</span><span class="card-tag">Design Community</span><span class="card-tag">Web App</span><span class="card-tag">Building</span></div>
           </div>
         </div>
@@ -2837,12 +2842,12 @@
     var phone = matchMedia('(max-width: 768px)');
     if (phone.matches) return;   // desktop only: phones keep the plain grid
     var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var ID = { 'homewise.html': 'homewise', 'pollen.html': 'pollennav', 'countersign.html': 'countersign', 'storybloom.html': 'storybloom', 'coffee.html': 'coffee', 'nova.html': 'nova', 'copatible.html': 'copatible' };
+    var ID = { 'homewise.html': 'homewise', 'pollen.html': 'pollennav', 'countersign.html': 'countersign', 'storybloom.html': 'storybloom', 'coffee.html': 'coffee', 'nova.html': 'nova', 'copatible.html': 'copatible', 'https://www.newcraftsociety.com/': 'ncs' };
     var cards = [].slice.call(document.querySelectorAll('#work .project-card')).filter(function (c) { return ID[c.getAttribute('href')] && getComputedStyle(c).display !== 'none'; });
     if (!cards.length) return;
     var byId = {};
     cards.forEach(function (c) { byId[ID[c.getAttribute('href')]] = c; });
-    var NAME = { homewise: 'Homewise', pollennav: 'PollenNav', countersign: 'Countersign', storybloom: 'StoryBloom', coffee: 'Coffee Chat', nova: 'NOVA', copatible: 'CoPatible' };
+    var NAME = { homewise: 'Homewise', pollennav: 'PollenNav', countersign: 'Countersign', storybloom: 'StoryBloom', coffee: 'Coffee Chat', nova: 'NOVA', copatible: 'CoPatible', ncs: 'New Craft Society' };
     // words each project answers to, for questions typed in by hand
     var KW = {
       homewise: 'ai agent agents agentic approval human loop hitl home homes homeowner homeowners repair repairs contractor contractors quote quotes bids scope dashboard web saas shipped code prototype professional workspace 2026',
@@ -2851,12 +2856,13 @@
       storybloom: 'story stories bedtime sleep kids kid children child family parents wellness mobile app ios phone ai generative award awards winner red dot reddot personal 2026',
       coffee: 'coffee chat litespace hybrid remote teams team pairing pairings matching social b2b saas enterprise dashboard web shipped launched ai professional 2023',
       nova: 'unicef nova ar augmented reality glasses wearable wearables hardware kids kid children child family parents safety navigation academic speculative 2025',
-      copatible: 'copatible co companion ai social friends friendship connection people meet meetup circle circles voice check in transition new city moved mobile app ios phone prototype code personal 2026'
+      copatible: 'copatible co companion ai social friends friendship connection people meet meetup circle circles voice check in transition new city moved mobile app ios phone prototype code personal 2026',
+      ncs: 'new craft society ncs design process designers community rough work case study writes itself web app building freelance 2026'
     };
     // every answer is a fact already on the home page or in the case study it names, and opens with its chip's own
     // words (per user, so the answer reads as the chip's); [id] renders the project's name
     var Q = [
-      { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova', 'copatible'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
+      { id: 'all', label: 'All', ids: ['homewise', 'pollennav', 'countersign', 'storybloom', 'coffee', 'nova', 'copatible', 'ncs'], alias: ['everything', 'all', 'all work', 'show all', 'anything'],
         text: '' },   // All shows every row and no answer
       { id: 'agents', label: 'AI agents', ids: ['homewise', 'countersign'], alias: ['agent', 'agents', 'agentic', 'ai agent', 'ai agents', 'human in the loop', 'hitl', 'automation'],
         text: 'Two AI agents, and both stop for a person. [homewise] scopes the job, compares the bids, and waits for your approval. [countersign] extracts deal financials, tests covenants, and pauses at the approval gate.' },
@@ -2864,8 +2870,8 @@
         text: 'Two award winners, both mobile apps. [pollennav] won iF, Red Dot, NY Product Design Silver and the European Product Design Award. [storybloom] won Red Dot and NY Product Design Silver in 2026.' },
       { id: 'shipped', label: 'Shipped', ids: ['homewise', 'coffee'], alias: ['shipped', 'ship', 'shipping', 'production', 'launched', 'shipped products'],
         text: 'Two shipped with real teams. [homewise] was prototyped in code and shipped by the dev team. [coffee] reached 63% opt in and 200+ chats in its first month.' },
-      { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
-        text: 'Three on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; and [coffee], a feature of the Litespace platform for hybrid teams.' },
+      { id: 'web', label: 'Web', ids: ['homewise', 'countersign', 'coffee', 'ncs'], alias: ['web', 'web app', 'web apps', 'dashboard', 'dashboards', 'saas', 'desktop', 'browser'],
+        text: 'Four on the web: [homewise], an AI command center for homeowners; [countersign], agentic credit analysis that a person countersigns; [coffee], a feature of the Litespace platform for hybrid teams; and New Craft Society, a home for design process, not just finished pieces.' },
       { id: 'mobile', label: 'Mobile & wearables', ids: ['pollennav', 'storybloom', 'nova', 'copatible'], alias: ['mobile', 'app', 'apps', 'ios', 'phone', 'wearable', 'wearables', 'ar', 'glasses', 'mobile and wearables', 'mobile & wearables'],
         text: 'Four across mobile & wearables: [pollennav] for street level pollen guidance, [storybloom] for bedtime stories for kids 3 to 8, [nova] for AR navigation that keeps children independent and parents reassured, and [copatible], a social app that turns a voice check-in into a small circle of people.' }
     ].filter(function (q) { q.ids = q.ids.filter(function (id) { return byId[id]; }); return q.ids.length; });
