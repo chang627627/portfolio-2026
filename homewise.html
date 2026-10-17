@@ -190,7 +190,8 @@
     <a href="#solution" class="side-nav-link">Solution</a>
     <a href="#final-design" class="side-nav-link">Final Design</a>
     <a href="#system" class="side-nav-link">Design System</a>
-    <a href="#process" class="side-nav-link">Process</a>
+    <!-- Process hidden 2026-10-17 with its section; a hidden link would break the active tracking
+    <a href="#process" class="side-nav-link">Process</a> -->
     <a href="#collaboration" class="side-nav-link">Collaboration</a>
     <a href="#reflection" class="side-nav-link">Reflection</a>
     <a href="#v2" class="side-nav-link">One more thing</a>
@@ -477,7 +478,9 @@
       <a href="https://homewise-rust.vercel.app/designsystem" target="_blank" rel="noopener" class="hw-cta">Explore the Hearth design system <span aria-hidden="true">↗</span></a>
     </div>
 
-    <!-- Process -->
+    <!-- Process: hidden 2026-10-17 per user ("do you think process in homewise is ok to hide on website? I think current study case is a little too long"),
+         markup kept, the page's own hide convention. It said "designed by building" a fifth time; Collaboration carries it with the evidence. -->
+    <div class="hw-process-hidden" style="display: none">
     <div id="process" class="project-section">
       <p class="section-label">Process</p>
       <h2>I flipped the process and designed by building</h2>
@@ -537,6 +540,7 @@
         <text x="594" y="124" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-family="'Neue Montreal', sans-serif">repeat until it is right</text>
       </svg>
       </div>
+    </div>
     </div>
 
     <!-- Collaboration -->
