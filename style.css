@@ -2903,8 +2903,8 @@ footer {
 }
 
 .iteration-caption p {
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 14.5px; /* 14px at 1.5 until 2026-10-17: unified with Homewise's tradeoff text, per user */
+  line-height: 1.6;
   color: var(--text-muted);
   margin: 0;
 }
@@ -3710,7 +3710,7 @@ footer {
 }
 
 .iter-example__cell figcaption {
-  font-size: 14px;
+  font-size: 14.5px; /* 14px until 2026-10-17: unified with Homewise's tradeoff text, per user */
   color: var(--text-muted);
   line-height: 1.6;
 }
