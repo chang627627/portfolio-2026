@@ -132,6 +132,32 @@
     .hw-clip--player:-webkit-full-screen video { height: 100%; object-fit: contain; }
     @media (max-width: 480px) { .hw-time { min-width: 0; padding: 0 4px; font-size: 11px; } }
     @media (prefers-reduced-motion: reduce) { .hw-bar, .hw-player-play, .hw-bar-btn { transition: none; } }
+    /* Version 2 key screens (2026-10-17): a drag carousel after Anthropic's quote rail. The labels say where you are and can be
+       clicked; the screens are dragged (mouse or finger), the next one waiting faded at the side, past the column to the window edge. */
+    .hw-keys { --hw-half: min(calc(var(--max-width) / 2), calc(50vw - 48px)); max-width: var(--max-width); width: 100%; margin: 32px auto 0; }
+    .hw-keys-tabs { display: flex; gap: 24px; margin: 0 0 16px; overflow-x: auto; scrollbar-width: none; }
+    .hw-keys-tabs::-webkit-scrollbar { display: none; }
+    .hw-keys-tabs button { appearance: none; background: none; border: 0; padding: 4px 0; margin: 0; font: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; color: var(--text-muted); white-space: nowrap; cursor: pointer; transition: color var(--dur-base) var(--ease-out); }
+    .hw-keys-tabs button:hover, .hw-keys-tabs button.is-on { color: var(--text); }
+    .hw-keys-tabs button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; border-radius: 4px; }
+    /* full bleed so the side screens reach the window edge and fade out there; the track starts on the column's left edge */
+    .hw-keys-viewport { width: 100vw; margin-left: calc(50% - 50vw); padding-left: calc(50vw - 50%); box-sizing: border-box; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 calc(50vw - var(--hw-half) - 8px), #000 calc(50vw + var(--hw-half) + 8px), transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0, #000 calc(50vw - var(--hw-half) - 8px), #000 calc(50vw + var(--hw-half) + 8px), transparent 100%); }
+    .hw-keys-track { display: flex; gap: 24px; width: var(--max-width); max-width: calc(100vw - 96px); transition: transform 600ms var(--ease-out); will-change: transform; }
+    .hw-keys-track.is-dragging, .hw-keys-track.is-instant { transition: none; }
+    .hw-key { flex: 0 0 100%; margin: 0; opacity: 0.45; transition: opacity 600ms var(--ease-out); }
+    .hw-key:not(.is-on) { cursor: pointer; }
+    .hw-key.is-on { opacity: 1; }
+    .hw-key img { display: block; width: 100%; height: auto; border-radius: var(--radius); pointer-events: none; }
+    .hw-key figcaption { margin-top: 16px; font-size: 14.5px; line-height: 1.6; color: var(--text-muted); }
+    @media (max-width: 768px) {
+      .hw-keys { --hw-half: calc(50vw - 24px); }
+      .hw-keys-tabs { gap: 20px; }
+      .hw-keys-tabs button { font-size: 14px; }
+      .hw-keys-track { max-width: calc(100vw - 48px); gap: 16px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .hw-keys-track, .hw-key { transition: none; } }
   </style>
 </head>
 <body>
@@ -596,10 +622,57 @@
     </div>
 
     <div class="project-section grid-caption">
-      <p>The board only works if a decision reads at a glance, so Version 2 also calmed the visual system: one dark element per pane, one rule color, and color only where it means something. Green marks the pick, amber the exception, blue the booked day. Press play: seventy-four seconds from leak to closed out job, the conversation on the left moving, the decisions landing on the right and staying.</p>
+      <p>The board only works if a decision reads at a glance, so Version 2 also calmed the visual system: one dark element per pane, one rule color, and color only where it means something. Green marks the pick, amber the exception, blue the booked day.</p>
     </div>
+
+    <!-- Key screens (2026-10-17, per user "I want the v2 be more obvious. Aside of the video i want to add some key screens and something
+         like https://www.anthropic.com/claude-opus-5-5 you can drag the screen from the side", then "anthropic use click. i want drag"):
+         one screen per decision on the board, dragged across; the next one waits faded at the side. Script at the end of the page. -->
+    <div class="hw-keys" aria-roledescription="carousel" aria-label="Version 2, key screens">
+      <div class="hw-keys-tabs" role="tablist" aria-label="Key screens">
+        <button type="button" role="tab" aria-selected="true" class="is-on">Overview</button>
+        <button type="button" role="tab" aria-selected="false">Scope</button>
+        <button type="button" role="tab" aria-selected="false">Contractors</button>
+        <button type="button" role="tab" aria-selected="false">Quotes</button>
+        <button type="button" role="tab" aria-selected="false">Schedule</button>
+        <button type="button" role="tab" aria-selected="false">Close out</button>
+      </div>
+      <div class="hw-keys-viewport">
+        <div class="hw-keys-track">
+        <figure class="hw-key is-on" aria-roledescription="slide" aria-label="1 of 6: Overview">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-overview.jpg" alt="The V2 overview: the kitchen sink leak, what was reported, and what the agent read in the two photos" draggable="false">
+          <figcaption>The job opens on the board: what you reported and what the agent read in your two photos.</figcaption>
+        </figure>
+        <figure class="hw-key" aria-roledescription="slide" aria-label="2 of 6: Scope">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-scope.jpg" alt="The V2 scope of work drafted from the photos and answers, waiting for review" draggable="false">
+          <figcaption>The scope, drafted from your photos and answers, waits for your edits and approval before any contractor sees it.</figcaption>
+        </figure>
+        <figure class="hw-key" aria-roledescription="slide" aria-label="3 of 6: Contractors">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-contractors.jpg" alt="Three plumbers compared on the same criteria, the pick marked and a pending insurance renewal flagged" draggable="false">
+          <figcaption>Three verified plumbers on the same criteria, with the pick marked and the pending insurance flagged.</figcaption>
+        </figure>
+        <figure class="hw-key" aria-roledescription="slide" aria-label="4 of 6: Quotes">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-quotes.jpg" alt="Three quotes normalized to one scope against the local price range, each with its open times" draggable="false">
+          <figcaption>Three quotes normalized to one scope, set against the local price range, each with its open times.</figcaption>
+        </figure>
+        <figure class="hw-key" aria-roledescription="slide" aria-label="5 of 6: Schedule">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-schedule.jpg" alt="The booked visit on the board: Friday, April 24, 2 PM, with the arrival window and the change deadline" draggable="false">
+          <figcaption>The booking lands on the board, with the arrival window and how long you can still change it.</figcaption>
+        </figure>
+        <figure class="hw-key" aria-roledescription="slide" aria-label="6 of 6: Close out">
+          <img loading="lazy" decoding="async" width="1920" height="1147" src="images/homewise-v2-key-closeout.jpg" alt="Jason's visit report with three after photos and the recommend question, the close out button waiting" draggable="false">
+          <figcaption>Jason's after photos land on the board, and the job closes only after you confirm the work.</figcaption>
+        </figure>
+        </div>
+      </div>
+    </div>
+
+    <!-- The V2 clip: hidden 2026-10-17 per user ("maybe we do not need the video", then "hide it"); the key screens carry the story and
+         Try V2 live shows the motion. Markup kept; homewiseslide still plays the clip. Its "Press play" line was deleted with it. -->
+    <div class="hw-v2clip-hidden" style="display: none">
     <div class="hw-clip project-img-full">
       <video src="images/homewise-v2.mp4" controls preload="none" poster="images/homewise-v2-poster.jpg" playsinline></video>
+    </div>
     </div>
 
     <div class="hw-cta-row">
@@ -1731,6 +1804,62 @@
       if (reduce) return;
       new IntersectionObserver(es => { es[es.length - 1].isIntersecting ? start() : stop(); }, { rootMargin: '120px' }).observe(parent);
     });
+  })();
+</script>
+<script>
+  // Version 2 key screens: drag (mouse or finger) moves the screens 1:1 and they settle on release; a quick flick or a third of
+  // a screen is enough. The labels follow and can be clicked; a click on a side screen brings it in, on the current one opens it large.
+  (function () {
+    const root = document.querySelector('.hw-keys'); if (!root) return;
+    const track = root.querySelector('.hw-keys-track'), slides = [...root.querySelectorAll('.hw-key')], tabs = [...root.querySelectorAll('.hw-keys-tabs button')];
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let i = 0, step = 0, dragging = false, moved = false, x0 = 0, dx = 0, t0 = 0, pid = null;
+    const measure = () => { step = slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : 0; };
+    const place = (extra) => { track.style.transform = 'translate3d(' + (-i * step + (extra || 0)) + 'px, 0, 0)'; };
+    function show(n, instant) {
+      i = Math.max(0, Math.min(slides.length - 1, n));
+      track.classList.toggle('is-instant', !!instant || reduce.matches); place();
+      slides.forEach((s, k) => s.classList.toggle('is-on', k === i));
+      tabs.forEach((t, k) => { t.classList.toggle('is-on', k === i); t.setAttribute('aria-selected', k === i ? 'true' : 'false'); });
+      const bar = tabs[i] && tabs[i].parentElement; if (bar && bar.scrollWidth > bar.clientWidth) bar.scrollLeft = Math.max(0, tabs[i].offsetLeft - bar.offsetLeft - 24);
+    }
+    tabs.forEach((t, k) => t.addEventListener('click', () => show(k)));
+    track.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true; moved = false; x0 = e.clientX; dx = 0; t0 = performance.now(); pid = e.pointerId; measure();
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!dragging || e.pointerId !== pid) return;
+      dx = e.clientX - x0;
+      if (!moved && Math.abs(dx) > 6) { moved = true; track.classList.add('is-dragging'); try { track.setPointerCapture(pid); } catch (_) {} }
+      if (!moved) return;
+      const edge = (i === 0 && dx > 0) || (i === slides.length - 1 && dx < 0); // resist past the ends
+      place(edge ? dx * 0.3 : dx);
+    });
+    function end(e) {
+      if (!dragging || (e && e.pointerId !== pid)) return;
+      dragging = false; track.classList.remove('is-dragging');
+      if (!moved) return;
+      const v = dx / Math.max(1, performance.now() - t0); // px per ms
+      let n = i; if (dx < -step / 3 || v < -0.45) n = i + 1; else if (dx > step / 3 || v > 0.45) n = i - 1;
+      show(n);
+    }
+    window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end);
+    slides.forEach((s, k) => s.addEventListener('click', () => {
+      if (moved) { moved = false; return; } // the click at the end of a drag
+      if (k !== i) { show(k); return; }
+      const lb = document.getElementById('lightbox'), lbImg = document.getElementById('lightboxImg'), img = s.querySelector('img');
+      if (!lb || !lbImg) return;
+      lbImg.src = img.currentSrc || img.src; lbImg.alt = img.alt; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false');
+      document.documentElement.style.overflow = 'hidden';
+    }));
+    // the side screens sit outside the viewport, where lazy images never load: load them all once the rail is near
+    const io = 'IntersectionObserver' in window ? new IntersectionObserver((es) => {
+      if (es[es.length - 1].isIntersecting) { slides.forEach((s) => { s.querySelector('img').loading = 'eager'; }); io.disconnect(); }
+    }, { rootMargin: '800px 0px' }) : null;
+    if (io) io.observe(root); else slides.forEach((s) => { s.querySelector('img').loading = 'eager'; });
+    window.addEventListener('resize', () => { measure(); show(i, true); });
+    measure(); show(0, true);
   })();
 </script>
 </body>
